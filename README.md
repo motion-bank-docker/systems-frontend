@@ -4,22 +4,20 @@
 
 ## How to use
 
-First [download the template](https://github.com/motionbank/libmb-quasar-app/archive/master.zip) and unzip it somewhere comfy.
+First [download the template](https://github.com/motionbank/libmb-quasar-app/archive/master.zip)
+and unzip it somewhere comfy.
 
 Rename the folder and edit the ``package.json`` file to set your app's name, version and URLs.
 
-Now do this in a terminal:
+In a terminal run
 ```shell
 cd my-great-quasar-app
 npm install
 ```
+Now the [metapak-motionbank](https://github.com/motionbank/metapak-motionbank)
+should have set up your project, so run ``npm install`` a second time to install all dependencies.
 
-You should be the proud owner of a barebones Quasar app.
-
-Try it out:
-```shell
-npm run dev
-```
+You should now be the proud owner of a barebones Quasar app. Check out it's ``README.md`` for more info.
 
 ## License
 
