@@ -2,6 +2,8 @@
 
 > Motion Bank starting point template
 
+[![Build Status](https://travis-ci.org/motionbank/libmb-quasar-app.svg?branch=master)](https://travis-ci.org/motionbank/libmb-quasar-app)
+
 ## How to use
 
 First [download the template](https://github.com/motionbank/libmb-quasar-app/archive/master.zip)
