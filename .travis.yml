@@ -3,8 +3,6 @@ os: linux
 dist: trusty
 node_js: "9.3.0"
 script:
-  - git submodule init
-  - git submodule update
   - npm install
-  - npm run lint
-  - npm test
+  - npm clean
+  - npm build
