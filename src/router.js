@@ -3,10 +3,15 @@ import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
 
+import welcome from 'libmb-quasar-components/src/components/routes/site/welcome.vue'
+import notFound from 'libmb-quasar-components/src/components/routes/errors/404.vue'
+
+/*
 function load (component) {
   // '@' is aliased to src/components
   return () => import(`@/${component}.vue`)
 }
+*/
 
 export default new VueRouter({
   /*
@@ -25,9 +30,9 @@ export default new VueRouter({
   scrollBehavior: () => ({ y: 0 }),
 
   routes: [
-    { path: '/', component: load('Hello') },
+    { path: '/', component: welcome },
 
     // Always leave this last one
-    { path: '*', component: load('Error404') } // Not found
+    { path: '*', component: notFound } // Not found
   ]
 })

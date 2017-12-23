@@ -18,6 +18,7 @@
   "dependencies": {},
   "devDependencies": {
     "metapak": "^1.0.2",
-    "metapak-motionbank": "^1.3.20"
+    "metapak-motionbank": "^1.3.20",
+    "libmb-quasar-components": "git+https://github.com/motionbank/libmb-quasar-components.git"
   }
 }

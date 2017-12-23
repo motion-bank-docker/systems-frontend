@@ -1,10 +1,4 @@
-// === DEFAULT / CUSTOM STYLE ===
-// WARNING! always comment out ONE of the two require() calls below.
-// 1. use next line to activate CUSTOM STYLE (./src/themes)
-// require(`./themes/app.${__THEME}.styl`)
-// 2. or, use next line to activate DEFAULT QUASAR STYLE
-require(`quasar/dist/quasar.${__THEME}.css`)
-// ==============================
+require(`./themes/app.${__THEME}.styl`)
 
 // Uncomment the following lines if you need IE11/Edge support
 // require(`quasar/dist/quasar.ie`)
@@ -17,18 +11,45 @@ import router from './router'
 Vue.config.productionTip = false
 Vue.use(Quasar) // Install Quasar Framework
 
+import Vuelidate from 'vuelidate'
+import VueLetterAvatar from 'vue-letter-avatar'
+import VueParticles from 'vue-particles'
+
+Vue.use(Vuelidate)
+Vue.use(VueLetterAvatar)
+Vue.use(VueParticles)
+
 if (__THEME === 'mat') {
   require('quasar-extras/roboto-font')
 }
 import 'quasar-extras/material-icons'
-// import 'quasar-extras/ionicons'
-// import 'quasar-extras/fontawesome'
-// import 'quasar-extras/animate'
+
+import store from 'libmb-quasar-components/src/store'
+import i18n from 'libmb-quasar-components/src/locales'
+
+import 'libmb-quasar-components/src/services'
+import 'libmb-quasar-components/src/components'
 
 Quasar.start(() => {
+  router.beforeEach((to, from, next) => {
+    if (to.matched.some(route => route.meta.auth)) {
+      if (!store.state.auth.user) {
+        store.commit('auth/redirect', to)
+        return next({ name: 'users.login' })
+      }
+    }
+    else if (to.matched.some(route => route.meta.noAuth)) {
+      if (store.state.auth.user) {
+        return next({ name: 'users.profile' })
+      }
+    }
+    next()
+  })
   /* eslint-disable no-new */
   new Vue({
     el: '#q-app',
+    i18n,
+    store,
     router,
     render: h => h(require('./App').default)
   })
