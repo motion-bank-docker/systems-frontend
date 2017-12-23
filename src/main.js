@@ -11,24 +11,18 @@ import router from './router'
 Vue.config.productionTip = false
 Vue.use(Quasar) // Install Quasar Framework
 
-import Vuelidate from 'vuelidate'
-import VueLetterAvatar from 'vue-letter-avatar'
-import VueParticles from 'vue-particles'
-
-Vue.use(Vuelidate)
-Vue.use(VueLetterAvatar)
-Vue.use(VueParticles)
-
 if (__THEME === 'mat') {
   require('quasar-extras/roboto-font')
 }
 import 'quasar-extras/material-icons'
 
-import store from 'libmb-quasar-components/src/store'
-import i18n from 'libmb-quasar-components/src/locales'
+import store from './lib/store'
+import i18n from './lib/locales'
 
-import 'libmb-quasar-components/src/services'
-import 'libmb-quasar-components/src/components'
+import { user, notification } from './lib/services'
+
+Vue.component('mb-user-service', user)
+Vue.component('mb-notification-service', notification)
 
 Quasar.start(() => {
   router.beforeEach((to, from, next) => {

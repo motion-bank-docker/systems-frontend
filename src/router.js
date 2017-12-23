@@ -3,8 +3,7 @@ import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
 
-import welcome from 'libmb-quasar-components/src/components/routes/site/welcome.vue'
-import notFound from 'libmb-quasar-components/src/components/routes/errors/404.vue'
+import routes from './components/routes'
 
 /*
 function load (component) {
@@ -30,9 +29,19 @@ export default new VueRouter({
   scrollBehavior: () => ({ y: 0 }),
 
   routes: [
-    { path: '/', component: welcome },
+    //
+    // Site content
+    //
+    { path: '/', component: routes.site.welcome, name: 'site.welcome' },
+    //
+    // User management
+    //
+    { path: '/users/create', component: routes.users.create, name: 'users.create' },
+    { path: '/users/login', component: routes.users.login, name: 'users.login' },
+    { path: '/users/forgot', component: routes.users.forgot, name: 'users.forgot' },
+    { path: '/users/manage', component: routes.users.manage, name: 'users.manage' },
 
-    // Always leave this last one
-    { path: '*', component: notFound } // Not found
+    // Catchall
+    { path: '*', component: routes.errors.notFound, name: 'errors.notFound' } // Not found
   ]
 })
