@@ -1,6 +1,6 @@
 [submodule "src/components"]
 	path = src/components
-	url = git@github.com:motionbank/libmb-quasar-components.git
+	url = https://github.com/motionbank/libmb-quasar-components.git
 [submodule "src/lib"]
 	path = src/lib
-	url = git@github.com:motionbank/libmb-quasar-lib.git
+	url = https://github.com/motionbank/libmb-quasar-lib.git
