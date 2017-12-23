@@ -18,6 +18,6 @@
   "dependencies": {},
   "devDependencies": {
     "metapak": "^1.0.2",
-    "metapak-motionbank": "^1.3.18"
+    "metapak-motionbank": "^1.3.19"
   }
 }
