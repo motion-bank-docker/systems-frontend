@@ -1,8 +1,9 @@
 # libMB Quasar App
 
-> Motion Bank starting point template
+> An empty quasar/vue app as a starting point.
 
 [![Build Status](https://travis-ci.org/motionbank/libmb-quasar-app.svg?branch=master)](https://travis-ci.org/motionbank/libmb-quasar-app)
+[![Maintainability](https://api.codeclimate.com/v1/badges/aa3436e39a3a07e92e56/maintainability)](https://codeclimate.com/github/motionbank/libmb-quasar-app/maintainability)
 
 ## How to use
 
