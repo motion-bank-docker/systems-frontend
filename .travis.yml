@@ -4,5 +4,5 @@ dist: trusty
 node_js: "9.3.0"
 script:
   - npm install
-  - npm clean
-  - npm build
+  - npm run clean
+  - npm run build
