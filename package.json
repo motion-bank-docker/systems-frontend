@@ -11,7 +11,7 @@
       "readme",
       "codeclimate",
       "webpack",
-      "vue"
+      "quasar"
     ]
   },
   "scripts": {},
