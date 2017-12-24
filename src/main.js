@@ -16,18 +16,16 @@ if (__THEME === 'mat') {
 }
 import 'quasar-extras/material-icons'
 
-import primus from './lib/clients/primus'
-
 import store from './lib/store'
 import i18n from './lib/locales'
 
-import { user, notification } from './lib/services'
+import { notification } from './lib/services'
 
-Vue.component('mb-user-service', user)
 Vue.component('mb-notification-service', notification)
 
 Quasar.start(() => {
   router.beforeEach((to, from, next) => {
+    /*
     if (to.matched.some(route => route.meta.auth)) {
       if (!store.state.auth.user) {
         store.commit('auth/redirect', to)
@@ -39,15 +37,15 @@ Quasar.start(() => {
         return next({ name: 'users.profile' })
       }
     }
+    */
     next()
   })
   /* eslint-disable no-new */
-  const vm = new Vue({
+  new Vue({
     el: '#q-app',
     i18n,
     store,
     router,
     render: h => h(require('./App').default)
   })
-  primus(vm)
 })
