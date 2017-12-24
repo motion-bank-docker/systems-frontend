@@ -16,6 +16,8 @@ if (__THEME === 'mat') {
 }
 import 'quasar-extras/material-icons'
 
+import primus from './lib/clients/primus'
+
 import store from './lib/store'
 import i18n from './lib/locales'
 
@@ -40,11 +42,12 @@ Quasar.start(() => {
     next()
   })
   /* eslint-disable no-new */
-  new Vue({
+  const vm = new Vue({
     el: '#q-app',
     i18n,
     store,
     router,
     render: h => h(require('./App').default)
   })
+  primus(vm)
 })
