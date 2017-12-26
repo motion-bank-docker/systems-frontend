@@ -19,6 +19,11 @@ export default {
     QLayout,
     Background,
     UserNav
+  },
+  created: function () {
+    // try to log the user in from saved credentials
+    this.$store.dispatch('auth/authenticate')
+      .catch(() => { /* ignore failed authentication */ })
   }
 }
 </script>

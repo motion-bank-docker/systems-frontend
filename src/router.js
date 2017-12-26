@@ -4,6 +4,7 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
 import routes from './components/routes'
+import store from './lib/store'
 
 /*
 function load (component) {
@@ -12,7 +13,7 @@ function load (component) {
 }
 */
 
-export default new VueRouter({
+const router = new VueRouter({
   /*
    * NOTE! VueRouter "history" mode DOESN'T works for Cordova builds,
    * it is only to be used only for websites.
@@ -36,12 +37,31 @@ export default new VueRouter({
     //
     // User management
     //
-    { path: '/users/create', component: routes.users.create, name: 'users.create' },
-    { path: '/users/login', component: routes.users.login, name: 'users.login' },
-    { path: '/users/forgot', component: routes.users.forgot, name: 'users.forgot' },
-    { path: '/users/manage', component: routes.users.manage, name: 'users.manage' },
+    { path: '/users/create', component: routes.users.create, name: 'users.create', meta: { anonymous: true } },
+    { path: '/users/login', component: routes.users.login, name: 'users.login', meta: { anonymous: true } },
+    { path: '/users/forgot', component: routes.users.forgot, name: 'users.forgot', meta: { anonymous: true } },
+    { path: '/users/manage', component: routes.users.manage, name: 'users.manage', meta: { private: true } },
 
     // Catchall
     { path: '*', component: routes.errors.notFound, name: 'errors.notFound' } // Not found
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.private && !store.state.auth.payload)) {
+    return next({
+      name: 'users.login',
+      query: {
+        redirect: to.fullPath
+      }
+    })
+  }
+  if (to.matched.some(record => record.meta.anonymous && store.state.auth.payload)) {
+    return next({
+      name: 'users.manage'
+    })
+  }
+  next()
+})
+
+export default router
