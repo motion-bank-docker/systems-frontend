@@ -19,6 +19,6 @@
   "dependencies": {},
   "devDependencies": {
     "metapak": "^1.0.2",
-    "metapak-motionbank": "^1.4.0"
+    "metapak-motionbank": "^1.4.2"
   }
 }
