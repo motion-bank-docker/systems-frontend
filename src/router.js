@@ -30,7 +30,7 @@ const router = new VueRouter({
    * build publicPath back to '' so Cordova builds work again.
    */
 
-  mode: 'history',
+  mode: 'hash',
   scrollBehavior: () => ({ y: 0 }),
 
   routes: [
@@ -60,7 +60,6 @@ router.beforeEach((to, from, next) => {
   }
   if (store.state.auth.user) {
     logger.debug(`Current user ID: ${store.state.auth.user.userId}`, 'router.beforeEach')
-
     if (to.matched.some(route => route.meta.anonymous)) {
       logger.debug(`Redirect to users.manage`, 'router.beforeEach')
       return next({ name: 'users.manage' })
