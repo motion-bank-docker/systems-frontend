@@ -5,9 +5,12 @@ import { Events } from 'quasar-framework'
 Vue.use(VueRouter)
 
 import buildVars from './lib/build-vars'
-import routes from './components/routes'
 import store from './lib/store'
-// import services from './lib/services'
+import {
+  errors,
+  site,
+  users
+} from './components/routes'
 
 /*
 function load (component) {
@@ -36,17 +39,17 @@ const router = new VueRouter({
     //
     // Site content
     //
-    { path: '/', component: routes.site.welcome, name: 'site.welcome', meta: { animatedBackground: true } },
+    { path: '/', component: site.welcome, name: 'site.welcome', meta: { animatedBackground: true } },
     //
     // User management
     //
-    { path: '/users/create', component: routes.users.create, name: 'users.create', meta: { anonymous: true } },
-    { path: '/users/login', component: routes.users.login, name: 'users.login', meta: { anonymous: true } },
-    { path: '/users/forgot', component: routes.users.forgot, name: 'users.forgot', meta: { anonymous: true } },
-    { path: '/users/:id/edit', component: routes.users.manage, name: 'users.edit', meta: { private: true } },
+    { path: '/users/create', component: users.create, name: 'users.create', meta: { anonymous: true } },
+    { path: '/users/login', component: users.login, name: 'users.login', meta: { anonymous: true } },
+    { path: '/users/forgot', component: users.forgot, name: 'users.forgot', meta: { anonymous: true } },
+    { path: '/users/:id/edit', component: users.manage, name: 'users.edit', meta: { private: true } },
 
     // Catchall
-    { path: '*', component: routes.errors.notFound, name: 'errors.notFound' }
+    { path: '*', component: errors.notFound, name: 'errors.notFound' }
   ]
 })
 
