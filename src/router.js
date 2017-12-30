@@ -30,7 +30,7 @@ const router = new VueRouter({
    * build publicPath back to '' so Cordova builds work again.
    */
 
-  mode: 'hash',
+  mode: 'history',
   scrollBehavior: () => ({ y: 0 }),
 
   routes: [
