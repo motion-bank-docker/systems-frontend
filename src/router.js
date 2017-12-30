@@ -15,7 +15,7 @@ function load (component) {
 
 const router = new VueRouter({
   /*
-   * NOTE! VueRouter "history" mode DOESN'T works for Cordova builds,
+   * NOTE! VueRouter "history" mode DOESN'T work for Cordova builds,
    * it is only to be used only for websites.
    *
    * If you decide to go with "history" mode, please also open /config/index.js

@@ -26,7 +26,9 @@ Vue.component('mb-notification-service', services.notification)
 
 Quasar.start(() => {
   router.beforeEach((to, from, next) => {
-    logger.debug(`Current user ${store.state.auth.user ? store.state.auth.user.userId : 'anon'}`, 'router.beforeEach')
+    if (store.state.auth.user) {
+      logger.debug(`Current user ID: ${store.state.auth.user.userId}`, 'router.beforeEach')
+    }
     if (to.matched.some(route => route.meta.auth)) {
       logger.debug(`Need auth at ${to.fullPath}`, 'router.beforeEach')
       if (!store.state.auth.user) {
@@ -38,7 +40,6 @@ Quasar.start(() => {
     else if (to.matched.some(route => route.meta.noAuth)) {
       logger.debug(`Need anon at ${to.fullPath}`, 'router.beforeEach')
       if (store.state.auth.user) {
-        logger.debug(`Redirect to users.profile`, 'router.beforeEach')
         return next({ name: 'users.profile' })
       }
     }
