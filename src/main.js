@@ -15,6 +15,7 @@ if (__THEME === 'mat') {
   require('quasar-extras/roboto-font')
 }
 import 'quasar-extras/material-icons'
+import 'quasar-extras/animate'
 
 import store from './lib/store'
 import i18n from './lib/locales'
@@ -40,7 +41,8 @@ Quasar.start(() => {
     else if (to.matched.some(route => route.meta.noAuth)) {
       logger.debug(`Need anon at ${to.fullPath}`, 'router.beforeEach')
       if (store.state.auth.user) {
-        return next({ name: 'users.profile' })
+        logger.debug(`Redirect to users.manage`, 'router.beforeEach')
+        return next({ name: 'users.manage' })
       }
     }
     next()
