@@ -4,12 +4,10 @@ import { Events } from 'quasar-framework'
 
 Vue.use(VueRouter)
 
-// import buildVars from './lib/build-vars'
+import buildVars from './lib/build-vars'
 import routes from './components/routes'
 import store from './lib/store'
 // import services from './lib/services'
-
-// const logger = new services.logging.Logger(services.logging.levels.DEBUG)
 
 /*
 function load (component) {
@@ -53,16 +51,11 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  // const vars = buildVars()
-  if (to.matched.some(route => route.meta.animatedBackground)) {
-    Events.$emit('show-animated-background', true)
-  }
-  else {
-    Events.$emit('show-animated-background', false)
-  }
+  const vars = buildVars()
+  Events.$emit('show-animated-background', to.matched.some(route => route.meta.animatedBackground))
   if (store.state.auth.user) {
     if (to.matched.some(route => route.meta.anonymous)) {
-      return next(`/users/${store.state.auth.user.uuid}/edit`)
+      return next(`/users/${store.state.auth.user[vars.idField]}/edit`)
     }
   }
   else {

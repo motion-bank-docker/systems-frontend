@@ -29,14 +29,12 @@ export default {
       })
       .catch(err => {
         if (err) {
+          console.debug(err.message)
           const message = `${err.message}${err.code ? ' (' + err.code + ')' : ''}`
           if (err.code !== 401) {
             $store.commit('notifications/addMessage', {
               body: message, type: 'error'
             })
-          }
-          else {
-            console.debug(err.message)
           }
         }
       })
