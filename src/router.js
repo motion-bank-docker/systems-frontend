@@ -45,12 +45,12 @@ const router = new VueRouter({
     { path: '/users/create', component: routes.users.create, name: 'users.create', meta: { anonymous: true } },
     { path: '/users/login', component: routes.users.login, name: 'users.login', meta: { anonymous: true } },
     { path: '/users/forgot', component: routes.users.forgot, name: 'users.forgot', meta: { anonymous: true } },
-    { path: '/users/me', component: routes.users.manage, name: 'users.me', meta: { private: true } },
+    { path: '/users/me/edit', component: routes.users.manage, name: 'users.me.edit', meta: { private: true } },
 
     //
     // Admin
     //
-    { path: '/users/manage/:id', component: routes.users.manage, name: 'users.manage', meta: { admin: true } },
+    { path: '/users/:id/edit', component: routes.users.manage, name: 'users.edit', meta: { admin: true } },
 
     // Catchall
     { path: '*', component: routes.errors.notFound, name: 'errors.notFound' }
@@ -68,8 +68,8 @@ router.beforeEach((to, from, next) => {
   if (store.state.auth.user) {
     logger.debug(`Current user ${vars.idField.toUpperCase()}: ${store.state.auth.user[vars.idField]}`, 'router.beforeEach')
     if (to.matched.some(route => route.meta.anonymous)) {
-      logger.debug(`Redirect to users.me`, 'router.beforeEach')
-      return next({ name: 'users.me' })
+      logger.debug(`Redirect to users.me.edit`, 'router.beforeEach')
+      return next({ name: 'users.me.edit' })
     }
   }
   else {
