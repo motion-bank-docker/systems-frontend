@@ -18,14 +18,13 @@ if (__THEME === 'mat') {
   require('quasar-extras/roboto-font')
 }
 import 'quasar-extras/material-icons'
-import 'quasar-extras/animate'
 
 import router from './router'
 import store from './lib/store'
 import i18n from './lib/locales'
 import services from './lib/services'
 
-Vue.component('mb-notification-service', services.notification)
+Vue.component('mb-notification-service', services.notifications)
 
 Quasar.start(() => {
   /* eslint-disable no-new */

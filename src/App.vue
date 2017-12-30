@@ -4,7 +4,6 @@
     q-layout(ref="layout", view="hHh LpR fFf")
       user-nav(slot='header')
       router-view
-    mb-notification-service
 </template>
 
 <script>

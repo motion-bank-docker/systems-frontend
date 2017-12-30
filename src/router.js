@@ -4,12 +4,12 @@ import { Events } from 'quasar-framework'
 
 Vue.use(VueRouter)
 
-import buildVars from './lib/build-vars'
+// import buildVars from './lib/build-vars'
 import routes from './components/routes'
 import store from './lib/store'
-import services from './lib/services'
+// import services from './lib/services'
 
-const logger = new services.logging.Logger(services.logging.levels.DEBUG)
+// const logger = new services.logging.Logger(services.logging.levels.DEBUG)
 
 /*
 function load (component) {
@@ -45,12 +45,7 @@ const router = new VueRouter({
     { path: '/users/create', component: routes.users.create, name: 'users.create', meta: { anonymous: true } },
     { path: '/users/login', component: routes.users.login, name: 'users.login', meta: { anonymous: true } },
     { path: '/users/forgot', component: routes.users.forgot, name: 'users.forgot', meta: { anonymous: true } },
-    { path: '/users/me/edit', component: routes.users.manage, name: 'users.me.edit', meta: { private: true } },
-
-    //
-    // Admin
-    //
-    { path: '/users/:id/edit', component: routes.users.manage, name: 'users.edit', meta: { admin: true } },
+    { path: '/users/:id/edit', component: routes.users.manage, name: 'users.edit', meta: { private: true } },
 
     // Catchall
     { path: '*', component: routes.errors.notFound, name: 'errors.notFound' }
@@ -58,7 +53,7 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  const vars = buildVars()
+  // const vars = buildVars()
   if (to.matched.some(route => route.meta.animatedBackground)) {
     Events.$emit('show-animated-background', true)
   }
@@ -66,15 +61,12 @@ router.beforeEach((to, from, next) => {
     Events.$emit('show-animated-background', false)
   }
   if (store.state.auth.user) {
-    logger.debug(`Current user ${vars.idField.toUpperCase()}: ${store.state.auth.user[vars.idField]}`, 'router.beforeEach')
     if (to.matched.some(route => route.meta.anonymous)) {
-      logger.debug(`Redirect to users.me.edit`, 'router.beforeEach')
-      return next({ name: 'users.me.edit' })
+      return next(`/users/${store.state.auth.user.uuid}/edit`)
     }
   }
   else {
     if (to.matched.some(route => route.meta.private)) {
-      logger.debug(`Redirect anonymous to users.login`, 'router.beforeEach')
       return next({ name: 'users.login', query: { redirect: to.fullPath } })
     }
   }
