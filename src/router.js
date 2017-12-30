@@ -1,10 +1,14 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import { Events } from 'quasar-framework'
 
 Vue.use(VueRouter)
 
 import routes from './components/routes'
 import store from './lib/store'
+import services from './lib/services'
+
+const logger = new services.logging.Logger(services.logging.levels.DEBUG)
 
 /*
 function load (component) {
@@ -33,7 +37,7 @@ const router = new VueRouter({
     //
     // Site content
     //
-    { path: '/', component: routes.site.welcome, name: 'site.welcome' },
+    { path: '/', component: routes.site.welcome, name: 'site.welcome', meta: { animatedBackground: true } },
     //
     // User management
     //
@@ -43,23 +47,30 @@ const router = new VueRouter({
     { path: '/users/manage', component: routes.users.manage, name: 'users.manage', meta: { private: true } },
 
     // Catchall
-    { path: '*', component: routes.errors.notFound, name: 'errors.notFound' } // Not found
+    { path: '*', component: routes.errors.notFound, name: 'errors.notFound' }
   ]
 })
 
 router.beforeEach((to, from, next) => {
-  if (to.matched.some(record => record.meta.private && !store.state.auth.payload)) {
-    return next({
-      name: 'users.login',
-      query: {
-        redirect: to.fullPath
-      }
-    })
+  if (to.matched.some(route => route.meta.animatedBackground)) {
+    Events.$emit('show-animated-background', true)
   }
-  if (to.matched.some(record => record.meta.anonymous && store.state.auth.payload)) {
-    return next({
-      name: 'users.manage'
-    })
+  else {
+    Events.$emit('show-animated-background', false)
+  }
+  if (store.state.auth.user) {
+    logger.debug(`Current user ID: ${store.state.auth.user.userId}`, 'router.beforeEach')
+
+    if (to.matched.some(route => route.meta.anonymous)) {
+      logger.debug(`Redirect to users.manage`, 'router.beforeEach')
+      return next({ name: 'users.manage' })
+    }
+  }
+  else {
+    if (to.matched.some(route => route.meta.private)) {
+      logger.debug(`Redirect anonymous to users.login`, 'router.beforeEach')
+      return next({ name: 'users.login', query: { redirect: to.fullPath } })
+    }
   }
   next()
 })
