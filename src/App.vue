@@ -23,20 +23,24 @@ export default {
     UserNav
   },
   created: function () {
-    const store = this.$store
-    store.dispatch('auth/authenticate').catch(err => {
-      if (err) {
-        const message = `${err.message}${err.code ? ' (' + err.code + ')' : ''}`
-        if (err.code !== 401) {
-          store.commit('notifications/addMessage', {
-            body: message, type: 'error'
-          })
+    const { $store, $router } = this
+    $store.dispatch('auth/authenticate')
+      .then(() => {
+        $router.replace({ name: 'site.welcome' })
+      })
+      .catch(err => {
+        if (err) {
+          const message = `${err.message}${err.code ? ' (' + err.code + ')' : ''}`
+          if (err.code !== 401) {
+            $store.commit('notifications/addMessage', {
+              body: message, type: 'error'
+            })
+          }
+          else {
+            console.debug(err.message)
+          }
         }
-        else {
-          console.debug(err.message)
-        }
-      }
-    })
+      })
   }
 }
 </script>

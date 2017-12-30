@@ -4,6 +4,7 @@ import { Events } from 'quasar-framework'
 
 Vue.use(VueRouter)
 
+import buildVars from './lib/build-vars'
 import routes from './components/routes'
 import store from './lib/store'
 import services from './lib/services'
@@ -30,7 +31,7 @@ const router = new VueRouter({
    * build publicPath back to '' so Cordova builds work again.
    */
 
-  mode: 'hash',
+  mode: 'history',
   scrollBehavior: () => ({ y: 0 }),
 
   routes: [
@@ -44,7 +45,12 @@ const router = new VueRouter({
     { path: '/users/create', component: routes.users.create, name: 'users.create', meta: { anonymous: true } },
     { path: '/users/login', component: routes.users.login, name: 'users.login', meta: { anonymous: true } },
     { path: '/users/forgot', component: routes.users.forgot, name: 'users.forgot', meta: { anonymous: true } },
-    { path: '/users/manage', component: routes.users.manage, name: 'users.manage', meta: { private: true } },
+    { path: '/users/me', component: routes.users.manage, name: 'users.me', meta: { private: true } },
+
+    //
+    // Admin
+    //
+    { path: '/users/manage/:id', component: routes.users.manage, name: 'users.manage', meta: { admin: true } },
 
     // Catchall
     { path: '*', component: routes.errors.notFound, name: 'errors.notFound' }
@@ -52,6 +58,7 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
+  const vars = buildVars()
   if (to.matched.some(route => route.meta.animatedBackground)) {
     Events.$emit('show-animated-background', true)
   }
@@ -59,10 +66,10 @@ router.beforeEach((to, from, next) => {
     Events.$emit('show-animated-background', false)
   }
   if (store.state.auth.user) {
-    logger.debug(`Current user ID: ${store.state.auth.user.userId}`, 'router.beforeEach')
+    logger.debug(`Current user ${vars.idField.toUpperCase()}: ${store.state.auth.user[vars.idField]}`, 'router.beforeEach')
     if (to.matched.some(route => route.meta.anonymous)) {
-      logger.debug(`Redirect to users.manage`, 'router.beforeEach')
-      return next({ name: 'users.manage' })
+      logger.debug(`Redirect to users.me`, 'router.beforeEach')
+      return next({ name: 'users.me' })
     }
   }
   else {
