@@ -8,10 +8,10 @@ import store from './lib/store'
 import {
   errors,
   site,
-  users
+  users,
+  media,
+  maps
 } from './components/routes'
-
-import annotateVideo from './components/routes/media/annotate-video'
 
 /*
 function load (component) {
@@ -49,7 +49,11 @@ const router = new VueRouter({
     { path: '/users/forgot', component: users.forgot, name: 'users.forgot', meta: { anonymous: true } },
     { path: '/users/:id/edit', component: users.manage, name: 'users.edit', meta: { private: true } },
 
-    { path: '/annotate/video', component: annotateVideo, name: 'annotate.video', meta: { private: true } },
+    { path: '/maps', component: maps.list, name: 'maps.list', meta: { private: true } },
+    { path: '/maps/create', component: maps.create, name: 'maps.create', meta: { private: true } },
+    { path: '/maps/:id/edit', component: maps.edit, name: 'maps.edit', meta: { private: true } },
+
+    { path: '/annotate/video', component: media.annotateVideo, name: 'annotate.video', meta: { private: true } },
 
     // Catchall
     { path: '*', component: errors.notFound, name: 'errors.notFound' }
