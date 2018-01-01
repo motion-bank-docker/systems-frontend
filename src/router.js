@@ -4,13 +4,14 @@ import { Events } from 'quasar-framework'
 
 Vue.use(VueRouter)
 
-import buildVars from './lib/build-vars'
 import store from './lib/store'
 import {
   errors,
   site,
   users
 } from './components/routes'
+
+import annotateVideo from './components/routes/media/annotate-video'
 
 /*
 function load (component) {
@@ -48,17 +49,18 @@ const router = new VueRouter({
     { path: '/users/forgot', component: users.forgot, name: 'users.forgot', meta: { anonymous: true } },
     { path: '/users/:id/edit', component: users.manage, name: 'users.edit', meta: { private: true } },
 
+    { path: '/annotate/video', component: annotateVideo, name: 'annotate.video', meta: { private: true } },
+
     // Catchall
     { path: '*', component: errors.notFound, name: 'errors.notFound' }
   ]
 })
 
 router.beforeEach((to, from, next) => {
-  const vars = buildVars()
   Events.$emit('show-animated-background', to.matched.some(route => route.meta.animatedBackground))
-  if (store.state.auth.user) {
+  if (store.state.auth.payload) {
     if (to.matched.some(route => route.meta.anonymous)) {
-      return next(`/users/${store.state.auth.user[vars.idField]}/edit`)
+      return next(`/users/${store.state.auth.payload.userId}/edit`)
     }
   }
   else {
