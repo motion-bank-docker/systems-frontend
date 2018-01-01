@@ -53,7 +53,7 @@ const router = new VueRouter({
     { path: '/maps/create', component: maps.create, name: 'maps.create', meta: { private: true } },
     { path: '/maps/:id/edit', component: maps.edit, name: 'maps.edit', meta: { private: true } },
 
-    { path: '/annotate/video', component: media.annotateVideo, name: 'annotate.video', meta: { private: true } },
+    { path: '/annotate/:mapId/video', component: media.annotateVideo, name: 'annotate.video', meta: { private: true } },
 
     // Catchall
     { path: '*', component: errors.notFound, name: 'errors.notFound' }
