@@ -1,5 +1,5 @@
 {
-  "name": "libmb-quasar-app",
+  "name": "@motionbank-js/quasar-app",
   "productName": "libMB Quasar App",
   "version": "1.0.0",
   "private": true,
