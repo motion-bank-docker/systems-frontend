@@ -30,7 +30,6 @@ Edit the ``package.json`` file to set your app's name, version and URLs.
 
 In a terminal run
 ```shell
-git submodule update --recursive  # pulls the libraries (for now)
 npm install                       # installs the metapak module
 ```
 
