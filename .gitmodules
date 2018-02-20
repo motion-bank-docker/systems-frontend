@@ -1,6 +1,0 @@
-[submodule "src/components"]
-	path = src/components
-	url = https://github.com/motionbank/libmb-quasar-components.git
-[submodule "src/lib"]
-	path = src/lib
-	url = https://github.com/motionbank/libmb-quasar-lib.git
