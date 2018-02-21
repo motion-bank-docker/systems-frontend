@@ -1,7 +1,7 @@
-import forms from './forms'
+import * as forms from './forms'
 import layouts from './layouts'
 import partials from './partials'
-import routes from './routes'
+import * as routes from './routes'
 
 export default {
   forms,
