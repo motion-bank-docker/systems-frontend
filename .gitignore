@@ -64,5 +64,4 @@ _book
 *.epub
 *.mobi
 *.pdf
-
-dist
+.idea

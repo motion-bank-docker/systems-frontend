@@ -8,7 +8,7 @@ var
   projectRoot = path.resolve(__dirname, '../'),
   ProgressBarPlugin = require('progress-bar-webpack-plugin'),
   appConfig = require('../package.json').appConfig,
-  apiHost = process.env.API_HOST || appConfig.apiHost,
+  apiHost = process.env.API_HOST || appConfig.apiHostLocal,
   useCssSourceMap =
     (env.dev && config.dev.cssSourceMap) ||
     (env.prod && config.build.productionSourceMap)
