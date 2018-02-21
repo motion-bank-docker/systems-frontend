@@ -1,31 +1,37 @@
-<template>
-  <div>
-    <!-- <div>
-      <div>logo</div>
-      <div>piecemaker/mosys</div>
-      <div>profile/layout</div>
-    </div> -->
-    <div>
-      <h1>Mosys</h1>
-      <div>Sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</div>
-      <div>btn go</div>
-    </div>
-    <div>
-      <h1>Piecemaker</h1>
-      <div>Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr.</div>
-      <div>btn go</div>
-    </div>
-  </div>
+<template lang='pug'>
+  div
+    div.splitscreen
+      h1 Piecemaker
+      p Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolorum est fugit id libero minus molestiae molestias nesciunt nobis optio, quae quasi quibusdam, rem tempora unde veritatis. Animi exercitationem maxime possimus.
+      q-btn(@click="openURL('http://www.motionbank.org')") motionbank
+    div.splitscreen
+      h1 Mosys
+      p Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium assumenda dicta minima non sit. Accusamus architecto asperiores, assumenda autem ea impedit nesciunt non repudiandae soluta. Cum mollitia officia sint vel?
+      q-btn(outline, icon="map", size="big", color="green", glossy="true") btn2
 </template>
 
 <script>
   import {
-    QBtn
+    QLayout,
+    QBtn,
+    openURL
   } from 'quasar-framework'
   export default {
-    component: QBtn
+    components: {
+      QLayout,
+      QBtn
+    },
+    data: function () {
+      return {
+        openURL
+      }
+    }
   }
 </script>
 
 <style scoped>
+  .splitscreen {
+    width: 50vw;
+    display: inline-block;
+  }
 </style>
