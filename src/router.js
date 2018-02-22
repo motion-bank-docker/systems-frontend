@@ -6,11 +6,13 @@ Vue.use(VueRouter)
 
 import store from './lib/store'
 import {
-  errors,
-  site,
-  users,
   annotations,
-  maps
+  errors,
+  maps,
+  mosys,
+  piecemaker,
+  site,
+  users
 } from './components/routes'
 
 /*
@@ -40,7 +42,9 @@ const router = new VueRouter({
     //
     // Site content
     //
-    { path: '/', component: site.welcome, name: 'site.welcome', meta: { animatedBackground: true } },
+    // { path: '/', component: site.welcome, name: 'site.welcome', meta: { animatedBackground: true } },
+    { path: '/welcome', component: site.welcome, name: 'site.welcome', meta: { animatedBackground: true } },
+    { path: '/terms', component: site.terms, name: 'site.terms', meta: { animatedBackground: true } },
     { path: '/apps', component: site.apps, name: 'site.apps', meta: { private: false } },
     //
     // User management
@@ -57,6 +61,13 @@ const router = new VueRouter({
     { path: '/annotations/:mapId/video', component: annotations.annotateVideo, name: 'annotate.video', meta: { private: false } },
     { path: '/annotations/:mapId/edit', component: annotations.edit, name: 'annotate.edit', meta: { private: false } },
 
+    { path: '/mosys/dashboard', component: mosys.dashboard, name: 'mosys.dashboard', meta: { private: false } },
+    { path: '/mosys/set', component: mosys.set, name: 'mosys.set', meta: { private: false } },
+
+    { path: '/piecemaker/annotator', component: piecemaker.annotator, name: 'piecemaker.annotator', meta: { private: false } },
+    { path: '/piecemaker/dashboard', component: piecemaker.dashboard, name: 'piecemaker.dashboard', meta: { private: false } },
+    { path: '/piecemaker/group', component: piecemaker.group, name: 'piecemaker.group', meta: { private: false } },
+    { path: '/piecemaker/sourcebrowser', component: piecemaker.sourcebrowser, name: 'piecemaker.sourcebrowser', meta: { private: false } },
     // Catchall
     { path: '*', component: errors.notFound, name: 'errors.notFound' }
   ]
