@@ -1,5 +1,5 @@
 <template lang="pug">
-  .wrap
+  #sidemenu
     ul
       li private
       li public
@@ -14,28 +14,35 @@
 </script>
 
 <style scoped>
-  .wrap {
-    background-color: #333;
+  #sidemenu {
+    background-color: #fafafa;
     width: 20vw;
     height: 100%;
     position: absolute;
     top: 0;
     left: 0;
-    opacity: .9;
   }
 
   ul {
-  margin: 0;
+    margin: 0;
     padding: 0;
+/*    margin: 1em;
+    padding: 1em;
+    box-shadow: 0 0 20px 0 rgba( 0, 0, 0, .2 );*/
   }
 
   li {
-    background-color: blue;
     list-style: none;
     cursor: pointer;
+    margin: 0 .5em;
+    padding: .5em 0;
   }
 
   li:hover {
-    background-color: red;
+    color: black;
+    }
+
+  li:not(:last-of-type) {
+    border-bottom: 1px solid #ddd;
     }
 </style>

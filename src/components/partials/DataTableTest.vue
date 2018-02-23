@@ -1,8 +1,12 @@
 <template lang="pug">
-  div
-    slot(name="table-title")
-    slot(name="table-button")
-    slot(name="table-formular")
+  div.table-wrap
+    div.table-top
+      slot(name="table-top-item")
+      // slot(name="table-title")
+      // slot(name="table-button")
+      // slot(name="table-formular")
+    div.table-form
+      slot(name="table-form-item")
     q-data-table(
       title="Table Title",
       :data="tableData",
@@ -61,5 +65,13 @@
 </script>
 
 <style scoped>
-
+  .table-header {
+  }
+  .table-top > div {
+    display: inline-block;
+  }
+  .table-wrap {
+    /* border: 1px solid black; */
+    margin: 0 1.5em 4em;
+  }
 </style>

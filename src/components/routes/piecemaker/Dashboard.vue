@@ -1,19 +1,16 @@
 <template lang="pug">
   div
     side-menu
-      p(slot="blah") slottest
 
     .wrap
       content-bar
-        q-btn(slot="btn-filter") Filter
-        q-btn(slot="btn-search") Search
-
+        q-btn(slot="content-bar-item") Filter
 
       data-table-test
         div(slot="table-title") My Videos
         div(slot="table-button")
-          q-btn(icon="create") Add Video
-        div(slot="table-formular")
+          q-btn(icon="create" @click="action") Add Video
+        div(slot="table-formular")#formular-test
           form-add
 
 
@@ -36,6 +33,12 @@
       DataTableTest,
       FormAdd,
       SideMenu
+    },
+    methods: {
+      action: function () {
+        console.log('click geht')
+        // document.getElementById('formulat-test').removeAttribute('hidden')
+      }
     }
     // name: 'dashboard'
   }
@@ -49,5 +52,8 @@
     background-color: #444;
     width: 80vw;
     float: right;
+  }
+  #formular-test {
+    background-color: cadetblue;
   }
 </style>

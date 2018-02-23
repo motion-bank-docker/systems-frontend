@@ -5,6 +5,9 @@
       .buttons
         q-btn() edit
         q-btn() delete
+      .form
+        q-btn() copy-text
+
     .text hier steht eine beschreibung
 </template>
 
