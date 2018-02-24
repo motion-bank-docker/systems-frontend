@@ -27,20 +27,25 @@
 </script>
 
 <style scoped>
+
   .form-wrap {
     margin: 2em 0;
+    padding: 2em;
+    background-color: beige;
+    box-shadow: 0 0 20px 0 rgba( 0, 0, 0, .2 );
   }
+
   .form-bottom {
     background-color: #f9f9f9;
     margin: 2em;
     text-align: center;
   }
 
-  .form-bottom > * {
-    background-color: #555;
-    color: white;
-    padding: 1em;
-    margin: 1em;
-    border-radius: .2em;
-  }
+    .form-bottom > * {
+      background-color: #555;
+      color: white;
+      padding: .2em .5em;
+      margin: 1em;
+      border-radius: .2em;
+    }
 </style>
