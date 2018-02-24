@@ -1,17 +1,22 @@
 <template lang="pug">
+
   div.table-wrap
+
     div.table-top
       slot(name="table-top-item")
-      // slot(name="table-title")
-      // slot(name="table-button")
-      // slot(name="table-formular")
+
     div.table-form
       slot(name="table-form-item")
+
     q-data-table(
       title="Table Title",
       :data="tableData",
       :columns="columns",
       row-key="name")
+
+    div.table-bottom
+      slot(name="table-bottom-item")
+
 </template>
 
 <script>
@@ -58,6 +63,10 @@
           name: 'Video 2',
           status: 'private',
           timestamp: '2017-12-03'
+        }, {
+          name: 'Video 3',
+          status: 'public',
+          timestamp: '2017-12-03'
         }
       ]
     })
@@ -65,13 +74,27 @@
 </script>
 
 <style scoped>
-  .table-header {
+
+  .table-top {
+    padding: .5em 0;
   }
-  .table-top > div {
-    display: inline-block;
-  }
+    .table-top-item {
+      display: inline-block;
+      padding: .2em .5em;
+    }
+
+      .table-top-button {
+      }
+
+        .table-top-button > * {
+          background-color: #ddd;
+          color: white;
+          border-radius: .2em;
+          margin-right: .2em;
+          padding: .2em .5em;
+        }
+
   .table-wrap {
-    /* border: 1px solid black; */
     margin: 0 1.5em 4em;
   }
 </style>

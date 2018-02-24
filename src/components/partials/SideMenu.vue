@@ -1,5 +1,10 @@
 <template lang="pug">
   #sidemenu
+    | Motionbank
+    br
+    | Piecemaker
+    br
+    | Mosys
     ul
       li private
       li public
