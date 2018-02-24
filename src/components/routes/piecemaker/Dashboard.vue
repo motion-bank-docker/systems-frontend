@@ -2,20 +2,21 @@
   div
     side-menu
 
-    .wrap
+    .content-wrap
       content-bar
-        q-btn(slot="content-bar-item") Filter
+        a.content-bar-item(slot="content-bar-item") Filter
 
       data-table-test
-        div(slot="table-title") My Videos
-        div(slot="table-button")
-          q-btn(icon="create" @click="action") Add Video
-        div(slot="table-formular")#formular-test
+        div.table-top-item(slot="table-top-item") My Videos
+        div.table-top-item.table-top-button(slot="table-top-item")
+          a(@click="action") Add new video
+          a(@click="$router.push({ name: 'piecemaker.annotator' })") Annotator
+        div(slot="table-form-item")#formular-test
           form-add
 
 
       data-table-test
-        div(slot="table-title") Allgemein
+        div.table-top-item(slot="table-top-item") Allgemein
 </template>
 
 <script>
@@ -48,12 +49,9 @@
   p {
     margin: 0;
   }
-  .wrap {
-    background-color: #444;
-    width: 80vw;
-    float: right;
-  }
+
   #formular-test {
     background-color: cadetblue;
+    display: none;
   }
 </style>
