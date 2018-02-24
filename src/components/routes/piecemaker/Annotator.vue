@@ -1,7 +1,8 @@
 <template lang="pug">
   div
-    .video video
-    .annotations
+    #video video
+
+    #annotations
       annotation
       annotation
       annotation
@@ -25,19 +26,15 @@
 </script>
 
 <style scoped>
-  .annotations {
-    border: 1px solid blue;
+  #annotations {
     width: 30vw;
     display: inline-block;
-    height: 50vh;
+    height: 80vh;
     overflow-y: scroll;
   }
-  .annotations > div {
-    background-color: red;
-    margin-bottom: .2em;
-  }
-  .video {
-    background-color: rgba( 255, 255, 255, .1 );
+
+  #video {
+    background-color: rgba( 255, 0, 255, .1 );
     width: 70vw;
     min-height: 10em;
     display: inline-block;
