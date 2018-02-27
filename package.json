@@ -126,8 +126,8 @@
   "author": "Motion Bank / Mainz University of Applied Sciences",
   "license": "MIT",
   "appConfig": {
-    "apiHost": "https://api.motionbank.org",
-    "apiHostLocal": "http://localhost:3030",
+    "apiHost": "https://motionbank-api.herokuapp.com",
+    "apiHostLocal": "https://motionbank-api.herokuapp.com",
     "idField": "uuid"
   }
 }
