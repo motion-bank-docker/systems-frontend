@@ -45,7 +45,7 @@ const router = new VueRouter({
     // { path: '/', component: site.welcome, name: 'site.welcome', meta: { animatedBackground: true } },
     { path: '/welcome', component: site.welcome, name: 'site.welcome', meta: { animatedBackground: true } },
     { path: '/terms', component: site.terms, name: 'site.terms', meta: { animatedBackground: true } },
-    { path: '/apps', component: site.apps, name: 'site.apps', meta: { private: false } },
+    { path: '/apps', component: site.apps, name: 'site.apps', meta: { private: true } },
     //
     // User management
     //
@@ -54,20 +54,21 @@ const router = new VueRouter({
     { path: '/users/forgot', component: users.forgot, name: 'users.forgot', meta: { anonymous: true } },
     { path: '/users/:id/edit', component: users.manage, name: 'users.edit', meta: { private: true } },
 
-    { path: '/maps', component: maps.list, name: 'maps.list', meta: { private: false } },
-    { path: '/maps/create', component: maps.create, name: 'maps.create', meta: { private: false } },
-    { path: '/maps/:id/edit', component: maps.edit, name: 'maps.edit', meta: { private: false } },
+    { path: '/maps', component: maps.list, name: 'maps.list', meta: { private: true } },
+    { path: '/maps/create', component: maps.create, name: 'maps.create', meta: { private: true } },
+    { path: '/maps/:id/edit', component: maps.edit, name: 'maps.edit', meta: { private: true } },
 
-    { path: '/annotations/:mapId/video', component: annotations.annotateVideo, name: 'annotate.video', meta: { private: false } },
-    { path: '/annotations/:mapId/edit', component: annotations.edit, name: 'annotate.edit', meta: { private: false } },
+    { path: '/annotations/:mapId/video', component: annotations.annotateVideo, name: 'annotate.video', meta: { private: true } },
+    { path: '/annotations/:mapId/edit', component: annotations.edit, name: 'annotate.edit', meta: { private: true } },
 
-    { path: '/mosys/dashboard', component: mosys.dashboard, name: 'mosys.dashboard', meta: { private: false } },
-    { path: '/mosys/set', component: mosys.set, name: 'mosys.set', meta: { private: false } },
+    { path: '/mosys/dashboard', component: mosys.dashboard, name: 'mosys.dashboard', meta: { private: true } },
+    { path: '/mosys/set', component: mosys.set, name: 'mosys.set', meta: { private: true } },
 
-    { path: '/piecemaker/annotator', component: piecemaker.annotator, name: 'piecemaker.annotator', meta: { private: false } },
-    { path: '/piecemaker/dashboard', component: piecemaker.dashboard, name: 'piecemaker.dashboard', meta: { private: false } },
-    { path: '/piecemaker/group', component: piecemaker.group, name: 'piecemaker.group', meta: { private: false } },
-    { path: '/piecemaker/sourcebrowser', component: piecemaker.sourcebrowser, name: 'piecemaker.sourcebrowser', meta: { private: false } },
+    { path: '/piecemaker/annotator', component: piecemaker.annotator, name: 'piecemaker.annotator', meta: { private: true } },
+    { path: '/piecemaker/dashboard', component: piecemaker.dashboard, name: 'piecemaker.dashboard', meta: { private: true } },
+    { path: '/piecemaker/group', component: piecemaker.group, name: 'piecemaker.group', meta: { private: true } },
+    { path: '/piecemaker/list', component: piecemaker.list, name: 'piecemaker.list', meta: { private: true } },
+    { path: '/piecemaker/sourcebrowser', component: piecemaker.sourcebrowser, name: 'piecemaker.sourcebrowser', meta: { private: true } },
     // Catchall
     { path: '*', component: errors.notFound, name: 'errors.notFound' }
   ]
