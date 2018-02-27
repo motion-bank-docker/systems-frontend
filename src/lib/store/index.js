@@ -3,7 +3,7 @@ import buildVars from '../build-vars'
 import notifications from './modules/notifications'
 import forms from './modules/forms'
 
-import primus from '../clients/primus'
+// import primus from '../clients/primus'
 import rest from '../clients/rest'
 
 import Vue from 'vue'
@@ -18,7 +18,7 @@ try {
   /**
    * WebSocket API connections
    */
-  client = primus(buildVars().apiHost)
+  // client = primus(buildVars().apiHost)
 }
 catch (err) {
   console.warn(`Failed to instantiate WebSockets API client: ${err.message}`)
