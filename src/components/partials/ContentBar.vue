@@ -24,12 +24,20 @@
     width: 50%;
     background-color: antiquewhite;
   }
+  .content-bar-item {
+    color: black;
+    padding: .2em .5em;
+    border-radius: .2em;
+    background-color: #eee;
+    text-transform: uppercase;
+    }
+
   #content-bar {
     /* background-color: #eee; */
     padding-bottom: .5em;
     /*border-bottom: 2px solid black; */
     /* margin: .5em 1em 1em; */
-    background: rgba( 185, 165, 130, .2 );
+    /* background: rgba( 185, 165, 130, .2 ); */
     /* box-shadow: 0 0 10px 10px antiquewhite; */
   }
   #content-bar > * {
