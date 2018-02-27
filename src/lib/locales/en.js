@@ -2,9 +2,11 @@ const en = {
   buttons: {
     annotate: 'Annotate',
     add_video: 'Add Video',
+    add_and_go: 'Add & Go',
     back: 'Back',
     create_account: 'Create Account',
     create_map: 'Create Map',
+    cancel: 'Cancel',
     delete: 'Delete',
     edit: 'Edit',
     forgot_password: 'Forgot Password',
@@ -12,7 +14,8 @@ const en = {
     more_info: 'More info',
     request_reset_pass: 'Request Password Reset',
     save_changes: 'Save changes',
-    submit: 'Submit'
+    submit: 'Submit',
+    test: 'Test ch'
   },
   errors: {
     unknown: 'Unknown Error',
@@ -27,13 +30,21 @@ const en = {
     annotation_body: 'Annotation text',
     accept_terms: 'I accept the Terms and Conditions',
     associated_map: 'Associate Video with Map',
+    description: 'Description',
     email: 'Email',
+    embedded: 'Embedded in',
+    elements_length: 'Used Elements',
+    last_annotation: 'Last annotated',
+    last_edit: 'Last edit',
     location: 'Location',
     map_title: 'Map Title',
     name: 'Name',
     organisation: 'Organisation',
     password: 'Password',
     password_confirmation: 'Password confirmation',
+    status: 'Status',
+    set_title: 'Set Title',
+    video_title: 'Video title',
     video_url: 'Video URL'
   },
   links: {
@@ -114,6 +125,12 @@ const en = {
       terms: {
         title: 'Terms & Conditions',
         caption: 'Lorem ipsum dolores dings.'
+      }
+    },
+    piecemaker: {
+      add: {
+        title: 'Add',
+        caption: 'Add an URL'
       }
     }
   },
