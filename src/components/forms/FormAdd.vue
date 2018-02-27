@@ -3,7 +3,7 @@
     div.form-top
       slot(name="form-top-item").item
 
-    div.form-body
+    div.form-middle
       slot(name="form-middle-item")
 
     div.form-bottom
