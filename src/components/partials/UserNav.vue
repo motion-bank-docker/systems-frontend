@@ -3,7 +3,7 @@
     // q-btn.hide-on-drawer-visible(flat, icon="menu", @click='$refs.drawer.open()')
     q-toolbar-title(:padding='2')
       q-btn(big, flat, @click="$router.push({ name: 'site.apps' })") Motionbank
-      q-btn(big, flat, @click="$router.push({ name: 'piecemaker.dashboard' })") Piecemaker
+      q-btn(big, flat, @click="$router.push({ name: 'piecemaker.list' })") Piecemaker
         // | {{ $t('site.title') }}
       q-btn(big, flat, @click="$router.push({ name: 'mosys.dashboard' })") Mosys
 
