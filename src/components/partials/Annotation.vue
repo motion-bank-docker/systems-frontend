@@ -1,21 +1,29 @@
 <template lang="pug">
+
   .annotation
+
     .annotation-top
-      .annotation-top-item.annotation-timestamp timestamp
+      slot(name="annotation-timestamp").annotation-top-item.annotation-timestamp timestamp
+
       .annotation-top-item.annotation-buttons
         a(@click="EditForm ($event.target)") edit
         a(@click="DeleteAnnotation ($event.target)") delete
+
     .annotation-form
       form-add
         q-field(slot="form-middle-item")
           q-input(value="value")
-        // q-btn(slot="form-bottom-item" value="value") Save changes
-        // q-btn(slot="form-bottom-item" value="value") Cancel
+
         a(slot="form-bottom-item" @click="SaveEdit ($event.target)") Save changes
         a(slot="form-bottom-item" @click="CancelEdit ($event.target)") Cancel
-      a() copy-text
+      div copy-text
 
-    .text hier steht eine beschreibung
+    slot(name="annotation-text").text
+    slot(name="annotation-status").text
+
+    .annotation-buttons
+      slot(name="annotation-button")
+
 </template>
 
 <script>
@@ -34,9 +42,10 @@
     },
     methods: {
       CancelEdit (target) {
-        var el = target.parentNode.parentNode
+        var el = target.parentElement.parentElement.parentElement.parentElement
         console.log(el)
-        el[0].style.display = 'none'
+        // el[0].style.display = 'none'
+        el[0].style.backgroundColor = 'red'
       },
       DeleteAnnotation (target) {
       },
@@ -56,9 +65,12 @@
     padding: 1em;
     border-bottom: 1px solid #eee;
   }
-  .annotation-buttons,
-  .annotation-timestamp {
+  .annotation-buttons * {
     display: inline-block;
+    background-color: red;
+    margin-right: .2em;
+    padding: .2em .5em;
+    cursor: pointer;
   }
   .annotation-top {
     display: inline-block;
