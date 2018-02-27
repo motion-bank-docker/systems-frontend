@@ -13,6 +13,7 @@
       :data="tableData",
       :columns="columns",
       row-key="name")
+      q-tr
 
     div.table-bottom
       slot(name="table-bottom-item")
@@ -95,6 +96,7 @@
         }
 
   .table-wrap {
-    margin: 0 1.5em 4em;
+    /* margin: 0 1.5em 4em; */
+    margin: 0 5vw 4em
   }
 </style>

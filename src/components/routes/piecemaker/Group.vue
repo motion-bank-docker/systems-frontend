@@ -19,7 +19,7 @@
     QBtn
   } from 'quasar-framework'
   import ContentBar from '../../partials/ContentBar'
-  import DataTableTest from '../../partials/DataTableTest'
+  import DataTableTest from '../../partials/_DataTableTest'
   import SideMenu from '../../partials/Sidemenu'
   export default {
     components: {
