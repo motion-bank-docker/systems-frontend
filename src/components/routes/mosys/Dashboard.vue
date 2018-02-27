@@ -1,92 +1,132 @@
 <template lang="pug">
   div
+
     side-menu
 
     .content-wrap
-      content-bar
-        a.content-bar-item(slot="content-bar-item", @click="ch1") Filter 1
-        a.content-bar-item(slot="content-bar-item", @click="ch1") Filter 2
+      // content-bar
 
-      data-table-test
-        div.table-top-item(slot="table-top-item") My Sets
-        div.table-top-item.table-top-button(slot="table-top-item")
-          a(@click="open_form") Add new set
-
-        div(slot="table-form-item")
-          form-add#mosys-add-form
-            h3(slot="form-top-item") New set: set details
-
-            q-field(slot="form-middle-item")
-              q-input(v-model="text" float-label="Title" value="11111111" name="set-title")
-
-            q-field(slot="form-middle-item")
-              q-input(v-model="text" float-label="Description" value="222" name="set-desc")
-
-            q-field(slot="form-middle-item")
-              q-input(v-model="message" float-label="Float Label" value="222" name="set-status")
-              div message is {{ message }}
-
-            q-radio(slot="form-middle-item" v-model="option" val="opt1" label="private")
-            q-radio(slot="form-middle-item" v-model="option" val="opt2" label="public")
-            q-radio(slot="form-middle-item" v-model="option" val="opt3" label="shared")
-
-            a(slot="form-bottom-item", @click="$router.push({ name: 'mosys.set' })") add & go
-            a(slot="form-bottom-item", @click="AddNew") add & stay
-            a(slot="form-bottom-item", @click="HideForm") cancel
-
-
-
-      data-table-test
-        div.table-top-item(slot="table-top-item") Other Sets
+      div
+        a(@click="OpenForm") Add new set
+        #mosys-add-form.add-form
+          // span(slot="form-title") {{ $t('routes.piecemaker.add.title') }}
+          // p.caption(slot="form-caption") {{ $t('routes.piecemaker.add.caption') }}
+          form-main(v-model="payload", :schema="schema")
+            q-btn(slot="form-buttons-add", @click="addAndGo") {{ $t('buttons.add_and_go') }}
+            q-btn(slot="form-buttons-add", @click="cancel") {{ $t('buttons.cancel') }}
+        // p
+          q-btn(@click="$router.push('/maps/create')", color="primary") {{ $t('buttons.create_map') }}
+        data-table(:entries="maps", :columns="columns", :actions="actions", @action="onAction")
 </template>
 
 <script>
-  import {
-    QBtn,
-    QField,
-    QInput,
-    QRadio
-  } from 'quasar-framework'
+  import { QBtn } from 'quasar-framework'
   import ContentBar from '../../partials/ContentBar'
-  import DataTableTest from '../../partials/DataTableTest'
-  import FormAdd from '../../forms/FormAdd'
+  import DataTable from '../../partials/DataTable'
+  import CenterCardThreeQuarter from '../../layouts/CenterCardThreeQuarter'
   import SideMenu from '../../partials/Sidemenu'
+  import CancelButton from '../../forms/CancelButton'
+
+  import { FormMain } from '../../forms'
+  import { required } from 'vuelidate/lib/validators'
   export default {
     components: {
-      QBtn,
-      QField,
-      QInput,
-      QRadio,
       ContentBar,
-      DataTableTest,
-      FormAdd,
-      SideMenu
+      DataTable,
+      CenterCardThreeQuarter,
+      SideMenu,
+      FormMain,
+      CancelButton,
+      QBtn
     },
     methods: {
-      open_form: function () {
-        // alert('geht')
-        // document.getElementById('test123').style.backgroundColor = 'blue'
+      onAction (type, data) {
+        const _this = this
+        switch (type) {
+          case 'add_video':
+            return _this.$router.push(`/annotations/${data.row.uuid}/video`)
+          case 'annotate_edit':
+            return _this.$router.push(`/annotations/${data.row.uuid}/edit`)
+          case 'edit':
+            return _this.$router.push(`/maps/${data.row.uuid}/edit`)
+          case 'alert_ch':
+            return alert('geht')
+          case 'delete':
+            _this.$store.dispatch('maps/remove', data.row.uuid)
+              .then(() => { _this.maps = _this.$store.dispatch('maps/find') })
+        }
+        console.log('test')
+      },
+      OpenForm () {
         document.getElementById('mosys-add-form').style.display = 'block'
       },
-      ch1: function () {
-        alert('111')
-      },
-      AddNew: function () {
-        document.getElementById('mosys-add-form').style.display = 'none'
-      },
-      HideForm: function () {
+      cancel: function () {
         document.getElementById('mosys-add-form').style.display = 'none'
       }
+    },
+    data () {
+      const _this = this
+      const context = this
+
+      return {
+        maps: _this.$store.dispatch('maps/find'),
+        columns: [{
+          label: _this.$t('labels.set_title'),
+          field: 'title'
+        }, {
+          label: _this.$t('labels.description'),
+          field: 'title'
+        }, {
+          label: _this.$t('labels.elements_length'),
+          field: 'title'
+        }, {
+          label: _this.$t('labels.last_edit'),
+          field: 'title'
+        }
+        ],
+        actions: [
+          // { type: 'add_video', title: 'buttons.add_video', color: 'primary' },
+          // { type: 'annotate_edit', title: 'buttons.annotate', color: 'secondary' },
+          { type: 'edit', title: 'buttons.edit' },
+          { type: 'delete', title: 'buttons.delete' }
+          // { type: 'alert_ch', title: 'buttons.test', color: 'primary' }
+        ],
+        payload: undefined,
+        schema: {
+          fields: {
+            title: {
+              fullWidth: true,
+              type: 'text',
+              label: 'labels.set_title',
+              errorLabel: 'errors.field_required',
+              validators: {
+                required
+              }
+            },
+            desc: {
+              fullWidth: true,
+              type: 'textarea',
+              label: 'labels.description'
+            },
+            status: {
+              fullWidth: true,
+              type: 'radio',
+              label: 'labels.status'
+            }
+          },
+          submit: {
+            handler () {
+              context.payload.owner = context.$store.state.auth.payload.userId
+              context.$store.dispatch('maps/create', context.payload)
+              // .then(() => context.$router.push(`/maps`))
+                .then(() => context.$router.push(`/mosys/dashboard`))
+            }
+          }
+        }
+      }
     }
-    // name: "dashboard"
   }
 </script>
 
-<style scoped>
-  .right {
-    background-color: aqua;
-  }
-  #mosys-add-form {
-    display: none;
-  }
+<style>
 </style>
