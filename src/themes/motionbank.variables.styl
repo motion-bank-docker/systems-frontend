@@ -28,8 +28,8 @@ $white = #bdb7ba
 
 $border-radius = .35em
 
-// $body-background = #1f1d1e
-$body-background = #ffffff
+$body-background = #1f1d1e
+// $body-background = #ffffff
 $body-color = $white
 
 $div-background = $red
@@ -38,29 +38,23 @@ $div-background = $red
 
 td
   background transparent!important
-  color black
+  // color black
   border-color black!important
   padding .75em .7em!important
 
 th
-  color black!important
+  // color black!important
   // background-color #f3f3f3!important
-  background-color transparent!important
+  // background-color transparent!important
 
 tr:last-of-type td
   border-bottom 0!important
 
 
 .content-wrap
-  width 80vw
-  float right
-
-.content-bar-item
-  color black
-  padding .2em .5em
-  border-radius .2em
-  background-color white
-  text-transform uppercase
+  width 90vw
+  display inline-block
+  // float right
 
 .q-data-table
   border 0!important
@@ -72,3 +66,40 @@ tr:last-of-type td
   box-shadow 0 0 20px 0 rgba( 0, 0, 0, .2 )
   padding .2em .5em
   // border-radius $border-radius
+
+.add-form
+  width 50vw
+  display none
+
+.anno
+  animation test_opacity 1s ease, test_margin 300ms
+  animation-iteration-count 1
+  padding 1em
+  /* transform: translateX( 25vw ); */
+  opacity .2
+  background-color #ccc
+  color black
+
+.anno:hover
+  opacity 1
+
+@keyframes test_opacity {
+  from {
+    opacity: 1
+  }
+  to {
+    opacity: .2
+  }
+}
+
+@keyframes test_margin {
+  from {
+    margin-top: -2em
+  }
+  to {
+    margin-top: 0
+  }
+}
+
+
+
