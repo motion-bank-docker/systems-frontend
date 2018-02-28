@@ -5,53 +5,8 @@
 
     .content-wrap
       // content-bar
-      h4 Group: Pina Bausch 2016
+      h4 Public Group: Pina Bausch 1996 (read only)
       div
-        #piecemaker-add-form.add-form
-          q-btn(outline @click="OpenForm" color="primary") Add video
-          q-btn(outline @click="OpenForm" color="primary") Record/Live Edit
-          p Add new video to this group
-          form-main(v-model="payload", :schema="schema")
-            q-btn(slot="form-buttons-add", @click="addAndGo") {{ $t('buttons.add_and_go') }}
-            q-btn(slot="form-buttons-add", @click="cancel") {{ $t('buttons.cancel') }}
-
-        q-btn(outline @click="OpenForm" color="primary") Edit group
-        #piecemaker-edit-group
-          div(style="display: inline-block; width: 50%; vertical-align: top;")
-            p Edit group details
-            form-main(v-model="payload", :schema="schemaEdit")
-              q-btn(slot="form-buttons-add", @click="cancel") {{ $t('buttons.cancel') }}
-
-          div(style="display: inline-block; width: 20%; vertical-align: top;")
-            div.piecemaker-users-wrap
-              p {{ $t('labels.participants') }}
-              a(@click="OpenForm") Invite user to group
-              form-main(v-model="payload", :schema="schemaParticipants")
-                q-btn(slot="form-buttons-add", @click="cancel") {{ $t('buttons.cancel') }}
-              div bestätigter User 1
-                a remove
-              div bestätigter User 2
-                a remove
-              div bestätigter User 3
-                a remove
-              div.ausstehend ausstehend 1
-                a remove
-              div.ausstehend ausstehend 2
-                a remove
-
-          div(style="display: inline-block; width: 20%; vertical-align: top;")
-            div.piecemaker-tags-map
-              p {{ $t('labels.tags') }}
-              a(@click="OpenForm") New tag
-              form-main(v-model="payload", :schema="schemaTags")
-                q-btn(slot="form-buttons-add", @click="cancel") {{ $t('buttons.cancel') }}
-              div Tag 1
-                a remove
-              div Tag 2
-                a remove
-              div Tag 3
-                a remove
-
         data-table(:entries="maps", :columns="columns", :actions="actions", @action="onAction")
 
 </template>
@@ -125,11 +80,7 @@
         }
         ],
         actions: [
-          // { type: 'add_video', title: 'buttons.add_video', color: 'primary' },
-          { type: 'annotate_edit', title: 'buttons.annotate', color: 'secondary' },
-          // { type: 'edit', title: 'buttons.edit' },
-          { type: 'delete', title: 'buttons.delete' }
-          // { type: 'alert_ch', title: 'buttons.test', color: 'primary' }
+          { type: 'annotate_edit', title: 'show', color: 'secondary' }
         ],
         payload: undefined,
         schema: {

@@ -67,7 +67,13 @@ const router = new VueRouter({
     { path: '/piecemaker/annotator', component: piecemaker.annotator, name: 'piecemaker.annotator', meta: { private: true } },
     { path: '/piecemaker/dashboard', component: piecemaker.dashboard, name: 'piecemaker.dashboard', meta: { private: true } },
     { path: '/piecemaker/group', component: piecemaker.group, name: 'piecemaker.group', meta: { private: true } },
+    { path: '/piecemaker/groupAllPublicDetail', component: piecemaker.groupAllPublicDetail, name: 'piecemaker.groupAllPublicDetail', meta: { private: true } },
+    { path: '/piecemaker/groupGroupsDetail', component: piecemaker.groupGroupsDetail, name: 'piecemaker.groupGroupsDetail', meta: { private: true } },
     { path: '/piecemaker/list', component: piecemaker.list, name: 'piecemaker.list', meta: { private: true } },
+    { path: '/piecemaker/listPrivate', component: piecemaker.listPrivate, name: 'piecemaker.listPrivate', meta: { private: true } },
+    { path: '/piecemaker/listGroups', component: piecemaker.listGroups, name: 'piecemaker.listGroups', meta: { private: true } },
+    { path: '/piecemaker/listAllPublic', component: piecemaker.listAllPublic, name: 'piecemaker.listAllPublic', meta: { private: true } },
+    { path: '/piecemaker/groupPrivateDetail', component: piecemaker.groupPrivateDetail, name: 'piecemaker.groupPrivateDetail', meta: { private: true } },
     { path: '/piecemaker/sourcebrowser', component: piecemaker.sourcebrowser, name: 'piecemaker.sourcebrowser', meta: { private: true } },
     // Catchall
     { path: '*', component: errors.notFound, name: 'errors.notFound' }

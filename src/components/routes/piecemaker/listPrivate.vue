@@ -5,18 +5,21 @@
 
     .content-wrap
       // content-bar
-      h4 Group: Pina Bausch 2016
+      h4 My groups
+
+      q-btn(outline) Filter by tags
+      q-btn(outline) Search
+
       div
         #piecemaker-add-form.add-form
-          q-btn(outline @click="OpenForm" color="primary") Add video
-          q-btn(outline @click="OpenForm" color="primary") Record/Live Edit
-          p Add new video to this group
-          form-main(v-model="payload", :schema="schema")
+          q-btn(outline @click="OpenForm" color="primary") Add new group
+          p Add new group
+          form-main(v-model="payload", :schema="schemaNewGroup")
             q-btn(slot="form-buttons-add", @click="addAndGo") {{ $t('buttons.add_and_go') }}
             q-btn(slot="form-buttons-add", @click="cancel") {{ $t('buttons.cancel') }}
 
-        q-btn(outline @click="OpenForm" color="primary") Edit group
-        #piecemaker-edit-group
+        // q-btn(outline @click="OpenForm" color="primary") Edit group
+        // #piecemaker-edit-group
           div(style="display: inline-block; width: 50%; vertical-align: top;")
             p Edit group details
             form-main(v-model="payload", :schema="schemaEdit")
@@ -108,67 +111,39 @@
       return {
         maps: _this.$store.dispatch('maps/find'),
         columns: [{
-          label: _this.$t('labels.video_title'),
+          label: 'Group title',
           field: 'title'
         }, {
           label: _this.$t('labels.description'),
           field: 'title'
         }, {
+          label: 'Status',
+          field: 'title'
+        }, {
+          label: 'Time range',
+          field: 'title'
+        }, {
           label: _this.$t('labels.last_annotation'),
           field: 'title'
         }, {
-          label: _this.$t('labels.starting_point') + ' (on timeline)',
+          label: 'Number of contents',
           field: 'title'
         }, {
-          label: _this.$t('labels.duration'),
+          label: 'Number of participants',
           field: 'title'
         }
         ],
         actions: [
-          // { type: 'add_video', title: 'buttons.add_video', color: 'primary' },
-          { type: 'annotate_edit', title: 'buttons.annotate', color: 'secondary' },
-          // { type: 'edit', title: 'buttons.edit' },
+          { type: 'annotate_edit', title: 'buttons.edit', color: 'secondary' },
           { type: 'delete', title: 'buttons.delete' }
-          // { type: 'alert_ch', title: 'buttons.test', color: 'primary' }
         ],
         payload: undefined,
-        schema: {
+        schemaNewGroup: {
           fields: {
             title: {
               fullWidth: true,
               type: 'text',
-              label: 'labels.video_title',
-              errorLabel: 'errors.field_required',
-              validators: {
-                required
-              }
-            },
-            url: {
-              fullWidth: true,
-              type: 'text',
-              label: 'labels.video_url'
-            },
-            description: {
-              fullWidth: true,
-              type: 'textarea',
-              label: 'labels.description'
-            }
-          },
-          submit: {
-            handler () {
-              context.payload.owner = context.$store.state.auth.payload.userId
-              context.$store.dispatch('maps/create', context.payload)
-                // .then(() => context.$router.push(`/maps`))
-                .then(() => context.$router.push(`/piecemaker/list`))
-            }
-          }
-        },
-        schemaEdit: {
-          fields: {
-            title: {
-              fullWidth: true,
-              type: 'text',
-              label: 'labels.edit_title',
+              label: 'Group title',
               errorLabel: 'errors.field_required',
               validators: {
                 required
@@ -183,6 +158,11 @@
               fullWidth: true,
               type: 'text',
               label: 'labels.status'
+            },
+            tags: {
+              fullWidth: true,
+              type: 'text',
+              label: 'labels.tags'
             }
           },
           submit: {
@@ -193,55 +173,7 @@
                 .then(() => context.$router.push(`/piecemaker/list`))
             }
           }
-        },
-        schemaParticipants: {
-          fields: {
-            status: {
-              fullWidth: true,
-              type: 'text',
-              label: 'labels.email'
-            }
-          },
-          submit: {
-            handler () {
-              context.payload.owner = context.$store.state.auth.payload.userId
-              context.$store.dispatch('maps/create', context.payload)
-              // .then(() => context.$router.push(`/maps`))
-                .then(() => context.$router.push(`/piecemaker/list`))
-            }
-          }
-        },
-        schemaTags: {
-          fields: {
-            status: {
-              fullWidth: true,
-              type: 'text',
-              label: 'labels.tag'
-            }
-          },
-          submit: {
-            handler () {
-              context.payload.owner = context.$store.state.auth.payload.userId
-              context.$store.dispatch('maps/create', context.payload)
-              // .then(() => context.$router.push(`/maps`))
-                .then(() => context.$router.push(`/piecemaker/list`))
-            }
-          }
-        },
-        test: [{
-          label: _this.$t('labels.description'),
-          field: 'title'
-        }, {
-          label: _this.$t('labels.description'),
-          field: 'title'
-        }, {
-          label: _this.$t('labels.last_annotation'),
-          field: 'title'
-        }, {
-          label: _this.$t('labels.embedded'),
-          field: 'title'
         }
-        ]
       }
     }
   }
