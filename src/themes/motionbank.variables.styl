@@ -52,7 +52,7 @@ tr:last-of-type td
 
 
 .content-wrap
-  width 90vw
+  width 80vw
   display inline-block
   // float right
 
@@ -68,8 +68,8 @@ tr:last-of-type td
   // border-radius $border-radius
 
 .add-form
-  width 50vw
-  display none
+  width 50%
+  // display none
 
 .anno
   animation test_opacity 1s ease, test_margin 300ms
@@ -102,4 +102,18 @@ tr:last-of-type td
 }
 
 
+#test {
+  background-color: red!important;
+  height: 70vh;
+  overflow-y: scroll;
+}
 
+#annotations-form {
+  display: none;
+  position: absolute;
+  top: 4em;
+  right: 4em;
+  background-color: green;
+  z-index: 10;
+  width: 20vw;
+}
