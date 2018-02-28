@@ -1,7 +1,7 @@
 <template lang="pug">
   div
 
-    side-menu
+    side-menu-mosys
 
     .content-wrap
       // content-bar
@@ -9,8 +9,6 @@
       div
         a(@click="OpenForm") Add new set
         #mosys-add-form.add-form
-          // span(slot="form-title") {{ $t('routes.piecemaker.add.title') }}
-          // p.caption(slot="form-caption") {{ $t('routes.piecemaker.add.caption') }}
           form-main(v-model="payload", :schema="schema")
             q-btn(slot="form-buttons-add", @click="addAndGo") {{ $t('buttons.add_and_go') }}
             q-btn(slot="form-buttons-add", @click="cancel") {{ $t('buttons.cancel') }}
@@ -24,8 +22,8 @@
   import ContentBar from '../../partials/ContentBar'
   import DataTable from '../../partials/DataTable'
   import CenterCardThreeQuarter from '../../layouts/CenterCardThreeQuarter'
-  import SideMenu from '../../partials/Sidemenu'
-  import CancelButton from '../../forms/CancelButton'
+  import SideMenuMosys from '../../partials/SideMenuMosys'
+  // import CancelButton from '../../forms/CancelButton'
 
   import { FormMain } from '../../forms'
   import { required } from 'vuelidate/lib/validators'
@@ -34,28 +32,27 @@
       ContentBar,
       DataTable,
       CenterCardThreeQuarter,
-      SideMenu,
+      SideMenuMosys,
       FormMain,
-      CancelButton,
+      // CancelButton,
       QBtn
     },
     methods: {
       onAction (type, data) {
         const _this = this
         switch (type) {
-          case 'add_video':
-            return _this.$router.push(`/annotations/${data.row.uuid}/video`)
-          case 'annotate_edit':
-            return _this.$router.push(`/annotations/${data.row.uuid}/edit`)
+          // case 'add_video':
+          // return _this.$router.push(`/annotations/${data.row.uuid}/video`)
+          // case 'annotate_edit':
+          // return _this.$router.push(`/annotations/${data.row.uuid}/edit`)
           case 'edit':
             return _this.$router.push(`/maps/${data.row.uuid}/edit`)
-          case 'alert_ch':
-            return alert('geht')
+          // case 'alert_ch':
+          // return alert('geht')
           case 'delete':
             _this.$store.dispatch('maps/remove', data.row.uuid)
               .then(() => { _this.maps = _this.$store.dispatch('maps/find') })
         }
-        console.log('test')
       },
       OpenForm () {
         document.getElementById('mosys-add-form').style.display = 'block'
@@ -106,12 +103,20 @@
             desc: {
               fullWidth: true,
               type: 'textarea',
-              label: 'labels.description'
+              label: 'labels.description',
+              errorLabel: 'errors.field_required',
+              validators: {
+                required
+              }
             },
             status: {
               fullWidth: true,
-              type: 'radio',
-              label: 'labels.status'
+              type: 'text',
+              label: 'labels.status',
+              errorLabel: 'errors.field_required',
+              validators: {
+                required
+              }
             }
           },
           submit: {
@@ -122,6 +127,9 @@
                 .then(() => context.$router.push(`/mosys/dashboard`))
             }
           }
+        },
+        test: {
+          message: 'hallo'
         }
       }
     }
