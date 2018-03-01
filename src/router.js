@@ -42,8 +42,8 @@ const router = new VueRouter({
     //
     // Site content
     //
-    // { path: '/', component: site.welcome, name: 'site.welcome', meta: { animatedBackground: true } },
-    { path: '/welcome', component: site.welcome, name: 'site.welcome', meta: { animatedBackground: true } },
+    { path: '/', component: site.welcome, name: 'site.welcome', meta: { animatedBackground: false } },
+    { path: '/welcome', component: site.welcome, name: 'site.welcome', meta: { animatedBackground: false } },
     { path: '/terms', component: site.terms, name: 'site.terms', meta: { animatedBackground: true } },
     { path: '/apps', component: site.apps, name: 'site.apps', meta: { private: true } },
     //
