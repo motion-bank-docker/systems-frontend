@@ -144,7 +144,7 @@ const en = {
     copyright: 'Copyright 2018 Motion Bank',
     license: 'License',
     tagline: 'Digital Research and Annotation Platform for Contemporary Dance.',
-    title: 'Piecemaker 3',
+    title: 'MoTools',
     version: 'UI Version:'
   },
   table: {
