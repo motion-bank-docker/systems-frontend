@@ -5,7 +5,7 @@
 
     .content-wrap
       // content-bar
-      h4 Public Group: Pina Bausch 1996 (read only)
+      h4 Public Group: Forsythe Company 1996 (read only)
       div
         data-table(:entries="maps", :columns="columns", :actions="actions", @action="onAction")
 

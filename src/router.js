@@ -62,19 +62,26 @@ const router = new VueRouter({
     { path: '/annotations/:mapId/edit', component: annotations.edit, name: 'annotate.edit', meta: { private: true } },
 
     { path: '/mosys/dashboard', component: mosys.dashboard, name: 'mosys.dashboard', meta: { private: true } },
+    { path: '/mosys/listAllPublic', component: mosys.listAllPublic, name: 'mosys.listAllPublic', meta: { private: true } },
+    { path: '/mosys/listPrivate', component: mosys.listPrivate, name: 'mosys.listPrivate', meta: { private: true } },
+    { path: '/mosys/listGroups', component: mosys.listGroups, name: 'mosys.listGroups', meta: { private: true } },
     { path: '/mosys/set', component: mosys.set, name: 'mosys.set', meta: { private: true } },
+    { path: '/mosys/setPublic', component: mosys.setPublic, name: 'mosys.setPublic', meta: { private: true } },
 
     { path: '/piecemaker/annotator', component: piecemaker.annotator, name: 'piecemaker.annotator', meta: { private: true } },
     { path: '/piecemaker/dashboard', component: piecemaker.dashboard, name: 'piecemaker.dashboard', meta: { private: true } },
     { path: '/piecemaker/group', component: piecemaker.group, name: 'piecemaker.group', meta: { private: true } },
     { path: '/piecemaker/groupAllPublicDetail', component: piecemaker.groupAllPublicDetail, name: 'piecemaker.groupAllPublicDetail', meta: { private: true } },
+    { path: '/piecemaker/groupAllPublicDetailEdit', component: piecemaker.groupAllPublicDetailEdit, name: 'piecemaker.groupAllPublicDetailEdit', meta: { private: true } },
     { path: '/piecemaker/groupGroupsDetail', component: piecemaker.groupGroupsDetail, name: 'piecemaker.groupGroupsDetail', meta: { private: true } },
     { path: '/piecemaker/list', component: piecemaker.list, name: 'piecemaker.list', meta: { private: true } },
     { path: '/piecemaker/listPrivate', component: piecemaker.listPrivate, name: 'piecemaker.listPrivate', meta: { private: true } },
+    { path: '/piecemaker/listVideos', component: piecemaker.listVideos, name: 'piecemaker.listVideos', meta: { private: true } },
     { path: '/piecemaker/listGroups', component: piecemaker.listGroups, name: 'piecemaker.listGroups', meta: { private: true } },
     { path: '/piecemaker/listAllPublic', component: piecemaker.listAllPublic, name: 'piecemaker.listAllPublic', meta: { private: true } },
     { path: '/piecemaker/groupPrivateDetail', component: piecemaker.groupPrivateDetail, name: 'piecemaker.groupPrivateDetail', meta: { private: true } },
     { path: '/piecemaker/sourcebrowser', component: piecemaker.sourcebrowser, name: 'piecemaker.sourcebrowser', meta: { private: true } },
+    { path: '/piecemaker/VideoDetail', component: piecemaker.VideoDetail, name: 'piecemaker.VideoDetail', meta: { private: true } },
     // Catchall
     { path: '*', component: errors.notFound, name: 'errors.notFound' }
   ]

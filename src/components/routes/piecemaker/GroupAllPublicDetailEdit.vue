@@ -5,10 +5,8 @@
 
     .content-wrap
       // content-bar
-      h4 Übersicht: Meine Gruppenbeteiligung
+      h4 Public Group: Workshop Amsterdam 2017 (read & edit)
       div
-        q-btn(outline @click="OpenForm" color="primary") Add video
-        q-btn(outline @click="OpenForm" color="primary") Record/Live Edit
         data-table(:entries="maps", :columns="columns", :actions="actions", @action="onAction")
 
 </template>
@@ -82,7 +80,7 @@
         }
         ],
         actions: [
-          { type: 'annotate_edit', title: 'buttons.annotate', color: 'secondary' }
+          { type: 'annotate_edit', title: 'Annotate', color: 'secondary' }
         ],
         payload: undefined,
         schema: {

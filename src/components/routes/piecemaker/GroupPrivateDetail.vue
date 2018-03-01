@@ -5,7 +5,10 @@
 
     .content-wrap
       // content-bar
-      h4 Group: Pina Bausch 2016
+      h4
+        span.span-aufgehellt Meine Gruppen /
+        | Eigene Gruppe im Detail
+
       div
         #piecemaker-add-form.add-form
           q-btn(outline @click="OpenForm" color="primary") Add video
@@ -114,13 +117,13 @@
           label: _this.$t('labels.description'),
           field: 'title'
         }, {
-          label: _this.$t('labels.last_annotation'),
-          field: 'title'
-        }, {
           label: _this.$t('labels.starting_point') + ' (on timeline)',
           field: 'title'
         }, {
           label: _this.$t('labels.duration'),
+          field: 'title'
+        }, {
+          label: 'created',
           field: 'title'
         }
         ],
@@ -250,5 +253,8 @@
 <style>
   .ausstehend {
     opacity: .5;
+  }
+  .span-aufgehellt {
+   opacity: .5;
   }
 </style>

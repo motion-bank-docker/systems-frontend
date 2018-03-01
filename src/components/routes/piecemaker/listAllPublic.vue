@@ -5,7 +5,7 @@
 
     .content-wrap
       // content-bar
-      h4 List of all other public groups (read only)
+      h4 Übersicht: Alle öffentlichen Gruppen
 
       q-btn(outline) Filter by tags
       q-btn(outline) Search

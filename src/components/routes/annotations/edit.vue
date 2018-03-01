@@ -1,5 +1,6 @@
 <template lang="pug">
   center-card-full
+    a(@click="goBack") Back
     span(slot="form-logo")
     .row
       .col-8
@@ -46,6 +47,9 @@
       window.addEventListener('keydown', this.Annotate)
     },
     methods: {
+      goBack () {
+        window.history.back()
+      },
       Annotate (e) {
         document.getElementById('annotations-form').style.display = 'block'
         // document.getElementById('new-input').focus()

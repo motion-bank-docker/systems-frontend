@@ -114,9 +114,6 @@
           label: _this.$t('labels.description'),
           field: 'title'
         }, {
-          label: _this.$t('labels.last_annotation'),
-          field: 'title'
-        }, {
           label: _this.$t('labels.starting_point') + ' (on timeline)',
           field: 'title'
         }, {

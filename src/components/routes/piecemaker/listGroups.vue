@@ -5,7 +5,7 @@
 
     .content-wrap
       // content-bar
-      h4 All Groups
+      h4 Übersicht: Meine Grupenbeteiligungen
 
       q-btn(outline) Filter by tags
       q-btn(outline) Search

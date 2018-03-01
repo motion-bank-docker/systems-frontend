@@ -5,7 +5,7 @@
 
     .content-wrap
       // content-bar
-      h4 My groups
+      h4 Übersicht: Meine Gruppen
 
       q-btn(outline) Filter by tags
       q-btn(outline) Search
@@ -89,8 +89,6 @@
             return _this.$router.push(`/annotations/${data.row.uuid}/edit`)
           case 'edit':
             return _this.$router.push(`/maps/${data.row.uuid}/edit`)
-          case 'alert_ch':
-            return alert('geht')
           case 'delete':
             _this.$store.dispatch('maps/remove', data.row.uuid)
               .then(() => { _this.maps = _this.$store.dispatch('maps/find') })
@@ -134,7 +132,7 @@
         }
         ],
         actions: [
-          { type: 'annotate_edit', title: 'buttons.edit', color: 'secondary' },
+          { type: 'annotate_edit', title: 'Edit Group', color: 'secondary' },
           { type: 'delete', title: 'buttons.delete' }
         ],
         payload: undefined,

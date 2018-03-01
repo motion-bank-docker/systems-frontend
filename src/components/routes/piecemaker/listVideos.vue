@@ -5,10 +5,21 @@
 
     .content-wrap
       // content-bar
-      h4 Übersicht: Meine Gruppenbeteiligung
+      h4 Übersicht: Meine Videos
+
+      p
+        q-btn(outline) Filter by tags
+        q-btn(outline) Search
+
       div
-        q-btn(outline @click="OpenForm" color="primary") Add video
-        q-btn(outline @click="OpenForm" color="primary") Record/Live Edit
+        #piecemaker-add-form.add-form
+          q-btn(outline color="primary") Add video
+          q-btn(outline color="primary") Record/Live Edit
+          p Add new video to this group
+          form-main(v-model="payload", :schema="schema")
+            q-btn(slot="form-buttons-add", @click="$router.push({ name: 'annotations.annotate-video' })") {{ $t('buttons.add_and_go') }}
+            q-btn(slot="form-buttons-add", @click="cancel") {{ $t('buttons.cancel') }}
+
         data-table(:entries="maps", :columns="columns", :actions="actions", @action="onAction")
 
 </template>
@@ -71,18 +82,28 @@
           label: _this.$t('labels.description'),
           field: 'title'
         }, {
-          label: _this.$t('labels.last_annotation'),
-          field: 'title'
-        }, {
           label: _this.$t('labels.starting_point') + ' (on timeline)',
           field: 'title'
         }, {
           label: _this.$t('labels.duration'),
           field: 'title'
+        }, {
+          label: 'Gruppenzugehörigkeit/en',
+          field: 'title'
+        }, {
+          label: 'Status',
+          field: 'title'
+        }, {
+          label: 'Tags',
+          field: 'title'
         }
         ],
         actions: [
-          { type: 'annotate_edit', title: 'buttons.annotate', color: 'secondary' }
+          // { type: 'add_video', title: 'buttons.add_video', color: 'primary' },
+          { type: 'annotate_edit', title: 'buttons.annotate', color: 'secondary' },
+          // { type: 'edit', title: 'buttons.edit' },
+          { type: 'delete', title: 'buttons.delete' }
+          // { type: 'alert_ch', title: 'buttons.test', color: 'primary' }
         ],
         payload: undefined,
         schema: {

@@ -5,11 +5,38 @@
 
     .content-wrap
       // content-bar
-      h4 Übersicht: Meine Gruppenbeteiligung
+      h4 Video: Details
+      div.video-dummy.inlineblock
+        h5 VIDEO
+      div.inlineblock
+        div.padding
+          h5 Gruppenzugehörigkeit
+          p
+            a(@click="$router.push({ name: 'piecemaker.groupPrivateDetail' })") (hidden) Gruppe 1
+          p
+            a(@click="$router.push({ name: 'piecemaker.groupPrivateDetail' })") (public) Gruppe 2
+        div.piecemaker-tags-map.padding
+          h5 {{ $t('labels.tags') }}
+          div Tag 1
+            a remove
+          div Tag 2
+            a remove
+          div Tag 3
+            a remove
+          a(@click="OpenForm") New tag
+          form-main(v-model="payload", :schema="schemaTags")
+            q-btn(slot="form-buttons-add", @click="cancel") {{ $t('buttons.cancel') }}
+          div
+            | Auswahl aus bestehender Tag-List
+
+
       div
-        q-btn(outline @click="OpenForm" color="primary") Add video
-        q-btn(outline @click="OpenForm" color="primary") Record/Live Edit
-        data-table(:entries="maps", :columns="columns", :actions="actions", @action="onAction")
+        #piecemaker-edit-group
+          div(style="display: inline-block; width: 50%; vertical-align: top;")
+            p Edit Video details
+            form-main(v-model="payload", :schema="schemaEdit")
+              // q-btn(slot="form-buttons-add", @click="cancel") {{ $t('buttons.cancel') }}
+        // data-table(:entries="maps", :columns="columns", :actions="actions", @action="onAction")
 
 </template>
 
@@ -82,7 +109,11 @@
         }
         ],
         actions: [
-          { type: 'annotate_edit', title: 'buttons.annotate', color: 'secondary' }
+          // { type: 'add_video', title: 'buttons.add_video', color: 'primary' },
+          { type: 'annotate_edit', title: 'buttons.annotate', color: 'secondary' },
+          // { type: 'edit', title: 'buttons.edit' },
+          { type: 'delete', title: 'buttons.delete' }
+          // { type: 'alert_ch', title: 'buttons.test', color: 'primary' }
         ],
         payload: undefined,
         schema: {
@@ -203,5 +234,19 @@
 <style>
   .ausstehend {
     opacity: .5;
+  }
+  .video-dummy {
+    width: 40vw;
+    height: 30vw;
+    background-color: cadetblue;
+    color: black;
+    padding: .2em 1em;
+  }
+  .inlineblock {
+    display: inline-block;
+    vertical-align: top;
+  }
+  .padding {
+    padding: 1em;
   }
 </style>
