@@ -1,13 +1,16 @@
 <template lang="pug">
   div
     nav
-      q-btn(@click="goBack") Back
-      q-btn(@click="$router.push({ name: 'mosys.setGridView' })") Grid View
-      q-btn(@click="$router.push({ name: 'mosys.setListView' })") List View
-
+      a(@click="goBack") Back
+      // .buttons
+        div set cells
+        div sources
+        div preconfigured cells
+        div settings
     .grid
       .row(v-for="n in 10")
         .cell(v-for="n in 8")
+
 
 </template>
 
@@ -105,12 +108,12 @@
 
 <style scoped>
   nav {
+    min-height: 2.5em;
+    border-bottom: 1px solid #ddd;
+    /* background-color: white; */
   }
   nav > div {
     display: inline-block;
-  }
-  nav button {
-    display: inline-block!important;
   }
 
   .buttons {

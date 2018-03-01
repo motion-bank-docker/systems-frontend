@@ -5,9 +5,21 @@
       q-btn(@click="$router.push({ name: 'mosys.setGridView' })") Grid View
       q-btn(@click="$router.push({ name: 'mosys.setListView' })") List View
 
-    .grid
-      .row(v-for="n in 10")
-        .cell(v-for="n in 8")
+      div(style="float: right;")
+        q-btn(@click="$router.push({ name: 'mosys.setGridView' })") Set Details
+        q-btn(@click="$router.push({ name: 'mosys.setGridView' })") Browse in sources
+        q-btn(@click="$router.push({ name: 'mosys.setGridView' })") Preconfigured cells
+
+    div.content-wrap-wide
+      h5 alle gesetzten Zellen
+      data-table.margin-bottom(:entries="maps", :columns="columns", :actions="actions", @action="onAction")
+
+
+    div.form-wrap
+      div
+        h5 Generelle Set Informationen
+        form-main(v-model="payload", :schema="schemaSetDetails")
+          q-btn(slot="form-buttons-add", @click="cancel") Cancel
 
 </template>
 
@@ -33,9 +45,28 @@
       }
     },
     data () {
+      const _this = this
       const context = this
 
       return {
+        maps: _this.$store.dispatch('maps/find'),
+        columns: [{
+          label: 'Preview (bei img & video)',
+          field: 'title'
+        }, {
+          label: 'Text (bei Textfeld)',
+          field: 'title'
+        }, {
+          label: 'Link (bei img & video)',
+          field: 'title'
+        }, {
+          label: 'Cell type',
+          field: 'title'
+        }, {
+          label: 'Added',
+          field: 'title'
+        }
+        ],
         schemaSetDetails: {
           fields: {
             title: {
@@ -109,9 +140,6 @@
   nav > div {
     display: inline-block;
   }
-  nav button {
-    display: inline-block!important;
-  }
 
   .buttons {
     float: right;
@@ -121,40 +149,6 @@
     padding: .2em .5em;
     margin-right: .2em;
     background-color: grey;
-  }
-  .grid {
-    height: 80vh;
-    /* background-color: #eee; */
-    padding: 1em;
-    width: 100vw;
-    overflow-x: scroll;
-  }
-  .row {
-    /* border: 1px solid blue; */
-    height: 3vw;
-    position: relative;
-    /* background-color: yellow; */
-    /* border: 1px solid black; */
-    display: block;
-    width: auto;
-    white-space: nowrap;
-  }
-  .cell {
-    width: 10vw;
-    height: 100%;
-    background-color: #333;
-    display: inline-block;
-    border-right: 1px solid #666;
-    border-top: 1px solid #666;
-    cursor: pointer;
-    position: relative;
-    white-space: nowrap;
-  }
-  .cell:hover {
-    background-color: #e3e3e3;
-  }
-  .cell:last-of-type {
-    margin-right: 1em;
   }
   .form-wrap {
     margin: 2em;
@@ -166,20 +160,5 @@
   }
   .form-wrap form {
     width: 50%;
-  }
-  .source-search-results {
-    background-color: #ddd;
-    height: 30vh;
-    width: 50%;
-  }
-  .preconfig-cells-wrap {
-    width: 50%;
-    height: 30vh;
-    background-color: #ddd;
-  }
-  .used-cells-wrap {
-    width: 50%;
-    height: 30vh;
-    background-color: #ddd;
   }
 </style>

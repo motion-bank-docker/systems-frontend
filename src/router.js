@@ -67,6 +67,8 @@ const router = new VueRouter({
     { path: '/mosys/listGroups', component: mosys.listGroups, name: 'mosys.listGroups', meta: { private: true } },
     { path: '/mosys/set', component: mosys.set, name: 'mosys.set', meta: { private: true } },
     { path: '/mosys/setPublic', component: mosys.setPublic, name: 'mosys.setPublic', meta: { private: true } },
+    { path: '/mosys/setGridView', component: mosys.setGridView, name: 'mosys.setGridView', meta: { private: true } },
+    { path: '/mosys/setListView', component: mosys.setListView, name: 'mosys.setListView', meta: { private: true } },
 
     { path: '/piecemaker/annotator', component: piecemaker.annotator, name: 'piecemaker.annotator', meta: { private: true } },
     { path: '/piecemaker/dashboard', component: piecemaker.dashboard, name: 'piecemaker.dashboard', meta: { private: true } },

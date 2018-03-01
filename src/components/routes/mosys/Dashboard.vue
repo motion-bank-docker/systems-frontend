@@ -1,20 +1,12 @@
 <template lang="pug">
   div
-
-    side-menu-mosys
-
-    .content-wrap
-      // content-bar
-
-      div
-        a(@click="OpenForm") Add new set
-        #mosys-add-form.add-form
-          form-main(v-model="payload", :schema="schema")
-            q-btn(slot="form-buttons-add", @click="addAndGo") {{ $t('buttons.add_and_go') }}
-            q-btn(slot="form-buttons-add", @click="cancel") {{ $t('buttons.cancel') }}
-        // p
-          q-btn(@click="$router.push('/maps/create')", color="primary") {{ $t('buttons.create_map') }}
-        data-table(:entries="maps", :columns="columns", :actions="actions", @action="onAction")
+    div.kachel-wrap
+      a(@click="$router.push({ name: 'mosys.listPrivate' })")
+        div.kachel My own sets
+      a(@click="$router.push({ name: 'mosys.listGroups' })")
+        div.kachel Alle Gruppen, in denen ich Mitglied bin
+      a(@click="$router.push({ name: 'mosys.listAllPublic' })")
+        div.kachel Alle öffentlichen Gruppen
 </template>
 
 <script>
@@ -137,4 +129,23 @@
 </script>
 
 <style>
+  .kachel-wrap {
+    display: inline-block;
+    vertical-align: top;
+    padding: 1em;
+    margin-right: 2em;
+  }
+  .kachel-wrap a:not(:last-of-type) {
+    margin-right: 1em;
+  }
+  .kachel {
+    width: 20vw;
+    height: 20vw;
+    background-color: #ccc;
+    display: inline-block;
+    color: black;
+  }
+  .kachel:hover {
+    background-color: white;
+  }
 </style>
