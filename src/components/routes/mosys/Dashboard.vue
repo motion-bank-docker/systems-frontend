@@ -1,12 +1,45 @@
 <template lang="pug">
   div
     div.kachel-wrap
-      a(@click="$router.push({ name: 'mosys.listPrivate' })")
-        div.kachel My own sets
-      a(@click="$router.push({ name: 'mosys.listGroups' })")
-        div.kachel Alle Gruppen, in denen ich Mitglied bin
-      a(@click="$router.push({ name: 'mosys.listAllPublic' })")
-        div.kachel Alle öffentlichen Gruppen
+      div.kachel
+        h5(@click="$router.push({ name: 'mosys.listPrivate' })") My Sets
+        div(@click="$router.push({ name: 'mosys.setGridView' })")
+          div.group-title Titel 32
+          div.last-change 2018-06-23
+        div(@click="$router.push({ name: 'mosys.setGridView' })")
+          div.group-title Titel 7
+          div.last-change 2017-12-29
+        div(@click="$router.push({ name: 'mosys.setGridView' })")
+          div.group-title Titel 15
+          div.last-change 2017-11-04
+
+      div.kachel
+        h5(@click="$router.push({ name: 'mosys.listGroups' })") Participating
+        div(@click="$router.push({ name: 'mosys.setGridView' })").invitation
+          div (New invitated)
+          div.group-title Titel 11
+          div.last-change 2018-06-23
+        div(@click="$router.push({ name: 'mosys.setGridView' })")
+          div.group-title Titel 4
+          div.last-change 2017-12-29
+        div(@click="$router.push({ name: 'mosys.setGridView' })")
+          div.group-title Titel 9
+          div.last-change 2017-11-04
+        div(@click="$router.push({ name: 'mosys.setGridView' })")
+          div.group-title Titel 20
+          div.last-change 2017-11-04
+
+      div.kachel
+        h5(@click="$router.push({ name: 'mosys.listAllPublic' })") Public
+        div(@click="$router.push({ name: 'mosys.set' })")
+          div.group-title Titel 22
+          div.last-change 2018-06-23
+        div(@click="$router.push({ name: 'mosys.set' })")
+          div.group-title Titel 41
+          div.last-change 2017-12-29
+        div(@click="$router.push({ name: 'mosys.set' })")
+          div.group-title Titel 2
+          div.last-change 2017-11-04
 </template>
 
 <script>
@@ -140,12 +173,36 @@
   }
   .kachel {
     width: 20vw;
-    height: 20vw;
-    background-color: #ccc;
+    height: 30vw;
+    background-color: #333;
     display: inline-block;
+    vertical-align: top;
     color: black;
+    padding: 1em;
+    overflow-y: scroll;
   }
-  .kachel:hover {
-    background-color: white;
+  .kachel:not(:last-of-type) {
+    margin-right: 2em;
+  }
+  .kachel > div {
+    margin: 20px 0;
+    background-color: #999;
+    cursor: pointer;
+    padding: .5em;
+  }
+  .kachel > div:hover {
+    background-color: transparent;
+  }
+  .kachel > div.invitation {
+    background-color: red;
+    border-bottom: 2px solid red;
+    margin-bottom: 2em;
+  }
+  .kachel > h5 {
+    cursor: pointer;
+    color: #729bff;
+  }
+  .kachel > h5:hover {
+    background-color: #222;
   }
 </style>
