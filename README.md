@@ -5,7 +5,7 @@
 > An empty Motion Bank Quasar App
 
 [![NPM version](https://badge.fury.io/js/@motionbank-js/quasar-app.svg)](https://npmjs.org/package/@motionbank-js/quasar-app)
-[![Code Climate](https://codeclimate.com/github/motionbank/@motionbank-js/quasar-app.svg)](https://codeclimate.com/github/motionbank/@motionbank-js/quasar-app)
+[![Code Climate](https://codeclimate.com/github/motionbank-js/@motionbank-js/quasar-app.svg)](https://codeclimate.com/github/motionbank-js/@motionbank-js/quasar-app)
 
 
 ## Install
@@ -29,6 +29,6 @@ npm run dev
 
 ## License
 
-:copyright: 2018 Motion Bank / Mainz University of Applied Sciences – 
-Released under the [MIT](https://github.com/motionbank/@motionbank-js/quasar-app/blob/master/LICENSE) license
+:copyright: 2018 Mainz University of Applied Sciences (Motion Bank Project) – 
+Released under the [MIT](https://github.com/motionbank-js/@motionbank-js/quasar-app/blob/master/LICENSE) license
 
