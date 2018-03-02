@@ -1,9 +1,9 @@
 {
   "name": "@motionbank-js/quasar-app",
-  "productName": "libMB Quasar App",
+  "productName": "Motion Bank Systems Frontend",
   "version": "1.0.0",
   "private": true,
-  "description": "An empty Motion Bank Quasar App",
+  "description": "Combined frontend project for Motion Bank web services",
   "metapak": {
     "configs": [
       "babel",
