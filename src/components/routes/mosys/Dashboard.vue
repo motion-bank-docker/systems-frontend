@@ -3,6 +3,7 @@
     div.kachel-wrap
       div.kachel
         h5(@click="$router.push({ name: 'mosys.listPrivate' })") My Sets
+        p Last edit:
         div(@click="$router.push({ name: 'mosys.setGridView' })")
           div.group-title Titel 32
           div.last-change 2018-06-23
@@ -15,10 +16,11 @@
 
       div.kachel
         h5(@click="$router.push({ name: 'mosys.listGroups' })") Participating
+        p New invitations:
         div(@click="$router.push({ name: 'mosys.setGridView' })").invitation
-          div (New invitated)
           div.group-title Titel 11
           div.last-change 2018-06-23
+        p Last edit:
         div(@click="$router.push({ name: 'mosys.setGridView' })")
           div.group-title Titel 4
           div.last-change 2017-12-29
@@ -31,6 +33,7 @@
 
       div.kachel
         h5(@click="$router.push({ name: 'mosys.listAllPublic' })") Public
+        p Last edit:
         div(@click="$router.push({ name: 'mosys.set' })")
           div.group-title Titel 22
           div.last-change 2018-06-23
