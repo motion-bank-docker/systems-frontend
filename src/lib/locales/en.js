@@ -5,7 +5,7 @@ const en = {
     add_and_go: 'Add & Go',
     back: 'Back',
     create_account: 'Create Account',
-    create_map: 'Create Map',
+    create_group: 'Create Group',
     cancel: 'Cancel',
     delete: 'Delete',
     edit: 'Edit',
@@ -36,6 +36,7 @@ const en = {
     email: 'Email',
     embedded: 'Embedded in',
     elements_length: 'Used Elements',
+    group_title: 'Group title',
     last_annotation: 'Last annotated',
     last_edit: 'Last edit',
     location: 'Location',
@@ -137,6 +138,16 @@ const en = {
       add: {
         title: 'Add',
         caption: 'Add an URL'
+      },
+      groups: {
+        create: {
+          title: 'New Group',
+          caption: 'Create a group representing a global timeline.'
+        },
+        list: {
+          title: 'Groups',
+          caption: 'All your most wonderful groups are here.'
+        }
       }
     }
   },
