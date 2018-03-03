@@ -2,13 +2,12 @@
   q-toolbar.z-absolute.all-pointer-events(color="dark")
     // q-btn.hide-on-drawer-visible(flat, icon="menu", @click='$refs.drawer.open()')
     q-toolbar-title(:padding='2')
-      q-btn(big, flat, @click="$router.push({ name: 'site.welcome' })") Motionbank
-      q-btn(big, flat, @click="$router.push({ name: 'piecemaker.dashboard' })") Piecemaker
-        // | {{ $t('site.title') }}
-      q-btn(big, flat, @click="$router.push({ name: 'mosys.dashboard' })") Mosys
-
-    q-btn(color="primary", flat, icon="list",
-    v-if="user", @click="$router.push(`/maps`)") {{ $t('navigation.maps') }}
+      q-btn(:class="{ 'text-primary': currentApp === null }", big, flat,
+        @click="currentApp = null; $router.push({ name: 'site.welcome' })") Motionbank
+      q-btn(:class="{ 'text-primary': currentApp === 'piecemaker' }", big, flat,
+        @click="currentApp = 'piecemaker'; $router.push({ name: 'piecemaker.dashboard' })") Piecemaker
+      q-btn(:color="currentApp === 'mosys' ? 'primary' : ''",
+        big, flat, @click="currentApp = 'mosys'; $router.push({ name: 'mosys.dashboard' })") Mosys
 
     q-btn(color="primary", flat, icon="settings",
     v-if="user", @click="$router.push(`/users/${$store.state.auth.payload.userId}/edit`)") {{ $t('navigation.manage_account') }}
@@ -35,7 +34,9 @@
       QBtn
     },
     data () {
-      return {}
+      return {
+        currentApp: null
+      }
     },
     computed: {
       user () {
