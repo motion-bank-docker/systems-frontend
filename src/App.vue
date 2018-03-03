@@ -2,7 +2,7 @@
   #q-app
     animated-background
     q-layout(ref="layout", view="hHh LpR fFf")
-      user-nav(slot='header')
+      user-nav(slot="header")
       router-view
 </template>
 
@@ -22,11 +22,8 @@ export default {
     UserNav
   },
   created: function () {
-    const { $store, $router } = this
+    const { $store } = this
     $store.dispatch('auth/authenticate')
-      .then(() => {
-        $router.replace({ name: 'site.welcome' })
-      })
       .catch(err => {
         if (err) {
           console.debug(err.message)
@@ -42,5 +39,3 @@ export default {
   }
 }
 </script>
-
-<style></style>
