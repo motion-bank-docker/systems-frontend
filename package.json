@@ -36,7 +36,6 @@
     "fastclick": "^1.0.6",
     "feathers-vuex": "^1.1.1",
     "identicon.js": "^2.3.1",
-    "libmb-base": "https://github.com/libmb/libmb-base.git",
     "quasar-extras": "0.0.8",
     "quasar-framework": "^0.14.6",
     "roboto-fontface": "^0.8.0",
