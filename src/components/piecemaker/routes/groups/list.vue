@@ -1,5 +1,6 @@
 <template lang="pug">
   center-card-full
+    span(slot="form-logo")
     span(slot="form-title") {{ $t('routes.piecemaker.groups.list.title') }}
     p.caption(slot="form-caption") {{ $t('routes.piecemaker.groups.list.caption') }}
     p
@@ -36,10 +37,16 @@
       const _this = this
       return {
         maps: _this.$store.dispatch('maps/find', { query: { type: constants.MAP_TYPE_TIMELINE } }),
-        columns: [{
-          label: _this.$t('labels.map_title'),
-          field: 'title'
-        }],
+        columns: [
+          {
+            label: _this.$t('labels.title'),
+            field: 'title'
+          },
+          {
+            label: _this.$t('labels.created'),
+            field: 'created'
+          }
+        ],
         actions: [
           { type: 'add_video', title: 'buttons.add_video', color: 'primary' },
           { type: 'edit', title: 'buttons.edit' },
