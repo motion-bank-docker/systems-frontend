@@ -2,6 +2,9 @@
   center-card-full
     span(slot="form-title") {{ $t('routes.piecemaker.videos.list.title') }}
     p.caption(slot="form-caption") {{ $t('routes.piecemaker.videos.list.caption') }}
+    p
+      q-btn(@click="$router.push({ name: 'piecemaker.videos.create', params: { groupId: $route.params.groupId } })",
+        color="primary") {{ $t('buttons.add_video') }}
     data-table(:entries="maps", :columns="columns", :actions="actions", @action="onAction")
 </template>
 
