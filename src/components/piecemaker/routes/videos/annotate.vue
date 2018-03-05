@@ -1,5 +1,5 @@
 <template lang="pug">
-  video-player(v-if="video", :src="video.source", :type="video.body")
+  video-player(v-if="video", :src="video")
 </template>
 
 <script>
