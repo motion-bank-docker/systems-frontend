@@ -1,12 +1,12 @@
 <template lang="pug">
-  grid-display
+  grid-editor
 </template>
 
 <script>
-  import GridDisplay from '../../partials/GridDisplay'
+  import GridEditor from '../../partials/GridEditor'
   export default {
     components: {
-      GridDisplay
+      GridEditor
     }
   }
 </script>

@@ -59,6 +59,15 @@ const router = new VueRouter({
     // { path: '/annotations/:mapId/video', component: annotations.annotateVideo, name: 'annotate.video', meta: { private: true } },
     // { path: '/annotations/:mapId/edit', component: annotations.edit, name: 'annotate.edit', meta: { private: true } },
 
+    //
+    // MoSys --------------------------------------------------------------
+    //
+    { path: '/mosys/grids', component: mosys.grids.list, name: 'mosys.grids.list', meta: { private: true } },
+    { path: '/mosys/grids/create', component: mosys.grids.create, name: 'mosys.grids.create', meta: { private: true } },
+    { path: '/mosys/grids/:id', component: mosys.grids.show, name: 'mosys.grids.show' },
+    { path: '/mosys/grids/:id/edit', component: mosys.grids.edit, name: 'mosys.grids.edit', meta: { private: true } },
+    { path: '/mosys/grids/:id/annotate', component: mosys.grids.annotate, name: 'mosys.grids.annotate', meta: { private: true } },
+
     { path: '/mosys/dashboard', component: mosys.dashboard, name: 'mosys.dashboard', meta: { private: true } },
     { path: '/mosys/listAllPublic', component: mosys.listAllPublic, name: 'mosys.listAllPublic', meta: { private: true } },
     { path: '/mosys/listPrivate', component: mosys.listPrivate, name: 'mosys.listPrivate', meta: { private: true } },
@@ -69,7 +78,7 @@ const router = new VueRouter({
     { path: '/mosys/setListView', component: mosys.setListView, name: 'mosys.setListView', meta: { private: true } },
 
     //
-    // Piecemaker
+    // Piecemaker ---------------------------------------------------------
     //
     { path: '/piecemaker', component: pm.dashboard, name: 'piecemaker.dashboard', meta: { private: true } },
 
