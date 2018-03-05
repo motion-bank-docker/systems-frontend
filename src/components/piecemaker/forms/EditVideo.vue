@@ -36,7 +36,13 @@
               context.payload.author = context.$store.state.auth.payload.userId
               context.payload.motivation = 'linking'
               context.payload.target = this.$route.params.groupId || context.groupId
-              context.$store.dispatch(context.payload.uuid ? 'annotations/patch' : 'annotations/create', context.payload)
+              return Promise.resolve()
+                .then(() => {
+                  if (context.payload.uuid) {
+                    return context.$store.dispatch('annotations/patch', [context.payload.uuid, context.payload])
+                  }
+                  return context.$store.dispatch('annotations/create', context.payload)
+                })
                 .then(() => {
                   if (context.redirectTo) {
                     context.$router.push(context.redirectTo)
