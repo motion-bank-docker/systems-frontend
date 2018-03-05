@@ -4,7 +4,7 @@
 </template>
 
 <script>
-  import FormMain from '../../forms/FormMain'
+  import FormMain from '../../shared/forms/FormMain'
   import { QBtn } from 'quasar-framework'
   import { required } from 'vuelidate/lib/validators'
   import uuidValidate from 'uuid-validate'

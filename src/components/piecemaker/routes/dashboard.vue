@@ -10,9 +10,9 @@
             .row.justify-between.items-between
               h4 Groups
               div
-                q-btn(@click="$router.push('/piecemaker/groups')", flat, color="primary") All Groups
-                q-btn(@click="$router.push('/piecemaker/groups/create')", flat, color="primary") New Group
-          q-item(v-for="item in groups", :key="item.uuid", link, exact, :to="'/piecemaker/groups/' + item.uuid")
+                q-btn(@click="$router.push('/stash/groups')", flat, color="primary") All Groups
+                q-btn(@click="$router.push('/stash/groups/create')", flat, color="primary") New Group
+          q-item(v-for="item in groups", :key="item.uuid", link, exact, :to="'/stash/groups/' + item.uuid")
             q-item-main
               q-item-tile(label) {{ item.title }}
               q-item-tile(sublabel) {{ item.description }}
@@ -21,7 +21,7 @@
           q-list-header
             .row.justify-between.items-between
               h4 Videos
-          q-item(v-for="item in videos", :key="item.uuid", link, exact, :to="'/piecemaker/videos/' + item.uuid")
+          q-item(v-for="item in videos", :key="item.uuid", link, exact, :to="'/stash/videos/' + item.uuid")
             q-item-main
               q-item-tile(label) {{ item.title }}
               q-item-tile(sublabel) {{ item.description }}
@@ -38,7 +38,7 @@
     QTabs,
     QRouteTab
   } from 'quasar-framework'
-  import CenterCardFull from '../../layouts/CenterCardFull'
+  import CenterCardFull from '../../shared/layouts/CenterCardFull'
   import constants from '../../../lib/constants'
   export default {
     components: {

@@ -3,7 +3,7 @@
 </template>
 
 <script>
-  import FormMain from '../../forms/FormMain'
+  import FormMain from '../../shared/forms/FormMain'
   import { QBtn } from 'quasar-framework'
   import { required } from 'vuelidate/lib/validators'
   import constants from '../../../lib/constants'
@@ -37,7 +37,7 @@
           submit: {
             handler () {
               context.payload.owner = context.$store.state.auth.payload.userId
-              context.payload.type = constants.MAP_TYPE_TIMELINE
+              context.payload.type = [constants.MAP_TYPE_TIMELINE]
               context.$store.dispatch(context.payload.uuid ? 'maps/patch' : 'maps/create', context.payload)
                 .then(() => {
                   if (context.redirectTo) {
