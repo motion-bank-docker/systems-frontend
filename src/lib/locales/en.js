@@ -149,6 +149,31 @@ const en = {
           caption: 'All your most wonderful groups are here.'
         }
       }
+    },
+    mosys: {
+      add: {
+        title: 'Add',
+        caption: 'Add an URL'
+      },
+      grids: {
+        buttons: {
+          edit: 'Edit',
+          show: 'View',
+          annotate: 'Add cells'
+        },
+        create: {
+          button: 'Create Grid', // TODO: where do buttons belong?
+          title: 'New Grid',
+          caption: 'Create a grid'
+        },
+        list: {
+          title: 'Grids',
+          caption: 'All your grids'
+        },
+        edit: {
+          title: 'Edit grid title'
+        }
+      }
     }
   },
   site: {

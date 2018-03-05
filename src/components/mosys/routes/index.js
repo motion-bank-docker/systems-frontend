@@ -7,6 +7,8 @@ import setPublic from './SetPublic'
 import setGridView from './setGridView'
 import setListView from './setListView'
 
+import * as grids from './grids'
+
 export default {
   dashboard,
   listAllPublic,
@@ -15,5 +17,7 @@ export default {
   set,
   setPublic,
   setGridView,
-  setListView
+  setListView,
+  //
+  grids
 }

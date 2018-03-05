@@ -7,7 +7,7 @@
       q-btn(:class="{ 'text-primary': currentApp === 'piecemaker' }", big, flat,
         @click="currentApp = 'piecemaker'; $router.push({ name: 'piecemaker.dashboard' })") Piecemaker
       q-btn(:color="currentApp === 'mosys' ? 'primary' : ''",
-        big, flat, @click="currentApp = 'mosys'; $router.push({ name: 'mosys.dashboard' })") Mosys
+        big, flat, @click="currentApp = 'mosys'; $router.push({ name: 'mosys.grids.list' })") Mosys
 
     q-btn(color="primary", flat, icon="settings",
     v-if="user", @click="$router.push(`/users/${$store.state.auth.payload.userId}/edit`)") {{ $t('navigation.manage_account') }}

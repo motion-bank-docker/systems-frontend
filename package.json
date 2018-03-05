@@ -130,5 +130,10 @@
     "idField": "uuid"
   },
   "author": "Mainz University of Applied Sciences (Motion Bank Project)",
-  "license": "MIT"
+  "license": "MIT",
+  "appConfig": {
+    "apiHost": "https://motionbank-api.herokuapp.com",
+    "apiHostLocal": "https://motionbank-api.herokuapp.com",
+    "idField": "uuid"
+  }
 }
