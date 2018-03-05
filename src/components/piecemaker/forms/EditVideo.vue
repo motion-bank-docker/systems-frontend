@@ -1,24 +1,35 @@
 <template lang="pug">
   form-main(v-model="payload", :schema="schema")
-    q-btn(slot="form-buttons-add", @click="cancel") {{ $t('buttons.cancel') }}
 </template>
 
 <script>
   import FormMain from '../../shared/forms/FormMain'
   import { QBtn } from 'quasar-framework'
   import { required } from 'vuelidate/lib/validators'
-  import uuidValidate from 'uuid-validate'
+  import { DateTime } from 'luxon'
   export default {
     components: {
       FormMain,
       QBtn
     },
-    props: ['redirectTo', 'groupId'],
+    props: ['redirectTo'],
+    mounted () {
+      const context = this
+      if (this.$route.params.id) {
+        this.$store.dispatch('annotations/get', this.$route.params.id)
+          .then(result => {
+            context.payload = {
+              url: result.body.source
+            }
+          })
+      }
+    },
     data () {
       const context = this
       return {
-        payload: uuidValidate.version(this.$route.params.id)
-          ? context.$store.dispatch('annotations/get', context.$route.params.id) : undefined,
+        // FIXME: i know this is bullshit!!! (but i hope it works for now)
+        apiPayload: undefined,
+        payload: undefined,
         schema: {
           fields: {
             url: {
@@ -33,20 +44,39 @@
           },
           submit: {
             handler () {
-              context.payload.author = context.$store.state.auth.payload.userId
-              context.payload.motivation = 'linking'
-              context.payload.target = this.$route.params.groupId || context.groupId
+              context.apiPayload = {
+                body: {
+                  source: context.payload.url,
+                  type: 'Video',
+                  purpose: 'linking'
+                },
+                author: context.$store.state.auth.payload.userId,
+                target: {
+                  id: context.$route.params.groupId || context.groupId,
+                  type: 'Map',
+                  selector: {
+                    type: 'DateTime',
+                    value: DateTime.local().toString()
+                  }
+                }
+              }
+              if (context.apiPayload.body.source.indexOf('youtube.com') > -1) {
+                context.apiPayload.body.type = 'video/youtube'
+              }
+              else if (context.apiPayload.body.source.indexOf('vimeo.com') > -1) {
+                context.apiPayload.body.type = 'video/vimeo'
+              }
+              console.log(context.apiPayload)
               return Promise.resolve()
                 .then(() => {
                   if (context.payload.uuid) {
-                    return context.$store.dispatch('annotations/patch', [context.payload.uuid, context.payload])
+                    return context.$store.dispatch('annotations/patch', [context.payload.uuid, context.apiPayload])
                   }
-                  return context.$store.dispatch('annotations/create', context.payload)
+                  return context.$store.dispatch('annotations/create', context.apiPayload)
                 })
                 .then(() => {
-                  if (context.redirectTo) {
-                    context.$router.push(context.redirectTo)
-                  }
+                  console.log(context.$route.params)
+                  context.$router.push(`/piecemaker/groups/${context.$route.params.groupId}/videos`)
                 })
             }
           }

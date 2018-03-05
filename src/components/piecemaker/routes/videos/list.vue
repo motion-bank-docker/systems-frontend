@@ -1,9 +1,7 @@
 <template lang="pug">
   center-card-full
-    span(slot="form-title") {{ $t('routes.piecemaker.groups.list.title') }}
-    p.caption(slot="form-caption") {{ $t('routes.piecemaker.groups.list.caption') }}
-    p
-      q-btn(@click="$router.push({ name: 'stash.groups.create' })", color="primary") {{ $t('buttons.create_group') }}
+    span(slot="form-title") {{ $t('routes.piecemaker.videos.list.title') }}
+    p.caption(slot="form-caption") {{ $t('routes.piecemaker.videos.list.caption') }}
     data-table(:entries="maps", :columns="columns", :actions="actions", @action="onAction")
 </template>
 
@@ -11,7 +9,6 @@
   import { QBtn } from 'quasar-framework'
   import DataTable from '../../../shared/partials/DataTable'
   import CenterCardFull from '../../../shared/layouts/CenterCardFull'
-  import constants from '../../../../lib/constants'
   export default {
     components: {
       QBtn,
@@ -35,13 +32,13 @@
     data () {
       const _this = this
       return {
-        maps: _this.$store.dispatch('maps/find', { query: { type: constants.MAP_TYPE_TIMELINE } }),
+        maps: _this.$store.dispatch('annotations/find', { query: { 'body.purpose': 'linking', 'target.id': _this.$route.params.groupId } }),
         columns: [{
-          label: _this.$t('labels.map_title'),
-          field: 'title'
+          label: _this.$t('labels.video_title'),
+          field: 'body'
         }],
         actions: [
-          { type: 'add_video', title: 'buttons.add_video', color: 'primary' },
+          { type: 'annotate', title: 'buttons.annotate', color: 'primary' },
           { type: 'edit', title: 'buttons.edit' },
           { type: 'delete', title: 'buttons.delete' }
         ]

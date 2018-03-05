@@ -76,7 +76,8 @@ const router = new VueRouter({
     { path: '/piecemaker/groups', component: pm.groups.list, name: 'piecemaker.groups.list', meta: { private: true } },
     { path: '/piecemaker/groups/create', component: pm.groups.create, name: 'piecemaker.groups.create', meta: { private: true } },
     { path: '/piecemaker/groups/:id', component: pm.groups.show, name: 'piecemaker.groups.show' },
-    { path: '/piecemaker/groups/:id/videos', component: pm.groups.show, name: 'piecemaker.groups.videos', meta: { private: true } },
+    { path: '/piecemaker/groups/:groupId/videos', component: pm.videos.list, name: 'piecemaker.videos.list', meta: { private: true } },
+    { path: '/piecemaker/groups/:groupId/videos/create', component: pm.videos.create, name: 'piecemaker.videos.create', meta: { private: true } },
     { path: '/piecemaker/groups/:id/edit', component: pm.groups.edit, name: 'piecemaker.groups.edit', meta: { private: true } },
 
     { path: '/piecemaker/videos/:id/annotate', component: pm.videos.annotate, name: 'piecemaker.videos.annotate', meta: { private: true } },
