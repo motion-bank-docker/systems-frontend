@@ -37,8 +37,16 @@
           submit: {
             handler () {
               context.payload.owner = context.$store.state.auth.payload.userId
-              context.payload.type = [constants.MAP_TYPE_2D_GRID]
-              context.$store.dispatch(context.payload.uuid ? 'maps/patch' : 'maps/create', context.payload)
+              if (!context.$route.params.id) {
+                context.payload.type = [constants.MAP_TYPE_2D_GRID]
+              }
+              return Promise.resolve()
+                .then(() => {
+                  if (context.payload.uuid) {
+                    return context.$store.dispatch('maps/patch', [context.payload.uuid, context.payload])
+                  }
+                  return context.$store.dispatch('maps/create', context.payload)
+                })
                 .then(() => {
                   if (context.redirectTo) {
                     context.$router.push(context.redirectTo)
