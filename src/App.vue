@@ -10,8 +10,8 @@
 /*
  * Root component
  */
-import AnimatedBackground from './components/partials/AnimatedBackground'
-import UserNav from './components/partials/UserNav'
+import AnimatedBackground from './components/shared/partials/AnimatedBackground'
+import UserNav from './components/shared/partials/UserNav'
 import {
   QLayout
 } from 'quasar-framework'

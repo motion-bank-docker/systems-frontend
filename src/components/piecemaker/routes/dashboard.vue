@@ -38,7 +38,7 @@
     QTabs,
     QRouteTab
   } from 'quasar-framework'
-  import CenterCardFull from '../../layouts/CenterCardFull'
+  import CenterCardFull from '../../shared/layouts/CenterCardFull'
   import constants from '../../../lib/constants'
   export default {
     components: {

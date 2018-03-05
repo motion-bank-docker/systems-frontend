@@ -5,16 +5,14 @@ import { Events } from 'quasar-framework'
 Vue.use(VueRouter)
 
 import store from './lib/store'
-import pm from './components/piecemaker'
+import * as pm from './components/piecemaker/routes'
+import mosys from './components/mosys/routes'
+import piecemaker from './components/piecemaker/routes/stash'
 import {
-  annotations,
   errors,
-  maps,
-  mosys,
-  piecemaker,
   site,
   users
-} from './components/routes'
+} from './components/shared/routes'
 
 /*
 function load (component) {
@@ -54,12 +52,12 @@ const router = new VueRouter({
     { path: '/users/forgot', component: users.forgot, name: 'users.forgot', meta: { anonymous: true } },
     { path: '/users/:id/edit', component: users.manage, name: 'users.edit', meta: { private: true } },
 
-    { path: '/maps', component: maps.list, name: 'maps.list', meta: { private: true } },
-    { path: '/maps/create', component: maps.create, name: 'maps.create', meta: { private: true } },
-    { path: '/maps/:id/edit', component: maps.edit, name: 'maps.edit', meta: { private: true } },
+    // { path: '/maps', component: maps.list, name: 'maps.list', meta: { private: true } },
+    // { path: '/maps/create', component: maps.create, name: 'maps.create', meta: { private: true } },
+    // { path: '/maps/:id/edit', component: maps.edit, name: 'maps.edit', meta: { private: true } },
 
-    { path: '/annotations/:mapId/video', component: annotations.annotateVideo, name: 'annotate.video', meta: { private: true } },
-    { path: '/annotations/:mapId/edit', component: annotations.edit, name: 'annotate.edit', meta: { private: true } },
+    // { path: '/annotations/:mapId/video', component: annotations.annotateVideo, name: 'annotate.video', meta: { private: true } },
+    // { path: '/annotations/:mapId/edit', component: annotations.edit, name: 'annotate.edit', meta: { private: true } },
 
     { path: '/mosys/dashboard', component: mosys.dashboard, name: 'mosys.dashboard', meta: { private: true } },
     { path: '/mosys/listAllPublic', component: mosys.listAllPublic, name: 'mosys.listAllPublic', meta: { private: true } },
@@ -73,19 +71,19 @@ const router = new VueRouter({
     //
     // Piecemaker
     //
-    { path: '/piecemaker', component: pm.routes.dashboard, name: 'piecemaker.dashboard', meta: { private: true } },
+    { path: '/piecemaker', component: pm.dashboard, name: 'piecemaker.dashboard', meta: { private: true } },
 
-    { path: '/piecemaker/groups', component: pm.routes.groups.list, name: 'piecemaker.groups.list', meta: { private: true } },
-    { path: '/piecemaker/groups/create', component: pm.routes.groups.create, name: 'piecemaker.groups.create', meta: { private: true } },
-    { path: '/piecemaker/groups/:id', component: pm.routes.groups.show, name: 'piecemaker.groups.show' },
-    { path: '/piecemaker/groups/:id/videos', component: pm.routes.groups.show, name: 'piecemaker.groups.videos', meta: { private: true } },
-    { path: '/piecemaker/groups/:id/edit', component: pm.routes.groups.edit, name: 'piecemaker.groups.edit', meta: { private: true } },
+    { path: '/piecemaker/groups', component: pm.groups.list, name: 'piecemaker.groups.list', meta: { private: true } },
+    { path: '/piecemaker/groups/create', component: pm.groups.create, name: 'piecemaker.groups.create', meta: { private: true } },
+    { path: '/piecemaker/groups/:id', component: pm.groups.show, name: 'piecemaker.groups.show' },
+    { path: '/piecemaker/groups/:id/videos', component: pm.groups.show, name: 'piecemaker.groups.videos', meta: { private: true } },
+    { path: '/piecemaker/groups/:id/edit', component: pm.groups.edit, name: 'piecemaker.groups.edit', meta: { private: true } },
 
-    { path: '/piecemaker/videos/:id/annotate', component: pm.routes.videos.annotate, name: 'piecemaker.videos.annotate', meta: { private: true } },
-    { path: '/piecemaker/videos/:id/edit', component: pm.routes.videos.edit, name: 'piecemaker.videos.edit', meta: { private: true } },
+    { path: '/piecemaker/videos/:id/annotate', component: pm.videos.annotate, name: 'piecemaker.videos.annotate', meta: { private: true } },
+    { path: '/piecemaker/videos/:id/edit', component: pm.videos.edit, name: 'piecemaker.videos.edit', meta: { private: true } },
 
     { path: '/piecemaker/annotator', component: piecemaker.annotator, name: 'piecemaker.annotator', meta: { private: true } },
-    // { path: '/piecemaker/dashboard', component: piecemaker.dashboard, name: 'piecemaker.dashboard', meta: { private: true } },
+    // { path: '/piecemaker/dashboard', component: piecemaker.dashboard, name: 'stash.dashboard', meta: { private: true } },
     { path: '/piecemaker/group', component: piecemaker.group, name: 'piecemaker.group', meta: { private: true } },
     { path: '/piecemaker/groupAllPublicDetail', component: piecemaker.groupAllPublicDetail, name: 'piecemaker.groupAllPublicDetail', meta: { private: true } },
     { path: '/piecemaker/groupAllPublicDetailEdit', component: piecemaker.groupAllPublicDetailEdit, name: 'piecemaker.groupAllPublicDetailEdit', meta: { private: true } },

@@ -7,7 +7,7 @@
 
 <script>
   import EditGroup from '../../forms/EditGroup'
-  import CenterCardThreeQuarter from '../../../layouts/CenterCardThreeQuarter'
+  import CenterCardThreeQuarter from '../../../shared/layouts/CenterCardThreeQuarter'
   export default {
     components: {
       CenterCardThreeQuarter,

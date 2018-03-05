@@ -10,8 +10,8 @@
 
 <script>
   import { QBtn } from 'quasar-framework'
-  import DataTable from '../../../partials/DataTable'
-  import CenterCardFull from '../../../layouts/CenterCardFull'
+  import DataTable from '../../../shared/partials/DataTable'
+  import CenterCardFull from '../../../shared/layouts/CenterCardFull'
   import constants from '../../../../lib/constants'
   export default {
     components: {
