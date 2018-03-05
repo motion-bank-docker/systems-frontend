@@ -4,7 +4,7 @@
     span(slot="form-title") {{ $t('routes.piecemaker.groups.list.title') }}
     p.caption(slot="form-caption") {{ $t('routes.piecemaker.groups.list.caption') }}
     p
-      q-btn(@click="$router.push({ name: 'stash.groups.create' })", color="primary") {{ $t('buttons.create_group') }}
+      q-btn(@click="$router.push({ name: 'piecemaker.groups.create' })", color="primary") {{ $t('buttons.create_group') }}
     data-table(:entries="maps", :columns="columns", :actions="actions", @action="onAction")
 </template>
 
