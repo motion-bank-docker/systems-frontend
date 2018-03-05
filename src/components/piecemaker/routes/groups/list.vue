@@ -23,8 +23,8 @@
       onAction (type, data) {
         const _this = this
         switch (type) {
-          case 'add_video':
-            return _this.$router.push(`/piecemaker/groups/${data.row.uuid}/videos/create`)
+          case 'videos':
+            return _this.$router.push(`/piecemaker/groups/${data.row.uuid}/videos`)
           case 'edit':
             return _this.$router.push(`/piecemaker/groups/${data.row.uuid}/edit`)
           case 'delete':
@@ -48,7 +48,7 @@
           }
         ],
         actions: [
-          { type: 'add_video', title: 'buttons.add_video', color: 'primary' },
+          { type: 'videos', title: 'buttons.videos', color: 'primary' },
           { type: 'edit', title: 'buttons.edit' },
           { type: 'delete', title: 'buttons.delete' }
         ]

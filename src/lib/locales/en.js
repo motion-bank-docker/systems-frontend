@@ -15,7 +15,7 @@ const en = {
     request_reset_pass: 'Request Password Reset',
     save_changes: 'Save changes',
     submit: 'Submit',
-    test: 'Test ch'
+    videos: 'Videos'
   },
   errors: {
     unknown: 'Unknown Error',
