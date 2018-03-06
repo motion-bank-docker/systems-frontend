@@ -14,15 +14,15 @@
           | Reference video:
           br
           | Modern Class Codarts 2017
-          q-btn(small) change
+          q-btn(small) {{ $t('buttons.change') }}
         div.video.col-12
           iframe(v-if="video" width="100%" height="100%" src="https://www.youtube.com/embed/rCCHpbJ_IUc" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen)
           div(v-if="change")
             p(v-for="n in 4") Modern Class Codarts 201{{ n }}
         div
-          q-btn <
-          q-btn() set marker
-          q-btn >
+          q-btn {{ $t('buttons.arrow_prev') }}
+          q-btn() {{ $t('buttons.set_marker') }}
+          q-btn {{ $t('buttons.arrow_next') }}
           br
           q-btn 0:44.72
 
@@ -31,22 +31,21 @@
         p.col-12.text-right
           | Video to be synchronized:
           br
-          q-btn(small) change
+          q-btn(small) {{ $t('buttons.change') }}
           | Modern Class Codarts 2017
         div.video.col-12
           iframe(width="100%" height="100%" src="https://www.youtube.com/embed/rCCHpbJ_IUc" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen)
         div.text-right.col-12
-          q-btn <
-          q-btn() set marker
-          q-btn >
+          q-btn {{ $t('buttons.arrow_prev') }}
+          q-btn() {{ $t('buttons.set_marker') }}
+          q-btn {{ $t('buttons.arrow_next') }}
           br
           q-btn 0:42.559723
 
     div.text-center
-      q-btn(disable color="green") Apply synchronisation
+      q-btn(disable color="primary") {{ $t('buttons.apply_synchronisation') }}
       br
-      q-btn(disable) Done
-      // q-btn(@click="") Cancel
+      q-btn(disable) {{ $t('buttons.done') }}
 
 </template>
 
