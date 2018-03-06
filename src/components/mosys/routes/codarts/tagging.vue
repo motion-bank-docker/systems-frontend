@@ -3,9 +3,9 @@
   center-card-full
     div(slot="form-logo")
     div(slot="form-title")
-      h4 Tag editor
+      h4 Tags
 
-    q-list
+    // q-list
       q-list-header Gruppentitel
       q-item(v-for="n in 4" :key="n") {{ n }}
 
@@ -17,9 +17,9 @@
 
 
     .row
-      div.col-6
+      //div.col-6
         q-btn(color="red" disabled) Delete selected tags
-      div.col-6.text-right
+      div.col-12.text-right
         q-btn() Generate grid from selected tags
 
 </template>

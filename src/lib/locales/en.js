@@ -1,5 +1,9 @@
 const en = {
   buttons: {
+    arrow_next: '>',
+    arrow_prev: '<',
+    abort: 'Abort',
+    apply_synchronisation: 'Apply Synchronisation',
     annotate: 'Annotate',
     add_video: 'Add Video',
     add_and_go: 'Add & Go',
@@ -7,14 +11,19 @@ const en = {
     create_account: 'Create Account',
     create_group: 'Create Group',
     cancel: 'Cancel',
+    change: 'Change',
     delete: 'Delete',
+    done: 'Done',
     edit: 'Edit',
     forgot_password: 'Forgot Password',
     login: 'Login',
     more_info: 'More info',
     request_reset_pass: 'Request Password Reset',
     save_changes: 'Save changes',
+    save: 'Save',
+    set_marker: 'Set Marker',
     submit: 'Submit',
+    synchronize: 'Synchronize',
     videos: 'Videos'
   },
   errors: {
@@ -30,6 +39,7 @@ const en = {
     annotation_body: 'Annotation text',
     accept_terms: 'I accept the Terms and Conditions',
     associated_map: 'Associate Video with Map',
+    created: 'Created',
     description: 'Description',
     duration: 'Duration',
     edit_title: 'Edit title',
@@ -52,6 +62,7 @@ const en = {
     starting_point: 'Starting point',
     tag: 'Tag',
     tags: 'Tags',
+    title: 'Title',
     video_title: 'Video title',
     video_url: 'Video URL'
   },
@@ -148,6 +159,12 @@ const en = {
         list: {
           title: 'Groups',
           caption: 'All your most wonderful groups are here.'
+        }
+      },
+      videos: {
+        list: {
+          title: 'Videos',
+          caption: 'All your most wonderful videos are here.'
         }
       }
     },
