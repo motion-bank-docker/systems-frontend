@@ -42,6 +42,7 @@ const en = {
     location: 'Location',
     map_title: 'Map Title',
     name: 'Name',
+    new_tag: 'New tag',
     organisation: 'Organisation',
     participants: 'Participants',
     password: 'Password',
