@@ -14,10 +14,10 @@
           | Reference video:
           br
           | Modern Class Codarts 2017
-          q-btn(small) {{ $t('buttons.change') }}
+          q-btn(@click="aktivieren" small) {{ $t('buttons.change') }}
         div.video.col-12
           iframe(v-if="video" width="100%" height="100%" src="https://www.youtube.com/embed/rCCHpbJ_IUc" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen)
-          div(v-if="change")
+          div(v-if="!video")
             p(v-for="n in 4") Modern Class Codarts 201{{ n }}
         div
           q-btn {{ $t('buttons.arrow_prev') }}
@@ -60,8 +60,12 @@
     },
     data () {
       return {
-        video: true,
-        change: false
+        video: false
+      }
+    },
+    methods: {
+      aktivieren: function () {
+        this.video = !this.video
       }
     }
   }
