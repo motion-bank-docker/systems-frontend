@@ -1,5 +1,6 @@
 <template lang="pug">
-  video-player(:src="videoSrc", :type="videoSrcType")
+  // video-player(:src="videoSrc", :type="videoSrcType")
+  div {{videoSrc}}
 </template>
 
 <script>
@@ -26,12 +27,13 @@
 </script>
 
 <style scoped lang="stylus">
-  div {
+
+/*  div
     width: 100%;
     height: 100%;
     background-color: white;
     background-size: cover;
     background-repeat: no-repeat;
-    background-position: center;
-  }
+    background-position: center;*/
+
 </style>
