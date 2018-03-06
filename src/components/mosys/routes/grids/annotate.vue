@@ -1,5 +1,5 @@
 <template lang="pug">
-  grid-editor
+  grid-editor.grid-editor
 </template>
 
 <script>
@@ -11,6 +11,6 @@
   }
 </script>
 
-<style scoped>
+<style scoped lang="stylus">
 
 </style>
