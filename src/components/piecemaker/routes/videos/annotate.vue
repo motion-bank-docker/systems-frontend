@@ -10,32 +10,37 @@
 
     #pop-up(v-bind:class="{ activeCondition: active }")
       div.text-right.outline(@click="aktivieren" v-if="!active" color="primary")
-        | Start typing to annotate
+        | Start typing or click here
 
       div(v-if="active")
-        q-input(@keyup.enter="deaktivieren" type="textarea" float-label="Just start typing")
+        q-input(@keyup.enter="deaktivieren" @keyup.esc="deaktivieren" v-model="area" type="textarea" float-label="Start typing")
         div.row
           .col-6
-            q-btn(@click="deaktivieren" small) {{ $t('buttons.abort') }}
-            br
-            span or [Esc]
+            q-btn(@click="deaktivieren" small) Esc
+            // br
+              span or [Esc]
           .col-6.text-right
-            q-btn(@click="deaktivieren" small) {{ $t('buttons.submit') }}
-            br
-            span or [Enter]
+            q-btn(@click="deaktivieren" small) Enter
+            // br
+              span or [Enter]
 
 
     // div(v-if="active" slot="right")
     div(slot="right")
       div
-        .annotation(v-for="n in 10")
+        .annotation(v-for="annotation in annotations")
           .row
             .col-6.timestamp
-              q-btn(small) 0:2{{ n }}
+              q-btn(small) 0:21
             .col-6.text-right
               q-btn(small) {{ $t('buttons.delete') }}
               q-btn(small) {{ $t('buttons.save') }}
-          q-input(type="textarea" placeholder="Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid animi assumenda consequuntur.")
+          q-input(type="textarea") {{ annotation.message }}
+          // .row
+            .col-12.text-right
+              a(@click="") add comment
+            .col-12
+              q-input(type="textarea")
 
 </template>
 
@@ -63,7 +68,27 @@
     data () {
       return {
         video: undefined,
-        active: false
+        active: false,
+        annotations: [{
+          message: 'Animi atque dolor hic laudantium necessitatibus nisi, nulla quia quisquam repellendus!'
+        }, {
+          message: 'Mimi atque dolor hic laudantium necessitatibus nisi, nulla quia quisquam repellendus!'
+        }, {
+          message: 'Animi atque dolor hic laudantium necessitatibus nisi, nulla quia quisquam repellendus!'
+        }, {
+          message: 'Animi atque dolor hic laudantium necessitatibus nisi, nulla quia quisquam repellendus!'
+        }, {
+          message: 'Animi atque dolor hic laudantium necessitatibus nisi, nulla quia quisquam repellendus!'
+        }, {
+          message: 'Ptque dolor hic laudantium necessitatibus nisi, nulla quia quisquam repellendus!'
+        }, {
+          message: 'Animi atque dolor hic laudantium necessitatibus nisi, nulla quia quisquam repellendus!'
+        }, {
+          message: 'Animi atque dolor hic laudantium necessitatibus nisi, nulla quia quisquam repellendus!'
+        }, {
+          message: 'Animi atque dolor hic laudantium necessitatibus nisi, nulla quia quisquam repellendus!'
+        }
+        ]
       }
     },
     methods: {
@@ -93,6 +118,7 @@
   }
   #pop-up > div {
     padding: 1em;
+    background-color: white;
   }
   .annotation {
     padding: .5em;
