@@ -1,5 +1,5 @@
 <template lang="pug">
-  grid-editor.grid-editor
+  grid-editor.grid-editor(:gridUuid="$route.params.id")
 </template>
 
 <script>
