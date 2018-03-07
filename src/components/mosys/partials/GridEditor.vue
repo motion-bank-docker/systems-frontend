@@ -169,6 +169,13 @@
         else {
           event.dataTransfer.setData('text/plain', JSON.stringify(cell))
           this.cellUIStates[cell.uuid].beingDragged = true
+          let elContainerBoundingBox = this.$el.getBoundingClientRect()
+          let elBoundingBox = event.srcElement.getBoundingClientRect()
+          let offset = {
+            x: (event.clientX - elContainerBoundingBox.x) - (elBoundingBox.x - elContainerBoundingBox.x),
+            y: (event.clientY - elContainerBoundingBox.y) - (elBoundingBox.y - elContainerBoundingBox.y)
+          }
+          this.cellUIStates[cell.uuid].draggingOffset = offset
         }
         let tmpCell = {type: 'UIFeedback', x: cell.x, y: cell.y, width: cell.width, height: cell.height}
         this.tmpCells.push(tmpCell)
@@ -226,10 +233,10 @@
       handleContextMenuClick (event) {
         console.log(event)
       },
-      getGridPositionForEvent (event) {
+      getGridPositionForEvent (event, offset = {x: 0, y: 0}) {
         let elContainerBoundingBox = this.$el.getBoundingClientRect()
-        // let elBoundingBox = event.srcElement.getBoundingClientRect()
-        let [x, y] = [event.clientX - elContainerBoundingBox.x, event.clientY - elContainerBoundingBox.y]
+        let x = event.clientX - elContainerBoundingBox.x - offset.x
+        let y = event.clientY - elContainerBoundingBox.y - offset.y
         x = Math.ceil(x / this.gridDimensions.full.cell.width)
         y = Math.ceil(y / this.gridDimensions.full.cell.height)
         return {x: x, y: y}
