@@ -15,6 +15,9 @@
   import { QBtn } from 'quasar-framework'
   import DataTable from '../../../shared/partials/DataTable'
   import CenterCardFull from '../../../shared/layouts/CenterCardFull'
+  import Promise from 'bluebird'
+  import superagent from 'superagent'
+  import buildVars from '../../../../lib/build-vars'
   export default {
     components: {
       QBtn,
@@ -33,17 +36,49 @@
             // return _this.$router.push(`/mosys/codarts/sync`)
           case 'delete':
             _this.$store.dispatch('maps/remove', data.row.uuid)
-              .then(() => { _this.maps = _this.$store.dispatch('maps/find') })
+              .then(() => {
+                return _this.loadMaps().then(maps => { _this.maps = maps })
+              })
         }
+      },
+      loadMaps () {
+        return this.$store.dispatch('annotations/find', { query: { 'body.purpose': 'linking', 'target.id': this.$route.params.groupId } })
+          .then(entries => {
+            return Promise.map(entries, entry => {
+              const newEntry = Object.assign({}, entry)
+              newEntry.title = entry.body.source
+              return Promise.resolve()
+                .then(() => {
+                  if (entry.body.source.indexOf('http') !== 0) return
+                  return superagent.get(`${buildVars().apiHost}/proxy?url=${encodeURIComponent(entry.body.source)}`)
+                    .then(result => {
+                      newEntry.title = result.text.match(/<title[^>]*>([^<]+)<\/title>/)[1]
+                    })
+                    .catch(err => {
+                      console.warn(`Error getting title for ${entry.body.source}: ${err.message}`)
+                    })
+                })
+                .then(() => {
+                  return newEntry
+                })
+            })
+          })
       }
+    },
+    mounted () {
+      const _this = this
+      this.loadMaps()
+        .then(maps => {
+          _this.maps = maps
+        })
     },
     data () {
       const _this = this
       return {
-        maps: _this.$store.dispatch('annotations/find', { query: { 'body.purpose': 'linking', 'target.id': _this.$route.params.groupId } }),
+        maps: [],
         columns: [{
           label: _this.$t('labels.video_title'),
-          field: 'body'
+          field: 'title'
         }],
         actions: [
           { type: 'annotate', title: 'buttons.annotate', color: 'primary' },
