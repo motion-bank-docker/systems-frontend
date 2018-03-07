@@ -23,7 +23,7 @@ const en = {
     save: 'Save',
     set_marker: 'Set Marker',
     submit: 'Submit',
-    synchronize: 'Synchronize',
+    synchronize: 'Sync',
     videos: 'Videos'
   },
   errors: {

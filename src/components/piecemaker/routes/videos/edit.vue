@@ -2,6 +2,10 @@
   center-card-full
     span(slot="form-logo")
     h4 Edit video
+    .text-right
+      q-btn(@click="$router.push(`/mosys/codarts/sync`)" color="primary") Sync
+
+    tagging
     edit-video
     .text-center
       q-btn(@click="$router.push(`/piecemaker/groups/`)") Back to groups
@@ -9,11 +13,13 @@
 
 <script>
   import { QBtn } from 'quasar-framework'
+  import Tagging from '../../../mosys/routes/codarts/tagging'
   import EditVideo from '../../forms/EditVideo'
   import CenterCardFull from '../../../shared/layouts/CenterCardFull'
   export default {
     components: {
       QBtn,
+      Tagging,
       EditVideo,
       CenterCardFull
     }

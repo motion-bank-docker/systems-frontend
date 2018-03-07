@@ -1,13 +1,19 @@
 <template lang="pug">
 
-  center-card-full
+  .row.tags-wrap
+    q-checkbox.col-2(v-for="tag in tags" v-model="checked" :label="tag.title" :key="tag.title")
+    .col-12.text-right
+      slot(name="tagging-buttons")
+    // form-main(v-model="payload", :schema="schema")
+      span(slot="form-buttons")
+
+    // q-btn(slot="form-buttons-add", @click="cancel") {{ $t('buttons.cancel') }}
+
+
+  // center-card-full
     div(slot="form-logo")
     div(slot="form-title")
       h4 Tags
-
-    // q-list
-      q-list-header Gruppentitel
-      q-item(v-for="n in 4" :key="n") {{ n }}
 
     .row
       q-checkbox.col-2(v-for="tag in tags" v-model="checked" :label="tag.title" :key="tag.title")
@@ -17,8 +23,6 @@
 
 
     .row
-      //div.col-6
-        q-btn(color="red" disabled) Delete selected tags
       div.col-12.text-right
         q-btn() Generate grid from selected tags
 
@@ -90,5 +94,9 @@
 </script>
 
 <style scoped>
-
+  .tags-wrap {
+    padding: 1em;
+    margin: 1em 0;
+    background-color: #111;
+  }
 </style>
