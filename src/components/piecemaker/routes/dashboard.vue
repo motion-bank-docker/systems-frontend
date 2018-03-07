@@ -1,5 +1,6 @@
 <template lang="pug">
-  center-card-full
+  // center-card-full
+  card-full
     div(slot="form-logo")
     div(slot="form-title")
       h4 Piecemaker
@@ -38,6 +39,7 @@
     QTabs,
     QRouteTab
   } from 'quasar-framework'
+  import CardFull from '../../shared/layouts/CardFull'
   import CenterCardFull from '../../shared/layouts/CenterCardFull'
   import constants from '../../../lib/constants'
   export default {
@@ -50,6 +52,7 @@
       QBtn,
       QTabs,
       QRouteTab,
+      CardFull,
       CenterCardFull
     },
     data () {
