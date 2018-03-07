@@ -124,11 +124,6 @@
     "webpack-hot-middleware": "^2.21.0",
     "webpack-merge": "^4.1.1"
   },
-  "appConfig": {
-    "apiHost": "https://motionbank-api.herokuapp.com",
-    "apiHostLocal": "http://localhost:3030",
-    "idField": "uuid"
-  },
   "author": "Mainz University of Applied Sciences (Motion Bank Project)",
   "license": "MIT",
   "appConfig": {
