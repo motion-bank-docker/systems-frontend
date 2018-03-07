@@ -31,15 +31,17 @@
           case 'annotate':
             return _this.$router.push(`/mosys/grids/${data.row.uuid}/annotate`)
           case 'delete':
-            _this.$store.dispatch('maps/remove', data.row.uuid)
-              .then(() => { _this.maps = _this.$store.dispatch('maps/find') })
+            _this.$store.dispatch('maps/remove', data.row.uuid).then(() => { _this.maps = _this.getGrids() })
         }
+      },
+      getGrids () {
+        return this.$store.dispatch('maps/find', { query: { type: constants.MAP_TYPE_2D_GRID } })
       }
     },
     data () {
       const _this = this
       return {
-        maps: _this.$store.dispatch('maps/find', { query: { type: constants.MAP_TYPE_2D_GRID } }),
+        maps: _this.getGrids(),
         columns: [
           {
             label: _this.$t('labels.title'),

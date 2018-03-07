@@ -124,6 +124,10 @@
       window.addEventListener('resize', this.updateGridDimensions)
       this.updateGridDimensions()
       this.updateCellUIStates()
+
+      const _this = this,
+        query = { query: { 'target.id': this.$route.params.id } }
+      this.$store.dispatch('annotations/find', query).then(cells => { _this.cells = cells })
     },
     beforeDestroy () {
       window.removeEventListener('resize', this.updateGridDimensions)
