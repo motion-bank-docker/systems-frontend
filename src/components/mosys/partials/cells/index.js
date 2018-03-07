@@ -4,6 +4,7 @@ import CellTitle from './CellTitle'
 import CellIFrame from './CellIFrame'
 import CellSetLink from './CellSetLink'
 import CellVideo from './CellVideo'
+import CellUifeedback from './CellUifeedback'
 
 import CellHtml from './CellHtml'
 import CellRecording from './CellRecording'
@@ -19,5 +20,6 @@ export default {
   CellSetLink,
   CellVimeo,
   CellVideo,
-  CellVisualization
+  CellVisualization,
+  CellUifeedback
 }
