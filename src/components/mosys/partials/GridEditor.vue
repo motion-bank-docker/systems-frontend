@@ -3,11 +3,19 @@
   div.cell-grid-container
 
     div.cell-grid(
-      @dragenter="handleDragOverGrid",
-      @dragover="handleDragOverGrid",
-      @dragleave="handleDragEndGrid",
-      @drop="handleDrop",
+      @dragenter="handleGridDragOver",
+      @dragover="handleGridDragOver",
+      @dragleave="handleGridDragEnd",
+      @drop="handleGridDrop",
       :style="gridStyle")
+
+      q-context-menu(ref="gridmenu")
+        q-list(link, separator, no-border, style="min-width: 150px; max-height: 300px;")
+          q-item(
+          v-for="action in gridContextMenuActions",
+          :key="action.label",
+          @click="event => {action.handler(event), $refs.gridmenu.close()}")
+            q-item-main(:label="action.label")
 
       template(v-for="(cell, index) in cells")
         .cell-item(
@@ -23,12 +31,11 @@
               draggable="true",
               @dragstart="event => {handleCellResizerDragStart(event, cell)}",
               @dragend="event => {handleCellResizerDragEnd(event, cell)}",
-              @dragexit="event => {handleCellResizerDragEnd(event, cell)}"
-              )
+              @dragexit="event => {handleCellResizerDragEnd(event, cell)}")
             q-context-menu
               q-list(link, separator, no-border, style="min-width: 150px; max-height: 300px;")
                 q-item(
-                  v-for="action in contextMenuActions",
+                  v-for="action in cellContextMenuActions",
                   :key="action.label",
                   @click="event => {action.handler(event, cell)}")
                     q-item-main(:label="action.label")
@@ -56,14 +63,20 @@
     },
     data () {
       return {
-        contextMenuActions: {
+        cellContextMenuActions: {
           edit: {
             label: 'Edit',
-            handler: this.handleContextMenuEdit
+            handler: this.handleCellContextMenuEdit
           },
           delete: {
             label: 'Delete',
-            handler: this.handleContextMenuDelete
+            handler: this.handleCellContextMenuDelete
+          }
+        },
+        gridContextMenuActions: {
+          add_cell: {
+            label: 'Add Cell',
+            handler: this.handleGridContextMenuAddCell
           }
         },
         grid: {
@@ -71,35 +84,7 @@
           rows: 4,
           ratio: (16 / 9.0)
         },
-        cells: [
-          {
-            uuid: 'hasen-koettel-scheisse',
-            type: 'title',
-            content: 'Mein Toller Titel',
-            x: 1,
-            y: 1,
-            width: 1,
-            height: 1
-          },
-          {
-            uuid: 'einhorn-fussel-kram',
-            type: 'text',
-            content: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Blanditiis facere facilis, iste iusto labore, mollitia nihil perspiciatis praesentium quae quibusdam quis repudiandae saepe, sed soluta voluptatum. Deleniti earum iste velit!',
-            x: 1,
-            y: 2,
-            width: 1,
-            height: 2
-          },
-          {
-            uuid: 'taben-kabel-zippel-zappel',
-            type: 'video',
-            content: 'https://www.youtube.com/watch?v=Cn4vC80Pv6Q',
-            x: 2,
-            y: 1,
-            width: 2,
-            height: 2
-          }
-        ],
+        cells: [],
         dragCell: {},
         tmpCells: [],
         cellUIStates: {},
@@ -118,16 +103,9 @@
       }
     },
     mounted () {
-      // this.updateGridDimensions = _.debounce(this._updateGridDimensions, 100)
-      // api.getCellSet(this.setId, this.setCellSet)
-
       window.addEventListener('resize', this.updateGridDimensions)
       this.updateGridDimensions()
-      this.updateCellUIStates()
-
-      const _this = this,
-        query = { query: { 'target.id': this.$route.params.id } }
-      this.$store.dispatch('annotations/find', query).then(cells => { _this.cells = cells })
+      this.fetchAnnotations()
     },
     beforeDestroy () {
       window.removeEventListener('resize', this.updateGridDimensions)
@@ -141,6 +119,126 @@
       }
     },
     methods: {
+      handleCellResizerDragStart (event, cell) {
+        this.cellUIStates[cell.uuid].beingResized = true
+        let tmpCell = this.getTmpCell(cell)
+        this.tmpCells.push(tmpCell)
+      },
+      handleCellResizerDragEnd (event, cell) {
+        let position = this.getGridPositionForEvent(event)
+        cell.width = Math.max(1, 1 + position.x - cell.x)
+        cell.height = Math.max(1, 1 + position.y - cell.y)
+        this.cellUIStates[cell.uuid].beingResized = false
+        this.tmpCells = []
+        this.updateCellStore(cell)
+      },
+      handleCellClick (event, cell) {
+        this.cellUIStates[cell.uuid].selected = !this.cellUIStates[cell.uuid].selected
+      },
+      handleCellDragStart (event, cell) {
+        if (this.cellUIStates[cell.uuid].beingResized) {
+        }
+        else {
+          event.dataTransfer.setData('text/plain', JSON.stringify(cell))
+          this.cellUIStates[cell.uuid].beingDragged = true
+          let elContainerBoundingBox = this.$el.getBoundingClientRect()
+          let elBoundingBox = event.srcElement.getBoundingClientRect()
+          let offset = {
+            x: (event.clientX - elContainerBoundingBox.x) - (elBoundingBox.x - elContainerBoundingBox.x),
+            y: (event.clientY - elContainerBoundingBox.y) - (elBoundingBox.y - elContainerBoundingBox.y)
+          }
+          this.cellUIStates[cell.uuid].draggingOffset = offset
+          this.cellUIStates[cell.uuid].beginDragged = true
+        }
+        let tmpCell = this.getTmpCell(cell)
+        this.tmpCells.push(tmpCell)
+      },
+      handleCellDragEnd (event, cell) {
+        this.cellUIStates[cell.uuid].beingDragged = false
+      },
+      handleContextMenuClick (event) {
+        console.log(event)
+      },
+
+      handleCellContextMenuEdit (event, cell) {
+      },
+      handleCellContextMenuDelete (event, cell, refId) {
+        this.cells = this.cells.filter(c => c !== cell)
+        if (refId) {
+          console.log(this.$refs)
+          this.$refs[refId].close()
+        }
+      },
+
+      handleGridDragOver (event) {
+        let _this = this
+        let cell = Object.keys(this.cellUIStates).filter(uuid => {
+          return _this.cellUIStates[uuid].beginDragged || _this.cellUIStates[uuid].beingResized
+        }).map(uuid => {
+          return _this.cellUIStates[uuid].cell
+        }).shift()
+        if (cell) {
+          let offset = this.cellUIStates[cell.uuid].draggingOffset
+          let position = this.getGridPositionForEvent(event, offset)
+          let tmpCell = this.tmpCells[0]
+          if (!tmpCell && this.tmpCells.length === 0) {
+            if (cell) {
+              tmpCell = this.getTmpCell(cell)
+              this.tmpCells.push(tmpCell)
+            }
+          }
+          if (event.dataTransfer.types.includes('text/plain')) {
+            tmpCell.x = position.x
+            tmpCell.y = position.y
+            event.preventDefault()
+          }
+          else {
+            tmpCell.width = Math.max(1, 1 + position.x - tmpCell.x)
+            tmpCell.height = Math.max(1, 1 + position.y - tmpCell.y)
+          }
+        }
+      },
+      handleGridDragEnd () {
+        this.tmpCells = []
+      },
+      handleGridDrop (event) {
+        let cellDropped = event.dataTransfer.getData('text/plain')
+        if (cellDropped) {
+          cellDropped = JSON.parse(cellDropped)
+          let cell = this.cells.find(c => c.uuid === cellDropped.uuid)
+          if (cell) {
+            let offset = this.cellUIStates[cell.uuid].draggingOffset
+            let position = this.getGridPositionForEvent(event, offset)
+            cell.x = position.x
+            cell.y = position.y
+            this.tmpCells = []
+            this.updateCellStore(cell)
+            event.preventDefault()
+          }
+        }
+      },
+      handleGridContextMenuAddCell (event) {
+        const _this = this
+        let position = this.getGridPositionForEvent(event)
+        let newCell = {
+          x: position.x,
+          y: position.y,
+          width: 1,
+          height: 1,
+          type: 'text',
+          content: 'A new cell is born'
+        }
+        let annotation = this.getAnnotationForCell(newCell)
+        Promise
+          .resolve()
+          .then(() => {
+            return _this.$store.dispatch('annotations/create', annotation)
+          })
+          .then(() => {
+            _this.fetchAnnotations()
+          })
+      },
+
       updateCellUIStates () {
         let newCellUIStates = {}
         this.cells.map(c => {
@@ -152,88 +250,10 @@
         })
         this.cellUIStates = newCellUIStates
       },
-      handleCellResizerDragStart (event, cell) {
-        this.cellUIStates[cell.uuid].beingResized = true
-        let tmpCell = {type: 'UIFeedback', x: cell.x, y: cell.y, width: cell.width, height: cell.height}
-        this.tmpCells.push(tmpCell)
-      },
-      handleCellResizerDragEnd (event, cell) {
-        let position = this.getGridPositionForEvent(event)
-        cell.width = Math.max(1, 1 + position.x - cell.x)
-        cell.height = Math.max(1, 1 + position.y - cell.y)
-        this.cellUIStates[cell.uuid].beingResized = false
-        this.tmpCells = []
-      },
-      handleCellClick (event, cell) {
-        this.cellUIStates[cell.uuid].selected = !this.cellUIStates[cell.uuid].selected
-      },
-      handleCellDragStart (event, cell) {
-        if (this.cellUIStates[cell.uuid].beingResized) {
-        }
-        else {
-          event.dataTransfer.setData('text/plain', JSON.stringify(cell))
-          this.cellUIStates[cell.uuid].beingDragged = true
-        }
-        let tmpCell = {type: 'UIFeedback', x: cell.x, y: cell.y, width: cell.width, height: cell.height}
-        this.tmpCells.push(tmpCell)
-      },
-      handleCellDragEnd (event, cell) {
-        this.cellUIStates[cell.uuid].beingDragged = false
-      },
-      handleContextMenuEdit (event, cell) {
-      },
-      handleContextMenuDelete (event, cell) {
-        this.cells = this.cells.filter(c => c !== cell)
-      },
-      handleDragOverGrid (event) {
-        let _this = this
-        let position = this.getGridPositionForEvent(event)
-        let tmpCell = this.tmpCells[0]
-        if (!tmpCell && this.tmpCells.length === 0) {
-          let cell
-          Object.keys(this.cellUIStates).map(uuid => {
-            let state = this.cellUIStates[uuid]
-            if (!cell && (state.beingDragged || state.beingResized)) cell = _this.cellUIStates[uuid].cell
-          })
-          if (cell) {
-            tmpCell = {type: 'UIFeedback', x: cell.x, y: cell.y, width: cell.width, height: cell.height}
-            this.tmpCells.push(tmpCell)
-          }
-        }
-        if (event.dataTransfer.types.includes('text/plain')) {
-          tmpCell.x = position.x
-          tmpCell.y = position.y
-          event.preventDefault()
-        }
-        else {
-          tmpCell.width = Math.max(1, 1 + position.x - tmpCell.x)
-          tmpCell.height = Math.max(1, 1 + position.y - tmpCell.y)
-        }
-      },
-      handleDragEndGrid () {
-        this.tmpCells = []
-      },
-      handleDrop (event) {
-        let cellDropped = event.dataTransfer.getData('text/plain')
-        if (cellDropped) {
-          cellDropped = JSON.parse(cellDropped)
-          let cell = this.cells.find(c => c.uuid === cellDropped.uuid)
-          if (cell) {
-            let position = this.getGridPositionForEvent(event)
-            cell.x = position.x
-            cell.y = position.y
-            this.tmpCells = []
-            event.preventDefault()
-          }
-        }
-      },
-      handleContextMenuClick (event) {
-        console.log(event)
-      },
-      getGridPositionForEvent (event) {
+      getGridPositionForEvent (event, offset = {x: 0, y: 0}) {
         let elContainerBoundingBox = this.$el.getBoundingClientRect()
-        // let elBoundingBox = event.srcElement.getBoundingClientRect()
-        let [x, y] = [event.clientX - elContainerBoundingBox.x, event.clientY - elContainerBoundingBox.y]
+        let x = event.clientX - elContainerBoundingBox.x - offset.x
+        let y = event.clientY - elContainerBoundingBox.y - offset.y
         x = Math.ceil(x / this.gridDimensions.full.cell.width)
         y = Math.ceil(y / this.gridDimensions.full.cell.height)
         return {x: x, y: y}
@@ -283,6 +303,62 @@
             'grid-auto-columns': this.gridDimensions.mini.cell.width + 'px',
             'grid-auto-rows': this.gridDimensions.mini.cell.height + 'px'
           }
+        }
+      },
+      fetchAnnotations () {
+        const _this = this,
+          query = { query: { 'target.id': this.$route.params.id } }
+        this.$store.dispatch('annotations/find', query)
+          .then(annotations => {
+            _this.cells = annotations.map(annotation => {
+              let cell = JSON.parse(annotation.body.value)
+              if (cell) {
+                cell.uuid = annotation.uuid
+                return cell
+              }
+              return null
+            }).filter(cell => cell)
+            _this.updateCellUIStates()
+          })
+      },
+      getAnnotationForCell (cell) {
+        return {
+          body: {
+            type: '2DCell',
+            purpose: 'linking',
+            value: JSON.stringify(cell)
+          },
+          author: this.$store.state.auth.payload.userId,
+          target: {
+            id: this.$route.params.id,
+            type: 'Map',
+            selector: {
+              type: '2DLocation',
+              value: `x=${cell.x}&y=${cell.y}&width=${cell.width}&height=${cell.height}`
+            }
+          }
+        }
+      },
+      updateCellStore (cell) {
+        const _this = this
+        let annotation = this.getAnnotationForCell(cell)
+        Promise
+          .resolve()
+          .then(() => {
+            return _this.$store.dispatch('annotations/patch', [cell.uuid, annotation])
+          })
+          .then(() => {
+            _this.fetchAnnotations()
+          })
+      },
+      getTmpCell (cell, type = 'UIFeedback') {
+        return {
+          srcUuid: cell.uuid,
+          type: type,
+          x: cell.x,
+          y: cell.y,
+          width: cell.width,
+          height: cell.height
         }
       }
       // setCellSet: function (cellSet) {
