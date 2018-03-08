@@ -73,7 +73,7 @@
             message: 'messages.update_success'
           }
         },
-        payload: context.$store.dispatch('users/get', context.$store.state.auth.payload.userId)
+        payload: context.$store.dispatch('users/get', context.$route.params.id)
       }
     }
   }
