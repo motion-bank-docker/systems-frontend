@@ -60,13 +60,6 @@
                   }
                 }
               }
-              if (context.apiPayload.body.source.indexOf('youtube.com') > -1) {
-                context.apiPayload.body.type = 'video/youtube'
-              }
-              else if (context.apiPayload.body.source.indexOf('vimeo.com') > -1) {
-                context.apiPayload.body.type = 'video/vimeo'
-              }
-              console.log(context.apiPayload)
               return Promise.resolve()
                 .then(() => {
                   if (context.payload.uuid) {
