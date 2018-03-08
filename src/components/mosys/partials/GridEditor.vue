@@ -175,7 +175,6 @@
       },
 
       handleCellContextMenuClick (event) {
-        console.log(event)
       },
       handleCellContextMenuEdit (event, cell) {
       },
@@ -310,7 +309,6 @@
       },
 
       handleGridKeyReleased (event) {
-        console.log(event)
       },
 
       updateCellUIStates () {
