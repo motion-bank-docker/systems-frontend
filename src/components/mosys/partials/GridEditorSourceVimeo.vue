@@ -3,12 +3,7 @@
   q-list.vimeo-source-container
 
     q-list-header
-      // template(v-if="currentGroup") Videos in Group #[strong {{currentGroup.title}}]
-        q-btn(flat, round, small, fixed, class="fixed",
-          style="right: 24px", @click="handleClickUnsetCurrentGroup", icon="close")
-        template(v-else)
-          router-link(:to="{name: 'piecemaker.groups.list'}") Piecemaker Groups
-      input(v-model="searchTerm", @change="handleInputChange")
+      q-input(v-model="searchTerm")
 
     q-item-separator
 
@@ -17,7 +12,7 @@
       q-item
         q-item-side
           q-spinner(style="margin-right: 1em")
-        q-item-main Loading Videos
+        q-item-main Loading videos for »{{lastSearchTerm}}«
       q-item-separator
     template(v-else-if="searchResults.length === 0")
       q-item No Videos Found!
@@ -38,7 +33,7 @@
 </template>
 
 <script>
-  import { QIcon, QBtn, QList, QListHeader, QItem, QItemSide, QItemMain, QItemSeparator, QScrollArea, QSpinner } from 'quasar-framework'
+  import { QInput, QIcon, QBtn, QList, QListHeader, QItem, QItemSide, QItemMain, QItemSeparator, QScrollArea, QSpinner } from 'quasar-framework'
   import superagent from 'superagent'
 
   const VIMEO_ACCESS_TOKEN = '8dbc7f72ddb834a4665dbb6989014699'
@@ -47,20 +42,29 @@
 
   export default {
     components: {
-      QIcon, QBtn, QList, QListHeader, QItem, QItemSide, QItemMain, QItemSeparator, QScrollArea, QSpinner
+      QInput, QIcon, QBtn, QList, QListHeader, QItem, QItemSide, QItemMain, QItemSeparator, QScrollArea, QSpinner
     },
     data () {
       return {
         searchTerm: '',
         searchResults: [],
-        loadingVideos: false
+        loadingVideos: false,
+        lastSearchTerm: ''
+      }
+    },
+    watch: {
+      searchTerm () {
+        if (!this.loadingVideos) {
+          this.loadVideos()
+        }
       }
     },
     methods: {
-      handleInputChange () {
+      loadVideos () {
         const _this = this
-        this.loadingVideos = true
         if (this.searchTerm.length >= 3) {
+          this.loadingVideos = true
+          this.lastSearchTerm = this.searchTerm
           superagent
             .get(apiBase + apiSearchVideos, {
               query: this.searchTerm,
@@ -68,12 +72,24 @@
             })
             .then(results => {
               _this.searchResults = results.body.data
-              _this.loadingVideos = false
+              _this.checkNewSearchTerm()
             })
             .catch(() => {
               console.log('Failed to load Vimeo results for', _this.searchTerm)
-              _this.loadingVideos = false
+              _this.checkNewSearchTerm()
             })
+        }
+        else if (this.searchTerm.length === 0) {
+          this.searchResults = []
+          this.lastSearchTerm = ''
+        }
+      },
+      checkNewSearchTerm () {
+        if (this.searchTerm !== this.lastSearchTerm) {
+          this.loadVideos()
+        }
+        else {
+          this.loadingVideos = false
         }
       },
       handleVideoItemClick (event, video) {
@@ -94,6 +110,20 @@
   }
 </script>
 
-<style scoped>
+<style scoped lang="stylus">
+
+  .q-list-header
+    padding-left 0
+
+    .q-input
+      padding-left 1em
+      padding-right 1em
+
+    .q-input:before
+    .q-input:after
+      display none
+
+  .q-input
+    padding-left 0
 
 </style>
