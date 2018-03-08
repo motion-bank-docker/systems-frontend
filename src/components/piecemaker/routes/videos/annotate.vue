@@ -187,6 +187,10 @@
         this.player = player
       },
       parseSelector (val) {
+        if (!val) {
+          console.warn(`Warning: encountered undefined selector`)
+          return {}
+        }
         assert.equal(typeof val, 'string')
         const obj = querystring.parse(val)
         Object.keys(obj).forEach(key => {
