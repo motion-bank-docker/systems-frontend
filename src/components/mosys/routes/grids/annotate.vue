@@ -1,16 +1,45 @@
 <template lang="pug">
-  grid-editor.grid-editor(:gridUuid="$route.params.id")
+  .grid-editor-container(:class="{'sources-open': $store.state.mosysGridEditorStore.showSources}")
+    grid-editor.grid-editor(:gridUuid="$route.params.id")
+    grid-editor-sources.grid-editor-sources(v-if="$store.state.mosysGridEditorStore.showSources")
 </template>
 
 <script>
   import GridEditor from '../../partials/GridEditor'
+  import GridEditorSources from '../../partials/GridEditorSources'
   export default {
     components: {
-      GridEditor
+      GridEditor,
+      GridEditorSources
+    },
+    mounted () {
     }
   }
 </script>
 
 <style scoped lang="stylus">
+
+  .grid-editor-container
+    display flex
+    width 100%
+    height 100%
+    position absolute
+    flex-direction row
+
+  .grid-editor
+  .grid-editor-sources
+    flex-grow 1
+    width 100%
+    height 100%
+
+  .grid-editor
+    overflow auto
+
+  .sources-open
+    .grid-editor
+      width calc(2*100%/3)
+
+  .grid-editor-sources
+    width calc(100%/3)
 
 </style>

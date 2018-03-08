@@ -18,6 +18,10 @@
           @click="event => {action.handler(event), $refs.gridmenu.close()}")
             q-item-main(:label="action.label")
 
+      q-fixed-position(corner="top-right", :offset="[18, 18]", v-if="!$store.state.mosysGridEditorStore.showSources")
+        q-btn(round, color="primary", @click="handleGridButtonClickEdit")
+          q-icon(name="add")
+
       template(v-for="(cell, index) in cells")
         .cell-item(
           draggable="true",
@@ -50,7 +54,11 @@
 <script>
   // import Vue from 'vue'
   // import constants from '../../../lib/constants'
-  import { QScrollArea, QContextMenu, QList, QItem, QItemMain, QFixedPosition, QBtn } from 'quasar-framework'
+  import {
+    QScrollArea, QContextMenu, QList,
+    QItem, QItemMain, QFixedPosition, QBtn,
+    QIcon
+  } from 'quasar-framework'
   import Cell from './Cell'
 
   export default {
@@ -62,6 +70,7 @@
       QItemMain,
       QFixedPosition,
       QBtn,
+      QIcon,
       Cell
     },
     props: ['gridUuid'],
@@ -197,25 +206,28 @@
         }).map(uuid => {
           return _this.cellUIStates[uuid].cell
         }).shift()
-        if (cell) {
-          let offset = this.cellUIStates[cell.uuid].draggingOffset
-          let position = this.getGridPositionForEvent(event, offset)
-          let tmpCell = this.tmpCells[0]
-          if (!tmpCell && this.tmpCells.length === 0) {
-            if (cell) {
-              tmpCell = this.getTmpCell(cell)
-              this.tmpCells.push(tmpCell)
-            }
-          }
-          if (event.dataTransfer.types.includes('text/plain')) {
-            tmpCell.x = position.x
-            tmpCell.y = position.y
-            event.preventDefault()
-          }
-          else {
-            tmpCell.width = Math.max(1, 1 + position.x - tmpCell.x)
-            tmpCell.height = Math.max(1, 1 + position.y - tmpCell.y)
-          }
+        let offset, position
+        if (!cell) {
+          cell = {uuid: null, x: 1, y: 1, width: 1, height: 1}
+          position = this.getGridPositionForEvent(event)
+        }
+        else {
+          offset = this.cellUIStates[cell.uuid].draggingOffset
+          position = this.getGridPositionForEvent(event, offset)
+        }
+        let tmpCell = this.tmpCells[0]
+        if (!tmpCell && this.tmpCells.length === 0) {
+          tmpCell = this.getTmpCell(cell)
+          this.tmpCells.push(tmpCell)
+        }
+        if (event.dataTransfer.types.includes('text/plain')) {
+          tmpCell.x = position.x
+          tmpCell.y = position.y
+          event.preventDefault()
+        }
+        else {
+          tmpCell.width = Math.max(1, 1 + position.x - tmpCell.x)
+          tmpCell.height = Math.max(1, 1 + position.y - tmpCell.y)
         }
       },
       handleGridDragEnd () {
@@ -226,15 +238,20 @@
         if (cellDropped) {
           cellDropped = JSON.parse(cellDropped)
           let cell = this.cells.find(c => c.uuid === cellDropped.uuid)
+          let offset, position
           if (cell) {
-            let offset = this.cellUIStates[cell.uuid].draggingOffset
-            let position = this.getGridPositionForEvent(event, offset)
-            cell.x = position.x
-            cell.y = position.y
-            this.tmpCells = []
-            this.updateCellStore(cell)
-            event.preventDefault()
+            offset = this.cellUIStates[cell.uuid].draggingOffset
+            position = this.getGridPositionForEvent(event, offset)
           }
+          else {
+            cell = cellDropped
+            position = this.getGridPositionForEvent(event)
+          }
+          cell.x = position.x
+          cell.y = position.y
+          this.tmpCells = []
+          this.updateCellStore(cell)
+          event.preventDefault()
         }
       },
 
@@ -308,6 +325,10 @@
         this.updateGridMetadataStore()
       },
 
+      handleGridButtonClickEdit (event) {
+        this.$store.commit('mosysGridEditorStore/toggleSources')
+      },
+
       handleGridKeyReleased (event) {
       },
 
@@ -334,8 +355,8 @@
       },
       getGridPositionForEvent (event, offset = {x: 0, y: 0}) {
         let elContainerBoundingBox = this.$el.getBoundingClientRect()
-        let x = event.clientX - elContainerBoundingBox.x - offset.x
-        let y = event.clientY - elContainerBoundingBox.y - offset.y
+        let x = event.clientX + this.$el.scrollLeft - elContainerBoundingBox.x - offset.x
+        let y = event.clientY + this.$el.scrollTop - elContainerBoundingBox.y - offset.y
         x = Math.ceil(x / this.gridDimensions.full.cell.width)
         y = Math.ceil(y / this.gridDimensions.full.cell.height)
         return {x: x, y: y}
@@ -498,16 +519,8 @@
 
 <style scoped lang="stylus">
 
-  .cell-grid-container
-    width 100%
-    height 100%
-    position absolute
-
   .cell-grid
     display grid
-    width 100%
-    height 100%
-    position absolute
     background-color #eee
 
   .cell-item
