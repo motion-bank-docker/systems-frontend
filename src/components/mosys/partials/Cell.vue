@@ -42,17 +42,17 @@
   }
 </script>
 
-<style lang="stylus">
+<style scoped lang="stylus">
 
     .cell-content
       pointer-events none
 
-    h1, h2, h3, h4, h5, h6
-      font-size: 1em
-      font-weight: normal
+      h1, h2, h3, h4, h5, h6
+        font-size: 1em
+        font-weight: normal
 
-    a, a:hover, a:visited
-      color: black
-      text-decoration: underline
+      a, a:hover, a:visited
+        color: black
+        text-decoration: underline
 
 </style>
