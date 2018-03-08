@@ -17,9 +17,9 @@
       template(v-if="currentVideos.length === 0")
         template(v-if="loadingVideos")
           q-item
-            q-item-left
+            q-item-side
               q-spinner(style="margin-right: 1em")
-            q-item-middle Loading Videos
+            q-item-main Loading Videos
         template(v-else)
           q-item No Videos Found!
 
@@ -51,6 +51,8 @@
   import constants from '../../../lib/constants'
   import Promise from 'bluebird'
   import superagent from 'superagent'
+  import url from 'url'
+  import path from 'path'
   import buildVars from '../../../lib/build-vars'
   import he from 'he'
 
@@ -87,6 +89,7 @@
               return Promise.resolve()
                 .then(() => {
                   if (entry.body.source.indexOf('http') !== 0) return
+                  if (path.extname(url.parse(entry.body.source).path) === '.mp4') return
                   return superagent.get(`${buildVars().apiHost}/proxy?url=${encodeURIComponent(entry.body.source)}`)
                     .then(result => {
                       let title = result.text.match(/<title[^>]*>([^<]+)<\/title>/)[1]
