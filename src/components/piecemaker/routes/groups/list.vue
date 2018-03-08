@@ -5,54 +5,19 @@
     p.caption(slot="form-caption") {{ $t('routes.piecemaker.groups.list.caption') }}
     p
       q-btn(@click="$router.push({ name: 'piecemaker.groups.create' })", color="primary") {{ $t('buttons.create_group') }}
-    data-table(:entries="maps", :columns="columns", :actions="actions", @action="onAction")
+    group-list
 </template>
 
 <script>
   import { QBtn } from 'quasar-framework'
-  import DataTable from '../../../shared/partials/DataTable'
   import CenterCardFull from '../../../shared/layouts/CenterCardFull'
-  import constants from '../../../../lib/constants'
+  import GroupList from '../../partials/GroupsList'
+
   export default {
     components: {
       QBtn,
-      DataTable,
-      CenterCardFull
-    },
-    methods: {
-      onAction (type, data) {
-        const _this = this
-        switch (type) {
-          case 'videos':
-            return _this.$router.push(`/piecemaker/groups/${data.row.uuid}/videos`)
-          case 'edit':
-            return _this.$router.push(`/piecemaker/groups/${data.row.uuid}/edit`)
-          case 'delete':
-            _this.$store.dispatch('maps/remove', data.row.uuid)
-              .then(() => { _this.maps = _this.$store.dispatch('maps/find') })
-        }
-      }
-    },
-    data () {
-      const _this = this
-      return {
-        maps: _this.$store.dispatch('maps/find', { query: { type: constants.MAP_TYPE_TIMELINE } }),
-        columns: [
-          {
-            label: _this.$t('labels.title'),
-            field: 'title'
-          },
-          {
-            label: _this.$t('labels.created'),
-            field: 'created'
-          }
-        ],
-        actions: [
-          { type: 'videos', title: 'buttons.videos', color: 'primary' },
-          { type: 'edit', title: 'buttons.edit' },
-          { type: 'delete', title: 'buttons.delete' }
-        ]
-      }
+      CenterCardFull,
+      GroupList
     }
   }
 </script>

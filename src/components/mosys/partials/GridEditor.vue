@@ -7,6 +7,7 @@
       @dragover="handleGridDragOver",
       @dragleave="handleGridDragEnd",
       @drop="handleGridDrop",
+      @contextmenu="handleGridContextMenu",
       :style="gridStyle")
 
       q-context-menu(ref="gridmenu")
@@ -16,6 +17,10 @@
           :key="action.label",
           @click="event => {action.handler(event), $refs.gridmenu.close()}")
             q-item-main(:label="action.label")
+
+      q-fixed-position(corner="top-right", :offset="[18, 18]", v-if="!$store.state.mosysGridEditorStore.showSources")
+        q-btn(round, color="primary", @click="handleGridButtonClickEdit")
+          q-icon(name="add")
 
       template(v-for="(cell, index) in cells")
         .cell-item(
@@ -47,7 +52,13 @@
 </template>
 
 <script>
-  import { QScrollArea, QContextMenu, QList, QItem, QItemMain, QFixedPosition, QBtn } from 'quasar-framework'
+  // import Vue from 'vue'
+  // import constants from '../../../lib/constants'
+  import {
+    QScrollArea, QContextMenu, QList,
+    QItem, QItemMain, QFixedPosition, QBtn,
+    QIcon
+  } from 'quasar-framework'
   import Cell from './Cell'
 
   export default {
@@ -59,8 +70,10 @@
       QItemMain,
       QFixedPosition,
       QBtn,
+      QIcon,
       Cell
     },
+    props: ['gridUuid'],
     data () {
       return {
         cellContextMenuActions: {
@@ -77,13 +90,17 @@
           add_cell: {
             label: 'Add Cell',
             handler: this.handleGridContextMenuAddCell
+          },
+          insert_column: {
+            label: 'Insert Column',
+            handler: this.handleGridContextMenuInsertColumnLeft
+          },
+          insert_row: {
+            label: 'Insert Row',
+            handler: this.handleGridContextMenuInsertRowAbove
           }
         },
-        grid: {
-          columns: 10,
-          rows: 4,
-          ratio: (16 / 9.0)
-        },
+        gridMetadata: {},
         cells: [],
         dragCell: {},
         tmpCells: [],
@@ -91,7 +108,8 @@
         renderFull: true,
         gridDimensions: {gridWidth: 0, gridHeight: 0, cellWidth: 0, cellHeight: 0},
         gridStyle: {},
-        gridContainerStyle: {}
+        gridContainerStyle: {},
+        contextMenuClickPosition: {}
       }
     },
     computed: {
@@ -103,9 +121,13 @@
       }
     },
     mounted () {
+      const _this = this
       window.addEventListener('resize', this.updateGridDimensions)
-      this.updateGridDimensions()
-      this.fetchAnnotations()
+      this.fetchMetadataAnnotations()
+        .then(() => {
+          this.updateGridDimensions()
+          _this.fetchCellAnnotations()
+        })
     },
     beforeDestroy () {
       window.removeEventListener('resize', this.updateGridDimensions)
@@ -114,7 +136,11 @@
       cells () {
         this.updateCellUIStates()
       },
-      grid () {
+      gridUuid () {
+        console.log('Grid UUID changed, fetch metadata again??')
+        // this.gridMetadata = Object.assign({}, this.grid)
+      },
+      gridMetadata () {
         this.updateGridDimensions()
       }
     },
@@ -156,16 +182,19 @@
       handleCellDragEnd (event, cell) {
         this.cellUIStates[cell.uuid].beingDragged = false
       },
-      handleContextMenuClick (event) {
-        console.log(event)
-      },
 
+      handleCellContextMenuClick (event) {
+      },
       handleCellContextMenuEdit (event, cell) {
       },
       handleCellContextMenuDelete (event, cell, refId) {
-        this.cells = this.cells.filter(c => c !== cell)
+        const _this = this
+        _this.cells = _this.cells.filter(c => c !== cell)
+        this.$store.dispatch('annotations/remove', cell.uuid)
+          .then(() => {
+            _this.fetchCellAnnotations()
+          })
         if (refId) {
-          console.log(this.$refs)
           this.$refs[refId].close()
         }
       },
@@ -177,25 +206,28 @@
         }).map(uuid => {
           return _this.cellUIStates[uuid].cell
         }).shift()
-        if (cell) {
-          let offset = this.cellUIStates[cell.uuid].draggingOffset
-          let position = this.getGridPositionForEvent(event, offset)
-          let tmpCell = this.tmpCells[0]
-          if (!tmpCell && this.tmpCells.length === 0) {
-            if (cell) {
-              tmpCell = this.getTmpCell(cell)
-              this.tmpCells.push(tmpCell)
-            }
-          }
-          if (event.dataTransfer.types.includes('text/plain')) {
-            tmpCell.x = position.x
-            tmpCell.y = position.y
-            event.preventDefault()
-          }
-          else {
-            tmpCell.width = Math.max(1, 1 + position.x - tmpCell.x)
-            tmpCell.height = Math.max(1, 1 + position.y - tmpCell.y)
-          }
+        let offset, position
+        if (!cell) {
+          cell = {uuid: null, x: 1, y: 1, width: 1, height: 1}
+          position = this.getGridPositionForEvent(event)
+        }
+        else {
+          offset = this.cellUIStates[cell.uuid].draggingOffset
+          position = this.getGridPositionForEvent(event, offset)
+        }
+        let tmpCell = this.tmpCells[0]
+        if (!tmpCell && this.tmpCells.length === 0) {
+          tmpCell = this.getTmpCell(cell)
+          this.tmpCells.push(tmpCell)
+        }
+        if (event.dataTransfer.types.includes('text/plain')) {
+          tmpCell.x = position.x
+          tmpCell.y = position.y
+          event.preventDefault()
+        }
+        else {
+          tmpCell.width = Math.max(1, 1 + position.x - tmpCell.x)
+          tmpCell.height = Math.max(1, 1 + position.y - tmpCell.y)
         }
       },
       handleGridDragEnd () {
@@ -206,20 +238,29 @@
         if (cellDropped) {
           cellDropped = JSON.parse(cellDropped)
           let cell = this.cells.find(c => c.uuid === cellDropped.uuid)
+          let offset, position
           if (cell) {
-            let offset = this.cellUIStates[cell.uuid].draggingOffset
-            let position = this.getGridPositionForEvent(event, offset)
-            cell.x = position.x
-            cell.y = position.y
-            this.tmpCells = []
-            this.updateCellStore(cell)
-            event.preventDefault()
+            offset = this.cellUIStates[cell.uuid].draggingOffset
+            position = this.getGridPositionForEvent(event, offset)
           }
+          else {
+            cell = cellDropped
+            position = this.getGridPositionForEvent(event)
+          }
+          cell.x = position.x
+          cell.y = position.y
+          this.tmpCells = []
+          this.updateCellStore(cell)
+          event.preventDefault()
         }
+      },
+
+      handleGridContextMenu (event) {
+        this.contextMenuClickPosition = this.getGridPositionForEvent(event)
       },
       handleGridContextMenuAddCell (event) {
         const _this = this
-        let position = this.getGridPositionForEvent(event)
+        let position = this.contextMenuClickPosition
         let newCell = {
           x: position.x,
           y: position.y,
@@ -228,15 +269,67 @@
           type: 'text',
           content: 'A new cell is born'
         }
-        let annotation = this.getAnnotationForCell(newCell)
+        let annotation = this.getGridCellAnnotation(newCell)
         Promise
           .resolve()
           .then(() => {
             return _this.$store.dispatch('annotations/create', annotation)
           })
           .then(() => {
-            _this.fetchAnnotations()
+            _this.fetchCellAnnotations()
           })
+      },
+      handleGridContextMenuInsertColumnLeft (event) {
+        const _this = this
+        let position = this.contextMenuClickPosition
+        this.cells.map(cell => {
+          if (cell.x >= position.x) {
+            cell.x += 1
+            let annotation = this.getGridCellAnnotation(cell)
+            Promise
+              .resolve()
+              .then(() => {
+                return _this.$store.dispatch('annotations/patch', [cell.uuid, annotation])
+              })
+              .then(() => {
+                _this.fetchCellAnnotations()
+              })
+          }
+          return cell
+        })
+
+        this.gridMetadata = Object.assign({}, this.gridMetadata, {columns: this.gridMetadata.columns + 1})
+
+        this.updateGridMetadataStore()
+      },
+      handleGridContextMenuInsertRowAbove (event) {
+        const _this = this
+        let position = this.contextMenuClickPosition
+        this.cells.map(cell => {
+          if (cell.y >= position.y) {
+            cell.y += 1
+            let annotation = this.getGridCellAnnotation(cell)
+            Promise
+              .resolve()
+              .then(() => {
+                return _this.$store.dispatch('annotations/patch', [cell.uuid, annotation])
+              })
+              .then(() => {
+                _this.fetchCellAnnotations()
+              })
+          }
+          return cell
+        })
+        this.gridMetadata = Object.assign({}, this.gridMetadata, {rows: this.gridMetadata.rows + 1})
+
+        this.updateGridMetadataStore()
+      },
+
+      handleGridButtonClickEdit (event) {
+        this.$store.commit('mosysGridEditorStore/toggleSources')
+      },
+
+      handleGridKeyReleased (event) {
       },
 
       updateCellUIStates () {
@@ -250,10 +343,20 @@
         })
         this.cellUIStates = newCellUIStates
       },
+      getTmpCell (cell, type = 'UIFeedback') {
+        return {
+          srcUuid: cell.uuid,
+          type: type,
+          x: cell.x,
+          y: cell.y,
+          width: cell.width,
+          height: cell.height
+        }
+      },
       getGridPositionForEvent (event, offset = {x: 0, y: 0}) {
         let elContainerBoundingBox = this.$el.getBoundingClientRect()
-        let x = event.clientX - elContainerBoundingBox.x - offset.x
-        let y = event.clientY - elContainerBoundingBox.y - offset.y
+        let x = event.clientX + this.$el.scrollLeft - elContainerBoundingBox.x - offset.x
+        let y = event.clientY + this.$el.scrollTop - elContainerBoundingBox.y - offset.y
         x = Math.ceil(x / this.gridDimensions.full.cell.width)
         y = Math.ceil(y / this.gridDimensions.full.cell.height)
         return {x: x, y: y}
@@ -261,13 +364,13 @@
       updateGridDimensions () {
         let elWidth = this.$el.offsetWidth
         let elHeight = this.$el.offsetHeight
-        let cellSizeRatio = this.grid.ratio
+        let cellSizeRatio = this.gridMetadata.ratio
         let gridHeight = elHeight
-        let cellHeight = gridHeight / this.grid.rows
+        let cellHeight = gridHeight / this.gridMetadata.rows
         let cellWidth = elWidth / Math.round(elWidth / (cellHeight * cellSizeRatio))
-        let gridWidth = cellWidth * this.grid.columns
+        let gridWidth = cellWidth * this.gridMetadata.columns
         let cellsPerWidth = elWidth / cellWidth
-        let cellWidthMini = elWidth / this.grid.columns
+        let cellWidthMini = elWidth / this.gridMetadata.columns
         let gridHeightMini = cellWidthMini / cellSizeRatio
         this.gridDimensions = {
           full: {
@@ -281,7 +384,7 @@
           },
           mini: {
             width: elWidth,
-            height: gridHeightMini * this.grid.rows,
+            height: gridHeightMini * this.gridMetadata.rows,
             cell: {
               width: cellWidthMini,
               height: gridHeightMini
@@ -305,9 +408,9 @@
           }
         }
       },
-      fetchAnnotations () {
+      fetchCellAnnotations () {
         const _this = this,
-          query = { query: { 'target.id': this.$route.params.id } }
+          query = { query: { 'body.type': '2DCell', 'target.id': this.gridUuid } }
         this.$store.dispatch('annotations/find', query)
           .then(annotations => {
             _this.cells = annotations.map(annotation => {
@@ -321,7 +424,34 @@
             _this.updateCellUIStates()
           })
       },
-      getAnnotationForCell (cell) {
+      fetchMetadataAnnotations () {
+        const _this = this
+        const query = { query: { 'body.type': '2DGridMetadata', 'target.id': this.gridUuid } }
+        return new Promise((resolve, reject) => {
+          this.$store.dispatch('annotations/find', query)
+            .then(annotations => {
+              let annotation = annotations.shift()
+              if (annotation) {
+                let metadata = JSON.parse(annotation.body.value)
+                metadata.uuid = annotation.uuid
+                if (metadata) {
+                  _this.gridMetadata = metadata
+                  resolve()
+                }
+              }
+              else {
+                _this.gridMetadata = {
+                  columns: 10,
+                  rows: 6,
+                  ratio: 16 / 9.0
+                }
+                _this.updateGridMetadataStore()
+              }
+            })
+            .catch(reject)
+        })
+      },
+      getGridCellAnnotation (cell) {
         return {
           body: {
             type: '2DCell',
@@ -330,7 +460,7 @@
           },
           author: this.$store.state.auth.payload.userId,
           target: {
-            id: this.$route.params.id,
+            id: this.gridUuid,
             type: 'Map',
             selector: {
               type: '2DLocation',
@@ -339,27 +469,46 @@
           }
         }
       },
+      getGridMetadataAnnotation (uuid, metadata) {
+        return {
+          body: {
+            type: '2DGridMetadata',
+            purpose: 'linking',
+            value: JSON.stringify(metadata)
+          },
+          author: this.$store.state.auth.payload.userId,
+          target: {
+            id: uuid,
+            type: 'Map'
+          }
+        }
+      },
       updateCellStore (cell) {
         const _this = this
-        let annotation = this.getAnnotationForCell(cell)
+        let annotation = this.getGridCellAnnotation(cell)
         Promise
           .resolve()
           .then(() => {
             return _this.$store.dispatch('annotations/patch', [cell.uuid, annotation])
           })
           .then(() => {
-            _this.fetchAnnotations()
+            _this.fetchCellAnnotations()
           })
       },
-      getTmpCell (cell, type = 'UIFeedback') {
-        return {
-          srcUuid: cell.uuid,
-          type: type,
-          x: cell.x,
-          y: cell.y,
-          width: cell.width,
-          height: cell.height
-        }
+      updateGridMetadataStore () {
+        const _this = this
+        let mapAnnotation = this.getGridMetadataAnnotation(this.gridUuid, this.gridMetadata)
+
+        return Promise.resolve()
+          .then(() => {
+            if (_this.gridMetadata.uuid) {
+              return _this.$store.dispatch('annotations/patch', [_this.gridMetadata.uuid, mapAnnotation])
+            }
+            return _this.$store.dispatch('annotations/create', mapAnnotation)
+          })
+          .then(() => {
+            _this.updateGridDimensions()
+          })
       }
       // setCellSet: function (cellSet) {
       //   this.grid = cellSet
@@ -370,16 +519,8 @@
 
 <style scoped lang="stylus">
 
-  .cell-grid-container
-    width 100%
-    height 100%
-    position absolute
-
   .cell-grid
     display grid
-    width 100%
-    height 100%
-    position absolute
     background-color #eee
 
   .cell-item

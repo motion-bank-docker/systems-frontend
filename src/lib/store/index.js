@@ -1,5 +1,6 @@
 import buildVars from '../build-vars'
 
+import mosysGridEditorStore from './modules/mosys-grid-editor-store'
 import notifications from './modules/notifications'
 import forms from './modules/forms'
 
@@ -45,7 +46,8 @@ const store = new Vuex.Store({
   ],
   modules: {
     notifications,
-    forms
+    forms,
+    mosysGridEditorStore
   }
 })
 
