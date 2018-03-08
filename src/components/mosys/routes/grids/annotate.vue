@@ -1,5 +1,6 @@
 <template lang="pug">
   .grid-editor-container(:class="{'sources-open': $store.state.mosysGridEditorStore.showSources}")
+    div.grid-editor-shadow-right(v-if="$store.state.mosysGridEditorStore.showSources")
     grid-editor.grid-editor(:gridUuid="$route.params.id")
     grid-editor-sources.grid-editor-sources(v-if="$store.state.mosysGridEditorStore.showSources")
 </template>
@@ -41,5 +42,13 @@
 
   .grid-editor-sources
     width calc(100%/3)
+
+  .grid-editor-shadow-right
+    background: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.2));
+    position absolute
+    right calc(100%/3)
+    top 0
+    bottom 0
+    width 8px
 
 </style>

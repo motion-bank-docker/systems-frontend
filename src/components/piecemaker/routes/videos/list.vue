@@ -20,6 +20,8 @@
   import url from 'url'
   import path from 'path'
   import buildVars from '../../../../lib/build-vars'
+  import he from 'he'
+
   export default {
     components: {
       QBtn,
@@ -55,7 +57,8 @@
                   if (path.extname(url.parse(entry.body.source).path) === '.mp4') return
                   return superagent.get(`${buildVars().apiHost}/proxy?url=${encodeURIComponent(entry.body.source)}`)
                     .then(result => {
-                      newEntry.title = result.text.match(/<title[^>]*>([^<]+)<\/title>/)[1]
+                      let title = result.text.match(/<title[^>]*>([^<]+)<\/title>/)[1]
+                      newEntry.title = he.decode(title)
                     })
                     .catch(err => {
                       console.warn(`Error getting title for ${entry.body.source}: ${err.message}`)
