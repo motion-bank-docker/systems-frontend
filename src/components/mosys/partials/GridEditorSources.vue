@@ -10,21 +10,25 @@
       @click="event => {$store.commit('mosysGridEditorStore/hideSources')}")
 
     q-tab-pane(name="tab-1")
-      grid-editor-default-source
+      source-grid-editor-default
 
     q-tab-pane(name="tab-2")
-      piecemaker-groups-list
+      source-piecemaker-groups
 
-    q-tab-pane(name="tab-3") Tab Three
-    q-tab-pane(name="tab-4") Tab Four
-    q-tab-pane(name="tab-5") Tab Five
+    q-tab-pane(name="tab-3")
+      source-vimeo
+
+    q-tab-pane(name="tab-4")
+      source-you-tube
 
 </template>
 
 <script>
   import { QBtn, QTabs, QTab, QTabPane } from 'quasar-framework'
-  import GridEditorDefaultSource from './GridEditorDefaultSource'
-  import PiecemakerGroupsList from './GridEditorSourcePieceMakerGroupsList'
+  import SourceGridEditorDefault from './GridEditorDefaultSource'
+  import SourcePiecemakerGroups from './GridEditorSourcePieceMakerGroupsList'
+  import SourceVimeo from './GridEditorSourceVimeo'
+  import SourceYouTube from './GridEditorSourceYouTube'
 
   export default {
     components: {
@@ -32,8 +36,10 @@
       QTabs,
       QTab,
       QTabPane,
-      GridEditorDefaultSource,
-      PiecemakerGroupsList
+      SourceGridEditorDefault,
+      SourcePiecemakerGroups,
+      SourceVimeo,
+      SourceYouTube
     },
     beforeDestroy () {
       this.$store.commit('mosysGridEditorStore/hideSources')
