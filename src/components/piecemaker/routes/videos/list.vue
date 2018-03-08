@@ -17,6 +17,8 @@
   import CenterCardFull from '../../../shared/layouts/CenterCardFull'
   import Promise from 'bluebird'
   import superagent from 'superagent'
+  import url from 'url'
+  import path from 'path'
   import buildVars from '../../../../lib/build-vars'
   export default {
     components: {
@@ -50,6 +52,7 @@
               return Promise.resolve()
                 .then(() => {
                   if (entry.body.source.indexOf('http') !== 0) return
+                  if (path.extname(url.parse(entry.body.source).path) === '.mp4') return
                   return superagent.get(`${buildVars().apiHost}/proxy?url=${encodeURIComponent(entry.body.source)}`)
                     .then(result => {
                       newEntry.title = result.text.match(/<title[^>]*>([^<]+)<\/title>/)[1]
