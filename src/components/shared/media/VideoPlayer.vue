@@ -54,24 +54,26 @@
         this.guessType()
       }
       */
-      if (this.src.type === 'video/youtube') {
+      const type = this.guessType(this.src)
+      if (type === 'video/youtube') {
         this.playerOptions.techOrder = ['youtube']
       }
-      else if (this.src.type === 'video/vimeo') {
+      else if (type === 'video/vimeo') {
         this.playerOptions.techOrder = ['vimeo']
       }
-      this.setSources([{ type: this.src.type, src: this.src.source }])
+      this.setSources([{ type, src: this.src.source }])
     },
     watch: {
       src (val) {
+        const type = this.guessType(val)
         if (val) {
-          if (val.type === 'video/youtube') {
+          if (type === 'video/youtube') {
             this.playerOptions.techOrder = ['youtube']
           }
-          else if (val.type === 'video/vimeo') {
+          else if (type === 'video/vimeo') {
             this.playerOptions.techOrder = ['vimeo']
           }
-          this.setSources([{type: val.type, src: val.source}])
+          this.setSources([{type, src: val.source}])
         }
       }
     },
@@ -81,13 +83,14 @@
       }
     },
     methods: {
-      guessType () {
-        if (this.src.indexOf('youtube.com') > -1) {
-          this.guessedType = 'video/youtube'
+      guessType (val) {
+        if (val.source.indexOf('youtube.com') > -1) {
+          return 'video/youtube'
         }
-        else if (this.src.indexOf('vimeo.com') > -1) {
-          this.guessedType = 'video/vimeo'
+        else if (val.source.indexOf('vimeo.com') > -1) {
+          return 'video/vimeo'
         }
+        return null
       },
       onPlayerReady (player) {
         this.$emit('ready', player)
