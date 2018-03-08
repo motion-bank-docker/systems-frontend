@@ -6,7 +6,8 @@
     q-tab(slot="title", name="tab-3") Vimeo
     q-tab(slot="title", name="tab-4") YouTube
 
-    q-tab-pane(name="tab-1") Tab One
+    q-tab-pane(name="tab-1")
+
 
     q-tab-pane(name="tab-2")
       piecemaker-groups-list
@@ -19,7 +20,7 @@
 
 <script>
   import { QTabs, QTab, QTabPane } from 'quasar-framework'
-  import PiecemakerGroupsList from '../partials/PieceMakerGroupsList'
+  import PiecemakerGroupsList from './GridEditorSourcePieceMakerGroupsList'
 
   export default {
     components: {
