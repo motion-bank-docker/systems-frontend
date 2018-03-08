@@ -18,6 +18,8 @@
   import Promise from 'bluebird'
   import superagent from 'superagent'
   import buildVars from '../../../../lib/build-vars'
+  import he from 'he'
+
   export default {
     components: {
       QBtn,
@@ -52,7 +54,8 @@
                   if (entry.body.source.indexOf('http') !== 0) return
                   return superagent.get(`${buildVars().apiHost}/proxy?url=${encodeURIComponent(entry.body.source)}`)
                     .then(result => {
-                      newEntry.title = result.text.match(/<title[^>]*>([^<]+)<\/title>/)[1]
+                      let title = result.text.match(/<title[^>]*>([^<]+)<\/title>/)[1]
+                      newEntry.title = he.decode(title)
                     })
                     .catch(err => {
                       console.warn(`Error getting title for ${entry.body.source}: ${err.message}`)
