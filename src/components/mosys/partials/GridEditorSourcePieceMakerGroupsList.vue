@@ -1,13 +1,19 @@
 <template lang="pug">
   q-list.piecemaker-source-container
+
     q-list-header
       template(v-if="currentGroup") Videos in Group #[strong {{currentGroup.title}}]
         q-btn(flat, round, small, fixed, class="fixed",
           style="right: 24px", @click="handleClickUnsetCurrentGroup", icon="close")
-      template(v-else) Piecemaker Groups
+      template(v-else)
+        router-link(:to="{name: 'piecemaker.groups.list'}") Piecemaker Groups
+
     q-item-separator
-    //q-scroll-area(style="width: 100%; height: 100%")
+
+    // group
     template(v-if="currentGroup")
+
+      // loading, nothing here
       template(v-if="currentVideos.length === 0")
         template(v-if="loadingVideos")
           q-item
@@ -16,30 +22,41 @@
             q-item-middle Loading Videos
         template(v-else)
           q-item No Videos Found!
+
+      // videos, annotations
       template(v-else)
         template(v-for="(video, i) in currentVideos")
           template(v-if="i > 0")
             q-item-separator
           q-item(draggable="true", @dragstart="event => {handleVideoItemDragStart(event, video)}")
-            a(@click.prevent="event => {handleVideoItemClick(event, video)}") {{video.title}}
+            q-item-side
+              q-icon(name="local movies", style="font-size: 1.8rem")
+            q-item-main
+              a(@click.prevent="event => {handleVideoItemClick(event, video)}") {{video.title}}
+
+    // groups list
     template(v-else)
       template(v-for="(group, i) in groups")
         template(v-if="i > 0")
           q-item-separator
         q-item
-          a(@click.prevent="event => {handleGroupItemClick(event, group)}") {{group.title}}
+          q-item-side
+            q-icon(name="list", style="font-size: 1.8rem")
+          q-item-main
+            a(@click.prevent="event => {handleGroupItemClick(event, group)}") {{group.title}}
 </template>
 
 <script>
-  import { QBtn, QList, QListHeader, QItem, QItemSide, QItemMain, QItemSeparator, QScrollArea, QSpinner } from 'quasar-framework'
+  import { QIcon, QBtn, QList, QListHeader, QItem, QItemSide, QItemMain, QItemSeparator, QScrollArea, QSpinner } from 'quasar-framework'
   import constants from '../../../lib/constants'
   import Promise from 'bluebird'
   import superagent from 'superagent'
   import buildVars from '../../../lib/build-vars'
+  import he from 'he'
 
   export default {
     components: {
-      QBtn, QList, QListHeader, QItem, QItemSide, QItemMain, QItemSeparator, QScrollArea, QSpinner
+      QIcon, QBtn, QList, QListHeader, QItem, QItemSide, QItemMain, QItemSeparator, QScrollArea, QSpinner
     },
     data () {
       return {
@@ -72,7 +89,8 @@
                   if (entry.body.source.indexOf('http') !== 0) return
                   return superagent.get(`${buildVars().apiHost}/proxy?url=${encodeURIComponent(entry.body.source)}`)
                     .then(result => {
-                      newEntry.title = result.text.match(/<title[^>]*>([^<]+)<\/title>/)[1]
+                      let title = result.text.match(/<title[^>]*>([^<]+)<\/title>/)[1]
+                      newEntry.title = he.decode(title)
                     })
                     .catch(err => {
                       console.warn(`Error getting title for ${entry.body.source}: ${err.message}`)

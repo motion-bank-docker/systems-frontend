@@ -12,6 +12,6 @@ export default {
   div
     width 100%
     height 100%
-    background-color limegreen
-    border 1px solid blue
+    background-color rgba(0,0,0,0.2)
+    border 1px dashed #333
 </style>

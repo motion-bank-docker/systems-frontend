@@ -18,16 +18,13 @@
           @click="event => {action.handler(event), $refs.gridmenu.close()}")
             q-item-main(:label="action.label")
 
-      q-fixed-position(corner="top-right", :offset="[18, 18]", v-if="!$store.state.mosysGridEditorStore.showSources")
-        q-btn(round, color="primary", @click="handleGridButtonClickEdit")
-          q-icon(name="add")
-
       template(v-for="(cell, index) in cells")
         .cell-item(
+          v-if="cellUIStates[cell.uuid] && !cellUIStates[cell.uuid].beingDragged",
           draggable="true",
           @dragstart="event => {handleCellDragStart(event, cell)}",
           @dragend="event => {handleCellDragEnd(event, cell)}",
-          :style="{'grid-column-start': cell.x, 'grid-column-end': `span ${cell.width}`, 'grid-row-start': cell.y, 'grid-row-end': `span ${cell.height}`}",
+          :style="getCellStyle(cell)",
           :title="cell.title",
           @click.prevent="event => {handleCellClick(event, cell)}",
           :class="{selected: cellUIStates[cell.uuid] ? cellUIStates[cell.uuid].selected : false}")
@@ -37,6 +34,8 @@
               @dragstart="event => {handleCellResizerDragStart(event, cell)}",
               @dragend="event => {handleCellResizerDragEnd(event, cell)}",
               @dragexit="event => {handleCellResizerDragEnd(event, cell)}")
+                q-icon(name="network cell")
+
             q-context-menu
               q-list(link, separator, no-border, style="min-width: 150px; max-height: 300px;")
                 q-item(
@@ -46,8 +45,12 @@
                     q-item-main(:label="action.label")
 
       template(v-for="(tmpCell, index) in tmpCells")
-        .cell-item(:style="{'grid-column-start': tmpCell.x, 'grid-column-end': `span ${tmpCell.width}`, 'grid-row-start': tmpCell.y, 'grid-row-end': `span ${tmpCell.height}`}")
+        .cell-item.cell-item-tmp(:style="getCellStyle(tmpCell)")
           cell(:cell="tmpCell")
+
+      q-fixed-position(corner="top-right", :offset="[18, 18]", v-if="!$store.state.mosysGridEditorStore.showSources")
+        q-btn(round, color="primary", @click="handleGridButtonClickEdit")
+          q-icon(name="add")
 
 </template>
 
@@ -60,6 +63,9 @@
     QIcon
   } from 'quasar-framework'
   import Cell from './Cell'
+
+  const nullImage = new Image()
+  nullImage.src = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='
 
   export default {
     components: {
@@ -112,14 +118,6 @@
         contextMenuClickPosition: {}
       }
     },
-    computed: {
-      cellWidth () {
-        return 200
-      },
-      cellHeight () {
-        return 100
-      }
-    },
     mounted () {
       const _this = this
       window.addEventListener('resize', this.updateGridDimensions)
@@ -146,6 +144,8 @@
     },
     methods: {
       handleCellResizerDragStart (event, cell) {
+        console.log(nullImage)
+        event.dataTransfer.setDragImage(nullImage, 0, 0)
         this.cellUIStates[cell.uuid].beingResized = true
         let tmpCell = this.getTmpCell(cell)
         this.tmpCells.push(tmpCell)
@@ -166,6 +166,7 @@
         }
         else {
           event.dataTransfer.setData('text/plain', JSON.stringify(cell))
+          event.dataTransfer.setDragImage(nullImage, 0, 0)
           this.cellUIStates[cell.uuid].beingDragged = true
           let elContainerBoundingBox = this.$el.getBoundingClientRect()
           let elBoundingBox = event.srcElement.getBoundingClientRect()
@@ -354,6 +355,7 @@
         }
       },
       getGridPositionForEvent (event, offset = {x: 0, y: 0}) {
+        offset = {x: 0, y: 0} // TODO: remove quick fix
         let elContainerBoundingBox = this.$el.getBoundingClientRect()
         let x = event.clientX + this.$el.scrollLeft - elContainerBoundingBox.x - offset.x
         let y = event.clientY + this.$el.scrollTop - elContainerBoundingBox.y - offset.y
@@ -396,7 +398,8 @@
             width: this.gridDimensions.full.width + 'px',
             height: '100%',
             'grid-auto-columns': this.gridDimensions.full.cell.width + 'px',
-            'grid-auto-rows': this.gridDimensions.full.cell.height + 'px'
+            'grid-auto-rows': this.gridDimensions.full.cell.height + 'px',
+            'background-image': this.getGridBackgroundSVG(this.gridDimensions.full.cell)
           }
         }
         else {
@@ -404,9 +407,13 @@
             width: '100%',
             height: this.gridDimensions.mini.height + 'px',
             'grid-auto-columns': this.gridDimensions.mini.cell.width + 'px',
-            'grid-auto-rows': this.gridDimensions.mini.cell.height + 'px'
+            'grid-auto-rows': this.gridDimensions.mini.cell.height + 'px',
+            'background-image': this.getGridBackgroundSVG(this.gridDimensions.mini.cell)
           }
         }
+      },
+      getGridBackgroundSVG (cell) {
+        return `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%'><defs><pattern id='smallGrid' width='${cell.width}' height='${cell.height}' patternUnits='userSpaceOnUse'><path d='M ${cell.width} 0 L 0 0 0 ${cell.height}' fill='none' stroke='gray' stroke-width='0.5'/></pattern></defs><rect width='100%' height='100%' fill='url(#smallGrid)' /></svg>")`
       },
       fetchCellAnnotations () {
         const _this = this,
@@ -509,6 +516,9 @@
           .then(() => {
             _this.updateGridDimensions()
           })
+      },
+      getCellStyle (cell) {
+        return {'grid-column-start': cell.x, 'grid-column-end': `span ${cell.width}`, 'grid-row-start': cell.y, 'grid-row-end': `span ${cell.height}`}
       }
       // setCellSet: function (cellSet) {
       //   this.grid = cellSet
@@ -526,9 +536,12 @@
   .cell-item
 
     &
+      background-color rgba(0,0,0,0.2)
+      border 1px solid #777
+      margin 1px
+      box-sizing border-box
       position relative
       overflow: hidden
-      border 1px solid lightsalmon
       grid-column-start: 1
       grid-column-end: span 1
       grid-row-start: 1
@@ -545,14 +558,14 @@
       height 100%
 
     .cell-item-resize-handle
+      color rgba(0,0,0,0.2)
       position absolute
       right 0
       bottom 0
-      width 20px
+      width 18px
       height 20px
-      background-color deeppink
 
       &:hover
-        background-color red
+        color black
 
 </style>
