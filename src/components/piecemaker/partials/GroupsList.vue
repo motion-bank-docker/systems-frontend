@@ -14,6 +14,8 @@
       onAction (type, data) {
         const _this = this
         switch (type) {
+          case 'live-annotate':
+            return _this.$router.push(`/piecemaker/groups/annotate`)
           case 'videos':
             return _this.$router.push(`/piecemaker/groups/${data.row.uuid}/videos`)
           case 'edit':
@@ -39,6 +41,7 @@
           }
         ],
         actions: [
+          { type: 'live-annotate', title: 'buttons.live_annotate', color: 'primary' },
           { type: 'videos', title: 'buttons.videos', color: 'primary' },
           { type: 'edit', title: 'buttons.edit' },
           { type: 'delete', title: 'buttons.delete' }

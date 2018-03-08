@@ -84,7 +84,7 @@
     },
     methods: {
       guessType (val) {
-        if (val.source.indexOf('youtube.com') > -1) {
+        if (val.source.indexOf('youtube.com') > -1 || val.source.indexOf('youtu.be') > -1) {
           return 'video/youtube'
         }
         else if (val.source.indexOf('vimeo.com') > -1) {

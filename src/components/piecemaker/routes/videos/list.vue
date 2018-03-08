@@ -17,6 +17,8 @@
   import CenterCardFull from '../../../shared/layouts/CenterCardFull'
   import Promise from 'bluebird'
   import superagent from 'superagent'
+  import url from 'url'
+  import path from 'path'
   import buildVars from '../../../../lib/build-vars'
   import he from 'he'
 
@@ -32,6 +34,8 @@
         switch (type) {
           case 'annotate':
             return _this.$router.push(`/piecemaker/videos/${data.row.uuid}/annotate`)
+          case 'live-annotation':
+            return _this.$router.push(`/piecemaker/groups/annotate`)
           case 'edit':
             return _this.$router.push(`/piecemaker/videos/${data.row.uuid}/edit`)
           // case 'synchronize':
@@ -52,6 +56,7 @@
               return Promise.resolve()
                 .then(() => {
                   if (entry.body.source.indexOf('http') !== 0) return
+                  if (path.extname(url.parse(entry.body.source).path) === '.mp4') return
                   return superagent.get(`${buildVars().apiHost}/proxy?url=${encodeURIComponent(entry.body.source)}`)
                     .then(result => {
                       let title = result.text.match(/<title[^>]*>([^<]+)<\/title>/)[1]
@@ -84,6 +89,7 @@
           field: 'title'
         }],
         actions: [
+          { type: 'live-annotation', title: 'buttons.live_annotate', color: 'primary' },
           { type: 'annotate', title: 'buttons.annotate', color: 'primary' },
           { type: 'edit', title: 'buttons.edit' },
           // { type: 'synchronize', title: 'buttons.synchronize' },
