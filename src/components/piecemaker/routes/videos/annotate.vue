@@ -5,9 +5,9 @@
 
       div#btn-back
         q-btn(@click="$router.push({ name: 'piecemaker.videos.list', params: { groupId: $route.params.groupId } })",
-          color="grey" icon="keyboard_backspace" round flat small)
-        q-btn(v-if="!fullscreen" @click="fullscreenHandler" icon="fullscreen" round flat small)
-        q-btn(v-if="fullscreen" @click="fullscreenHandler" icon="fullscreen_exit" round flat small)
+          color="grey", icon="keyboard_backspace", round, flat, small)
+        q-btn(v-if="!fullscreen", @click="fullscreenHandler", icon="fullscreen", round, flat, small)
+        q-btn(v-if="fullscreen", @click="fullscreenHandler", icon="fullscreen_exit", round, flat, small)
 
       div
         video-player(v-if="video", :src="video", @ready="playerReady($event)", @time="onPlayerTime($event)")
@@ -63,19 +63,14 @@
       QItemTile,
       VideoPlayer
     },
-    created: function () {
-      // var testVar = 1
-      // window.addEventListener('keydown', this.aktivieren('cccc' + testVar + 1))
-    },
     mounted () {
       if (this.$route.params.id) {
         this.getVideo().then(this.getAnnotations())
       }
-      /* window.addEventListener('keypress', function () {
-        console.log('abc')
-      }) */
-      let self = this
-      window.addEventListener('keypress', self.aktivieren())
+      window.addEventListener('keypress', this.toggleForm)
+    },
+    beforeDestroy () {
+      window.removeEventListener('keypress', this.toggleForm)
     },
     data () {
       return {
@@ -103,19 +98,6 @@
       }
     },
     methods: {
-      activatePopUp () {
-        this.active = true
-      },
-      closePopUp () {
-        this.active = false
-      },
-      aktivieren () {
-        // this.active = !this.active
-        // this.active = true
-        // console.log(val)
-        console.log('aaaa')
-        // window.addEventListener('keypress', this.aktivieren())
-      },
       fullscreenHandler () {
         this.fullscreen = !this.fullscreen
       },
@@ -149,19 +131,14 @@
           this.active = false
           this.currentSelector.value = undefined
           this.currentBody.value = undefined
-          // alert('active')
-          // this.keydownHandler('close')
-          // window.addEventListener('keydown', this.keydownHandler('close'))
+          window.addEventListener('keypress', this.toggleForm)
         }
         else {
+          window.removeEventListener('keypress', this.toggleForm)
           this.currentSelector.value = this.encodeSelector(this.secondsToSelector(this.playerTime))
           this.active = true
           console.log(this.currentBody, this.currentSelector)
-          // this.keydownHandler('open')
         }
-      },
-      keydownHandler (val) {
-        console.log(val)
       },
       createAnnotation () {
         const _this = this
