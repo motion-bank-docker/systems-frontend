@@ -16,6 +16,7 @@ const en = {
     done: 'Done',
     edit: 'Edit',
     forgot_password: 'Forgot Password',
+    live_annotate: 'Live Annotate',
     login: 'Login',
     more_info: 'More info',
     request_reset_pass: 'Request Password Reset',

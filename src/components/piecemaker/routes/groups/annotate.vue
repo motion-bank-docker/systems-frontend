@@ -1,9 +1,10 @@
 <template lang="pug">
   card-full
+    q-btn(slot="nav-button" icon="keyboard_backspace" @click="$router.push(`/piecemaker/groups`)") {{ $t('buttons.back') }}
     span(slot="form-logo")
     span(slot="form-title")
 
-    q-input(@keyup="keyMonitor" type="textarea")
+    q-input(@keyup="keyMonitor" type="textarea" :min-rows="4" autofocus)
     q-list(no-border)
       q-item.annotation(v-for="n in this.anzahlAnnotations", :key="n")
         q-item-main
