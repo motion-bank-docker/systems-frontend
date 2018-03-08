@@ -13,11 +13,13 @@
         video-player(v-if="video", :src="video", @ready="playerReady($event)", @time="onPlayerTime($event)")
 
       #pop-up(v-bind:class="{ activeCondition: active }")
+        // q-input#zwischenfokus(@keyup="activatePopUp()" autofocus)
+
         div.text-right.outline(@click="toggleForm()", v-if="!active", color="primary")
           | Start typing or click here
 
         div(v-if="active")
-          q-input(@keyup.enter="createAnnotation()", @keyup.esc="toggleForm()",
+          q-input(@keyup.enter="createAnnotation()", @keyup.esc="toggleForm(); closePopUp()",
             v-model="currentBody.value", type="textarea", float-label="Start typing", autofocus)
           div.row
             .col-6
@@ -38,12 +40,6 @@
                 q-btn(@click="updateAnnotation(annotation)", small) {{ $t('buttons.save') }}
               q-item-tile.col-12
                 q-input(type="textarea", v-model="annotation.body.value")
-            // .row(@click="gotoSelector(annotation.target.selector.value)")
-              .col-6.timestamp {{ formatSelectorForList(annotation.target.selector.value) }}
-              .col-6.text-right
-                q-btn(@click="deleteAnnotation(annotation.uuid)", small) {{ $t('buttons.delete') }}
-                q-btn(@click="updateAnnotation(annotation)", small) {{ $t('buttons.save') }}
-            // q-input(type="textarea", v-model="annotation.body.value")
 
 </template>
 
@@ -75,6 +71,11 @@
       if (this.$route.params.id) {
         this.getVideo().then(this.getAnnotations())
       }
+      /* window.addEventListener('keypress', function () {
+        console.log('abc')
+      }) */
+      let self = this
+      window.addEventListener('keypress', self.aktivieren())
     },
     data () {
       return {
@@ -102,10 +103,18 @@
       }
     },
     methods: {
-      aktivieren (val) {
+      activatePopUp () {
+        this.active = true
+      },
+      closePopUp () {
+        this.active = false
+      },
+      aktivieren () {
         // this.active = !this.active
         // this.active = true
-        console.log(val)
+        // console.log(val)
+        console.log('aaaa')
+        // window.addEventListener('keypress', this.aktivieren())
       },
       fullscreenHandler () {
         this.fullscreen = !this.fullscreen
@@ -141,12 +150,18 @@
           this.currentSelector.value = undefined
           this.currentBody.value = undefined
           // alert('active')
+          // this.keydownHandler('close')
+          // window.addEventListener('keydown', this.keydownHandler('close'))
         }
         else {
           this.currentSelector.value = this.encodeSelector(this.secondsToSelector(this.playerTime))
           this.active = true
           console.log(this.currentBody, this.currentSelector)
+          // this.keydownHandler('open')
         }
+      },
+      keydownHandler (val) {
+        console.log(val)
       },
       createAnnotation () {
         const _this = this
@@ -276,5 +291,7 @@
   }
   .video-js.vjs-fluid {
     width: 40px!important;
+  }
+  #zwischenfokus {
   }
 </style>

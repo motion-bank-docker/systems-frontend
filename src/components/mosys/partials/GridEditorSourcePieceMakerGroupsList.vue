@@ -17,9 +17,9 @@
       template(v-if="currentVideos.length === 0")
         template(v-if="loadingVideos")
           q-item
-            q-item-left
+            q-item-side
               q-spinner(style="margin-right: 1em")
-            q-item-middle Loading Videos
+            q-item-main Loading Videos
         template(v-else)
           q-item No Videos Found!
 

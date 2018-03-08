@@ -144,7 +144,6 @@
     },
     methods: {
       handleCellResizerDragStart (event, cell) {
-        console.log(nullImage)
         event.dataTransfer.setDragImage(nullImage, 0, 0)
         this.cellUIStates[cell.uuid].beingResized = true
         let tmpCell = this.getTmpCell(cell)
@@ -496,7 +495,12 @@
         Promise
           .resolve()
           .then(() => {
-            return _this.$store.dispatch('annotations/patch', [cell.uuid, annotation])
+            if (cell.uuid) {
+              return _this.$store.dispatch('annotations/patch', [cell.uuid, annotation])
+            }
+            else {
+              return _this.$store.dispatch('annotations/create', annotation)
+            }
           })
           .then(() => {
             _this.fetchCellAnnotations()
