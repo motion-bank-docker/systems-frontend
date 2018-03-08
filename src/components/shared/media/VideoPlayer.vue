@@ -113,5 +113,21 @@
 </script>
 
 <style lang="stylus">
-  .video-js .vjs-time-control { display: block }
+
+  .video-js .vjs-time-control {
+    display: block
+  }
+
+  .video-js.vjs-fluid,
+  .video-js.vjs-16-9,
+  .video-js.vjs-4-3 {
+    width: 100%;
+    max-width: 100%;
+    height: calc(100vh - 52px);
+    max-height: calc(100vh - 52px);
+  }
+
+  .vjs_video_427-dimensions.vjs-fluid {
+    padding-top: 0;
+  }
 </style>
