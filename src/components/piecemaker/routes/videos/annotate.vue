@@ -173,7 +173,7 @@
         assert.equal(typeof val, 'number')
         const selector = {
           m: Math.floor(val / 60),
-          s: val - Math.floor(val / 60)
+          s: val % 60
         }
         return selector
       },
