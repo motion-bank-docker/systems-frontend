@@ -39,17 +39,27 @@
     mounted () {
       const _this = this
       window.addEventListener('resize', this.updateGridDimensions)
-      this.fetchMetadataAnnotations()
-        .then(() => {
-          this.updateGridDimensions()
-          _this.fetchCellAnnotations()
-        })
       this.messenger.$on('video-loaded', videoUuid => {
         console.log(videoUuid)
       })
       this.messenger.$on('video-time-changed', (videoUuid, time) => {
         console.log(videoUuid, time)
       })
+      this.fetchMetadataAnnotations()
+        .then(() => {
+          this.updateGridDimensions()
+          _this.fetchCellAnnotations()
+        })
+    },
+    watch: {
+      gridUuid () {
+        const _this = this
+        this.fetchMetadataAnnotations()
+          .then(() => {
+            this.updateGridDimensions()
+            _this.fetchCellAnnotations()
+          })
+      }
     },
     methods: {
       fetchCellAnnotations () {
