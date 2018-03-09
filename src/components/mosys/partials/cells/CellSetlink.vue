@@ -1,6 +1,6 @@
 <template lang="pug">
 
-  div
+  div(:class="{'display-preview': preview, 'display-full': display}")
     template(v-if="display")
       router-link(:to="setLink")
         div(:style="{'background-color': 'green'}")
@@ -26,13 +26,12 @@
   }
 </script>
 
-<style scoped>
-  div {
-    width: 100%;
-    height: 100%;
-    background-color: white;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
-  }
+<style scoped lang="stylus">
+  div
+    width 100%
+    height 100%
+    background-color white
+    background-size contain
+    background-repeat no-repeat
+    background-position center
 </style>

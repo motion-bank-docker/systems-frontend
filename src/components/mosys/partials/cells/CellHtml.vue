@@ -1,6 +1,6 @@
 <template lang="pug">
 
-  div
+  div(:class="{'display-preview': preview, 'display-full': display}")
     template(v-if="display")
       div(v-html="htmlContent")
 
@@ -23,8 +23,13 @@ export default {
 }
 </script>
 
-<style scoped>
-  div {
-    padding: 1em;
-  }
+<style scoped lang="stylus">
+  div
+    width 100%
+    height 100%
+    background-color white
+    background-size contain
+    background-repeat no-repeat
+    background-position center
+    padding 1em
 </style>

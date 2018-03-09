@@ -1,6 +1,6 @@
 <template lang="pug">
 
-  div
+  div(:class="{'display-preview': preview, 'display-full': display}")
     template(v-if="display")
       video-player(:src="video")
 
@@ -38,13 +38,5 @@
 </script>
 
 <style scoped lang="stylus">
-
-/*  div
-    width: 100%;
-    height: 100%;
-    background-color: white;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;*/
 
 </style>

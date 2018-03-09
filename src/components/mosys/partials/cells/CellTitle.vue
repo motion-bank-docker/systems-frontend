@@ -1,11 +1,11 @@
 <template lang="pug">
 
-  div
+  div(:class="{'display-preview': preview, 'display-full': display}")
     template(v-if="display")
       h1 {{titleContent}}
 
     template(v-else)
-      strong 'HTML Cell'
+      strong 'Title Cell'
 
 </template>
 
@@ -24,7 +24,17 @@ export default {
 </script>
 
 <style scoped lang="stylus">
+
+  div
+    width 100%
+    height 100%
+    background-color white
+    background-size contain
+    background-repeat no-repeat
+    background-position center
+
   h1
     padding 1rem
     font-weight bold
+
 </style>

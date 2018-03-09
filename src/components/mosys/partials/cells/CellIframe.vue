@@ -1,6 +1,6 @@
 <template lang="pug">
 
-  div
+  div(:class="{'display-preview': preview, 'display-full': display}")
     template(v-if="display")
       iframe(:src="iframeSrc", @load="handleIframeLoaded")
 
@@ -29,6 +29,15 @@
 </script>
 
 <style lang="stylus" scoped>
+
+  div
+    width 100%
+    height 100%
+    background-color white
+    background-size contain
+    background-repeat no-repeat
+    background-position center
+    padding 1em
 
   iframe
     border: 0

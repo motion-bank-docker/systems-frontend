@@ -2,20 +2,26 @@
 
   div.cell-grid-container
     div.cell-grid(:style="gridStyle")
+
       template(v-for="(cell, index) in cells")
         .cell-item(
           :style="getCellStyle(cell)",
           :title="cell.title")
             cell(:cell="cell", display)
 
+      q-fixed-position(corner="top-right", :offset="[18, 18]", v-if="$store.state.auth.payload")
+        q-btn(round, color="primary", small, @click="$router.push(`/mosys/grids/${$route.params.id}/annotate`)")
+          q-icon(name="edit")
+
 </template>
 
 <script>
+  import { QFixedPosition, QBtn, QIcon } from 'quasar-framework'
   import Cell from './Cell'
 
   export default {
     components: {
-      Cell
+      Cell, QFixedPosition, QBtn, QIcon
     },
     props: ['gridUuid'],
     data () {
@@ -58,7 +64,6 @@
           this.$store.dispatch('annotations/find', query)
             .then(annotations => {
               let annotation = annotations.shift()
-              console.log(annotation)
               if (annotation) {
                 let metadata = JSON.parse(annotation.body.value)
                 metadata.uuid = annotation.uuid
@@ -75,7 +80,6 @@
                 }
                 _this.updateGridMetadataStore()
               }
-              console.log(_this.gridMetadata)
             })
             .catch(reject)
         })
@@ -115,7 +119,6 @@
       updateGridDimensions () {
         let elWidth = this.$el.offsetWidth
         let elHeight = this.$el.offsetHeight
-        console.log(elWidth, elHeight)
         let cellSizeRatio = this.gridMetadata.ratio
         let gridHeight = elHeight
         let cellHeight = gridHeight / this.gridMetadata.rows
@@ -143,7 +146,6 @@
             }
           }
         }
-        console.log(this.gridDimensions)
         if (elWidth > 800) {
           this.gridStyle = {
             width: this.gridDimensions.full.width + 'px',
