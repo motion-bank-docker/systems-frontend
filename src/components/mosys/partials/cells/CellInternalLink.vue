@@ -2,7 +2,7 @@
 
   div(:class="{'display-preview': preview, 'display-full': display}")
     template(v-if="display")
-      router-link(:to="setLink")
+      router-link(:to="internalLink")
         div(:style="{'background-color': 'green'}")
 
     template(v-else)
@@ -17,7 +17,8 @@
       return {}
     },
     computed: {
-      setLink () {
+      internalLink () {
+        // TODO: only link to paths that are visible to public / user?
         return {
           path: this.cell.content
         }

@@ -1,27 +1,28 @@
 
+import CellUIFeedback from './CellUIFeedback'
+
 import CellText from './CellText'
 import CellTitle from './CellTitle'
 import CellImage from './CellImage'
-import CellIframe from './CellIframe'
-import CellSetLink from './CellSetLink'
+import CellIFrame from './CellIFrame'
+import CellInternalLink from './CellInternalLink'
 import CellVideo from './CellVideo'
-import CellUifeedback from './CellUifeedback'
-
 import CellHtml from './CellHtml'
-import CellRecording from './CellRecording'
-import CellVimeo from './CellVimeo'
-import CellVisualization from './CellVisualization'
+
+// import CellVimeo from './CellVimeo'
+// import CellVisualization from './CellVisualization'
+// import CellRecording from './CellRecording'
 
 export default {
+  // CellRecording,
+  // CellVimeo,
+  // CellVisualization,
+  CellUIFeedback,
   CellTitle,
   CellText,
   CellHtml,
   CellImage,
-  CellIframe,
-  CellRecording,
-  CellSetLink,
-  CellVimeo,
-  CellVideo,
-  CellVisualization,
-  CellUifeedback
+  CellIFrame,
+  CellInternalLink,
+  CellVideo
 }

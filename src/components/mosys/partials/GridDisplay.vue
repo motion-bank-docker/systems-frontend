@@ -7,7 +7,7 @@
         .cell-item(
           :style="getCellStyle(cell)",
           :title="cell.title")
-            cell(:cell="cell", display)
+            cell(:cell="cell", display, :messenger="messenger")
 
       q-fixed-position(corner="top-right", :offset="[18, 18]", v-if="$store.state.auth.payload")
         q-btn(round, color="primary", small, @click="$router.push(`/mosys/grids/${$route.params.id}/annotate`)")
@@ -16,8 +16,11 @@
 </template>
 
 <script>
+  import Vue from 'vue'
   import { QFixedPosition, QBtn, QIcon } from 'quasar-framework'
   import Cell from './Cell'
+
+  const MessengerComponent = Vue.component('grid-editor-messenger', {})
 
   export default {
     components: {
@@ -29,7 +32,8 @@
         cells: [],
         gridMetadata: {},
         gridDimensions: {gridWidth: 0, gridHeight: 0, cellWidth: 0, cellHeight: 0},
-        gridStyle: {}
+        gridStyle: {},
+        messenger: new MessengerComponent()
       }
     },
     mounted () {
@@ -40,6 +44,12 @@
           this.updateGridDimensions()
           _this.fetchCellAnnotations()
         })
+      this.messenger.$on('video-loaded', videoUuid => {
+        console.log(videoUuid)
+      })
+      this.messenger.$on('video-time-changed', (videoUuid, time) => {
+        console.log(videoUuid, time)
+      })
     },
     methods: {
       fetchCellAnnotations () {
