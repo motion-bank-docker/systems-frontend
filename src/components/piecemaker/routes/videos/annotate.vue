@@ -1,19 +1,17 @@
 <template lang="pug">
 
-  div(style="border: 0px solid yellow; height: calc(100vh - 52px); overflow-y: hidden!important;")
+  div(style="border: 0px solid yellow; height: calc(100vh - 52px); height: 80vh;")
     q-layout
 
       div#btn-back
-        q-btn(@click="$router.push('/piecemaker/groups/' + groupId + '/videos')",
+        q-btn(v-if="!fullscreen", @click="$router.push('/piecemaker/groups/' + groupId + '/videos')",
           color="grey", icon="keyboard_backspace", round, flat, small)
-        q-btn(v-if="!fullscreen", @click="fullscreenHandler", icon="fullscreen", round, flat, small)
-        q-btn(v-if="fullscreen", @click="fullscreenHandler", icon="fullscreen_exit", round, flat, small)
+        q-btn(v-if="!fullscreen", @click="toggleFullscreen(), fullscreenHandler()", icon="fullscreen", round, flat, small)
+        q-btn(v-if="fullscreen", @click="toggleFullscreen(), fullscreenHandler()", icon="fullscreen_exit", round, flat, small)
 
-      div
-        video-player(v-if="video", :src="video", @ready="playerReady($event)", @time="onPlayerTime($event)")
+      video-player(v-if="video", :src="video", @ready="playerReady($event)", @time="onPlayerTime($event)")
 
       #pop-up(v-bind:class="{ activeCondition: active }")
-        // q-input#zwischenfokus(@keyup="activatePopUp()" autofocus)
 
         div.text-right.outline(@click="toggleForm()", v-if="!active", color="primary")
           | Start typing or click here
@@ -27,25 +25,24 @@
             .col-6.text-right
               q-btn(@click="createAnnotation()", small) Enter
 
-      // div#annotations(v-if="!fullscreen")
-      div#hallo(v-if="!fullscreen" slot="right")
+      #annotation-wrap(v-if="!fullscreen" slot="right")
         q-list.no-border
-          q-item.annotation(v-for="(annotation, i) in annotations", :key="annotation.uuid")
+          q-item.annotation(v-for="(annotation, i) in annotations", :key="annotation.uuid", v-bind:id="annotation.uuid")
             q-item-main.row
-              a(name="annotation.uuid")
-              q-item-tile.col-6
-                q-btn(@click="gotoSelector(annotation.target.selector.value)" small) {{ formatSelectorForList(annotation.target.selector.value) }}
-              q-item-tile.col-6
-                q-btn(@click="deleteAnnotation(annotation.uuid)", small) {{ $t('buttons.delete') }}
-                q-btn(@click="updateAnnotation(annotation)", small) {{ $t('buttons.save') }}
               q-item-tile.col-12
-                q-input(type="textarea", v-model="annotation.body.value")
+              q-item-tile.col-6
+                q-btn(@click="gotoSelector(annotation.target.selector.value), changeState()" small) {{ formatSelectorForList(annotation.target.selector.value) }}
+              q-item-tile.col-6
+                q-btn(@click="deleteAnnotation(annotation.uuid), changeState()", small) {{ $t('buttons.delete') }}
+                q-btn(@click="updateAnnotation(annotation), addKeypressListener()", small) {{ $t('buttons.save') }}
+              q-item-tile.col-12
+                q-input(@click="changeState(), hideForm()", type="textarea", v-model="annotation.body.value")
 
 </template>
 
 <script>
-  // import { QBtn, QLayout, QInput } from 'quasar-framework'
-  import { ActionSheet, Dialog, QBtn, QLayout, QInput, QList, QItem, QItemMain, QItemTile } from 'quasar-framework'
+  import { AppFullscreen, ActionSheet, Dialog, QBtn, QLayout, QInput, QList, QItem, QItemMain, QItemTile } from 'quasar-framework'
+  // import { ActionSheet, Dialog, QBtn, QLayout, QInput, QList, QItem, QItemMain, QItemTile } from 'quasar-framework'
   import querystring from 'querystring'
   import assert from 'assert'
   import uuidValidate from 'uuid-validate'
@@ -74,6 +71,7 @@
     },
     beforeDestroy () {
       window.removeEventListener('keypress', this.toggleForm)
+      AppFullscreen.exit()
     },
     data () {
       return {
@@ -102,6 +100,21 @@
       }
     },
     methods: {
+      toggleFullscreen () {
+        AppFullscreen.toggle()
+      },
+      changeState () {
+        this.active = false
+        this.currentSelector.value = undefined
+        this.currentBody.value = undefined
+        window.addEventListener('keypress', this.toggleForm)
+      },
+      hideForm () {
+        window.removeEventListener('keypress', this.toggleForm)
+      },
+      addKeypressListener () {
+        window.addEventListener('keypress', this.toggleForm)
+      },
       fullscreenHandler () {
         this.fullscreen = !this.fullscreen
       },
@@ -158,9 +171,15 @@
         }
         console.log(annotation, this)
         return this.$store.dispatch('annotations/create', annotation)
-          .then(() => _this.getAnnotations())
+          .then(res => {
+            _this.getAnnotations().then(() => {
+              _this.scrollToElement(res.uuid)
+            })
+          })
           .then(() => _this.toggleForm())
-          .then(() => _this.scrollToElement())
+      },
+      scrollToElement (uuid) {
+        window.location.href = '#' + uuid
       },
       updateAnnotation (annotation) {
         assert.equal(typeof annotation, 'object')
@@ -220,11 +239,6 @@
       },
       onPlayerTime (seconds) {
         this.playerTime = seconds
-      },
-      scrollToElement () {
-        // alert('123 abc')
-        // var elmnt = document.getElementById("content");
-        // aside
       }
     }
   }
@@ -260,18 +274,8 @@
   .annotation {
     margin: 1em 0;
   }
-  #annotations {
-    height: 50vh;
-    background-color: red;
-  }
-  #hallo > div {
-    /* background-color: pink; */
+  #annotation-wrap > div {
     height: 100%;
     overflow-x: scroll;
-  }
-  .video-js.vjs-fluid {
-    width: 40px!important;
-  }
-  #zwischenfokus {
   }
 </style>
