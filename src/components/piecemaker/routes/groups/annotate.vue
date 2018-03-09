@@ -75,7 +75,7 @@
     width: calc(100vw - 10rem);
     overflow-y: scroll;
     position: absolute;
-    bottom: 20vh;2
+    bottom: 20vh;
   }
   .annotation {
     padding: .75em 1em;
