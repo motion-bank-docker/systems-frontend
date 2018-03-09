@@ -36,8 +36,6 @@
         switch (type) {
           case 'annotate':
             return _this.$router.push(`/piecemaker/videos/${data.row.uuid}/annotate`)
-          case 'live-annotation':
-            return _this.$router.push(`/piecemaker/groups/annotate`)
           case 'edit':
             return _this.$router.push(`/piecemaker/videos/${data.row.uuid}/edit`)
           // case 'synchronize':
