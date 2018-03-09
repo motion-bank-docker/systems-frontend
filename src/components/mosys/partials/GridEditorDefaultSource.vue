@@ -34,6 +34,8 @@
 <script>
   import { QInput, QIcon, QBtn, QList, QListHeader, QItem, QItemSide, QItemMain, QItemSeparator, QScrollArea, QSpinner } from 'quasar-framework'
   import url from 'url'
+  import superagent from 'superagent'
+  import buildVars from '../../../lib/build-vars'
 
   const hostToTypeMap = {
     'vimeo.com': 'Video',
@@ -47,6 +49,37 @@
     'video': 'local movies',
     'text': 'subject',
     'title': 'title'
+  }
+  const mimeTypesToAnnotationTypeMap = {
+    'image/jpeg': 'Image',
+    'image/png': 'Image',
+    'image/gif': 'Image',
+    'image/svg+xml': 'Image',
+    'image/tiff': 'Image',
+    'image/webp': 'Image',
+    'application/pdf': 'PDF-Document',
+    'video/webm': 'Video',
+    'video/3gpp': 'Video',
+    'video/3gpp2': 'Video',
+    'video/x-msvideo': 'Video',
+    'video/mpeg': 'Video',
+    'video/mp4': 'Video',
+    'video/ogg': 'Video',
+    'audio/x-wav': 'Audio',
+    'audio/webm': 'Audio',
+    'audio/3gpp': 'Audio',
+    'audio/3gpp2': 'Audio',
+    'audio/aac': 'Audio',
+    'audio/midi': 'Audio',
+    'audio/ogg': 'Audio',
+    'text/csv': 'Unknown',
+    'text/calendar': 'Unknown',
+    'application/json': 'Unknown',
+    'application/rtf': 'Unknown',
+    'application/xml': 'Unknown',
+    'text/plain': 'IFrame',
+    'text/html': 'IFrame',
+    'application/xhtml+xml': 'IFrame'
   }
 
   export default {
@@ -89,6 +122,7 @@
         event.dataTransfer.setData('text/plain', JSON.stringify(resourceCell))
       },
       handleSearchTerm () {
+        const _this = this
         if (this.term.length > 0) {
           let res = {
             body: {
@@ -104,9 +138,22 @@
             let type = this.getTypeFromSourceURL(sourceUrl)
             if (!type) {
               type = 'IFrame'
+
+              superagent.get(`${buildVars().apiHost}/proxy?url=${encodeURIComponent(this.term)}`)
+                .then(resp => {
+                  if (resp.status === 301) { // prem redirect
+                    if (resp.headers['location']) _this.term = resp.headers['location']
+                  }
+                  else {
+                    res.body.type = _this.mimeTypeToType(resp.headers['content-type']) // TODO: global mime-type to annotation type lookup
+                    results.push(res)
+                    this.results = results
+                  }
+                })
+                .catch(errResp => {
+                  results.push(res)
+                })
             }
-            res.body.type = type
-            results.push(res)
           }
           else if (/[\n\r]/.test(this.term)) {
             res.body.type = 'text'
@@ -130,6 +177,13 @@
         if (!type) {
           console.log('Unknown URL resource', sourceUrl.toString())
           return null
+        }
+        return type
+      },
+      mimeTypeToType (mimeType) {
+        let type = mimeTypesToAnnotationTypeMap[mimeType]
+        if (!type) {
+          type = 'IFrame'
         }
         return type
       }

@@ -1,17 +1,27 @@
 <template lang="pug">
-  .cell-item-inner
+
+  .cell-item-inner(:class="{'display-preview': preview, 'display-full': display}")
+
     template(v-if="cellTypeName")
-      component(:is="cellTypeName", :cell="cell", :class="'cell-content cell-type-' + cell.type.toLowerCase()")
+      component(
+        :is="cellTypeName",
+        :cell="cell",
+        :class="'cell-content cell-type-' + cell.type.toLowerCase()",
+        :display="display",
+        :preview="preview")
+
     template(v-else)
       div Empty cell
+
     slot
+
 </template>
 
 <script>
   import cellTypes from './cells'
 
   export default {
-    props: ['cell'],
+    props: ['cell', 'display', 'preview'],
     data () {
       return {
         selected: false
@@ -44,9 +54,10 @@
 
 <style scoped lang="stylus">
 
-    .cell-content
+  .display-preview .cell-content
       pointer-events none
 
+  .cell-content
       h1, h2, h3, h4, h5, h6
         font-size: 1em
         font-weight: normal

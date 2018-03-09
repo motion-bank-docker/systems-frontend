@@ -1,15 +1,21 @@
-<template>
-  <div :style="'background-image: url(http://motionbank.meso.net/' + cell.poster_image.medium.url + ')'"></div>
+<template lang="pug">
+
+  div
+    template(v-if="display")
+      strong 'Recording Cell'
+
+    template(v-else)
+      strong 'Recording Cell'
+
 </template>
 
 <script>
 export default {
-  props: ['cell'],
+  props: ['cell', 'display', 'preview'],
   data () {
     return {}
   },
-  mounted () {
-  }
+  mounted () {}
 }
 </script>
 
