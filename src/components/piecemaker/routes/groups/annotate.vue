@@ -4,21 +4,23 @@
     span(slot="form-logo")
     span(slot="form-title")
 
-    q-input#input(v-model="msg", @keyup="keyMonitor", type="textarea", :min-rows="4", autofocus)
+    q-input#input(v-model="currentBody.value", @keyup="keyMonitor", type="textarea", :min-rows="4", autofocus)
     q-list(no-border)#list
-      q-item.annotation(v-for="n in this.annotations", :key="annotation.uuid")
-        q-item-side 17:2{{ n }}
+      q-item.annotation(v-for="(annotation, i) in annotations", :key="annotation.uuid")
+        q-item-side {{ annotation.target.selector.value }}
         q-item-main
           q-item-tile.text-left
-            q-input.color(type="textarea" v-model="msg")
+            q-input.color(type="textarea" v-model="annotation.body.value")
         q-item-side.text-right
-          q-btn() delete
+          q-btn(@click="deleteAnnotation(annotation.uuid, i)") delete
 </template>
 
 <script>
   import { QBtn, QInput, QList, QItem, QItemMain, QItemSide, QItemTile } from 'quasar-framework'
   import Full from '../../../shared/layouts/Full'
   import { DateTime } from 'luxon'
+  import assert from 'assert'
+  import uuidValidate from 'uuid-validate'
   export default {
     components: {
       QBtn,
@@ -45,17 +47,16 @@
         annotations: []
       }
     },
-    mounted () {
-      window.addEventListener('keypress', this.keyMonitor)
-    },
-    beforeDestroy () {
-      window.removeEventListener('keypress', this.keyMonitor)
-    },
     methods: {
       keyMonitor (e) {
         if (this.prevKey === 13 && e.keyCode === 13) {
           this.prevKey = undefined
-          this.createAnnotation()
+          if (this.currentBody.value.replace(/\n/g, '').length > 0) {
+            this.createAnnotation()
+          }
+          else {
+            this.currentBody.value = undefined
+          }
         }
         else {
           this.prevKey = e.keyCode
@@ -73,10 +74,19 @@
             selector: Object.assign({}, _this.currentSelector)
           }
         }
+        this.currentBody.value = undefined
         return this.$store.dispatch('annotations/create', annotation)
           .then(annotation => {
             console.log(annotation, this)
             _this.annotations.push(annotation)
+          })
+      },
+      deleteAnnotation (uuid, index) {
+        assert(uuidValidate(uuid))
+        assert.equal(typeof index, 'number')
+        return this.$store.dispatch('annotations/remove', uuid)
+          .then(() => {
+            this.annotations.splice(index, 1)
           })
       }
     }
