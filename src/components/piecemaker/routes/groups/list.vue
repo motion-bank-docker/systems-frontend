@@ -1,5 +1,5 @@
 <template lang="pug">
-  center-card-full
+  card-full
     span(slot="form-logo")
     span(slot="form-title") {{ $t('routes.piecemaker.groups.list.title') }}
     p.caption(slot="form-caption") {{ $t('routes.piecemaker.groups.list.caption') }}
@@ -10,13 +10,15 @@
 
 <script>
   import { QBtn } from 'quasar-framework'
-  import CenterCardFull from '../../../shared/layouts/CenterCardFull'
+  // import CenterCardFull from '../../../shared/layouts/CenterCardFull'
+  import CardFull from '../../../shared/layouts/CardFull'
   import GroupList from '../../partials/GroupsList'
 
   export default {
     components: {
       QBtn,
-      CenterCardFull,
+      // CenterCardFull,
+      CardFull,
       GroupList
     }
   }

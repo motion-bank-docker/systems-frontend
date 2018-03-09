@@ -1,24 +1,24 @@
 <template lang="pug">
   full
-    q-btn(slot="nav-button" icon="keyboard_backspace" @click="$router.push(`/piecemaker/groups`)") {{ $t('buttons.back') }}
+    q-btn(slot="nav-button", icon="keyboard_backspace", @click="$router.push(`/piecemaker/groups`)") {{ $t('buttons.back') }}
     span(slot="form-logo")
     span(slot="form-title")
 
-    q-input#input(v-model="msg" @keyup="keyMonitor" type="textarea" :min-rows="4" autofocus)
+    q-input#input(v-model="msg", @keyup="keyMonitor", type="textarea", :min-rows="4", autofocus)
     q-list(no-border)#list
-      q-item.annotation(v-for="n in this.anzahlAnnotations", :key="n")
+      q-item.annotation(v-for="n in this.annotations", :key="annotation.uuid")
         q-item-side 17:2{{ n }}
         q-item-main
           q-item-tile.text-left
             q-input.color(type="textarea" v-model="msg")
         q-item-side.text-right
           q-btn() delete
-
 </template>
 
 <script>
   import { QBtn, QInput, QList, QItem, QItemMain, QItemSide, QItemTile } from 'quasar-framework'
   import Full from '../../../shared/layouts/Full'
+  import { DateTime } from 'luxon'
   export default {
     components: {
       QBtn,
@@ -33,26 +33,51 @@
     data () {
       return {
         prevKey: undefined,
-        anzahlAnnotations: 0,
-        msg: undefined
+        currentBody: {
+          value: undefined,
+          purpose: 'commenting',
+          type: 'TextualBody'
+        },
+        currentSelector: {
+          type: 'Fragment',
+          value: undefined
+        },
+        annotations: []
       }
     },
     mounted () {
-      window.addEventListener('keypress', this.newAnnotation)
+      window.addEventListener('keypress', this.keyMonitor)
+    },
+    beforeDestroy () {
+      window.removeEventListener('keypress', this.keyMonitor)
     },
     methods: {
       keyMonitor (e) {
-        window.removeEventListener('keypress', this.newAnnotation)
-        let self = this
-        if (self.prevKey === 13 && e.keyCode === 13) {
-          self.anzahlAnnotations++
-          // console.log('ENTER')
-          // window.addEventListener('keypress', this.newAnnotation)
+        if (this.prevKey === 13 && e.keyCode === 13) {
+          this.prevKey = undefined
+          this.createAnnotation()
         }
-        self.prevKey = e.keyCode
+        else {
+          this.prevKey = e.keyCode
+        }
       },
-      newAnnotation () {
-        this.anzahlAnnotations++
+      createAnnotation () {
+        const _this = this
+        this.currentSelector.value = DateTime.local().toString()
+        const annotation = {
+          author: _this.$store.state.auth.payload.userId,
+          body: Object.assign({}, _this.currentBody),
+          target: {
+            id: _this.$route.params.id,
+            type: 'Timeline',
+            selector: Object.assign({}, _this.currentSelector)
+          }
+        }
+        return this.$store.dispatch('annotations/create', annotation)
+          .then(annotation => {
+            console.log(annotation, this)
+            _this.annotations.push(annotation)
+          })
       }
     }
   }
