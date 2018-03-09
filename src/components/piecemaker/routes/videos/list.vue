@@ -8,7 +8,7 @@
         color="primary") {{ $t('buttons.add_video') }}
     data-table(:entries="maps", :columns="columns", :actions="actions", @action="onAction")
     .text-center
-      q-btn(@click="$router.push(`/piecemaker/groups/`)" icon="keyboard_backspace") {{ $t('buttons.back') }}
+      q-btn(@click="$router.push({ name: 'piecemaker.groups.list' })", icon="keyboard_backspace") {{ $t('buttons.back') }}
 </template>
 
 <script>
@@ -36,8 +36,6 @@
         switch (type) {
           case 'annotate':
             return _this.$router.push(`/piecemaker/videos/${data.row.uuid}/annotate`)
-          case 'live-annotation':
-            return _this.$router.push(`/piecemaker/groups/annotate`)
           case 'edit':
             return _this.$router.push(`/piecemaker/videos/${data.row.uuid}/edit`)
           // case 'synchronize':
@@ -45,11 +43,11 @@
           case 'delete':
             _this.$store.dispatch('maps/remove', data.row.uuid)
               .then(() => {
-                return _this.loadMaps().then(maps => { _this.maps = maps })
+                return _this.loadVideos().then(maps => { _this.maps = maps })
               })
         }
       },
-      loadMaps () {
+      loadVideos () {
         return this.$store.dispatch('annotations/find', { query: { 'body.purpose': 'linking', 'target.id': this.$route.params.groupId } })
           .then(entries => {
             return Promise.map(entries, entry => {
@@ -77,7 +75,7 @@
     },
     mounted () {
       const _this = this
-      this.loadMaps()
+      this.loadVideos()
         .then(maps => {
           _this.maps = maps
         })
@@ -91,7 +89,6 @@
           field: 'title'
         }],
         actions: [
-          { type: 'live-annotation', title: 'buttons.live_annotate', color: 'primary' },
           { type: 'annotate', title: 'buttons.annotate', color: 'primary' },
           { type: 'edit', title: 'buttons.edit' },
           // { type: 'synchronize', title: 'buttons.synchronize' },

@@ -9,7 +9,7 @@
         @time="handlePlayerTimeChange")
 
     template(v-else)
-      strong 'Video Cell'
+      strong Video Cell
 
 </template>
 
@@ -53,5 +53,12 @@
 </script>
 
 <style scoped lang="stylus">
+
+  div.display-full
+    background-color white
+
+  div.display-preview
+    padding 1em
+    color #666
 
 </style>
