@@ -24,6 +24,11 @@ export default {
 </script>
 
 <style scoped lang="stylus">
+
   div
     padding 1em
+
+    img
+      width 100%
+
 </style>
