@@ -89,7 +89,6 @@
           field: 'title'
         }],
         actions: [
-          { type: 'live-annotation', title: 'buttons.live_annotate', color: 'primary' },
           { type: 'annotate', title: 'buttons.annotate', color: 'primary' },
           { type: 'edit', title: 'buttons.edit' },
           // { type: 'synchronize', title: 'buttons.synchronize' },
