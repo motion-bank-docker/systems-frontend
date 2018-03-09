@@ -1,12 +1,13 @@
 <template lang="pug">
-  full
-    q-btn(slot="nav-button", icon="keyboard_backspace", @click="$router.push(`/piecemaker/groups`)") {{ $t('buttons.back') }}
+  // full.test123
+  .wrapper
+    q-btn#button-back(slot="nav-button", icon="keyboard_backspace", @click="$router.push(`/piecemaker/groups`)", round)
     span(slot="form-logo")
     span(slot="form-title")
 
-    q-input#input(v-model="currentBody.value", @keyup="keyMonitor", type="textarea", :min-rows="4", autofocus)
+    q-input#input(v-model="currentBody.value", @keyup="keyMonitor", type="textarea", autofocus)
     q-list(no-border)#list
-      q-item.annotation(v-for="(annotation, i) in annotations", :key="annotation.uuid")
+      q-item.annotation(v-for="(annotation, i) in annotations", :key="annotation.uuid", :id="annotation.uuid")
         q-item-side {{ annotation.target.selector.value }}
         q-item-main
           q-item-tile.text-left
@@ -79,6 +80,7 @@
           .then(annotation => {
             console.log(annotation, this)
             _this.annotations.push(annotation)
+            _this.scrollToElement(annotation.uuid)
           })
       },
       deleteAnnotation (uuid, index) {
@@ -88,41 +90,67 @@
           .then(() => {
             this.annotations.splice(index, 1)
           })
+      },
+      scrollToElement (uuid) {
+        window.location.href = '#' + uuid
       }
     }
   }
 </script>
 
 <style scoped>
+  #button-back {
+    position: fixed;
+    left: 1em;
+    top: calc(52px + 1em);
+  }
+  .wrapper {
+    border: 0px solid red;
+    min-height: calc(100vh - 52px);
+    overflow-y: scroll;
+    padding-left: 5rem;
+  }
   #input {
-    background-color: #ddd;
-    position: absolute;
-    bottom: 0;
-    width: calc(100vw - 10rem);
-    /* width: calc(80vw - 10rem); */
-    height: 100px;
+    background-color: #fff;
+    position: fixed;
+    top: calc(52px + 2em);
+    /* width: calc(100vw - 10rem); */
+    width: calc(100vw - 25rem);
+    margin-left: 7.5rem;
     overflow: scroll;
     margin-bottom: 0;
     padding: 0 .5em;
+    padding-top: 1em;
+    padding-bottom: 1em;
+    z-index: 1111;
+    box-shadow: 0 0 10px 0px rgba( 0, 0, 0, .1 );
+    opacity: 1;
   }
   #list {
-    max-height: 50vh;
-    width: calc(100vw - 10rem);
+    /* max-height: 50vh; */
+    /* height: calc(100vh - 52px); */
+    background-color: #eee;
+    width: calc(100vw - 20rem);
+    min-height: calc(100vh - 52px - 2rem);
+    margin-left: 5rem;
     overflow-y: scroll;
-    position: absolute;
-    bottom: 20vh;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    padding: 0;
+    padding-top: 8em;
+    border: 0px solid red!important;
+    position: relative;
   }
   .annotation {
     padding: .75em 1em;
   }
-  .annotation:hover {
-    background-color: rgba( 255, 255, 255, .05 );
-  }
-  .annotation:not(:last-of-type) {
-    border-bottom: 1px solid #555;
-  }
+    .annotation:hover {
+      background-color: rgba( 255, 255, 255, .05 );
+    }
+    .annotation:not(:last-of-type) {
+      /* border-bottom: 1px solid #555; */
+    }
   .q-item-side {
-    color: white;
     padding: 0 1.5em;
     vertical-align: top;
   }
