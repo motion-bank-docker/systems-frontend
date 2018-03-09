@@ -1,8 +1,12 @@
 <template lang="pug">
 
-  div
+  div(:class="{'display-preview': preview, 'display-full': display}")
     template(v-if="display")
-      video-player(:src="video")
+      video-player(
+        :src="video",
+        @ready="handlePlayerReady",
+        @play="handlePlayerPlaying",
+        @time="handlePlayerTimeChange")
 
     template(v-else)
       strong 'Video Cell'
@@ -16,7 +20,7 @@
     components: {
       VideoPlayer
     },
-    props: ['cell', 'display', 'preview'],
+    props: ['cell', 'display', 'preview', 'messenger'],
     data () {
       return {}
     },
@@ -33,18 +37,21 @@
         if (this.videoSrc.indexOf('youtube.com') >= 0) return 'video/youtube'
         else return 'html5'
       }
+    },
+    methods: {
+      handlePlayerReady (event) {
+        this.messenger.$emit('video-loaded', this.cell.uuid)
+      },
+      handlePlayerPlaying (event) {
+        this.messenger.$emit('video-started-playing', this.cell.uuid)
+      },
+      handlePlayerTimeChange (videoTime) {
+        this.messenger.$emit('video-time-changed', this.cell.uuid, videoTime)
+      }
     }
   }
 </script>
 
 <style scoped lang="stylus">
-
-/*  div
-    width: 100%;
-    height: 100%;
-    background-color: white;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;*/
 
 </style>

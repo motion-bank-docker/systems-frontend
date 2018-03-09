@@ -134,8 +134,20 @@
           let results = []
           if (/^[\s]*http[s]?:\/\/.+/.test(this.term)) {
             let sourceUrl = url.parse(this.term)
-            // TODO: how to deal with redirects here? Short URLs? …
-            let type = this.getTypeFromSourceURL(sourceUrl)
+            let currentUrl = url.parse(window.location.href)
+            let type = 'Unknown'
+            if (sourceUrl.host === currentUrl.host) {
+              type = 'Internal-Link'
+              let internalPath = sourceUrl.path
+              if (internalPath) {
+                // TODO: fix internal links to only point to public displays?
+              }
+              res.body.source = internalPath
+            }
+            else {
+              // TODO: how to deal with redirects here? Short URLs? …
+              type = this.getTypeFromSourceURL(sourceUrl)
+            }
             if (!type) {
               type = 'IFrame'
 
@@ -153,6 +165,10 @@
                 .catch(errResp => {
                   results.push(res)
                 })
+            }
+            else {
+              res.body.type = type
+              results.push(res)
             }
           }
           else if (/[\n\r]/.test(this.term)) {
@@ -174,6 +190,9 @@
       },
       getTypeFromSourceURL (sourceUrl) {
         let type = hostToTypeMap[sourceUrl.hostname]
+        if (!type) {
+
+        }
         if (!type) {
           console.log('Unknown URL resource', sourceUrl.toString())
           return null

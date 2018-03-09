@@ -61,7 +61,7 @@
   // import Vue from 'vue'
   // import constants from '../../../lib/constants'
   import {
-    QScrollArea, QContextMenu, QList,
+    QContextMenu, QList,
     QItem, QItemMain, QFixedPosition, QBtn,
     QIcon
   } from 'quasar-framework'
@@ -72,7 +72,6 @@
 
   export default {
     components: {
-      QScrollArea,
       QContextMenu,
       QList,
       QItem,

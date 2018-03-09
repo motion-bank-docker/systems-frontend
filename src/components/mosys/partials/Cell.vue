@@ -8,7 +8,8 @@
         :cell="cell",
         :class="'cell-content cell-type-' + cell.type.toLowerCase()",
         :display="display",
-        :preview="preview")
+        :preview="preview",
+        :messenger="messenger")
 
     template(v-else)
       div Empty cell
@@ -21,7 +22,7 @@
   import cellTypes from './cells'
 
   export default {
-    props: ['cell', 'display', 'preview'],
+    props: ['cell', 'display', 'preview', 'messenger'],
     data () {
       return {
         selected: false
@@ -39,7 +40,7 @@
     },
     methods: {
       cellTypeToClassName (type) {
-        return 'Cell' + type.slice(0, 1).toUpperCase() + type.slice(1).replace(/[^a-z0-9]/ig, '').toLowerCase()
+        return 'Cell' + type.slice(0, 1).toUpperCase() + type.slice(1).replace(/[^a-z0-9]/ig, '')
       },
       handleClick () {
         this.selected = !this.selected

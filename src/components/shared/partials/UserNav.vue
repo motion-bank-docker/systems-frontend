@@ -5,7 +5,7 @@
       q-btn(:class="{ 'text-primary': currentApp === null }", big, flat,
         @click="currentApp = null; $router.push({ name: 'site.welcome' })") Motionbank
       q-btn(:class="{ 'text-primary': currentApp === 'piecemaker' }", big, flat,
-        @click="currentApp = 'piecemaker'; $router.push({ name: 'piecemaker.dashboard' })") Piecemaker
+        @click="currentApp = 'piecemaker'; $router.push({ name: 'piecemaker.groups.list' })") Piecemaker
       q-btn(:color="currentApp === 'mosys' ? 'primary' : ''",
         big, flat, @click="currentApp = 'mosys'; $router.push({ name: 'mosys.grids.list' })") Mosys
 

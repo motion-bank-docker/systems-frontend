@@ -1,6 +1,6 @@
 <template lang="pug">
 
-  div
+  div(:class="{'display-preview': preview, 'display-full': display}")
     template(v-if="display")
       img(:src="imgSrc")
 
@@ -24,6 +24,17 @@ export default {
 </script>
 
 <style scoped lang="stylus">
+
   div
     padding 1em
+    width 100%
+    height 100%
+    background-color white
+    background-size contain
+    background-repeat no-repeat
+    background-position center
+
+  img
+    width 100%
+
 </style>
