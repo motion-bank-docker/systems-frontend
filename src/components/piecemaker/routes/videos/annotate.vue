@@ -4,7 +4,7 @@
     q-layout
 
       div#btn-back
-        q-btn(@click="$router.push({ name: 'piecemaker.videos.list', params: { groupId: $route.params.groupId } })",
+        q-btn(@click="$router.push('/piecemaker/groups/' + groupId + '/videos')",
           color="grey", icon="keyboard_backspace", round, flat, small)
         q-btn(v-if="!fullscreen", @click="fullscreenHandler", icon="fullscreen", round, flat, small)
         q-btn(v-if="fullscreen", @click="fullscreenHandler", icon="fullscreen_exit", round, flat, small)
@@ -28,7 +28,7 @@
               q-btn(@click="createAnnotation()", small) Enter
 
       // div#annotations(v-if="!fullscreen")
-      hallo(v-if="!fullscreen" slot="right")
+      div#hallo(v-if="!fullscreen" slot="right")
         q-list.no-border
           q-item.annotation(v-for="(annotation, i) in annotations", :key="annotation.uuid")
             q-item-main.row
@@ -50,6 +50,7 @@
   import assert from 'assert'
   import uuidValidate from 'uuid-validate'
   import VideoPlayer from '../../../shared/media/VideoPlayer'
+  import { TimelineSelector } from '../../../../lib/annotations/selectors'
   export default {
     components: {
       ActionSheet,
@@ -64,6 +65,8 @@
       VideoPlayer
     },
     mounted () {
+      const selector = new TimelineSelector()
+      console.log(selector)
       if (this.$route.params.id) {
         this.getVideo().then(this.getAnnotations())
       }
@@ -78,6 +81,7 @@
         player: undefined,
         playerTime: 0.0,
         video: undefined,
+        groupId: undefined,
         active: false,
         annotations: [],
         currentBody: {
@@ -106,6 +110,7 @@
         return this.$store.dispatch('annotations/get', context.$route.params.id)
           .then(result => {
             if (result.body) {
+              context.groupId = result.target.id
               context.video = result.body
             }
           })
@@ -259,12 +264,10 @@
     height: 50vh;
     background-color: red;
   }
-  hallo > div {
+  #hallo > div {
     /* background-color: pink; */
     height: 100%;
     overflow-x: scroll;
-  }
-  hallo {
   }
   .video-js.vjs-fluid {
     width: 40px!important;
