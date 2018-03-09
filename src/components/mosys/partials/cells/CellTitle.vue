@@ -5,7 +5,7 @@
       h1 {{titleContent}}
 
     template(v-else)
-      strong 'Title Cell'
+      strong Title Cell
 
 </template>
 
@@ -29,10 +29,12 @@ export default {
     padding 1em
     width 100%
     height 100%
+
+  div.display-full
     background-color white
-    background-size contain
-    background-repeat no-repeat
-    background-position center
+
+  div.display-preview
+    color #666
 
   h1
     font-weight bold

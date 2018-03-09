@@ -5,7 +5,7 @@
       div {{textContent}}
 
     template(v-else)
-      strong 'Text Cell'
+      strong Text Cell
 
 </template>
 
@@ -24,12 +24,16 @@ export default {
 </script>
 
 <style scoped lang="stylus">
+
   div
     padding 1em
     width 100%
     height 100%
+
+  div.display-full
     background-color white
-    background-size contain
-    background-repeat no-repeat
-    background-position center
+
+  div.display-preview
+    color #666
+
 </style>

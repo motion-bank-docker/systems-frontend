@@ -5,7 +5,7 @@
       img(:src="imgSrc")
 
     template(v-else)
-      strong 'Image Cell'
+      strong(:style="{'background-image':`url(${imgSrc})`}") Image Cell
 
 </template>
 
@@ -29,10 +29,13 @@ export default {
     padding 1em
     width 100%
     height 100%
+
+  div.display-full
     background-color white
-    background-size contain
-    background-repeat no-repeat
-    background-position center
+
+  div.display-preview
+    color #666
+    background-size cover
 
   img
     width 100%
