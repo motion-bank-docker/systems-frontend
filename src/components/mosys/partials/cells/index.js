@@ -1,7 +1,7 @@
 
 import CellText from './CellText'
 import CellTitle from './CellTitle'
-import CellIFrame from './CellIFrame'
+import CellIframe from './CellIframe'
 import CellSetLink from './CellSetLink'
 import CellVideo from './CellVideo'
 import CellUifeedback from './CellUifeedback'
@@ -15,7 +15,7 @@ export default {
   CellTitle,
   CellText,
   CellHtml,
-  CellIFrame,
+  CellIframe,
   CellRecording,
   CellSetLink,
   CellVimeo,

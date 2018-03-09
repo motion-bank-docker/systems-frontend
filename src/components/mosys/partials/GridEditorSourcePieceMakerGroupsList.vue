@@ -117,7 +117,7 @@
       },
       handleVideoItemDragStart (event, video) {
         let videoCell = {
-          uuid: video.uuid,
+          uuid: null,
           type: 'Video',
           x: 1,
           y: 1,

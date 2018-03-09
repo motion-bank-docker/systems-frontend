@@ -1,5 +1,6 @@
-<template>
-  <iframe v-bind:src="iframeSrc" @load="iframeLoaded" :style="'background-image: url(http://motionbank.meso.net/' + cell.poster_image.medium.url + ')'"></iframe>
+<template lang="pug">
+  // iframe(:src="iframeSrc", @load="handleIframeLoaded")
+  div {{iframeSrc}}
 </template>
 
 <script>
@@ -10,12 +11,12 @@
     },
     computed: {
       iframeSrc () {
-        return this.cell.additional_fields['iframe-src']
+        return this.cell.content
       }
     },
     methods: {
-      iframeLoaded (evt) {
-        // let iFrameEl = evt.path.shift()
+      handleIframeLoaded (event) {
+        console.log(event)
       }
     }
   }
