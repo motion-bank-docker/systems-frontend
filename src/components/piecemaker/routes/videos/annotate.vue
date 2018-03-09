@@ -1,10 +1,10 @@
 <template lang="pug">
 
-  div(style="border: 0px solid yellow; height: calc(100vh - 52px); height: 80vh;")
+  div(style="height: calc(60vh - 52px);")
     q-layout
 
       div#btn-back
-        q-btn(v-if="!fullscreen", @click="$router.push('/piecemaker/groups/' + groupId + '/videos')",
+        q-btn(@click="$router.push('/piecemaker/groups/' + groupId + '/videos')",
           color="grey", icon="keyboard_backspace", round, flat, small)
         q-btn(v-if="!fullscreen", @click="toggleFullscreen(), fullscreenHandler()", icon="fullscreen", round, flat, small)
         q-btn(v-if="fullscreen", @click="toggleFullscreen(), fullscreenHandler()", icon="fullscreen_exit", round, flat, small)
@@ -29,12 +29,13 @@
         q-list.no-border
           q-item.annotation(v-for="(annotation, i) in annotations", :key="annotation.uuid", v-bind:id="annotation.uuid")
             q-item-main.row
-              q-item-tile.col-12
               q-item-tile.col-6
                 q-btn(@click="gotoSelector(annotation.target.selector.value), changeState()" small) {{ formatSelectorForList(annotation.target.selector.value) }}
               q-item-tile.col-6
                 q-btn(@click="deleteAnnotation(annotation.uuid), changeState()", small) {{ $t('buttons.delete') }}
                 q-btn(@click="updateAnnotation(annotation), addKeypressListener()", small) {{ $t('buttons.save') }}
+              q-item-tile.col-12.author
+                | Author
               q-item-tile.col-12
                 q-input(@click="changeState(), hideForm()", type="textarea", v-model="annotation.body.value")
 
@@ -258,10 +259,10 @@
     width: 33%;
     cursor: pointer;
   }
-  #pop-up > div {
-    padding: 1em;
-    background-color: white;
-  }
+    #pop-up > div {
+      padding: 1em;
+      background-color: white;
+    }
   .activeCondition {
     box-shadow: 0 0 10px -2px rgba( 0, 0, 0, .35 );
     background-color: rgba( 255, 255, 255, 1 );
@@ -272,10 +273,23 @@
     right: 0;
   }
   .annotation {
-    margin: 1em 0;
   }
-  #annotation-wrap > div {
-    height: 100%;
-    overflow-x: scroll;
+    .annotation:hover {
+      background-color: rgba( 0, 0, 0, .05 );
+    }
+  #annotation-wrap {
+  }
+    #annotation-wrap > div {
+      padding-top: 0;
+      height: 100%;
+      overflow-x: scroll;
+    }
+  .author {
+    font-size: .8em;
+    padding-top: 5px;
+  }
+  .highlight {
+    background-color: rgba( 0, 255, 0, .5 );
+    transition: background-color ease 500ms;
   }
 </style>
