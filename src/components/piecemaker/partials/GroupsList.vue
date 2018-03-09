@@ -15,11 +15,11 @@
         const _this = this
         switch (type) {
           case 'live-annotate':
-            return _this.$router.push(`/piecemaker/groups/annotate`)
+            return _this.$router.push({ name: 'piecemaker.groups.annotate', params: { id: data.row.uuid } })
           case 'videos':
-            return _this.$router.push(`/piecemaker/groups/${data.row.uuid}/videos`)
+            return _this.$router.push({ name: 'piecemaker.videos.list', params: { groupId: data.row.uuid } })
           case 'edit':
-            return _this.$router.push(`/piecemaker/groups/${data.row.uuid}/edit`)
+            return _this.$router.push({ name: 'piecemaker.groups.edit', params: { id: data.row.uuid } })
           case 'delete':
             _this.$store.dispatch('maps/remove', data.row.uuid)
               .then(() => { _this.maps = _this.$store.dispatch('maps/find') })
