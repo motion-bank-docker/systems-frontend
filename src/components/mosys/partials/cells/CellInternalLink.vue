@@ -3,10 +3,10 @@
   div(:class="{'display-preview': preview, 'display-full': display}")
     template(v-if="display")
       router-link(:to="internalLink")
-        div(:style="{'background-color': 'green'}")
+        div --> {{internalLink.path}}
 
     template(v-else)
-      strong 'Link Cell'
+      strong Link Cell
 
 </template>
 
@@ -32,8 +32,10 @@
     padding 1em
     width 100%
     height 100%
+
+  div.display-full
     background-color white
-    background-size contain
-    background-repeat no-repeat
-    background-position center
+
+  div.display-preview
+    color #666
 </style>

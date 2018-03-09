@@ -29,7 +29,7 @@
           :title="cell.title",
           @click.prevent="event => {handleCellClick(event, cell)}",
           :class="{selected: cellUIStates[cell.uuid] ? cellUIStates[cell.uuid].selected : false}")
-            cell(:cell="cell")
+            cell(:cell="cell", preview)
             div.cell-item-resize-handle(
               draggable="true",
               @dragstart="event => {handleCellResizerDragStart(event, cell)}",
@@ -405,15 +405,16 @@
             }
           }
         }
-        if (elWidth > 800) {
-          this.gridStyle = {
-            width: this.gridDimensions.full.width + 'px',
-            height: '100%',
-            'grid-auto-columns': this.gridDimensions.full.cell.width + 'px',
-            'grid-auto-rows': this.gridDimensions.full.cell.height + 'px',
-            'background-image': this.getGridBackgroundSVG(this.gridDimensions.full.cell)
-          }
+        // TODO: fix mobile grid editor view
+        // if (elWidth > 800) {
+        this.gridStyle = {
+          width: this.gridDimensions.full.width + 'px',
+          height: '100%',
+          'grid-auto-columns': this.gridDimensions.full.cell.width + 'px',
+          'grid-auto-rows': this.gridDimensions.full.cell.height + 'px',
+          'background-image': this.getGridBackgroundSVG(this.gridDimensions.full.cell)
         }
+        /* }
         else {
           this.gridStyle = {
             width: '100%',
@@ -422,7 +423,7 @@
             'grid-auto-rows': this.gridDimensions.mini.cell.height + 'px',
             'background-image': this.getGridBackgroundSVG(this.gridDimensions.mini.cell)
           }
-        }
+        } */
       },
       getGridBackgroundSVG (cell) {
         return `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%'><defs><pattern id='smallGrid' width='${cell.width}' height='${cell.height}' patternUnits='userSpaceOnUse'><path d='M ${cell.width} 0 L 0 0 0 ${cell.height}' fill='none' stroke='gray' stroke-width='0.5'/></pattern></defs><rect width='100%' height='100%' fill='url(#smallGrid)' /></svg>")`
