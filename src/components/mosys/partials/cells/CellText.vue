@@ -1,10 +1,17 @@
 <template lang="pug">
-  div {{textContent}}
+
+  div
+    template(v-if="display")
+      div {{textContent}}
+
+    template(v-else)
+      strong 'HTML Cell'
+
 </template>
 
 <script>
 export default {
-  props: ['cell'],
+  props: ['cell', 'display', 'preview'],
   data () {
     return {}
   },

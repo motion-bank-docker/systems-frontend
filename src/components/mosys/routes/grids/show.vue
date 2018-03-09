@@ -1,5 +1,6 @@
 <template lang="pug">
-  grid-display
+  .grid-display-container
+    grid-display.grid-display(:gridUuid="$route.params.id")
 </template>
 
 <script>
@@ -11,6 +12,19 @@
   }
 </script>
 
-<style scoped>
+<style scoped lang="stylus">
+
+  .grid-display-container
+    display flex
+    width 100%
+    height 100%
+    position absolute
+    flex-direction row
+
+  .grid-display
+    flex-grow 1
+    width 100%
+    height 100%
+    overflow auto
 
 </style>

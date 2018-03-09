@@ -1,10 +1,17 @@
-<template>
-  <div :style="'background-image: url(http://motionbank.meso.net/' + cell.poster_image.medium.url + ')'"></div>
+<template lang="pug">
+
+  div
+    template(v-if="display")
+      strong 'Vimeo Cell'
+
+    template(v-else)
+      strong 'Vimeo Cell'
+
 </template>
 
 <script>
   export default {
-    props: ['cell'],
+    props: ['cell', 'display', 'preview'],
     data () {
       return {}
     },

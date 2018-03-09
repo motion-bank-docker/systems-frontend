@@ -1,17 +1,26 @@
 <template lang="pug">
-  router-link(:to="setLink")
-    div(:style="{'background-color': 'green'}")
+
+  div
+    template(v-if="display")
+      router-link(:to="setLink")
+        div(:style="{'background-color': 'green'}")
+
+    template(v-else)
+      strong 'Link Cell'
+
 </template>
 
 <script>
   export default {
-    props: ['cell'],
+    props: ['cell', 'display', 'preview'],
     data () {
       return {}
     },
     computed: {
       setLink () {
-        return {path: this.cell.additional_fields['set-id']}
+        return {
+          path: this.cell.content
+        }
       }
     }
   }

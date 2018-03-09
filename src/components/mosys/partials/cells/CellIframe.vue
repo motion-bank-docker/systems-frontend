@@ -1,11 +1,17 @@
 <template lang="pug">
-  // iframe(:src="iframeSrc", @load="handleIframeLoaded")
-  div {{iframeSrc}}
+
+  div
+    template(v-if="display")
+      iframe(:src="iframeSrc", @load="handleIframeLoaded")
+
+    template(v-else)
+      strong {{iframeSrc}}
+
 </template>
 
 <script>
   export default {
-    props: ['cell'],
+    props: ['cell', 'display', 'preview'],
     data () {
       return {}
     },
