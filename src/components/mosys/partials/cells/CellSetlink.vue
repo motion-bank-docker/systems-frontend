@@ -28,6 +28,7 @@
 
 <style scoped lang="stylus">
   div
+    padding 1em
     width 100%
     height 100%
     background-color white

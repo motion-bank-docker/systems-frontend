@@ -26,6 +26,7 @@ export default {
 <style scoped lang="stylus">
 
   div
+    padding 1em
     width 100%
     height 100%
     background-color white
@@ -34,7 +35,6 @@ export default {
     background-position center
 
   h1
-    padding 1rem
     font-weight bold
 
 </style>
