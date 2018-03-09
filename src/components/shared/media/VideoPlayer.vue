@@ -22,6 +22,7 @@
   require('vue-video-player/src/custom-theme.css')
   require('videojs-youtube')
   require('videojs-vimeo/src/Vimeo')
+  require('videojs-framebyframe')
 
   import { videoPlayer } from 'vue-video-player'
 

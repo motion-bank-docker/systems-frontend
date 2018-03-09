@@ -43,6 +43,7 @@
     "roboto-fontface": "^0.8.0",
     "superagent": "^3.8.2",
     "uuid-validate": "0.0.2",
+    "videojs-framebyframe": "^1.0.1",
     "videojs-hotkeys": "git+https://github.com/ctd1500/videojs-hotkeys.git",
     "videojs-vimeo": "git+https://github.com/santoshshinde2012/videojs-vimeo.git",
     "videojs-youtube": "^2.4.1",
