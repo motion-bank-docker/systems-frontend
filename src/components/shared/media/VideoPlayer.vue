@@ -43,6 +43,17 @@
           poster: undefined,
           controlBar: {
             remainingTime: true
+          },
+          plugins: {
+            framebyframe: {
+              fps: 23.98,
+              steps: [
+                {text: '-1s', step: -24},
+                {text: '-1f', step: -1},
+                {text: '+1f', step: 1},
+                {text: '+1s', step: 24}
+              ]
+            }
           }
         }
       }
@@ -114,7 +125,7 @@
 </script>
 
 <style lang="stylus">
-
+/*
   .video-js .vjs-time-control {
     display: block
   }
@@ -130,5 +141,5 @@
 
   .vjs_video_427-dimensions.vjs-fluid {
     padding-top: 0;
-  }
+  }*/
 </style>
