@@ -1,6 +1,12 @@
 <template lang="pug">
-  // video-player(:src="videoSrc", :type="videoSrcType")
-  div {{videoSrc}}
+
+  div
+    template(v-if="display")
+      video-player(:src="video")
+
+    template(v-else)
+      strong 'Video Cell'
+
 </template>
 
 <script>
@@ -10,13 +16,18 @@
     components: {
       VideoPlayer
     },
-    props: ['cell'],
+    props: ['cell', 'display', 'preview'],
     data () {
       return {}
     },
     computed: {
-      videoSrc () {
-        return this.cell.content
+      video () {
+        let fauxVideoAnnotation = {
+          type: 'Video',
+          purpose: 'linking',
+          source: this.cell['content']
+        }
+        return fauxVideoAnnotation
       },
       videoSrcType () {
         if (this.videoSrc.indexOf('youtube.com') >= 0) return 'video/youtube'

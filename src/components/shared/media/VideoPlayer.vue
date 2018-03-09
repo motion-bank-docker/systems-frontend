@@ -123,8 +123,8 @@
   .video-js.vjs-4-3 {
     width: 100%;
     max-width: 100%;
-    height: calc(100vh - 52px);
-    max-height: calc(100vh - 52px);
+    height: 100%;
+    max-height: 100%;
   }
 
   .vjs_video_427-dimensions.vjs-fluid {

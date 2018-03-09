@@ -5,7 +5,7 @@
     p.caption(slot="form-caption") {{ $t('routes.piecemaker.videos.create.caption') }}
     edit-video
     .text-center
-      q-btn(@click="$router.push(`/piecemaker/groups/`)") Back to videos
+      q-btn(@click="$router.push(`/piecemaker/groups/`)" icon="keyboard_backspace") {{ $t('buttons.back') }}
 </template>
 
 <script>

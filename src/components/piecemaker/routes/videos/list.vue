@@ -1,5 +1,5 @@
 <template lang="pug">
-  center-card-full
+  card-full
     span(slot="form-logo")
     span(slot="form-title") {{ $t('routes.piecemaker.videos.list.title') }}
     p.caption(slot="form-caption") {{ $t('routes.piecemaker.videos.list.caption') }}
@@ -8,13 +8,14 @@
         color="primary") {{ $t('buttons.add_video') }}
     data-table(:entries="maps", :columns="columns", :actions="actions", @action="onAction")
     .text-center
-      q-btn(@click="$router.push(`/piecemaker/groups/`)") Back to groups
+      q-btn(@click="$router.push(`/piecemaker/groups/`)" icon="keyboard_backspace") {{ $t('buttons.back') }}
 </template>
 
 <script>
   import { QBtn } from 'quasar-framework'
   import DataTable from '../../../shared/partials/DataTable'
-  import CenterCardFull from '../../../shared/layouts/CenterCardFull'
+  // import CenterCardFull from '../../../shared/layouts/CenterCardFull'
+  import CardFull from '../../../shared/layouts/CardFull'
   import Promise from 'bluebird'
   import superagent from 'superagent'
   import url from 'url'
@@ -26,7 +27,8 @@
     components: {
       QBtn,
       DataTable,
-      CenterCardFull
+      // CenterCardFull
+      CardFull
     },
     methods: {
       onAction (type, data) {

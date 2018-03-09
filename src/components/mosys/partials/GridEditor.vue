@@ -24,6 +24,7 @@
           draggable="true",
           @dragstart="event => {handleCellDragStart(event, cell)}",
           @dragend="event => {handleCellDragEnd(event, cell)}",
+          @contextmenu="handleCellContextMenu",
           :style="getCellStyle(cell)",
           :title="cell.title",
           @click.prevent="event => {handleCellClick(event, cell)}",
@@ -49,8 +50,10 @@
           cell(:cell="tmpCell")
 
       q-fixed-position(corner="top-right", :offset="[18, 18]", v-if="!$store.state.mosysGridEditorStore.showSources")
-        q-btn(round, color="primary", @click="handleGridButtonClickEdit")
+        q-btn(round, color="primary", small, @click="handleGridButtonClickEdit", style="margin-right: 0.5em")
           q-icon(name="add")
+        q-btn(round, color="primary", small, @click="$router.push(`/mosys/grids/${$route.params.id}`)")
+          q-icon(name="remove red eye")
 
 </template>
 
@@ -90,6 +93,14 @@
           delete: {
             label: 'Delete',
             handler: this.handleCellContextMenuDelete
+          },
+          insert_column_left: {
+            label: 'Insert Column Left',
+            handler: this.handleGridContextMenuInsertColumnLeft
+          },
+          insert_row_above: {
+            label: 'Insert Row Above',
+            handler: this.handleGridContextMenuInsertRowAbove
           }
         },
         gridContextMenuActions: {
@@ -97,25 +108,25 @@
             label: 'Add Cell',
             handler: this.handleGridContextMenuAddCell
           },
-          insert_column: {
-            label: 'Insert Column',
+          insert_column_left: {
+            label: 'Insert Column Left',
             handler: this.handleGridContextMenuInsertColumnLeft
           },
-          insert_row: {
-            label: 'Insert Row',
+          insert_row_above: {
+            label: 'Insert Row Above',
             handler: this.handleGridContextMenuInsertRowAbove
           }
         },
         gridMetadata: {},
         cells: [],
-        dragCell: {},
         tmpCells: [],
         cellUIStates: {},
-        renderFull: true,
         gridDimensions: {gridWidth: 0, gridHeight: 0, cellWidth: 0, cellHeight: 0},
         gridStyle: {},
-        gridContainerStyle: {},
         contextMenuClickPosition: {}
+        // dragCell: {},
+        // gridContainerStyle: {},
+        // renderFull: true,
       }
     },
     mounted () {
@@ -197,6 +208,9 @@
         if (refId) {
           this.$refs[refId].close()
         }
+      },
+      handleCellContextMenu (event) {
+        this.contextMenuClickPosition = this.getGridPositionForEvent(event)
       },
 
       handleGridDragOver (event) {

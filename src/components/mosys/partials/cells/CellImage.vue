@@ -2,10 +2,10 @@
 
   div
     template(v-if="display")
-      h1 {{titleContent}}
+      img(:src="imgSrc")
 
     template(v-else)
-      strong 'HTML Cell'
+      strong 'Image Cell'
 
 </template>
 
@@ -16,7 +16,7 @@ export default {
     return {}
   },
   computed: {
-    titleContent () {
+    imgSrc () {
       return this.cell['content']
     }
   }
@@ -24,7 +24,6 @@ export default {
 </script>
 
 <style scoped lang="stylus">
-  h1
-    padding 1rem
-    font-weight bold
+  div
+    padding 1em
 </style>
