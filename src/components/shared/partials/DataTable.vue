@@ -7,8 +7,12 @@
   :columns="cols",
   :actions="actns")
     template(slot="col-action", slot-scope="cell")
-      q-btn(v-for="a in actions", :color="a.color || 'neutral'", :key="a.type",
+      q-btn(flat, small, v-for="a in actions", :color="a.color || 'neutral'", :key="a.type",
       @click="action(a.type, cell)") {{ $t(a.title) }}
+    template(slot="col-created", slot-scope="cell")
+      span(v-if="cell.data") {{ formatDateTime(cell.data) }}
+    template(slot="col-author", slot-scope="cell")
+      username(:uuid="cell.data")
 </template>
 
 <script>
@@ -16,10 +20,13 @@
     QBtn,
     QDataTable
   } from 'quasar-framework'
+  import Username from './Username'
+  import { DateTime } from 'luxon'
   export default {
     components: {
       QBtn,
-      QDataTable
+      QDataTable,
+      Username
     },
     props: ['entries', 'config', 'columns', 'actions'],
     data () {
@@ -30,7 +37,7 @@
         leftStickyColumns: 0,
         rightStickyColumns: 0,
         bodyStyle: {
-          maxHeight: '500px'
+          // maxHeight: '500px'
         },
         /*
         pagination: {
@@ -61,8 +68,8 @@
       const cols = this.columns.map(column => {
         return Object.assign({
           filter: false,
-          sort: false,
-          classes: 'bg-dark'
+          sort: false
+          // classes: 'bg-dark'
           // Type required if using sort.
           // Available values: "string", "number", "date", "boolean"
           // type: 'string',
@@ -96,6 +103,9 @@
         else {
           _this.rows = this.entries
         }
+      },
+      formatDateTime (data) {
+        return DateTime.fromISO(data).toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS)
       }
     },
     mounted () {

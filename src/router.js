@@ -77,7 +77,7 @@ const router = new VueRouter({
     { path: '/mosys/setGridView', component: mosys.setGridView, name: 'mosys.setGridView', meta: { private: true } },
     { path: '/mosys/setListView', component: mosys.setListView, name: 'mosys.setListView', meta: { private: true } },
     { path: '/mosys/codarts/tagging', component: mosys.codarts.tagging, name: 'mosys.codarts.tagging', meta: { private: true } },
-    { path: '/mosys/codarts/sync', component: mosys.codarts.sync, name: 'mosys.codarts.sync', meta: { private: true } },
+    { path: '/mosys/codarts/sync/:groupId/:videoId', component: mosys.codarts.sync, name: 'mosys.codarts.sync', meta: { private: true } },
 
     //
     // Piecemaker ---------------------------------------------------------

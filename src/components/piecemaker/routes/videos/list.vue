@@ -22,6 +22,7 @@
   import path from 'path'
   import buildVars from '../../../../lib/build-vars'
   import he from 'he'
+  // import { DateTime } from 'luxon'
 
   export default {
     components: {
@@ -36,12 +37,10 @@
         switch (type) {
           case 'annotate':
             return _this.$router.push(`/piecemaker/videos/${data.row.uuid}/annotate`)
-          case 'live-annotation':
-            return _this.$router.push(`/piecemaker/groups/annotate`)
           case 'edit':
             return _this.$router.push(`/piecemaker/videos/${data.row.uuid}/edit`)
-          // case 'synchronize':
-            // return _this.$router.push(`/mosys/codarts/sync`)
+          case 'synchronize':
+            return _this.$router.push(`/mosys/codarts/sync/${_this.$route.params.groupId}/${data.row.uuid}`)
           case 'delete':
             _this.$store.dispatch('maps/remove', data.row.uuid)
               .then(() => {
@@ -86,15 +85,35 @@
       const _this = this
       return {
         maps: [],
-        columns: [{
-          label: _this.$t('labels.video_title'),
-          field: 'title'
-        }],
+        columns: [
+          {
+            label: _this.$t('labels.video_title'),
+            field: 'title',
+            type: 'string',
+            sort: true,
+            filter: true
+          },
+          {
+            label: _this.$t('labels.created'),
+            field: 'created',
+            type: 'date',
+            sort: true
+          },
+          {
+            label: _this.$t('labels.updated'),
+            field: 'updated',
+            type: 'date',
+            sort: true
+          },
+          {
+            label: _this.$t('labels.author'),
+            field: 'author'
+          }
+        ],
         actions: [
-          { type: 'live-annotation', title: 'buttons.live_annotate', color: 'primary' },
           { type: 'annotate', title: 'buttons.annotate', color: 'primary' },
           { type: 'edit', title: 'buttons.edit' },
-          // { type: 'synchronize', title: 'buttons.synchronize' },
+          { type: 'synchronize', title: 'buttons.synchronize' },
           { type: 'delete', title: 'buttons.delete' }
         ]
       }

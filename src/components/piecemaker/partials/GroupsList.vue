@@ -33,11 +33,26 @@
         columns: [
           {
             label: _this.$t('labels.title'),
-            field: 'title'
+            field: 'title',
+            type: 'string',
+            sort: true,
+            filter: true
           },
           {
             label: _this.$t('labels.created'),
-            field: 'created'
+            field: 'created',
+            type: 'date',
+            sort: true
+          },
+          {
+            label: _this.$t('labels.updated'),
+            field: 'updated',
+            type: 'date',
+            sort: true
+          },
+          {
+            label: _this.$t('labels.author'),
+            field: 'author'
           }
         ],
         actions: [

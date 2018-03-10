@@ -41,6 +41,7 @@ const en = {
     accept_terms: 'I accept the Terms and Conditions',
     associated_map: 'Associate Video with Map',
     created: 'Created',
+    updated: 'Updated',
     description: 'Description',
     duration: 'Duration',
     edit_title: 'Edit title',
@@ -160,12 +161,20 @@ const en = {
         list: {
           title: 'Groups',
           caption: 'All your most wonderful groups are here.'
+        },
+        edit: {
+          title: 'Edit Group',
+          caption: 'Edit group details.'
         }
       },
       videos: {
         list: {
           title: 'Videos',
           caption: 'All your most wonderful videos are here.'
+        },
+        edit: {
+          title: 'Edit Video',
+          caption: 'Edit video details.'
         }
       }
     },

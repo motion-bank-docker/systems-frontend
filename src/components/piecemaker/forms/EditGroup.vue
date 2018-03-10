@@ -37,7 +37,7 @@
           },
           submit: {
             handler () {
-              context.payload.owner = context.$store.state.auth.payload.userId
+              context.payload.author = context.$store.state.auth.payload.userId
               if (!context.$route.params.id) {
                 context.payload.type = [constants.MAP_TYPE_TIMELINE]
               }

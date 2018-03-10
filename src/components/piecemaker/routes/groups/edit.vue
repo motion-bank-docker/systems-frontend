@@ -1,7 +1,7 @@
 <template lang="pug">
   card-full
     span(slot="form-logo")
-    h4 Edit group
+    h4 {{ $t('routes.piecemaker.groups.edit.title') }}
     edit-group
 </template>
 

@@ -1,53 +1,141 @@
+import { DateTime } from 'luxon'
 import assert from 'assert'
-import querystring from 'querystring'
 
 class TimelineSelector {
-  constructor (value) {
-    this.m = 0
-    this.s = 0
-    /**
-     * Parse seconds (with fractions)
-     */
-    if (typeof value === 'number') {
-      value = {
-        m: Math.floor(value / 60),
-        s: value % 60
-      }
+  /**
+   * Create a new selector from local time or (optionally) UTC time
+   * @param utc
+   */
+  constructor (utc = false) {
+    if (utc) {
+      this._dateTime = DateTime.local().toUTC()
     }
-    /**
-     * Parse param string
-     */
-    else if (typeof value === 'string') {
-      value = TimelineSelector.parseString(value)
-    }
-    /**
-     * Assign from value
-     */
-    if (typeof value === 'object') {
-      this.m = value.m
-      this.s = value.s
+    else {
+      this._dateTime = DateTime.local()
     }
   }
 
+  /**
+   * Set current time value to UTC time zone
+   */
+  setToUTC () {
+    this._dateTime = this._dateTime.toUTC()
+  }
+
+  /**
+   * Return ISO string (for serialization)
+   * @return {string}
+   */
   toString () {
-    return querystring.stringify(this)
+    return this.isoString
   }
 
-  toTimecodeString () {
-    return `${Math.round(this.m).toString().padStart(2, '0')}:${(this.s).toFixed(3).padStart(6, '0')}`
+  /**
+   * Get custom formatted string
+   * @param format
+   * @return {*|string}
+   */
+  toFormat (format) {
+    assert.equal(typeof format, 'string')
+    return this._dateTime.toFormat(format)
   }
 
-  toSeconds () {
-    return (parseInt(this.m) || 0) * 60 + (parseFloat(this.s) || 0)
+  /**
+   * Add milliseconds
+   * @param millis
+   */
+  add (millis) {
+    assert.equal(typeof millis, 'number')
+    this._dateTime = this._dateTime.plus(millis)
   }
 
-  static parseString (value) {
+  /**
+   * Subtract milliseconds
+   * @param millis
+   */
+  subtract (millis) {
+    assert.equal(typeof millis, 'number')
+    this._dateTime = this._dateTime.minus(millis)
+  }
+
+  /**
+   * Set from ISO string
+   * @param val
+   */
+  set isoString (val) {
     assert.equal(typeof val, 'string')
-    const obj = querystring.parse(value)
-    Object.keys(obj).forEach(key => {
-      obj[key] = parseFloat(obj[key])
-    })
-    return obj
+    this._dateTime = DateTime.fromISO(val)
+  }
+
+  /**
+   * Get ISO string
+   * @return {string}
+   */
+  get isoString () {
+    return this._dateTime.toISO()
+  }
+
+  /**
+   * Set from milliseconds
+   * @param val
+   */
+  set millis (val) {
+    assert.equal(typeof val, 'number')
+    this._dateTime = DateTime.fromMillis(val)
+  }
+
+  /**
+   * Get milliseconds
+   * @return {Object}
+   */
+  get millis () {
+    return this._dateTime.valueOf()
+  }
+
+  /**
+   * Set luxon DateTime instance
+   * @param val
+   */
+  set dateTime (val) {
+    assert(val instanceof DateTime)
+    this._dateTime = DateTime.fromISO(val.toISO())
+  }
+
+  get dateTime () {
+    return this._dateTime
+  }
+
+  /**
+   * Create new selector from ISO string
+   * @param val
+   * @return {TimelineSelector}
+   */
+  static fromISOString (val) {
+    const selector = new TimelineSelector()
+    selector.isoString = val
+    return selector
+  }
+
+  /**
+   * Create new selector from milliseconds
+   * @param val
+   * @return {TimelineSelector}
+   */
+  static fromMilliseconds (val) {
+    const selector = new TimelineSelector()
+    selector.millis = val
+    return selector
+  }
+
+  /**
+   * Create new selector from luxon DateTime object
+   * @param val
+   * @return {TimelineSelector}
+   */
+  static fromDateTime (val) {
+    const selector = new TimelineSelector()
+    selector.dateTime = val
+    return selector
   }
 }
 

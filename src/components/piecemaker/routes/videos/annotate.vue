@@ -1,19 +1,17 @@
 <template lang="pug">
 
-  div(style="border: 0px solid yellow; height: calc(100vh - 52px); overflow-y: hidden!important;")
+  div(style="height: calc(60vh - 52px);")
     q-layout
 
       div#btn-back
         q-btn(@click="$router.push('/piecemaker/groups/' + groupId + '/videos')",
           color="grey", icon="keyboard_backspace", round, flat, small)
-        q-btn(v-if="!fullscreen", @click="fullscreenHandler", icon="fullscreen", round, flat, small)
-        q-btn(v-if="fullscreen", @click="fullscreenHandler", icon="fullscreen_exit", round, flat, small)
+        q-btn(v-if="!fullscreen", @click="toggleFullscreen(), fullscreenHandler()", icon="fullscreen", round, flat, small)
+        q-btn(v-if="fullscreen", @click="toggleFullscreen(), fullscreenHandler()", icon="fullscreen_exit", round, flat, small)
 
-      div
-        video-player(v-if="video", :src="video", @ready="playerReady($event)", @time="onPlayerTime($event)")
+      video-player(v-if="video", :src="video", @ready="playerReady($event)", @time="onPlayerTime($event)")
 
       #pop-up(v-bind:class="{ activeCondition: active }")
-        // q-input#zwischenfokus(@keyup="activatePopUp()" autofocus)
 
         div.text-right.outline(@click="toggleForm()", v-if="!active", color="primary")
           | Start typing or click here
@@ -27,30 +25,34 @@
             .col-6.text-right
               q-btn(@click="createAnnotation()", small) Enter
 
-      // div#annotations(v-if="!fullscreen")
-      div#hallo(v-if="!fullscreen" slot="right")
+      #annotation-wrap(v-if="!fullscreen" slot="right")
         q-list.no-border
-          q-item.annotation(v-for="(annotation, i) in annotations", :key="annotation.uuid")
+          q-item.annotation(v-for="(annotation, i) in annotations", :key="annotation.uuid", v-bind:id="annotation.uuid")
             q-item-main.row
-              a(name="annotation.uuid")
               q-item-tile.col-6
-                q-btn(@click="gotoSelector(annotation.target.selector.value)" small) {{ formatSelectorForList(annotation.target.selector.value) }}
+                q-btn(@click="gotoSelector(annotation.target.selector.value), changeState()" small) {{ formatSelectorForList(annotation.target.selector.value) }}
               q-item-tile.col-6
-                q-btn(@click="deleteAnnotation(annotation.uuid)", small) {{ $t('buttons.delete') }}
-                q-btn(@click="updateAnnotation(annotation)", small) {{ $t('buttons.save') }}
+                q-btn(@click="deleteAnnotation(annotation.uuid), changeState()", small) {{ $t('buttons.delete') }}
+                q-btn(@click="updateAnnotation(annotation), addKeypressListener()", small) {{ $t('buttons.save') }}
+              q-item-tile.col-12.author
+                username(:uuid="annotation.author")
               q-item-tile.col-12
-                q-input(type="textarea", v-model="annotation.body.value")
+                q-input(@click="changeState(), hideForm()", type="textarea", v-model="annotation.body.value")
 
 </template>
 
 <script>
-  // import { QBtn, QLayout, QInput } from 'quasar-framework'
-  import { ActionSheet, Dialog, QBtn, QLayout, QInput, QList, QItem, QItemMain, QItemTile } from 'quasar-framework'
-  import querystring from 'querystring'
+  import { AppFullscreen, ActionSheet, Dialog, QBtn, QLayout, QInput, QList, QItem, QItemMain, QItemTile } from 'quasar-framework'
+  // import { ActionSheet, Dialog, QBtn, QLayout, QInput, QList, QItem, QItemMain, QItemTile } from 'quasar-framework'
   import assert from 'assert'
   import uuidValidate from 'uuid-validate'
   import VideoPlayer from '../../../shared/media/VideoPlayer'
-  import { TimelineSelector } from '../../../../lib/annotations/selectors'
+  import annotations from '../../../../lib/annotations'
+  import constants from '../../../../lib/constants'
+  import Username from '../../../shared/partials/Username'
+
+  const TimelineSelector = annotations.selectors.TimelineSelector
+
   export default {
     components: {
       ActionSheet,
@@ -62,18 +64,19 @@
       QItem,
       QItemMain,
       QItemTile,
-      VideoPlayer
+      VideoPlayer,
+      Username
     },
     mounted () {
-      const selector = new TimelineSelector()
-      console.log(selector)
       if (this.$route.params.id) {
-        this.getVideo().then(this.getAnnotations())
+        this.getVideo()
+          .then(this.getAnnotations())
       }
       window.addEventListener('keypress', this.toggleForm)
     },
     beforeDestroy () {
       window.removeEventListener('keypress', this.toggleForm)
+      AppFullscreen.exit()
     },
     data () {
       return {
@@ -82,6 +85,7 @@
         playerTime: 0.0,
         video: undefined,
         groupId: undefined,
+        baseSelector: undefined,
         active: false,
         annotations: [],
         currentBody: {
@@ -102,6 +106,21 @@
       }
     },
     methods: {
+      toggleFullscreen () {
+        AppFullscreen.toggle()
+      },
+      changeState () {
+        this.active = false
+        this.currentSelector.value = undefined
+        this.currentBody.value = undefined
+        window.addEventListener('keypress', this.toggleForm)
+      },
+      hideForm () {
+        window.removeEventListener('keypress', this.toggleForm)
+      },
+      addKeypressListener () {
+        window.addEventListener('keypress', this.toggleForm)
+      },
       fullscreenHandler () {
         this.fullscreen = !this.fullscreen
       },
@@ -112,22 +131,17 @@
             if (result.body) {
               context.groupId = result.target.id
               context.video = result.body
+              context.baseSelector = TimelineSelector.fromISOString(result.target.selector.value)
+              console.log('Base time', context.baseSelector.isoString)
             }
           })
       },
       getAnnotations () {
         const context = this
-        return this.$store.dispatch('annotations/find', { query: { 'target.id': context.$route.params.id } })
+        return this.$store.dispatch('annotations/find', { query: { 'target.id': context.groupId, 'body.type': 'TextualBody' } })
           .then(results => {
             if (results) {
-              context.annotations = results.sort((a, b) => {
-                const
-                  dta = a.target.selector ? context.selectorToSeconds(context.parseSelector(a.target.selector.value)) : null,
-                  dtb = b.target.selector ? context.selectorToSeconds(context.parseSelector(b.target.selector.value)) : null
-                if (dta > dtb) return 1
-                if (dta < dtb) return -1
-                return 0
-              })
+              context.annotations = results.sort(annotations.Sorting.sortOnTarget)
             }
           })
       },
@@ -140,9 +154,13 @@
         }
         else {
           window.removeEventListener('keypress', this.toggleForm)
-          this.currentSelector.value = this.encodeSelector(this.secondsToSelector(this.playerTime))
+          if (!this.player) return
+          const selector = TimelineSelector.fromDateTime(this.baseSelector.dateTime)
+          let seconds = this.player.currentTime()
+          selector.add(seconds * 1000)
+          this.currentSelector.value = selector.isoString
+          console.log('Anno time', this.currentSelector.value)
           this.active = true
-          console.log(this.currentBody, this.currentSelector)
         }
       },
       createAnnotation () {
@@ -151,22 +169,26 @@
           author: _this.$store.state.auth.payload.userId,
           body: Object.assign({}, _this.currentBody),
           target: {
-            id: _this.$route.params.id,
-            type: 'Video',
+            id: _this.groupId,
+            type: constants.MAP_TYPE_TIMELINE,
             selector: Object.assign({}, _this.currentSelector)
           }
         }
-        console.log(annotation, this)
         return this.$store.dispatch('annotations/create', annotation)
-          .then(() => _this.getAnnotations())
+          .then(res => {
+            _this.getAnnotations().then(() => {
+              _this.scrollToElement(res.uuid)
+            })
+          })
           .then(() => _this.toggleForm())
-          .then(() => _this.scrollToElement())
+      },
+      scrollToElement (uuid) {
+        window.location.href = '#' + uuid
       },
       updateAnnotation (annotation) {
         assert.equal(typeof annotation, 'object')
         assert(uuidValidate(annotation.uuid))
         assert.equal(typeof annotation.body.value, 'string')
-        console.log(annotation)
         return this.$store.dispatch('annotations/patch', [annotation.uuid, annotation])
           .then(() => this.getAnnotations())
       },
@@ -176,55 +198,22 @@
           .then(() => this.getAnnotations())
       },
       gotoSelector (selector) {
-        const seconds = this.selectorToSeconds(this.parseSelector(selector))
-        this.player.currentTime(seconds)
+        selector = TimelineSelector.fromISOString(selector)
+        selector.subtract(this.baseSelector.millis)
+        this.player.currentTime(selector.millis * 0.001)
       },
       playerReady (player) {
         console.log('player ready', player.id())
         this.player = player
-      },
-      parseSelector (val) {
-        if (!val) {
-          console.warn(`Warning: encountered undefined selector`)
-          return {}
-        }
-        assert.equal(typeof val, 'string')
-        const obj = querystring.parse(val)
-        Object.keys(obj).forEach(key => {
-          obj[key] = parseFloat(obj[key])
-        })
-        return obj
-      },
-      encodeSelector (val) {
-        assert.equal(typeof val, 'object')
-        return querystring.stringify(val)
-      },
-      selectorToString (val) {
-        assert.equal(typeof val, 'object')
-        return `${Math.round(val.m || 0).toString().padStart(2, '0')}:${(val.s || 0).toFixed(3).padStart(6, '0')}`
-      },
-      secondsToSelector (val) {
-        assert.equal(typeof val, 'number')
-        const selector = {
-          m: Math.floor(val / 60),
-          s: val % 60
-        }
-        return selector
-      },
-      selectorToSeconds (val) {
-        assert.equal(typeof val, 'object')
-        return (parseInt(val.m) || 0) * 60 + (parseFloat(val.s) || 0)
+        console.log(player)
       },
       formatSelectorForList (val) {
-        return this.selectorToString(this.parseSelector(val))
+        const selector = TimelineSelector.fromISOString(val)
+        selector.subtract(this.baseSelector.millis)
+        return selector.toFormat(constants.TIMECODE_FORMAT)
       },
       onPlayerTime (seconds) {
         this.playerTime = seconds
-      },
-      scrollToElement () {
-        // alert('123 abc')
-        // var elmnt = document.getElementById("content");
-        // aside
       }
     }
   }
@@ -244,10 +233,10 @@
     width: 33%;
     cursor: pointer;
   }
-  #pop-up > div {
-    padding: 1em;
-    background-color: white;
-  }
+    #pop-up > div {
+      padding: 1em;
+      background-color: white;
+    }
   .activeCondition {
     box-shadow: 0 0 10px -2px rgba( 0, 0, 0, .35 );
     background-color: rgba( 255, 255, 255, 1 );
@@ -258,20 +247,23 @@
     right: 0;
   }
   .annotation {
-    margin: 1em 0;
   }
-  #annotations {
-    height: 50vh;
-    background-color: red;
+    .annotation:hover {
+      background-color: rgba( 0, 0, 0, .05 );
+    }
+  #annotation-wrap {
   }
-  #hallo > div {
-    /* background-color: pink; */
-    height: 100%;
-    overflow-x: scroll;
+    #annotation-wrap > div {
+      padding-top: 0;
+      height: 100%;
+      overflow-x: scroll;
+    }
+  .author {
+    font-size: .8em;
+    padding-top: 5px;
   }
-  .video-js.vjs-fluid {
-    width: 40px!important;
-  }
-  #zwischenfokus {
+  .highlight {
+    background-color: rgba( 0, 255, 0, .5 );
+    transition: background-color ease 500ms;
   }
 </style>
