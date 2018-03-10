@@ -132,7 +132,6 @@
               context.groupId = result.target.id
               context.video = result.body
               context.baseSelector = TimelineSelector.fromISOString(result.target.selector.value)
-              console.log('Base time', context.baseSelector.isoString)
             }
           })
       },
@@ -159,7 +158,6 @@
           let seconds = this.player.currentTime()
           selector.add(seconds * 1000)
           this.currentSelector.value = selector.isoString
-          console.log('Anno time', this.currentSelector.value)
           this.active = true
         }
       },
@@ -203,9 +201,7 @@
         this.player.currentTime(selector.millis * 0.001)
       },
       playerReady (player) {
-        console.log('player ready', player.id())
         this.player = player
-        console.log(player)
       },
       formatSelectorForList (val) {
         const selector = TimelineSelector.fromISOString(val)

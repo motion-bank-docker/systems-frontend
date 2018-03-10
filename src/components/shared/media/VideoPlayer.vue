@@ -32,7 +32,8 @@
     },
     data () {
       return {
-        guessedType: undefined,
+        type: undefined,
+        fps: 25.0,
         playerOptions: {
           fluid: true,
           width: 640,
@@ -58,7 +59,7 @@
         }
       }
     },
-    props: ['src', 'type'],
+    props: ['src'],
     mounted () {
       if (!this.src) return
       /*
@@ -66,26 +67,26 @@
         this.guessType()
       }
       */
-      const type = this.guessType(this.src)
-      if (type === 'video/youtube') {
+      this.type = this.guessType(this.src)
+      if (this.type === 'video/youtube') {
         this.playerOptions.techOrder = ['youtube']
       }
-      else if (type === 'video/vimeo') {
+      else if (this.type === 'video/vimeo') {
         this.playerOptions.techOrder = ['vimeo']
       }
-      this.setSources([{ type, src: this.src.source }])
+      this.setSources([{ type: this.type, src: this.src.source }])
     },
     watch: {
       src (val) {
-        const type = this.guessType(val)
+        this.type = this.guessType(val)
         if (val) {
-          if (type === 'video/youtube') {
+          if (this.type === 'video/youtube') {
             this.playerOptions.techOrder = ['youtube']
           }
-          else if (type === 'video/vimeo') {
+          else if (this.type === 'video/vimeo') {
             this.playerOptions.techOrder = ['vimeo']
           }
-          this.setSources([{type, src: val.source}])
+          this.setSources([{type: this.type, src: val.source}])
         }
       }
     },
@@ -106,6 +107,15 @@
       },
       onPlayerReady (player) {
         this.$emit('ready', player)
+        if (this.type === 'video/youtube') {
+          // console.log('youtube tech', player.tech_.ytPlayer)
+        }
+        else if (this.type === 'video/vimeo') {
+          // console.log('vimeo tech', player.tech_)
+        }
+        else {
+          // console.log('html5 tech', player.tech_)
+        }
       },
       onPlayerEvent (type, player) {
         this.$emit(type, player)
