@@ -210,7 +210,7 @@
       formatSelectorForList (val) {
         const selector = TimelineSelector.fromISOString(val)
         selector.subtract(this.baseSelector.millis)
-        return selector.toFormat('HH:mm:ss:SSS')
+        return selector.toFormat(constants.TIMECODE_FORMAT)
       },
       onPlayerTime (seconds) {
         this.playerTime = seconds

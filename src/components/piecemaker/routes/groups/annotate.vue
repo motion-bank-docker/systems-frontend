@@ -8,7 +8,7 @@
     q-input#input(v-model="currentBody.value", @keyup="keyMonitor", type="textarea", autofocus)
     q-list(no-border)#list
       q-item.annotation(v-for="(annotation, i) in annotations", :key="annotation.uuid", :id="annotation.uuid")
-        q-item-side {{ annotation.target.selector.value }}
+        q-item-side {{ formatSelectorForList(annotation.target.selector.value) }}
         q-item-main
           q-item-tile.text-left
             q-input.color(type="textarea" v-model="annotation.body.value")
@@ -19,9 +19,10 @@
 <script>
   import { QBtn, QInput, QList, QItem, QItemMain, QItemSide, QItemTile } from 'quasar-framework'
   import Full from '../../../shared/layouts/Full'
-  import { DateTime } from 'luxon'
   import assert from 'assert'
   import uuidValidate from 'uuid-validate'
+  import constants from '../../../../lib/constants'
+  import { TimelineSelector } from '../../../../lib/annotations/selectors'
   export default {
     components: {
       QBtn,
@@ -52,7 +53,9 @@
       keyMonitor (e) {
         if (this.prevKey === 13 && e.keyCode === 13) {
           this.prevKey = undefined
-          if (this.currentBody.value.replace(/\n/g, '').length > 0) {
+          const bodyLength = this.currentBody.value.length
+          if (bodyLength > 2) {
+            this.currentBody.value = this.currentBody.value.substr(0, bodyLength - 2)
             this.createAnnotation()
           }
           else {
@@ -60,25 +63,27 @@
           }
         }
         else {
+          if (this.currentSelector.value === undefined) {
+            this.currentSelector.value = new TimelineSelector().isoString
+          }
           this.prevKey = e.keyCode
         }
       },
       createAnnotation () {
         const _this = this
-        this.currentSelector.value = DateTime.local().toString()
         const annotation = {
           author: _this.$store.state.auth.payload.userId,
           body: Object.assign({}, _this.currentBody),
           target: {
             id: _this.$route.params.id,
-            type: 'Timeline',
+            type: constants.MAP_TYPE_TIMELINE,
             selector: Object.assign({}, _this.currentSelector)
           }
         }
         this.currentBody.value = undefined
+        this.currentSelector.value = undefined
         return this.$store.dispatch('annotations/create', annotation)
           .then(annotation => {
-            console.log(annotation, this)
             _this.annotations.push(annotation)
             _this.scrollToElement(annotation.uuid)
           })
@@ -93,6 +98,10 @@
       },
       scrollToElement (uuid) {
         window.location.href = '#' + uuid
+      },
+      formatSelectorForList (val) {
+        const selector = TimelineSelector.fromISOString(val)
+        return selector.toFormat(constants.TIMECODE_FORMAT)
       }
     }
   }
