@@ -1,5 +1,7 @@
 <template lang="pug">
-  form-main(v-model="payload", :schema="schema")
+  div
+    form-main(v-model="payload", :schema="schema")
+    tags(v-if="payload", :targetUuid="payload.uuid", fullWidth)
 </template>
 
 <script>
@@ -7,15 +9,19 @@
   import { QBtn } from 'quasar-framework'
   import { required } from 'vuelidate/lib/validators'
   import constants from '../../../lib/constants'
+  import Tags from '../../shared/partials/Tags'
+
   export default {
     components: {
       FormMain,
+      Tags,
       QBtn
     },
     props: ['redirectTo'],
     data () {
       const context = this
       return {
+        type: constants.MAP_TYPE_TIMELINE,
         payload: this.$route.params.id ? context.$store.dispatch('maps/get', context.$route.params.id) : undefined,
         schema: {
           fields: {

@@ -1,5 +1,11 @@
 <template lang="pug">
-  form-main(v-model="payload", :schema="schema")
+
+  card-full
+    span(slot="form-logo")
+    h4 Edit Grid
+    form-main(v-model="payload", :schema="schema")
+    tags(v-if="payload", :targetUuid="payload.uuid", fullWidth)
+
 </template>
 
 <script>
@@ -7,10 +13,15 @@
   import { QBtn } from 'quasar-framework'
   import { required } from 'vuelidate/lib/validators'
   import constants from '../../../lib/constants'
+  import Tags from '../../shared/partials/Tags'
+  import CardFull from '../../shared/layouts/CardFull'
+
   export default {
     components: {
       FormMain,
-      QBtn
+      QBtn,
+      Tags,
+      CardFull
     },
     props: ['redirectTo'],
     data () {
@@ -27,11 +38,6 @@
               validators: {
                 required
               }
-            },
-            description: {
-              fullWidth: true,
-              type: 'textarea',
-              label: 'labels.description'
             }
           },
           submit: {
