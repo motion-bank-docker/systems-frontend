@@ -2,9 +2,9 @@
   // center-card-full
   card-full
     span(slot="form-logo")
-    h4 Edit video
+    h4 {{ $t('routes.piecemaker.edit.title') }}
     .text-right
-      q-btn(@click="$router.push(`/mosys/codarts/sync`)" color="primary") Sync
+      q-btn(@click="$router.push(`/mosys/codarts/sync`)" color="primary") {{ $t('buttons.synchronize') }}
 
     // tagging
     edit-video
