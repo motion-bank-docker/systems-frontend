@@ -1,8 +1,9 @@
 <template lang="pug">
 
-  card-full
+  // card-full
     span(slot="form-logo")
     h4 Edit Grid
+  div
     form-main(v-model="payload", :schema="schema")
     tags(v-if="payload", :targetUuid="payload.uuid", fullWidth)
 
@@ -33,7 +34,7 @@
             title: {
               fullWidth: true,
               type: 'text',
-              label: 'routes.mosys.grids.edit.label.title',
+              label: 'routes.mosys.grids.edit.title',
               errorLabel: 'errors.field_required',
               validators: {
                 required
