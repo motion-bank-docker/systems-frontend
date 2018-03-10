@@ -1,6 +1,5 @@
 <template lang="pug">
   div
-    h4 Edit grid
     edit-grid
 </template>
 
