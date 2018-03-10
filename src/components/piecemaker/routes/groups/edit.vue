@@ -3,7 +3,7 @@
     span(slot="form-logo")
     h4 Edit group
     edit-group
-    tagging
+    // tagging
       q-btn(slot="tagging-buttons") Generate Grid from selected
     .text-center
       q-btn(@click="$router.push(`/piecemaker/groups/`)" icon="keyboard_backspace") {{ $t('buttons.back') }}
