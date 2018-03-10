@@ -5,6 +5,7 @@ import ContentBar from './ContentBar.vue'
 import SideMenu from './SideMenu.vue'
 import SiteFooter from './SiteFooter.vue'
 import UserNav from './UserNav.vue'
+import Username from './Username.vue'
 
 export default {
   AnimatedBackground,
@@ -13,5 +14,6 @@ export default {
   // DataTableTest,
   SideMenu,
   SiteFooter,
-  UserNav
+  UserNav,
+  Username
 }

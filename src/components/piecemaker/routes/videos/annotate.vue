@@ -35,7 +35,7 @@
                 q-btn(@click="deleteAnnotation(annotation.uuid), changeState()", small) {{ $t('buttons.delete') }}
                 q-btn(@click="updateAnnotation(annotation), addKeypressListener()", small) {{ $t('buttons.save') }}
               q-item-tile.col-12.author
-                | Author
+                username(:uuid="annotation.author")
               q-item-tile.col-12
                 q-input(@click="changeState(), hideForm()", type="textarea", v-model="annotation.body.value")
 
@@ -49,6 +49,7 @@
   import VideoPlayer from '../../../shared/media/VideoPlayer'
   import { TimelineSelector } from '../../../../lib/annotations/selectors'
   import constants from '../../../../lib/constants'
+  import Username from '../../../shared/partials/Username'
   export default {
     components: {
       ActionSheet,
@@ -60,7 +61,8 @@
       QItem,
       QItemMain,
       QItemTile,
-      VideoPlayer
+      VideoPlayer,
+      Username
     },
     mounted () {
       if (this.$route.params.id) {
@@ -156,9 +158,10 @@
         }
         else {
           window.removeEventListener('keypress', this.toggleForm)
+          if (!this.player) return
           const selector = TimelineSelector.fromDateTime(this.baseSelector.dateTime)
-          console.log('adding millis', this.playerTime * 1000)
-          selector.add(this.playerTime * 1000)
+          let seconds = this.player.currentTime()
+          selector.add(seconds * 1000)
           this.currentSelector.value = selector.isoString
           console.log('Anno time', this.currentSelector.value)
           this.active = true
@@ -206,6 +209,7 @@
       playerReady (player) {
         console.log('player ready', player.id())
         this.player = player
+        console.log(player)
       },
       formatSelectorForList (val) {
         const selector = TimelineSelector.fromISOString(val)
