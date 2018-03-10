@@ -49,6 +49,10 @@
             field: 'updated',
             type: 'date',
             sort: true
+          },
+          {
+            label: _this.$t('labels.author'),
+            field: 'author'
           }
         ],
         actions: [

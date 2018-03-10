@@ -11,6 +11,7 @@
       }
     },
     mounted () {
+      if (!this.uuid) return
       const _this = this
       this.$store.dispatch('users/get', this.uuid)
         .then(user => {

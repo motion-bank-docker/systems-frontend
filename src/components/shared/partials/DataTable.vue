@@ -11,6 +11,8 @@
       @click="action(a.type, cell)") {{ $t(a.title) }}
     template(slot="col-created", slot-scope="cell")
       span(v-if="cell.data") {{ formatDateTime(cell.data) }}
+    template(slot="col-author", slot-scope="cell")
+      username(:uuid="cell.data")
 </template>
 
 <script>
@@ -18,11 +20,13 @@
     QBtn,
     QDataTable
   } from 'quasar-framework'
+  import Username from './Username'
   import { DateTime } from 'luxon'
   export default {
     components: {
       QBtn,
-      QDataTable
+      QDataTable,
+      Username
     },
     props: ['entries', 'config', 'columns', 'actions'],
     data () {
