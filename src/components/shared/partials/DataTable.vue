@@ -7,7 +7,7 @@
   :columns="cols",
   :actions="actns")
     template(slot="col-action", slot-scope="cell")
-      q-btn(v-for="a in actions", :color="a.color || 'neutral'", :key="a.type",
+      q-btn(flat, small, v-for="a in actions", :color="a.color || 'neutral'", :key="a.type",
       @click="action(a.type, cell)") {{ $t(a.title) }}
     template(slot="col-created", slot-scope="cell")
       span(v-if="cell.data") {{ formatDateTime(cell.data) }}
@@ -37,7 +37,7 @@
         leftStickyColumns: 0,
         rightStickyColumns: 0,
         bodyStyle: {
-          maxHeight: '500px'
+          // maxHeight: '500px'
         },
         /*
         pagination: {
@@ -68,8 +68,8 @@
       const cols = this.columns.map(column => {
         return Object.assign({
           filter: false,
-          sort: false,
-          classes: 'bg-dark'
+          sort: false
+          // classes: 'bg-dark'
           // Type required if using sort.
           // Available values: "string", "number", "date", "boolean"
           // type: 'string',

@@ -39,8 +39,8 @@
             return _this.$router.push(`/piecemaker/videos/${data.row.uuid}/annotate`)
           case 'edit':
             return _this.$router.push(`/piecemaker/videos/${data.row.uuid}/edit`)
-          // case 'synchronize':
-            // return _this.$router.push(`/mosys/codarts/sync`)
+          case 'synchronize':
+            return _this.$router.push(`/mosys/codarts/sync/${_this.$route.params.groupId}/${data.row.uuid}`)
           case 'delete':
             _this.$store.dispatch('maps/remove', data.row.uuid)
               .then(() => {
@@ -113,7 +113,7 @@
         actions: [
           { type: 'annotate', title: 'buttons.annotate', color: 'primary' },
           { type: 'edit', title: 'buttons.edit' },
-          // { type: 'synchronize', title: 'buttons.synchronize' },
+          { type: 'synchronize', title: 'buttons.synchronize' },
           { type: 'delete', title: 'buttons.delete' }
         ]
       }
