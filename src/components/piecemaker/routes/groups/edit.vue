@@ -1,9 +1,9 @@
 <template lang="pug">
   card-full
     span(slot="form-logo")
-    h4 Edit group
+    h4 {{ $t('routes.piecemaker.groups.edit.title') }}
     edit-group
-    tagging
+    // tagging
       q-btn(slot="tagging-buttons") Generate Grid from selected
     .text-center
       q-btn(@click="$router.push(`/piecemaker/groups/`)" icon="keyboard_backspace") {{ $t('buttons.back') }}

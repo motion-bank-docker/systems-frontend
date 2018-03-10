@@ -161,12 +161,20 @@ const en = {
         list: {
           title: 'Groups',
           caption: 'All your most wonderful groups are here.'
+        },
+        edit: {
+          title: 'Edit Group',
+          caption: 'Edit group details.'
         }
       },
       videos: {
         list: {
           title: 'Videos',
           caption: 'All your most wonderful videos are here.'
+        },
+        edit: {
+          title: 'Edit Video',
+          caption: 'Edit video details.'
         }
       }
     },
