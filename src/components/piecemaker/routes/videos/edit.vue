@@ -1,9 +1,9 @@
 <template lang="pug">
 
   card-full
-    q-btn(slot="backButton", @click="$router.push(`/piecemaker/groups`)", icon="keyboard_backspace", small, round)
+    q-btn(slot="backButton", @click="$router.push('/piecemaker/groups/' + groupId + '/videos')", icon="keyboard_backspace", small, round)
     span(slot="form-logo")
-    h4 {{ $t('routes.piecemaker.videos.edit.title') }}
+    span(slot="form-title") {{ $t('routes.piecemaker.videos.edit.title') }}
 
     edit-video
 
