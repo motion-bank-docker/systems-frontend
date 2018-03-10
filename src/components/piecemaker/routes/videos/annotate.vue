@@ -47,9 +47,12 @@
   import assert from 'assert'
   import uuidValidate from 'uuid-validate'
   import VideoPlayer from '../../../shared/media/VideoPlayer'
-  import { TimelineSelector } from '../../../../lib/annotations/selectors'
+  import annotations from '../../../../lib/annotations'
   import constants from '../../../../lib/constants'
   import Username from '../../../shared/partials/Username'
+
+  const TimelineSelector = annotations.selectors.TimelineSelector
+
   export default {
     components: {
       ActionSheet,
@@ -138,14 +141,7 @@
         return this.$store.dispatch('annotations/find', { query: { 'target.id': context.groupId, 'body.type': 'TextualBody' } })
           .then(results => {
             if (results) {
-              context.annotations = results.sort((a, b) => {
-                const
-                  dta = a.target.selector ? TimelineSelector.fromISOString(a.target.selector.value) : null,
-                  dtb = b.target.selector ? TimelineSelector.fromISOString(a.target.selector.value) : null
-                if (dta.millis > dtb.millis) return 1
-                if (dta.millis < dtb.millis) return -1
-                return 0
-              })
+              context.annotations = results.sort(annotations.Sorting.sortOnTarget)
             }
           })
       },

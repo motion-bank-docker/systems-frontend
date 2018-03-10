@@ -5,6 +5,11 @@
 <script>
   export default {
     props: ['uuid'],
+    data () {
+      return {
+        username: '---'
+      }
+    },
     mounted () {
       const _this = this
       this.$store.dispatch('users/get', this.uuid)

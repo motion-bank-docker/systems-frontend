@@ -22,7 +22,10 @@
   import assert from 'assert'
   import uuidValidate from 'uuid-validate'
   import constants from '../../../../lib/constants'
-  import { TimelineSelector } from '../../../../lib/annotations/selectors'
+  import annotations from '../../../../lib/annotations'
+
+  const TimelineSelector = annotations.selectors.TimelineSelector
+
   export default {
     components: {
       QBtn,
@@ -85,6 +88,7 @@
         return this.$store.dispatch('annotations/create', annotation)
           .then(annotation => {
             _this.annotations.push(annotation)
+            _this.annotations = _this.annotations.sort(annotations.Sorting.sortOnTarget)
             _this.scrollToElement(annotation.uuid)
           })
       },
