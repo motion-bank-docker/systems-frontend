@@ -204,7 +204,8 @@ const en = {
           caption: 'All your grids'
         },
         edit: {
-          title: 'Edit grid title'
+          title: 'Edit grid',
+          caption: 'Edit grid details'
         }
       }
     }

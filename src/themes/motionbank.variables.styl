@@ -81,6 +81,7 @@ thead
   color white
   padding: .5em
   background-color white
+  border-radius .1em
 
 .q-data-table table thead tr th
   color white!important
@@ -93,61 +94,20 @@ thead
   box-shadow 0 0 20px 0 rgba( 0, 0, 0, .2 )
   padding .2em .5em
 */
+.q-data-table table thead tr
+  border-bottom 0!important
 
+.q-data-table table:not(.responsive) th
+  // color green!important
+  // border-color blue!important
+
+  /*
 .table-top
   margin-bottom 1em
 
 .add-form
   width 50%
-
-/*
-.anno
-  animation test_opacity 1s ease, test_margin 300ms
-  animation-iteration-count 1
-  padding 1em
-  opacity .2
-  background-color #ccc
-  color black
-
-.anno:hover
-  opacity 1
 */
-/*
-@keyframes test_opacity {
-  from {
-    opacity: 1
-  }
-  to {
-    opacity: .2
-  }
-}
-
-@keyframes test_margin {
-  from {
-    margin-top: -2em
-  }
-  to {
-    margin-top: 0
-  }
-}
-
-
-#test {
-  background-color: red!important;
-  height: 70vh;
-  overflow-y: scroll;
-}
-
-#annotations-form {
-  display: none;
-  position: absolute;
-  top: 4em;
-  right: 4em;
-  background-color: green;
-  z-index: 10;
-  width: 20vw;
-}*/
-
 #back-button
   position: absolute
   top: 1em

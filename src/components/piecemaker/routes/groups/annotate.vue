@@ -13,7 +13,7 @@
           q-item-tile.text-left
             q-input.color(type="textarea" v-model="annotation.body.value")
         q-item-side.text-right
-          q-btn(@click="deleteAnnotation(annotation.uuid, i)") delete
+          q-btn(@click="deleteAnnotation(annotation.uuid, i)", round, small, icon="clear")
 </template>
 
 <script>

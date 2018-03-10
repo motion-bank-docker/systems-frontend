@@ -3,7 +3,7 @@
     q-btn(slot="backButton", @click="$router.push(`/piecemaker/groups/`)", icon="keyboard_backspace", round, small)
     span(slot="form-logo")
     span(slot="form-title") {{ $t('routes.piecemaker.groups.create.title') }}
-    p.caption(slot="form-caption") {{ $t('routes.piecemaker.groups.create.caption') }}
+    // p.caption(slot="form-caption") {{ $t('routes.piecemaker.groups.create.caption') }}
     edit-group(redirect-to="/piecemaker/groups")
 
 </template>
