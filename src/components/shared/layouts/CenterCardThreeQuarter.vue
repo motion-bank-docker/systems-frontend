@@ -45,5 +45,6 @@
 <style>
   .abc {
     top: calc(52px + 1em)!important;
+    background-color: transparent;
   }
 </style>
