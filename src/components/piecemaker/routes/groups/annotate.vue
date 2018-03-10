@@ -1,6 +1,6 @@
 <template lang="pug">
   // full.test123
-  .wrapper
+  .wrapper(:id="halloabc")
     q-btn#button-back(slot="nav-button", icon="keyboard_backspace", @click="$router.push(`/piecemaker/groups`)", round, small)
     span(slot="form-logo")
     span(slot="form-title")
@@ -13,7 +13,7 @@
           q-item-tile.text-left
             q-input.color(type="textarea" v-model="annotation.body.value")
         q-item-side.text-right
-          q-btn(@click="deleteAnnotation(annotation.uuid, i)", round, small, icon="clear")
+          q-btn(@click="deleteAnnotation(annotation.uuid, i)", icon="clear", round, small)
 </template>
 
 <script>
@@ -88,8 +88,11 @@
         return this.$store.dispatch('annotations/create', annotation)
           .then(annotation => {
             _this.annotations.push(annotation)
-            _this.annotations = _this.annotations.sort(annotations.Sorting.sortOnTarget)
-            _this.scrollToElement(annotation.uuid)
+            _this.annotations = _this.annotations.sort(annotations.Sorting.sortOnTarget).then(
+              // window.scrollTo(0, document.body.scrollHeight)
+              this.scrollToElement()
+            )
+            // _this.scrollToElement(annotation.uuid)
           })
       },
       deleteAnnotation (uuid, index) {
@@ -101,7 +104,12 @@
           })
       },
       scrollToElement (uuid) {
-        window.location.href = '#' + uuid
+        // alert(uuid)
+        // window.location.href = '#' + uuid
+        // window.scrollTo(0, document.body.scrollHeight)
+        setTimeout(function () {
+          window.scrollTo(0, document.body.scrollHeight)
+        }, 250)
       },
       formatSelectorForList (val) {
         const selector = TimelineSelector.fromISOString(val)
