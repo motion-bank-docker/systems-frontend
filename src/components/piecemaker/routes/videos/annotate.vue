@@ -44,11 +44,11 @@
 <script>
   import { AppFullscreen, ActionSheet, Dialog, QBtn, QLayout, QInput, QList, QItem, QItemMain, QItemTile } from 'quasar-framework'
   // import { ActionSheet, Dialog, QBtn, QLayout, QInput, QList, QItem, QItemMain, QItemTile } from 'quasar-framework'
-  import querystring from 'querystring'
   import assert from 'assert'
   import uuidValidate from 'uuid-validate'
   import VideoPlayer from '../../../shared/media/VideoPlayer'
   import { TimelineSelector } from '../../../../lib/annotations/selectors'
+  import constants from '../../../../lib/constants'
   export default {
     components: {
       ActionSheet,
@@ -63,10 +63,9 @@
       VideoPlayer
     },
     mounted () {
-      const selector = new TimelineSelector()
-      console.log(selector)
       if (this.$route.params.id) {
-        this.getVideo().then(this.getAnnotations())
+        this.getVideo()
+          .then(this.getAnnotations())
       }
       window.addEventListener('keypress', this.toggleForm)
     },
@@ -81,6 +80,7 @@
         playerTime: 0.0,
         video: undefined,
         groupId: undefined,
+        baseSelector: undefined,
         active: false,
         annotations: [],
         currentBody: {
@@ -126,20 +126,22 @@
             if (result.body) {
               context.groupId = result.target.id
               context.video = result.body
+              context.baseSelector = TimelineSelector.fromISOString(result.target.selector.value)
+              console.log('Base time', context.baseSelector.isoString)
             }
           })
       },
       getAnnotations () {
         const context = this
-        return this.$store.dispatch('annotations/find', { query: { 'target.id': context.$route.params.id } })
+        return this.$store.dispatch('annotations/find', { query: { 'target.id': context.groupId, 'body.type': 'TextualBody' } })
           .then(results => {
             if (results) {
               context.annotations = results.sort((a, b) => {
                 const
-                  dta = a.target.selector ? context.selectorToSeconds(context.parseSelector(a.target.selector.value)) : null,
-                  dtb = b.target.selector ? context.selectorToSeconds(context.parseSelector(b.target.selector.value)) : null
-                if (dta > dtb) return 1
-                if (dta < dtb) return -1
+                  dta = a.target.selector ? TimelineSelector.fromISOString(a.target.selector.value) : null,
+                  dtb = b.target.selector ? TimelineSelector.fromISOString(a.target.selector.value) : null
+                if (dta.millis > dtb.millis) return 1
+                if (dta.millis < dtb.millis) return -1
                 return 0
               })
             }
@@ -154,9 +156,12 @@
         }
         else {
           window.removeEventListener('keypress', this.toggleForm)
-          this.currentSelector.value = this.encodeSelector(this.secondsToSelector(this.playerTime))
+          const selector = TimelineSelector.fromDateTime(this.baseSelector.dateTime)
+          console.log('adding millis', this.playerTime * 1000)
+          selector.add(this.playerTime * 1000)
+          this.currentSelector.value = selector.isoString
+          console.log('Anno time', this.currentSelector.value)
           this.active = true
-          console.log(this.currentBody, this.currentSelector)
         }
       },
       createAnnotation () {
@@ -165,12 +170,11 @@
           author: _this.$store.state.auth.payload.userId,
           body: Object.assign({}, _this.currentBody),
           target: {
-            id: _this.$route.params.id,
-            type: 'Video',
+            id: _this.groupId,
+            type: constants.MAP_TYPE_TIMELINE,
             selector: Object.assign({}, _this.currentSelector)
           }
         }
-        console.log(annotation, this)
         return this.$store.dispatch('annotations/create', annotation)
           .then(res => {
             _this.getAnnotations().then(() => {
@@ -186,7 +190,6 @@
         assert.equal(typeof annotation, 'object')
         assert(uuidValidate(annotation.uuid))
         assert.equal(typeof annotation.body.value, 'string')
-        console.log(annotation)
         return this.$store.dispatch('annotations/patch', [annotation.uuid, annotation])
           .then(() => this.getAnnotations())
       },
@@ -196,47 +199,18 @@
           .then(() => this.getAnnotations())
       },
       gotoSelector (selector) {
-        const seconds = this.selectorToSeconds(this.parseSelector(selector))
-        this.player.currentTime(seconds)
+        selector = TimelineSelector.fromISOString(selector)
+        selector.subtract(this.baseSelector.millis)
+        this.player.currentTime(selector.millis * 0.001)
       },
       playerReady (player) {
         console.log('player ready', player.id())
         this.player = player
       },
-      parseSelector (val) {
-        if (!val) {
-          console.warn(`Warning: encountered undefined selector`)
-          return {}
-        }
-        assert.equal(typeof val, 'string')
-        const obj = querystring.parse(val)
-        Object.keys(obj).forEach(key => {
-          obj[key] = parseFloat(obj[key])
-        })
-        return obj
-      },
-      encodeSelector (val) {
-        assert.equal(typeof val, 'object')
-        return querystring.stringify(val)
-      },
-      selectorToString (val) {
-        assert.equal(typeof val, 'object')
-        return `${Math.round(val.m || 0).toString().padStart(2, '0')}:${(val.s || 0).toFixed(3).padStart(6, '0')}`
-      },
-      secondsToSelector (val) {
-        assert.equal(typeof val, 'number')
-        const selector = {
-          m: Math.floor(val / 60),
-          s: val % 60
-        }
-        return selector
-      },
-      selectorToSeconds (val) {
-        assert.equal(typeof val, 'object')
-        return (parseInt(val.m) || 0) * 60 + (parseFloat(val.s) || 0)
-      },
       formatSelectorForList (val) {
-        return this.selectorToString(this.parseSelector(val))
+        const selector = TimelineSelector.fromISOString(val)
+        selector.subtract(this.baseSelector.millis)
+        return selector.toFormat('HH:mm:ss')
       },
       onPlayerTime (seconds) {
         this.playerTime = seconds
