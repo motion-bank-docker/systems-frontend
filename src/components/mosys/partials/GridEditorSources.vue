@@ -1,7 +1,8 @@
 <template lang="pug">
 
   q-tabs.grid-editor-sources-tabs.shadow-11
-    q-tab(slot="title", name="tab-1", default) Default
+    q-tab(slot="title", name="tab-0", default, icon="add")
+    q-tab(slot="title", name="tab-1", icon="wb iridescent")
     q-tab(slot="title", name="tab-2") Piecemaker
     q-tab(slot="title", name="tab-3") Vimeo
     q-tab(slot="title", name="tab-4") YouTube
@@ -9,8 +10,11 @@
       small, flat, round, class="fixed", style="right: 2px; margin-top: 3px",
       @click="event => {$store.commit('mosysGridEditorStore/hideSources')}")
 
-    q-tab-pane(name="tab-1")
+    q-tab-pane(name="tab-0")
       source-grid-editor-default
+
+    q-tab-pane(name="tab-1")
+      source-grid-editor-magic
 
     q-tab-pane(name="tab-2")
       source-piecemaker-groups
@@ -26,7 +30,8 @@
 <script>
   import { QBtn, QTabs, QTab, QTabPane } from 'quasar-framework'
   import SourceGridEditorDefault from './GridEditorDefaultSource'
-  import SourcePiecemakerGroups from './GridEditorSourcePieceMakerGroupsList'
+  import SourceGridEditorMagic from './GridEditorMagicSource'
+  import SourcePiecemakerGroups from './GridEditorSourcePieceMaker'
   import SourceVimeo from './GridEditorSourceVimeo'
   import SourceYouTube from './GridEditorSourceYouTube'
 
@@ -37,6 +42,7 @@
       QTab,
       QTabPane,
       SourceGridEditorDefault,
+      SourceGridEditorMagic,
       SourcePiecemakerGroups,
       SourceVimeo,
       SourceYouTube
