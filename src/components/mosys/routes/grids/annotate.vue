@@ -60,5 +60,5 @@
     top 1em
     left 1em
     z-index 99999
-    opacity .5
+    opacity .4
 </style>
