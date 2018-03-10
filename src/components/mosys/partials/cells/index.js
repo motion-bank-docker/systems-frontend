@@ -8,6 +8,8 @@ import CellIFrame from './CellIFrame'
 import CellInternalLink from './CellInternalLink'
 import CellVideo from './CellVideo'
 import CellHtml from './CellHtml'
+import CellTimeline from './CellTimeline'
+import Cell2DGrid from './Cell2DGrid'
 
 // import CellVimeo from './CellVimeo'
 // import CellVisualization from './CellVisualization'
@@ -24,5 +26,7 @@ export default {
   CellImage,
   CellIFrame,
   CellInternalLink,
-  CellVideo
+  CellVideo,
+  CellTimeline,
+  Cell2DGrid
 }
