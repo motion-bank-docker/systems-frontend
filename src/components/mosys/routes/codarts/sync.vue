@@ -15,15 +15,15 @@
         p.col-12
           | Video to be synchronized:
           br
-          | Modern Class Codarts 2017
-        div.video.col-12
-          iframe(width="100%" height="100%" src="https://www.youtube.com/embed/rCCHpbJ_IUc" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen)
-        div.col-12
+          video-title(:source="video.body.source")
+        div.video.col-12(v-if="video")
+          video-player(:src="video.body", @ready="onSrcPlayerReady($event)")
+          div.col-12
           q-btn {{ $t('buttons.arrow_prev') }}
-          q-btn() {{ $t('buttons.set_marker') }}
+          q-btn(@click="setMarker(srcPlayer)") {{ $t('buttons.set_marker') }}
           q-btn {{ $t('buttons.arrow_next') }}
           br
-          q-btn 0:42.559723
+          q-btn(v-if="srcTimecode") {{ srcTimecode }}
 
 
 
@@ -32,61 +32,127 @@
         p.col-12.text-right
           | Synchronize with:
           br
-          q-btn(@click="aktivieren" small) {{ $t('buttons.change') }}
-          // | Modern Class Codarts 2017
+          video-title(v-if="video && refIndex > -1", :source="refVideos[refIndex].body.source")
+          q-btn(small, @click="refIndex = -1") {{ $t('buttons.change') }}
 
         div.video.col-12
-          iframe(v-if="video" width="100%" height="100%" src="https://www.youtube.com/embed/rCCHpbJ_IUc" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen)
-          q-list(v-if="!video").no-border
-            q-item(v-for="n in 4" @click="aktivieren" highlight :key="n") Modern Class Codarts 201{{ n }}
+          video-player(v-if="video && refIndex > -1", :src="refVideos[refIndex].body", @ready="onTargetPlayerReady($event)")
+          q-list(v-if="video && refIndex === -1").no-border
+            q-item(v-for="(vid, i) in refVideos", highlight, :key="vid.uuid", @click="refIndex = i")
+              video-title(:source="vid.body.source")
 
-        div.col-12.text-right
+        div.col-12.text-right(v-if="video && refIndex > -1")
           q-btn {{ $t('buttons.arrow_prev') }}
-          q-btn() {{ $t('buttons.set_marker') }}
+          q-btn(@click="setMarker(targetPlayer, 1)") {{ $t('buttons.set_marker') }}
           q-btn {{ $t('buttons.arrow_next') }}
           br
-          q-btn 0:44.72
+          q-btn(v-if="targetTimecode") {{ targetTimecode }}
 
 
 
     div.text-center
-      q-btn(color="primary") {{ $t('buttons.apply_synchronisation') }}
+      q-btn(color="primary", @click="applySync()") {{ $t('buttons.apply_synchronisation') }}
       br
-      q-btn(@click="$router.push(`/piecemaker/groups/`)") {{ $t('buttons.done') }}
+      q-btn(@click="$router.push(`/piecemaker/videos/${$route.params.videoId}/edit`)") {{ $t('buttons.done') }}
 
 </template>
 
 <script>
   import { QBtn, QList, QItem } from 'quasar-framework'
   import CenterCardFull from '../../../shared/layouts/CenterCardFull'
+  import constants from '../../../../lib/constants'
+  import TimelineSelector from '../../../../lib/annotations/selectors/timeline'
+  import VideoPlayer from '../../../shared/media/VideoPlayer'
+  import VideoTitle from '../../../shared/partials/VideoTitle'
 
   export default {
     components: {
       QBtn,
       QList,
       QItem,
-      CenterCardFull
+      CenterCardFull,
+      VideoPlayer,
+      VideoTitle
     },
     data () {
       return {
-        video: false
+        tcformat: constants.TIMECODE_FORMAT,
+        group: undefined,
+        video: undefined,
+        refVideos: [],
+        refIndex: -1,
+        srcPlayer: undefined,
+        srcTime: undefined,
+        srcTimecode: undefined,
+        srcSelector: undefined,
+        targetPlayer: undefined,
+        targetTime: undefined,
+        targetTimecode: undefined,
+        targetSelector: undefined
       }
     },
+    mounted () {
+      const _this = this
+      this.$store.dispatch('annotations/get', this.$route.params.videoId)
+        .then(video => {
+          _this.video = video
+          return _this.$store.dispatch('maps/get', this.$route.params.groupId)
+        })
+        .then(group => {
+          _this.group = group
+          const query = {
+            'target.id': group.uuid,
+            'body.purpose': 'linking'
+          }
+          return _this.$store.dispatch('annotations/find', { query })
+        })
+        .then(videos => {
+          _this.refVideos = videos.filter(item => {
+            if (item.uuid !== _this.$route.params.videoId) return true
+            return false
+          })
+        })
+    },
     methods: {
-      aktivieren: function () {
-        this.video = !this.video
+      onSrcPlayerReady (player) {
+        this.srcPlayer = player
+      },
+      onTargetPlayerReady (player) {
+        this.targetPlayer = player
+      },
+      setMarker (player, target = 0) {
+        if (!player) return
+        const selector = TimelineSelector.fromMilliseconds(player.currentTime() * 1000.0)
+        switch (target) {
+          case 1:
+            this.targetSelector = selector
+            this.targetTimecode = this.targetSelector.toFormat(constants.TIMECODE_FORMAT)
+            break
+          default:
+            this.srcSelector = selector
+            this.srcTimecode = this.srcSelector.toFormat(constants.TIMECODE_FORMAT)
+        }
+      },
+      applySync () {
+        const
+          _this = this,
+          diff = this.targetSelector.millis - this.srcSelector.millis,
+          video = this.refVideos[this.refIndex],
+          selector = TimelineSelector.fromISOString(video.target.selector.value)
+        selector.add(diff)
+        const update = {
+          target: {
+            selector: {
+              value: selector.toString()
+            }
+          }
+        }
+        return this.$store.dispatch('annotations/patch', [video.uuid, update])
+          .then(annotation => {
+            console.log('sync updated', video.uuid, annotation)
+            _this.$router.push(`/piecemaker/videos/${_this.$route.params.videoId}/edit`)
+          })
       }
     }
   }
 </script>
-
-<style scoped>
-  iframe {
-    margin-bottom: .5em;
-  }
-  .video {
-    height: 315px;
-    background-color: #111;
-    overflow-y: scroll;
-  }
-</style>
