@@ -1,5 +1,7 @@
 <template lang="pug">
   .row.fullscreen.vertical-middle.justify-center.items-center
+    div#back-button.abc
+      slot(name="backButton")
     .column.col-9.sm-gutter
       q-card.full-width(color="dark")
         .layout-padding
@@ -40,4 +42,8 @@
   }
 </script>
 
-<style></style>
+<style>
+  .abc {
+    top: calc(52px + 1em)!important;
+  }
+</style>

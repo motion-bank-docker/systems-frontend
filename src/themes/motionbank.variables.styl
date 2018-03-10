@@ -50,7 +50,6 @@ th
 tr:last-of-type td
   border-bottom 0!important
 
-
 .content-wrap
   width 80vw
   display inline-block
@@ -64,36 +63,56 @@ tr:last-of-type td
   margin-bottom: 5em;
 }
 
+thead
+  // background-color red
+
 .q-data-table
   border 0!important
 
 .q-data-table-container
   margin-top 0!important
 
+.q-data-table-toolbar.upper-toolbar
+  margin-bottom 1em
+  padding 0
+
+.q-data-table-toolbar.upper-toolbar > div
+  // background-color rgba( 255, 255, 255, .3 )
+  color white
+  padding: .5em
+  background-color white
+
+.q-data-table table thead tr th
+  color white!important
+  text-transform uppercase
+  background-color transparent
+
+
+/*
 .search-bar
   box-shadow 0 0 20px 0 rgba( 0, 0, 0, .2 )
   padding .2em .5em
-  // border-radius $border-radius
+*/
 
 .table-top
   margin-bottom 1em
 
 .add-form
   width 50%
-  // display none
 
+/*
 .anno
   animation test_opacity 1s ease, test_margin 300ms
   animation-iteration-count 1
   padding 1em
-  /* transform: translateX( 25vw ); */
   opacity .2
   background-color #ccc
   color black
 
 .anno:hover
   opacity 1
-
+*/
+/*
 @keyframes test_opacity {
   from {
     opacity: 1
@@ -127,4 +146,9 @@ tr:last-of-type td
   background-color: green;
   z-index: 10;
   width: 20vw;
-}
+}*/
+
+#back-button
+  position: absolute
+  top: 1em
+  left: 1em

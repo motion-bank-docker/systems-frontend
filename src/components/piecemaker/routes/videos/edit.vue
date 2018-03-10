@@ -1,17 +1,14 @@
 <template lang="pug">
 
   card-full
+    q-btn(slot="backButton", @click="$router.push(`/piecemaker/groups`)", icon="keyboard_backspace", small, round)
     span(slot="form-logo")
     h4 {{ $t('routes.piecemaker.videos.edit.title') }}
-    .text-right
-      q-btn(@click="$router.push(`/mosys/codarts/sync`)" color="primary") {{ $t('buttons.synchronize') }}
 
     edit-video
 
     tags(v-if="$route.params.id", :targetUuid="$route.params.id")
 
-    .text-center
-      q-btn(@click="$router.push(`/piecemaker/groups/`)" icon="keyboard_backspace") {{ $t('buttons.back') }}
 </template>
 
 <script>
