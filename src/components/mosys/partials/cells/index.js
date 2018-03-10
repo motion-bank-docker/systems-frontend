@@ -9,6 +9,7 @@ import CellInternalLink from './CellInternalLink'
 import CellVideo from './CellVideo'
 import CellHtml from './CellHtml'
 import CellTimeline from './CellTimeline'
+import CellAnnotationList from './CellAnnotationList'
 import Cell2DGrid from './Cell2DGrid'
 
 // import CellVimeo from './CellVimeo'
@@ -27,6 +28,7 @@ export default {
   CellIFrame,
   CellInternalLink,
   CellVideo,
+  CellAnnotationList,
   CellTimeline,
   Cell2DGrid
 }

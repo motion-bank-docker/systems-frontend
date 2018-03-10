@@ -28,9 +28,14 @@
         template(v-for="(video, i) in currentVideos")
           template(v-if="i > 0")
             q-item-separator
-          q-item(draggable="true", @dragstart="event => {handleVideoItemDragStart(event, video)}")
+          q-item.video-item
             q-item-side
-              q-icon(name="local movies", style="font-size: 1.8rem")
+              q-icon(
+                draggable="true", @dragstart="event => {handleVideoItemDragStart(event, video, 'Video')}",
+                name="local movies", style="font-size: 1.8rem")
+              q-icon(
+                draggable="true", @dragstart="event => {handleVideoItemDragStart(event, video, 'Annotation-List')}",
+                name="comment", style="font-size: 1.8rem")
             q-item-main
               a(@click.prevent="event => {handleVideoItemClick(event, video)}") {{video.title}}
 
@@ -115,15 +120,15 @@
       },
       handleVideoItemClick (event, video) {
       },
-      handleVideoItemDragStart (event, video) {
+      handleVideoItemDragStart (event, video, type = 'Video') {
         let videoCell = {
           uuid: null,
-          type: 'Video',
+          type: type,
           x: 1,
           y: 1,
           width: 1,
           height: 1,
-          content: video.body.source
+          content: type === 'Video' ? video.body.source : video.uuid
         }
         event.dataTransfer.setData('text/plain', JSON.stringify(videoCell))
       }
@@ -132,6 +137,17 @@
 </script>
 
 <style scoped lang="stylus">
+
   .piecemaker-source-container
     overflow auto
+
+  .video-item
+
+    .q-item-side
+      width 25%
+      display flex
+
+    .q-icon
+      flex-grow 1
+
 </style>
