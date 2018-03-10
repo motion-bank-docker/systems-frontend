@@ -6,7 +6,7 @@
     .text-right
       q-btn(@click="$router.push(`/mosys/codarts/sync`)" color="primary") Sync
 
-    tagging
+    // tagging
     edit-video
     .text-center
       q-btn(@click="$router.push(`/piecemaker/groups/`)" icon="keyboard_backspace") {{ $t('buttons.back') }}
