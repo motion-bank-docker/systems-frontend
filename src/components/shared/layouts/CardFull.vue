@@ -1,5 +1,7 @@
 <template lang="pug">
   .row.justify-center.items-center
+    div#back-button
+      slot(name="backButton")
     // .column.col-12.sm-gutter
     .column.col-12
       q-card.full-width(color="dark").no-margin
@@ -42,4 +44,5 @@
   }
 </script>
 
-<style></style>
+<style>
+</style>

@@ -64,7 +64,7 @@ tr:last-of-type td
 }
 
 thead
-  background-color red
+  // background-color red
 
 .q-data-table
   border 0!important
@@ -80,7 +80,12 @@ thead
   // background-color rgba( 255, 255, 255, .3 )
   color white
   padding: .5em
-  border: 1px solid rgba( 255, 255, 255, .2 )
+  background-color white
+
+.q-data-table table thead tr th
+  color white!important
+  text-transform uppercase
+  background-color transparent
 
 
 /*
@@ -142,3 +147,8 @@ thead
   z-index: 10;
   width: 20vw;
 }*/
+
+#back-button
+  position: absolute
+  top: 1em
+  left: 1em
