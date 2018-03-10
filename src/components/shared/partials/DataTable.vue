@@ -8,7 +8,7 @@
   :actions="actns")
     template(slot="col-action", slot-scope="cell")
       q-btn(v-for="a in actions", :color="a.color || 'neutral'", :key="a.type",
-      @click="action(a.type, cell)") {{ $t(a.title) }}
+      @click="action(a.type, cell)", small) {{ $t(a.title) }}
     template(slot="col-created", slot-scope="cell")
       span(v-if="cell.data") {{ formatDateTime(cell.data) }}
     template(slot="col-author", slot-scope="cell")
