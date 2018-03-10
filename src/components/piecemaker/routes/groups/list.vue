@@ -2,7 +2,7 @@
   card-full
     span(slot="form-logo")
     span(slot="form-title") {{ $t('routes.piecemaker.groups.list.title') }}
-    // p.caption(slot="form-caption") {{ $t('routes.piecemaker.groups.list.caption') }}
+    p.caption(slot="form-caption") {{ $t('routes.piecemaker.groups.list.caption') }}
     p
       q-btn(@click="$router.push({ name: 'piecemaker.groups.create' })", color="primary") {{ $t('buttons.create_group') }}
     group-list
