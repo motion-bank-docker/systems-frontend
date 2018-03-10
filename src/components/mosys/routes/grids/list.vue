@@ -1,8 +1,8 @@
 <template lang="pug">
-  center-card-full
+  card-full
     span(slot="form-logo")
     span(slot="form-title") {{ $t('routes.mosys.grids.list.title') }}
-    p.caption(slot="form-caption") {{ $t('routes.mosys.grids.list.caption') }}
+    // p.caption(slot="form-caption") {{ $t('routes.mosys.grids.list.caption') }}
     p
       q-btn(@click="$router.push({ name: 'mosys.grids.create' })", color="primary") {{ $t('routes.mosys.grids.create.button') }}
     data-table(:entries="maps", :columns="columns", :actions="actions", @action="onAction")
@@ -11,14 +11,16 @@
 <script>
   import { QBtn } from 'quasar-framework'
   import DataTable from '../../../shared/partials/DataTable'
-  import CenterCardFull from '../../../shared/layouts/CenterCardFull'
+  // import CenterCardFull from '../../../shared/layouts/CenterCardFull'
+  import CardFull from '../../../shared/layouts/CardFull'
   import constants from '../../../../lib/constants'
 
   export default {
     components: {
       QBtn,
       DataTable,
-      CenterCardFull
+      // CenterCardFull
+      CardFull
     },
     methods: {
       onAction (type, data) {
