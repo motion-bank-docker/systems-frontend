@@ -31,7 +31,7 @@
   import { QBtn, QTabs, QTab, QTabPane } from 'quasar-framework'
   import SourceGridEditorDefault from './GridEditorDefaultSource'
   import SourceGridEditorMagic from './GridEditorMagicSource'
-  import SourcePiecemakerGroups from './GridEditorSourcePieceMakerGroupsList'
+  import SourcePiecemakerGroups from './GridEditorSourcePieceMaker'
   import SourceVimeo from './GridEditorSourceVimeo'
   import SourceYouTube from './GridEditorSourceYouTube'
 
