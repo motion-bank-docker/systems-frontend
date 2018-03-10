@@ -3,7 +3,7 @@
   div(:class="{'display-preview': preview, 'display-full': display}")
     template(v-if="display")
       video-player(
-        :src="video",
+        :src="video.body || fauxVideo",
         @ready="handlePlayerReady",
         @play="handlePlayerPlaying",
         @time="handlePlayerTimeChange")
@@ -22,10 +22,14 @@
     },
     props: ['cell', 'display', 'preview', 'messenger'],
     data () {
-      return {}
+      return {
+        video: {},
+        videoTime: -1,
+        player: {}
+      }
     },
     computed: {
-      video () {
+      fauxVideo () {
         let fauxVideoAnnotation = {
           type: 'Video',
           purpose: 'linking',
@@ -38,15 +42,52 @@
         else return 'html5'
       }
     },
+    mounted () {
+      const _this = this
+      if (this.cell.sourceUuid) {
+        this.$store.dispatch('annotations/find', {query: {'uuid': this.cell.sourceUuid}})
+          .then(videos => {
+            const video = videos.shift()
+            if (video) {
+              _this.video = video
+              _this.videoTime = Date.parse(video.target.selector.value)
+            }
+          })
+      }
+      if (this.display && this.messenger && this.video) {
+        this.messenger.$on('annotation-trigger', annotation => {
+          if (annotation.target.id === _this.video.target.id) {
+            const timeAnnot = Date.parse(annotation.target.selector.value)
+            const movieTime = (timeAnnot - _this.videoTime) / 1000.0
+            if (movieTime && movieTime >= 0 && _this.player) {
+              _this.player.currentTime(movieTime)
+            }
+          }
+        })
+      }
+    },
     methods: {
-      handlePlayerReady (event) {
-        this.messenger.$emit('video-loaded', this.cell.uuid)
+      getSignature () {
+        if (this.video) {
+          return {origin: this.video, type: 'Video'}
+        }
+        else {
+          return {origin: this.cell, type: '2DCell'}
+        }
+      },
+      handlePlayerReady (player) {
+        this.messenger.$emit('video-loaded', this.getSignature())
+        this.player = player
       },
       handlePlayerPlaying (event) {
-        this.messenger.$emit('video-started-playing', this.cell.uuid)
+        this.messenger.$emit('video-started-playing', this.getSignature())
       },
-      handlePlayerTimeChange (videoTime) {
-        this.messenger.$emit('video-time-changed', this.cell.uuid, videoTime)
+      handlePlayerTimeChange (localTime) {
+        let globalTime = Date.now()
+        if (this.videoTime) {
+          globalTime = this.videoTime + (localTime * 1000.0)
+        }
+        this.messenger.$emit('video-time-changed', localTime, globalTime, this.getSignature())
       }
     }
   }

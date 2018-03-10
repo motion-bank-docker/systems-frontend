@@ -22,7 +22,7 @@
   import cellTypes from './cells'
 
   export default {
-    props: ['cell', 'display', 'preview', 'messenger'],
+    props: ['cell', 'display', 'preview', 'messenger', 'annotation'],
     data () {
       return {
         selected: false

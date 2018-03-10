@@ -29,6 +29,7 @@
     props: ['gridUuid'],
     data () {
       return {
+        annotations: [],
         cells: [],
         gridMetadata: {},
         gridDimensions: {gridWidth: 0, gridHeight: 0, cellWidth: 0, cellHeight: 0},
@@ -39,11 +40,11 @@
     mounted () {
       const _this = this
       window.addEventListener('resize', this.updateGridDimensions)
-      this.messenger.$on('video-loaded', videoUuid => {
-        console.log(videoUuid)
+      this.messenger.$on('video-loaded', origin => {
+        // console.log('video loaded', origin.origin)
       })
-      this.messenger.$on('video-time-changed', (videoUuid, time) => {
-        console.log(videoUuid, time)
+      this.messenger.$on('video-time-changed', (time, globalTime, origin) => {
+        // console.log(videoUuid, time)
       })
       this.fetchMetadataAnnotations()
         .then(() => {
@@ -67,6 +68,7 @@
           query = { query: { 'body.type': '2DCell', 'target.id': this.gridUuid } }
         this.$store.dispatch('annotations/find', query)
           .then(annotations => {
+            _this.annotations = annotations
             _this.cells = annotations.map(annotation => {
               let cell = JSON.parse(annotation.body.value)
               if (cell) {

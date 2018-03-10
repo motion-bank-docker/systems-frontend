@@ -128,7 +128,8 @@
           y: 1,
           width: 1,
           height: 1,
-          content: type === 'Video' ? video.body.source : video.uuid
+          content: type === 'Video' ? video.body.source : video.uuid,
+          sourceUuid: video.uuid
         }
         event.dataTransfer.setData('text/plain', JSON.stringify(videoCell))
       }
