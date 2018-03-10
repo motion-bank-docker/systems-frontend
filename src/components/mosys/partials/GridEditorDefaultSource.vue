@@ -26,8 +26,12 @@
           q-item-side
             q-icon(:name="typeToIconName(result.body.type)", style="font-size: 1.8rem")
           q-item-main
-            a(@click.prevent="event => {handleItemClick(event, result)}") {{result.body.source.substring(0, 100)}}
-              template(v-if="result.body.source.length > 100") ...
+            a(@click.prevent="event => {handleItemClick(event, result)}")
+              template(v-if="result.body.source") {{result.body.source.substring(0, 100)}}
+                template(v-if="result.body.source.length > 100") ...
+              template(v-else-if="result.body.value") {{result.body.value.substring(0, 100)}}
+                template(v-if="result.body.value.length > 100") ...
+              template(v-else) Hm, no title?
 
 </template>
 
@@ -45,7 +49,8 @@
   }
   const typeToIconName = {
     'image': 'photo',
-    'iframe': 'link',
+    'iframe': 'picture in picture',
+    'internal-link': 'link',
     'video': 'local movies',
     'text': 'subject',
     'title': 'title'
@@ -132,6 +137,7 @@
             }
           }
           let results = []
+          // A URL
           if (/^[\s]*http[s]?:\/\/.+/.test(this.term)) {
             let sourceUrl = url.parse(this.term)
             let currentUrl = url.parse(window.location.href)
@@ -171,10 +177,31 @@
               results.push(res)
             }
           }
+          // TAGGING
+          else if (/^[\s]*#.+/.test(this.term)) {
+            const tag = this.term.replace(/^[\s]*#/, '').toLowerCase()
+            _this.$store.dispatch('annotations/find', {query: {'body.purpose': 'tagging'}})
+              .then(tagAnnotations => {
+                console.log(tagAnnotations)
+                let targetsMatched = {}
+                tagAnnotations.filter(ta => {
+                  return ta.body.value.toLowerCase().indexOf(tag) >= 0
+                }).map(ta => {
+                  if (!targetsMatched[ta.target.id]) {
+                    targetsMatched[ta.target.id] = ta
+                    ta.body.type = ta.target.type || ta.body.type
+                    results.push(ta)
+                  }
+                })
+                _this.results = results
+              })
+          }
+          // MULTI LINE
           else if (/[\n\r]/.test(this.term)) {
             res.body.type = 'text'
             results.push(res)
           }
+          // ASSUME ITs A TITLE
           else {
             res.body.type = 'title'
             results.push(res)
