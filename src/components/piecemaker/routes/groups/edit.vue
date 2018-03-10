@@ -2,7 +2,7 @@
   card-full
     q-btn(slot="backButton", @click="$router.push(`/piecemaker/groups/`)", icon="keyboard_backspace", round, small)
     span(slot="form-logo")
-    h4 {{ $t('routes.piecemaker.groups.edit.title') }}
+    span(slot="form-title") {{ $t('routes.piecemaker.groups.edit.title') }}
     edit-group
 </template>
 
