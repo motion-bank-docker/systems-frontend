@@ -40,6 +40,7 @@ const en = {
     annotation_body: 'Annotation text',
     accept_terms: 'I accept the Terms and Conditions',
     associated_map: 'Associate Video with Map',
+    author: 'Author',
     created: 'Created',
     updated: 'Updated',
     description: 'Description',
@@ -175,6 +176,10 @@ const en = {
         edit: {
           title: 'Edit Video',
           caption: 'Edit video details.'
+        },
+        create: {
+          title: 'Add Video',
+          caption: 'Add a new video to your group.'
         }
       }
     },
