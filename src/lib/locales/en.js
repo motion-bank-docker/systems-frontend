@@ -41,6 +41,7 @@ const en = {
     accept_terms: 'I accept the Terms and Conditions',
     associated_map: 'Associate Video with Map',
     created: 'Created',
+    updated: 'Updated',
     description: 'Description',
     duration: 'Duration',
     edit_title: 'Edit title',

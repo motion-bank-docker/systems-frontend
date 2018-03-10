@@ -22,6 +22,7 @@
   import path from 'path'
   import buildVars from '../../../../lib/build-vars'
   import he from 'he'
+  // import { DateTime } from 'luxon'
 
   export default {
     components: {
@@ -84,10 +85,27 @@
       const _this = this
       return {
         maps: [],
-        columns: [{
-          label: _this.$t('labels.video_title'),
-          field: 'title'
-        }],
+        columns: [
+          {
+            label: _this.$t('labels.video_title'),
+            field: 'title',
+            type: 'string',
+            sort: true,
+            filter: true
+          },
+          {
+            label: _this.$t('labels.created'),
+            field: 'created',
+            type: 'date',
+            sort: true
+          },
+          {
+            label: _this.$t('labels.updated'),
+            field: 'updated',
+            type: 'date',
+            sort: true
+          }
+        ],
         actions: [
           { type: 'annotate', title: 'buttons.annotate', color: 'primary' },
           { type: 'edit', title: 'buttons.edit' },

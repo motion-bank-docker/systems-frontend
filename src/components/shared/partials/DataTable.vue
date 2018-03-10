@@ -9,6 +9,8 @@
     template(slot="col-action", slot-scope="cell")
       q-btn(v-for="a in actions", :color="a.color || 'neutral'", :key="a.type",
       @click="action(a.type, cell)") {{ $t(a.title) }}
+    template(slot="col-created", slot-scope="cell")
+      span(v-if="cell.data") {{ formatDateTime(cell.data) }}
 </template>
 
 <script>
@@ -16,6 +18,7 @@
     QBtn,
     QDataTable
   } from 'quasar-framework'
+  import { DateTime } from 'luxon'
   export default {
     components: {
       QBtn,
@@ -96,6 +99,9 @@
         else {
           _this.rows = this.entries
         }
+      },
+      formatDateTime (data) {
+        return DateTime.fromISO(data).toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS)
       }
     },
     mounted () {
