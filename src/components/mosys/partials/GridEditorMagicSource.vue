@@ -3,9 +3,17 @@
   q-list.default-source-container
 
     q-list-header
-      q-input(v-model="term", type="textarea", :min-rows="1", :max-height="200", :style="{'line-height': '1.5em'}")
+      q-input(
+        v-model="term", type="textarea", :min-rows="1",
+        :max-height="200", :style="{'line-height': '1.5em', width: '100%'}")
 
     q-item-separator
+
+    template(v-if="results.length === 0")
+      q-item This is the magic box, just enter:
+      q-item ● A tag starting with a hash-symbol: #[span #my tag]
+      q-item ● A URL pointing to a video, image or internal or external page
+      q-item ● Short or long text
 
     // loading, nothing here
     template(v-if="loading")
@@ -240,7 +248,7 @@
 <style scoped lang="stylus">
 
   .q-list-header
-    padding-left 0
+    padding 0
 
     .q-input
       padding-left 1em

@@ -1,8 +1,8 @@
 <template lang="pug">
 
   q-tabs.grid-editor-sources-tabs.shadow-11
-    q-tab(slot="title", name="tab-0", default) Default
-    q-tab(slot="title", name="tab-1") Magic
+    q-tab(slot="title", name="tab-0", default, icon="add")
+    q-tab(slot="title", name="tab-1", icon="wb iridescent")
     q-tab(slot="title", name="tab-2") Piecemaker
     q-tab(slot="title", name="tab-3") Vimeo
     q-tab(slot="title", name="tab-4") YouTube

@@ -5,7 +5,7 @@
       span A Timeline ... not sure how to display it here
 
     template(v-else)
-      strong Timeline Cell
+      strong 2D Grid Cell
 
 </template>
 
