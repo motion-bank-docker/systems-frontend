@@ -4,7 +4,9 @@
     template(v-if="display")
       ul
         template(v-for="annot in annotations")
-          li {{annot.body.value}}
+          li
+            a(:class="{'active': contextTime && inContextTime(annot)}",
+              @click.prevent="event => {handleAnnotationClick(event, annot)}") {{annot.body.value}}
 
     template(v-else)
       strong Annotation List
@@ -13,17 +15,29 @@
 
 <script>
   export default {
-    props: ['cell', 'display', 'preview'],
+    props: ['cell', 'display', 'preview', 'messenger'],
     data () {
       return {
         videoUuid: '',
         video: {},
+        videoTime: {},
+        contextTime: {},
         annotations: [],
         map: {}
       }
     },
     mounted () {
+      const _this = this
       this.videoUuid = this.cell.content
+      if (this.messenger) {
+        this.messenger.$on('video-time-changed', (time, globalTime, origin) => {
+          if (origin.type === 'Video' &&
+            _this.video.target.id === origin.origin.target.id &&
+            _this.videoTime <= globalTime) {
+            _this.contextTime = globalTime
+          }
+        })
+      }
     },
     watch: {
       videoUuid () {
@@ -33,6 +47,7 @@
             const videoAnnotation = videoAnnotations.shift()
             if (videoAnnotation) {
               _this.video = videoAnnotation
+              _this.videoTime = Date.parse(_this.video.target.selector.value)
               _this.$store.dispatch('maps/find', {query: {'uuid': videoAnnotation.target.id}})
                 .then(maps => {
                   const map = maps.shift()
@@ -50,6 +65,16 @@
             } // TODO: else, show not found?
           })
       }
+    },
+    methods: {
+      handleAnnotationClick (event, annot) {
+        this.messenger.$emit('annotation-trigger', annot)
+      },
+      inContextTime (annot) {
+        const annotTime = Date.parse(annot.target.selector.value)
+        const dist = annotTime - this.contextTime
+        return Math.abs(dist) < 2000 // 2 secs?
+      }
     }
   }
 </script>
@@ -66,5 +91,8 @@
 
   div.display-preview
     color #666
+
+  li a.active
+    color orangered
 
 </style>
