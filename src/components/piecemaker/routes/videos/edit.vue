@@ -23,6 +23,23 @@
       Tags,
       EditVideo,
       CardFull
+    },
+    data () {
+      return {
+        groupId: ''
+      }
+    },
+    mounted () {
+      this.fetchGroupId()
+    },
+    methods: {
+      fetchGroupId () {
+        const _this = this
+        this.$store.dispatch('annotations/find', {query: {'uuid': this.$route.params.id}})
+          .then(v => {
+            _this.groupId = v.shift().target.id
+          })
+      }
     }
   }
 </script>
