@@ -28,7 +28,7 @@
 
       #annotation-wrap(v-if="!fullscreen" slot="right")
         q-list.no-border
-          q-item.annotation(v-for="(annotation, i) in annotations", :key="annotation.uuid", v-bind:id="annotation.uuid")
+          q-item.annotation(v-for="(annotation, i) in annotations", :class="{ highlight: i === currentIndex }", :key="annotation.uuid", v-bind:id="annotation.uuid")
             q-item-main.row
               q-item-tile.col-6
                 q-btn(@click="gotoSelector(annotation.target.selector.value), changeState()" small) {{ formatSelectorForList(annotation.target.selector.value) }}
@@ -84,6 +84,7 @@
         fullscreen: false,
         player: undefined,
         playerTime: 0.0,
+        currentIndex: undefined,
         video: undefined,
         groupId: undefined,
         baseSelector: undefined,
@@ -211,6 +212,20 @@
       },
       onPlayerTime (seconds) {
         this.playerTime = seconds
+        this.updateHighlight(seconds)
+      },
+      updateHighlight (seconds) {
+        if (!this.annotations.length) return
+        let
+          baseMillis = this.baseSelector.millis + seconds * 1000,
+          annoCount = this.annotations.length,
+          selector, idx = -1
+        while (idx < annoCount) {
+          idx++
+          selector = TimelineSelector.fromISOString(this.annotations[idx].target.selector.value)
+          if (idx === annoCount || (selector && baseMillis >= selector.millis)) break
+        }
+        this.currentIndex = idx > -1 ? idx : undefined
       }
     }
   }

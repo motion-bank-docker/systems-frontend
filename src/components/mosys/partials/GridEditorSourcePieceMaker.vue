@@ -145,10 +145,12 @@
   .video-item
 
     .q-item-side
-      width 25%
-      display flex
+      width 20%
 
-    .q-icon
-      flex-grow 1
+      .q-icon
+        width 30px
+
+    .q-item-main
+      width 100%
 
 </style>

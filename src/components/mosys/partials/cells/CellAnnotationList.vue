@@ -8,8 +8,8 @@
         template(v-for="(annot, index) in annotations")
           q-item-separator
           q-item
-            a(:class="{'active': contextTime && inContextTime(annot)}",
-              @click.prevent="event => {handleAnnotationClick(event, annot)}") {{annot.body.value}} –
+            a(:class="{'active': contextTime && inContextTime(annot, index)}",
+              @click.prevent="event => {handleAnnotationClick(event, annot, index)}") {{formatDate(annot, index)}} - {{annot.body.value}} –
               username(:uuid="annot.author")
 
     template(v-else)
@@ -19,6 +19,8 @@
 
 <script>
   import { QItem, QItemSeparator, QListHeader } from 'quasar-framework'
+  import { DateTime } from 'luxon'
+  import constants from '../../../../lib/constants'
   import Username from '../../../shared/partials/Username'
   import VideoTitle from '../../../shared/partials/VideoTitle'
 
@@ -38,7 +40,8 @@
         videoTime: {},
         contextTime: {},
         annotations: [],
-        map: {}
+        map: {},
+        annotationTimes: []
       }
     },
     mounted () {
@@ -76,19 +79,31 @@
                     return Date.parse(a.target.selector.value) - Date.parse(b.target.selector.value)
                   })
                   _this.annotations = annotations
+                  _this.annotationTimes = []
+                  annotations.forEach(a => {
+                    _this.annotationTimes.push(Date.parse(a.target.selector.value))
+                  })
                 })
             } // TODO: else, show not found?
           })
       }
     },
     methods: {
-      handleAnnotationClick (event, annot) {
-        this.messenger.$emit('annotation-trigger', annot)
+      handleAnnotationClick (event, annot, index) {
+        this.messenger.$emit('annotation-trigger', annot, this.annotationTimes[index])
       },
-      inContextTime (annot) {
-        const annotTime = Date.parse(annot.target.selector.value)
-        const dist = annotTime - this.contextTime
+      inContextTime (annot, index) {
+        const dist = this.annotationTimes[index] - this.contextTime
         return Math.abs(dist) < 2000 // 2 secs?
+      },
+      contextTimeDiff (annot, index) {
+        return this.annotationTimes[index] - this.contextTime
+      },
+      formatDate (annot, index) {
+        return DateTime
+          .fromISO(annot.target.selector.value)
+          .minus(this.videoTime)
+          .toFormat(constants.TIMECODE_FORMAT)
       }
     }
   }
