@@ -1,4 +1,5 @@
 <template lang="pug">
+
   .wrapper
     q-btn#button-back(slot="nav-button", icon="keyboard_backspace", @click="$router.push(`/piecemaker/groups`)", round, small)
     span(slot="form-logo")
@@ -13,6 +14,7 @@
             q-input.color(type="textarea" v-model="annotation.body.value")
         q-item-side.text-right
           q-btn(@click="deleteAnnotation(annotation.uuid, i)", icon="clear", round, small)
+
 </template>
 
 <script>
@@ -125,29 +127,25 @@
     top: calc(52px + 1em);
   }
   .wrapper {
+    border: 0px solid red;
     min-height: calc(100vh - 52px);
-    /* overflow-y: scroll; */
+    overflow-y: scroll;
     padding-left: 5rem;
   }
   #input {
     background-color: #fff;
     position: fixed;
     top: calc(52px + 2em);
-    /* width: calc(100vw - 10rem); */
     width: calc(100vw - 25rem);
     margin-left: 7.5rem;
     overflow: scroll;
     margin-bottom: 0;
-    padding: 0 .5em;
-    padding-top: 1em;
-    padding-bottom: 1em;
+    padding: 1em .5em;
     z-index: 1111;
     box-shadow: 0 0 10px 0px rgba( 0, 0, 0, .1 );
     opacity: 1;
   }
   #list {
-    /* max-height: 50vh; */
-    /* height: calc(100vh - 52px); */
     background-color: #eee;
     width: calc(100vw - 20rem);
     min-height: calc(100vh - 52px - 2rem);
@@ -165,9 +163,6 @@
   }
     .annotation:hover {
       background-color: rgba( 255, 255, 255, .05 );
-    }
-    .annotation:not(:last-of-type) {
-      /* border-bottom: 1px solid #555; */
     }
   .q-item-side {
     padding: 0 1.5em;
