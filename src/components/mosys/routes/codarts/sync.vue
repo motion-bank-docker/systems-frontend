@@ -152,8 +152,8 @@
 </script>
 
 <style>
-  .layout-padding {
+  /* .layout-padding {
     padding-top: 0!important;
     margin-top: 0!important;
-  }
+  } */
 </style>
