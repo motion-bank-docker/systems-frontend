@@ -1,6 +1,5 @@
 <template lang="pug">
-  // full.test123
-  .wrapper(:id="halloabc")
+  .wrapper
     q-btn#button-back(slot="nav-button", icon="keyboard_backspace", @click="$router.push(`/piecemaker/groups`)", round, small)
     span(slot="form-logo")
     span(slot="form-title")
@@ -126,9 +125,8 @@
     top: calc(52px + 1em);
   }
   .wrapper {
-    border: 0px solid red;
     min-height: calc(100vh - 52px);
-    overflow-y: scroll;
+    /* overflow-y: scroll; */
     padding-left: 5rem;
   }
   #input {
