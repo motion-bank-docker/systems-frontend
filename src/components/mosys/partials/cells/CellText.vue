@@ -31,7 +31,13 @@ export default {
     height 100%
 
   div.display-full
-    background-color white
+    background-color #252324
+
+    div.display-full > div
+      padding 0
+      margin-top -.25rem
+      font-size .85rem
+      line-height 1.15rem
 
   div.display-preview
     color #666
