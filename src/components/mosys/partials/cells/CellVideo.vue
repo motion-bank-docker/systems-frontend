@@ -55,12 +55,12 @@
           })
       }
       if (this.display && this.messenger) {
-        this.messenger.$on('annotation-trigger', annotation => {
+        this.messenger.$on('annotation-trigger', (annotation, annotationGlobalTime) => {
           if (_this.video.target &&
               annotation.target.id === _this.video.target.id) {
-            const timeAnnot = Date.parse(annotation.target.selector.value)
-            const movieTime = (timeAnnot - _this.videoTime) / 1000.0
-            if (movieTime && movieTime >= 0 && _this.player) {
+            const movieTime = (annotationGlobalTime - _this.videoTime) / 1000.0
+            if (typeof movieTime === 'number' &&
+              movieTime >= 0 && _this.player) {
               _this.player.currentTime(movieTime)
             }
           }
