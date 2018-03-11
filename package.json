@@ -132,7 +132,7 @@
   "license": "MIT",
   "appConfig": {
     "apiHost": "https://motionbank-api.herokuapp.com",
-    "apiHostLocal": "http://localhost:3030",
+    "apiHostLocal": "https://motionbank-api.herokuapp.com",
     "idField": "uuid"
   }
 }
