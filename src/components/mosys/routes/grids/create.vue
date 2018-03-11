@@ -4,7 +4,7 @@
     span(slot="form-logo")
     span(slot="form-title") {{ $t('routes.mosys.grids.create.title') }}
     // p.caption(slot="form-caption") {{ $t('routes.mosys.grids.create.caption') }}
-    edit-group(redirect-to="/mosys/grids")
+    edit-group(redirect-to="/mosys/grids").width-100
 </template>
 
 <script>
