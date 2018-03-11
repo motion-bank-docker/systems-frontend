@@ -24,6 +24,7 @@
 
 <script>
   import Vue from 'vue'
+  import Promise from 'bluebird'
   import { QChipsInput, QChip, QField, QInput, QBtn } from 'quasar-framework'
   import constants from '../../../../lib/constants'
 
@@ -120,13 +121,14 @@
       handleSubmit (event) {
         const _this = this
         const authorUuid = _this.$store.state.auth.payload.userId
-        let grid = {
+        let grid, gridTemplate = {
           title: `Generated Grid for ${_this.studentName}`,
           owner: authorUuid,
           type: [constants.MAP_TYPE_2D_GRID]
         }
-        _this.$store.dispatch('maps/create', grid)
-          .then(grid => {
+        _this.$store.dispatch('maps/create', gridTemplate)
+          .then(g => {
+            grid = g
             let gridMetadata = {
               autor: authorUuid,
               type: 'Annotation',
@@ -147,62 +149,57 @@
             return _this.$store.dispatch('annotations/create', gridMetadata)
           })
           .then(() => {
-            let tagPromises = _this.selectedTags
-              .map((tag, i) => {
-                let tagAnnotation = {
-                  author: authorUuid,
-                  body: {
-                    purpose: 'tagging',
-                    type: 'TextualBody',
-                    value: tag
-                  },
-                  target: {
-                    id: grid.uuid,
-                    type: constants.MAP_TYPE_2D_GRID
-                  }
+            return Promise.map(_this.selectedTags, (tag, i) => {
+              let tagAnnotation = {
+                author: authorUuid,
+                body: {
+                  purpose: 'tagging',
+                  type: 'TextualBody',
+                  value: tag
+                },
+                target: {
+                  id: grid.uuid,
+                  type: constants.MAP_TYPE_2D_GRID
                 }
-                return _this.$store.dispatch('annotations/create', tagAnnotation)
-              })
-            return Promise.all(tagPromises)
+              }
+              return _this.$store.dispatch('annotations/create', tagAnnotation)
+            })
           })
           .then(() => {
             let x = 2
-            let videoCellPromises = _this.selectedTags
-              .map((t) => {
-                let tag = tagsVideosMap[t]
-                let promises = tag.videos.map(v => {
-                  let url = videoURLs[v]
-                  let cell = {
-                    uuid: null,
-                    x: x,
-                    y: 2,
-                    width: 2,
-                    height: 2,
-                    content: url
-                  }
-                  x += 3
-                  let cellAnnotation = {
-                    author: authorUuid,
-                    type: 'Annotation',
-                    body: {
-                      purpose: 'linking',
-                      type: '2DCell',
-                      value: JSON.stringify(cell)
-                    },
-                    target: {
-                      id: grid.uuid,
-                      type: constants.MAP_TYPE_2D_GRID,
-                      selector: {
-                        type: '2DLocation',
-                        value: `x=${cell.x}&y=${cell.y}&width=${cell.width}&height=${cell.height}`
-                      }
+            return Promise.map(_this.selectedTags, (t) => {
+              let tag = tagsVideosMap[t]
+              return Promise.map(tag.videos, v => {
+                let url = videoURLs[v]
+                let cell = {
+                  uuid: null,
+                  x: x,
+                  y: 2,
+                  width: 2,
+                  height: 2,
+                  content: url
+                }
+                x += 3
+                let cellAnnotation = {
+                  author: authorUuid,
+                  type: 'Annotation',
+                  body: {
+                    purpose: 'linking',
+                    type: '2DCell',
+                    value: JSON.stringify(cell)
+                  },
+                  target: {
+                    id: grid.uuid,
+                    type: constants.MAP_TYPE_2D_GRID,
+                    selector: {
+                      type: '2DLocation',
+                      value: `x=${cell.x}&y=${cell.y}&width=${cell.width}&height=${cell.height}`
                     }
                   }
-                  return _this.$store.dispatch('annotations/create', cellAnnotation)
-                })
-                return Promise.all(promises)
+                }
+                return _this.$store.dispatch('annotations/create', cellAnnotation)
               })
-            return Promise.all(videoCellPromises)
+            })
           })
           .then(() => {
             console.log('All done!')
