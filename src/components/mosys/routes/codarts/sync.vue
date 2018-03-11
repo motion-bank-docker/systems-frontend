@@ -2,7 +2,7 @@
 
   //center-card-full
   card-full
-    q-btn(slot="backButton" @click="$router.push(`/piecemaker/videos/${$route.params.videoId}/edit`)", icon="keyboard_backspace", small, round)
+    q-btn(slot="backButton" @click="$router.push(`/piecemaker/groups/${$route.params.groupId}/videos`)", icon="keyboard_backspace", small, round)
     div(slot="form-logo")
     div(slot="form-title")
 
@@ -152,8 +152,8 @@
 </script>
 
 <style>
-  .layout-padding {
+  /* .layout-padding {
     padding-top: 0!important;
     margin-top: 0!important;
-  }
+  } */
 </style>
