@@ -1,7 +1,7 @@
 <template lang="pug">
 
-  div(style="height: calc(60vh - 52px);")
-    q-layout
+  div(style="height: calc(100vh - 52px); overflow: hidden;")
+    q-layout#video-annotate-wrap
 
       div#btn-back
         q-btn(@click="$router.push('/piecemaker/groups/' + groupId + '/videos')",
@@ -9,7 +9,8 @@
         q-btn(v-if="!fullscreen", @click="toggleFullscreen(), fullscreenHandler()", icon="fullscreen", round, flat, small)
         q-btn(v-if="fullscreen", @click="toggleFullscreen(), fullscreenHandler()", icon="fullscreen_exit", round, flat, small)
 
-      video-player(v-if="video", :src="video", @ready="playerReady($event)", @time="onPlayerTime($event)")
+      div(style="height: calc(100vh - 52px); overflow: hidden;")
+        video-player(v-if="video", :src="video", @ready="playerReady($event)", @time="onPlayerTime($event)")
 
       #pop-up(v-bind:class="{ activeCondition: active }")
 
@@ -27,7 +28,7 @@
 
       #annotation-wrap(v-if="!fullscreen" slot="right")
         q-list.no-border
-          q-item.annotation(v-for="(annotation, i) in annotations", :key="annotation.uuid", v-bind:id="annotation.uuid")
+          q-item.annotation(v-for="(annotation, i) in annotations", :class="{ highlight: i === currentIndex }", :key="annotation.uuid", v-bind:id="annotation.uuid")
             q-item-main.row
               q-item-tile.col-6
                 q-btn(@click="gotoSelector(annotation.target.selector.value), changeState()" small) {{ formatSelectorForList(annotation.target.selector.value) }}
@@ -83,10 +84,11 @@
         fullscreen: false,
         player: undefined,
         playerTime: 0.0,
+        currentIndex: undefined,
         video: undefined,
         groupId: undefined,
         baseSelector: undefined,
-        active: false,
+        active: true,
         annotations: [],
         currentBody: {
           value: undefined,
@@ -210,6 +212,22 @@
       },
       onPlayerTime (seconds) {
         this.playerTime = seconds
+        this.updateHighlight(seconds)
+      },
+      updateHighlight (seconds) {
+        if (!this.annotations.length) return
+        let
+          baseMillis = this.baseSelector.millis + seconds * 1000,
+          annoCount = this.annotations.length,
+          selector, idx = 0, running = true
+        while (running && this.annotations[idx]) {
+          selector = TimelineSelector.fromISOString(this.annotations[idx].target.selector.value)
+          running = selector && baseMillis < selector.millis
+          if (!running) this.currentIndex = idx
+          if (idx >= annoCount) break
+          idx++
+        }
+        if (running) this.currentIndex = undefined
       }
     }
   }
@@ -262,4 +280,10 @@
     background-color: rgba( 0, 255, 0, .5 );
     transition: background-color ease 500ms;
   }
+  .layout-page {
+    height: calc(100vh - 52px)!important;
+    overflow: hidden!important;
+  }
+
+
 </style>
