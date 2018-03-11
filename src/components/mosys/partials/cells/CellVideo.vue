@@ -51,6 +51,7 @@
             if (video) {
               _this.video = video
               _this.videoTime = Date.parse(video.target.selector.value)
+              _this.contextTime = _this.videoTime
             }
           })
       }
