@@ -5,9 +5,12 @@
     span(slot="form-logo")
     span(slot="form-title") {{ $t('routes.piecemaker.videos.edit.title') }}
 
-    edit-video
+    .row
+      .col-6.padding-1em
+        tags(v-if="$route.params.id", :targetUuid="$route.params.id")
+      .col-6.padding-1em
+        edit-video.col-6
 
-    tags(v-if="$route.params.id", :targetUuid="$route.params.id")
 
 </template>
 
