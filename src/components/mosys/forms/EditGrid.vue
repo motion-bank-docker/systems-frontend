@@ -4,8 +4,11 @@
     span(slot="form-logo")
     h4 Edit Grid
   div
-    form-main(v-model="payload", :schema="schema")
-    tags(v-if="payload", :targetUuid="payload.uuid", fullWidth)
+    .row
+      .col-6.padding-1em
+        tags(v-if="payload", :targetUuid="payload.uuid", fullWidth)
+      .col-6.padding-1em
+        form-main(v-model="payload", :schema="schema")
 
 </template>
 

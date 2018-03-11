@@ -5,12 +5,14 @@ require(`./themes/app.${__THEME}.styl`)
 // require(`quasar/dist/quasar.ie.${__THEME}.css`)
 
 import Vue from 'vue'
+import AsyncComputed from 'vue-async-computed'
 import Quasar, {
   AddressbarColor
 } from 'quasar-framework'
 
 Vue.config.productionTip = false
 Vue.use(Quasar)
+Vue.use(AsyncComputed)
 
 AddressbarColor.set('#252324')
 

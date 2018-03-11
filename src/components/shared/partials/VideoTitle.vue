@@ -34,16 +34,10 @@
 
   export default {
     props: ['source'],
-    data () {
-      return {
-        videoTitle: undefined
+    asyncComputed: {
+      async videoTitle () {
+        return await fetchTitle(this.source)
       }
-    },
-    mounted () {
-      const _this = this
-      fetchTitle(this.source).then(title => {
-        _this.videoTitle = title
-      })
     }
   }
 </script>
