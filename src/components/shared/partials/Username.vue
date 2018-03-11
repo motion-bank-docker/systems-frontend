@@ -5,18 +5,14 @@
 <script>
   export default {
     props: ['uuid'],
-    data () {
-      return {
-        username: '---'
+    asyncComputed: {
+      async username () {
+        if (!this.uuid) return '---'
+        return await this.$store.dispatch('users/get', this.uuid)
+          .then(user => {
+            return user.name
+          })
       }
-    },
-    mounted () {
-      if (!this.uuid) return
-      const _this = this
-      this.$store.dispatch('users/get', this.uuid)
-        .then(user => {
-          _this.username = user.name
-        })
     }
   }
 </script>
