@@ -14,7 +14,7 @@
         p.col-12(style="min-height: 5em;")
           | Video to be synchronized:
           br
-          video-title(:source="video.body.source")
+          video-title(v-if="video", :source="video.body.source")
         div.video.col-12(v-if="video")
           video-player(:src="video.body", @ready="onSrcPlayerReady($event)")
           div.col-12
@@ -125,8 +125,8 @@
       applySync () {
         const
           _this = this,
-          diff = this.targetSelector.millis - this.srcSelector.millis,
-          video = this.refVideos[this.refIndex],
+          diff = TimelineSelector.timeBetween(this.srcSelector, this.targetSelector),
+          video = this.video, // this.refVideos[this.refIndex],
           selector = TimelineSelector.fromISOString(video.target.selector.value)
         selector.add(diff)
         const update = {

@@ -1,24 +1,29 @@
 <template lang="pug">
 
-  div
+  card-full
 
-    h4 Generate Set from Tags
+    div(slot="form-logo")
+    h4(slot="form-title") Generate Set from Tags
 
-    q-field
+    q-field(style="margin-bottom: 2em")
       q-input(float-label="Student Name", type="text", dark, v-model="studentName")
+
+    h6 Available Tags
 
     q-field.tags
       template(v-for="(tag, index) in tags")
         template(v-if="!disabled[index]")
-          q-chip(color="primary", @click="event => {handleTagClick(event, tag, index)}") {{tag}}
+          q-chip(color="faded", @click="event => {handleTagClick(event, tag, index)}") {{tag}}
+
+    h6(v-if="hasSelectedTags()", style="padding-top: 0.5em") Selected Tags
 
     q-field.selected-tags
       template(v-for="(tag, index) in tags")
         template(v-if="disabled[index]")
-          q-chip(color="secondary", @click="event => {handleTagClick(event, tag, index)}") {{tag}}
+          q-chip(color="primary", @click="event => {handleTagClick(event, tag, index)}") {{tag}}
 
-    template(v-if="hasTagsSelected")
-      q-btn(@click.prevent="handleSubmit") Generate Set
+    template(v-if="hasSelectedTags()")
+      q-btn(@click.prevent="handleSubmit", color="primary", style="margin-top: 2em", :dark="true", outline) Generate Set
 
 </template>
 
@@ -27,6 +32,7 @@
   import Promise from 'bluebird'
   import { QChipsInput, QChip, QField, QInput, QBtn } from 'quasar-framework'
   import constants from '../../../../lib/constants'
+  import CardFull from '../../../shared/layouts/CardFull'
 
   const tagsVideosMap = {
     'achilles': {
@@ -89,7 +95,7 @@
 
   export default {
     components: {
-      QChipsInput, QField, QChip, QInput, QBtn
+      QChipsInput, QField, QChip, QInput, QBtn, CardFull
     },
     data () {
       return {
@@ -131,7 +137,6 @@
             grid = g
             let gridMetadata = {
               autor: authorUuid,
-              type: 'Annotation',
               body: {
                 purpose: 'linking',
                 type: '2DGridMetadata',
@@ -173,16 +178,17 @@
                 let url = videoURLs[v]
                 let cell = {
                   uuid: null,
+                  type: 'Video',
                   x: x,
                   y: 2,
                   width: 2,
                   height: 2,
-                  content: url
+                  content: url,
+                  sourceUuid: v.uuid
                 }
                 x += 3
                 let cellAnnotation = {
                   author: authorUuid,
-                  type: 'Annotation',
                   body: {
                     purpose: 'linking',
                     type: '2DCell',
@@ -204,6 +210,11 @@
           .then(() => {
             console.log('All done!')
           })
+      },
+      hasSelectedTags () {
+        return this.disabled.reduce((acc, val) => {
+          return acc || val
+        }, false)
       }
     }
   }

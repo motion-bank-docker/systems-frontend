@@ -28,10 +28,10 @@
 
       #annotation-wrap(v-if="!fullscreen" slot="right")
         q-list.no-border
-          q-item.annotation(v-for="(annotation, i) in annotations", :class="{ highlight: i === currentIndex }", :key="annotation.uuid", v-bind:id="annotation.uuid")
+          q-item.annotation(v-for="(annotation, i) in annotations", :class="{ highlight: i === currentIndex }", :key="annotation.uuid", :id="annotation.uuid")
             q-item-main.row
-              q-item-tile.col-6(v-if="annotation.target.selector")
-                q-btn(@click="gotoSelector(annotation.target.selector.value), changeState()" small) {{ formatSelectorForList(annotation.target.selector.value) }}
+              q-item-tile.col-6
+                q-btn(v-if="annotation.target.selector", @click="gotoSelector(annotation.target.selector.value), changeState()", small) {{ formatSelectorForList(annotation.target.selector.value) }}
               q-item-tile.col-6
                 q-btn(@click="deleteAnnotation(annotation.uuid), changeState()", small) {{ $t('buttons.delete') }}
                 q-btn(@click="updateAnnotation(annotation), addKeypressListener()", small) {{ $t('buttons.save') }}
@@ -138,8 +138,14 @@
           })
       },
       getAnnotations () {
-        const context = this
-        return this.$store.dispatch('annotations/find', { query: { 'target.id': context.groupId, 'body.type': 'TextualBody' } })
+        const
+          context = this,
+          query = {
+            'target.id': context.groupId,
+            'target.type': constants.MAP_TYPE_TIMELINE,
+            'body.type': 'TextualBody'
+          }
+        return this.$store.dispatch('annotations/find', { query })
           .then(results => {
             if (results) {
               context.annotations = results.sort(annotations.Sorting.sortOnTarget)
@@ -207,7 +213,7 @@
       },
       formatSelectorForList (val) {
         const selector = TimelineSelector.fromISOString(val)
-        selector.subtract(this.baseSelector.millis)
+        // selector.subtract(this.baseSelector.millis)
         return selector.toFormat(constants.TIMECODE_FORMAT)
       },
       onPlayerTime (seconds) {

@@ -7,6 +7,7 @@
   import { QBtn } from 'quasar-framework'
   import { required } from 'vuelidate/lib/validators'
   import { DateTime } from 'luxon'
+  import constants from '../../../lib/constants'
   export default {
     components: {
       FormMain,
@@ -47,9 +48,9 @@
                 author: context.$store.state.auth.payload.userId,
                 target: {
                   id: context.$route.params.groupId || context.groupId,
-                  type: 'Map',
+                  type: constants.MAP_TYPE_TIMELINE,
                   selector: {
-                    type: 'DateTime',
+                    type: 'Fragment',
                     value: DateTime.local().toString()
                   }
                 }

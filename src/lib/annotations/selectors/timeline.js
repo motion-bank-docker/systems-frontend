@@ -1,4 +1,4 @@
-import { DateTime, Settings } from 'luxon'
+import { DateTime, Settings, Interval } from 'luxon'
 import assert from 'assert'
 
 Settings.defaultLocale = DateTime.local().resolvedLocaleOpts().locale
@@ -7,16 +7,13 @@ class TimelineSelector {
   /**
    * Create a new selector from local time or (optionally) UTC time
    * @param utc
-   * @param locale
    */
-  constructor (utc = false, locale = undefined) {
+  constructor (utc = false) {
     if (utc) {
-      this._dateTime = DateTime
-        .local({ locale: locale || Settings.defaultLocale }).toUTC()
+      this._dateTime = DateTime.local().toUTC()
     }
     else {
-      this._dateTime = DateTime
-        .local({ locale: locale || Settings.defaultLocale })
+      this._dateTime = DateTime.local()
     }
   }
 
@@ -38,32 +35,29 @@ class TimelineSelector {
   /**
    * Get custom formatted string
    * @param format
-   * @param locale
    * @return {*|string}
    */
-  toFormat (format, locale = undefined) {
+  toFormat (format) {
     assert.equal(typeof format, 'string')
-    if (locale) assert.equal(typeof locale, 'string')
-    return this._dateTime.toFormat(format,
-      { locale: this._dateTime.locale || Settings.defaultLocale })
+    return this._dateTime.toFormat(format)
   }
 
   /**
-   * Add milliseconds
-   * @param millis
+   * Add duration or milliseconds
+   * @param duration
    */
-  add (millis) {
-    assert.equal(typeof millis, 'number')
-    this._dateTime = this._dateTime.plus(millis)
+  add (duration) {
+    assert(typeof duration === 'number' || duration.constructor.name === 'Duration')
+    this._dateTime = this._dateTime.plus(duration)
   }
 
   /**
    * Subtract milliseconds
-   * @param millis
+   * @param duration
    */
-  subtract (millis) {
-    assert.equal(typeof millis, 'number')
-    this._dateTime = this._dateTime.minus(millis)
+  subtract (duration) {
+    assert(typeof duration === 'number' || duration.constructor.name === 'Duration')
+    this._dateTime = this._dateTime.minus(duration)
   }
 
   /**
@@ -89,8 +83,7 @@ class TimelineSelector {
    */
   set millis (val) {
     assert.equal(typeof val, 'number')
-    this._dateTime = DateTime.fromMillis(val,
-      { locale: this._dateTime.locale || Settings.defaultLocale })
+    this._dateTime = DateTime.fromMillis(val)
   }
 
   /**
@@ -120,6 +113,7 @@ class TimelineSelector {
    * @return {TimelineSelector}
    */
   static fromISOString (val) {
+    console.log(val)
     const selector = new TimelineSelector()
     selector.isoString = val
     return selector
@@ -130,8 +124,8 @@ class TimelineSelector {
    * @param val
    * @return {TimelineSelector}
    */
-  static fromMilliseconds (val, utc = undefined, locale = undefined) {
-    const selector = new TimelineSelector(utc, locale)
+  static fromMilliseconds (val) {
+    const selector = new TimelineSelector()
     selector.millis = val
     return selector
   }
@@ -145,6 +139,17 @@ class TimelineSelector {
     const selector = new TimelineSelector()
     selector.dateTime = val
     return selector
+  }
+
+  /**
+   * Get duration between start and end selectors
+   * @param start
+   * @param end
+   */
+  static timeBetween (start, end) {
+    assert.equal(start.constructor.name, 'TimelineSelector')
+    assert.equal(end.constructor.name, 'TimelineSelector')
+    return Interval.fromDateTimes(start.dateTime, end.dateTime).toDuration()
   }
 }
 
