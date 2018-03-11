@@ -130,7 +130,8 @@
           y: 1,
           width: 1,
           height: 1,
-          content: result.body.source
+          content: result.body.source,
+          sourceUuid: result.body.sourceUuid
         }
         event.dataTransfer.setData('text/plain', JSON.stringify(resourceCell))
       },
@@ -198,6 +199,8 @@
                   if (!targetsMatched[ta.target.id]) {
                     targetsMatched[ta.target.id] = ta
                     ta.body.type = ta.target.type || ta.body.type
+                    ta.body.source = ta.target.id
+                    ta.body.sourceUuid = ta.target.id
                     results.push(ta)
                   }
                 })
@@ -205,7 +208,7 @@
               })
           }
           // MULTI LINE
-          else if (/[\n\r]/.test(this.term)) {
+          else if (/[\n\r]/.test(this.term) || this.term.length > 200) {
             res.body.type = 'text'
             results.push(res)
           }
