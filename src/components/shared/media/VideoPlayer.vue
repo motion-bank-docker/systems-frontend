@@ -33,7 +33,6 @@
     data () {
       return {
         type: undefined,
-        fps: 25.0,
         playerOptions: {
           fluid: true,
           width: 640,
@@ -47,7 +46,7 @@
           },
           plugins: {
             framebyframe: {
-              fps: 23.98,
+              fps: 23.98, // FIXME: 25.0 ?!?, make "smart"
               steps: [
                 {text: '-1s', step: -24},
                 {text: '-1f', step: -1},
@@ -62,11 +61,6 @@
     props: ['src'],
     mounted () {
       if (!this.src) return
-      /*
-      if (!this.type) {
-        this.guessType()
-      }
-      */
       this.type = this.guessType(this.src)
       if (this.type === 'video/youtube') {
         this.playerOptions.techOrder = ['youtube']
@@ -133,23 +127,3 @@
     }
   }
 </script>
-
-<style lang="stylus">
-/*
-  .video-js .vjs-time-control {
-    display: block
-  }
-
-  .video-js.vjs-fluid,
-  .video-js.vjs-16-9,
-  .video-js.vjs-4-3 {
-    width: 100%;
-    max-width: 100%;
-    height: 100%;
-    max-height: 100%;
-  }
-
-  .vjs_video_427-dimensions.vjs-fluid {
-    padding-top: 0;
-  }*/
-</style>

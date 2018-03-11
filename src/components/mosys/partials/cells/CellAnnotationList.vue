@@ -1,10 +1,13 @@
 <template lang="pug">
 
-  div(:class="{'display-preview': preview, 'display-full': display}")
+  div.annotation-list(:class="{'display-preview': preview, 'display-full': display}")
     template(v-if="display")
-      ul
-        template(v-for="annot in annotations")
-          li
+        q-list-header
+          q-item
+            video-title(:source="video.body.source")
+        template(v-for="(annot, index) in annotations")
+          q-item-separator
+          q-item
             a(:class="{'active': contextTime && inContextTime(annot)}",
               @click.prevent="event => {handleAnnotationClick(event, annot)}") {{annot.body.value}} –
               username(:uuid="annot.author")
@@ -15,11 +18,17 @@
 </template>
 
 <script>
+  import { QItem, QItemSeparator, QListHeader } from 'quasar-framework'
   import Username from '../../../shared/partials/Username'
+  import VideoTitle from '../../../shared/partials/VideoTitle'
 
   export default {
     components: {
-      Username
+      QItem,
+      QItemSeparator,
+      QListHeader,
+      Username,
+      VideoTitle
     },
     props: ['cell', 'display', 'preview', 'messenger'],
     data () {
@@ -87,18 +96,26 @@
 
 <style scoped lang="stylus">
 
-  div
-    padding 1em
+  .annotation-list
     width 100%
     height 100%
+    overflow auto
 
-  div.display-full
+  .annotation-list.display-full
     background-color white
 
-  div.display-preview
+  .annotation-list.display-preview
     color #666
 
-  li a.active
+  a.active
     color orangered
+
+  .q-list-header
+    padding-top 0.5em
+    padding-left 0
+
+    .q-item
+      font-size 1em
+      line-height 1.5em
 
 </style>

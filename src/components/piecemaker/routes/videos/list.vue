@@ -13,7 +13,6 @@
 <script>
   import { QBtn } from 'quasar-framework'
   import DataTable from '../../../shared/partials/DataTable'
-  // import CenterCardFull from '../../../shared/layouts/CenterCardFull'
   import CardFull from '../../../shared/layouts/CardFull'
   import Promise from 'bluebird'
   import superagent from 'superagent'
@@ -21,13 +20,11 @@
   import path from 'path'
   import buildVars from '../../../../lib/build-vars'
   import he from 'he'
-  // import { DateTime } from 'luxon'
 
   export default {
     components: {
       QBtn,
       DataTable,
-      // CenterCardFull
       CardFull
     },
     methods: {
