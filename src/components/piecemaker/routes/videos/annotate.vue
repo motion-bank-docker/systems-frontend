@@ -88,7 +88,7 @@
         video: undefined,
         groupId: undefined,
         baseSelector: undefined,
-        active: false,
+        active: true,
         annotations: [],
         currentBody: {
           value: undefined,
