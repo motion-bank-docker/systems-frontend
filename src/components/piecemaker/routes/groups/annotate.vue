@@ -8,7 +8,7 @@
     q-input#input(v-model="currentBody.value", @keyup="keyMonitor", type="textarea", autofocus)
     q-list(no-border)#list
       q-item.annotation(v-for="(annotation, i) in annotations", :key="annotation.uuid", :id="annotation.uuid")
-        q-item-side {{ formatSelectorForList(annotation.target.selector.value) }}
+        q-item-side(v-if="annotation.target.selector") {{ formatSelectorForList(annotation.target.selector.value) }}
         q-item-main
           q-item-tile.text-left
             q-input.color(type="textarea" v-model="annotation.body.value")
@@ -89,10 +89,8 @@
         return this.$store.dispatch('annotations/create', annotation)
           .then(annotation => {
             _this.annotations.push(annotation)
-            _this.annotations = _this.annotations.sort(annotations.Sorting.sortOnTarget).then(
-              // window.scrollTo(0, document.body.scrollHeight)
-              this.scrollToElement()
-            )
+            _this.annotations = _this.annotations.sort(annotations.Sorting.sortOnTarget)
+            _this.scrollToElement()
             // _this.scrollToElement(annotation.uuid)
           })
       },
