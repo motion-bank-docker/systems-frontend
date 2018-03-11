@@ -5,9 +5,9 @@
     h4 Edit Grid
   div
     .row
-      .col-6.padding-1em
+      .padding-1em
         tags(v-if="payload", :targetUuid="payload.uuid", fullWidth)
-      .col-6.padding-1em
+      .padding-1em
         form-main(v-model="payload", :schema="schema")
 
 </template>
