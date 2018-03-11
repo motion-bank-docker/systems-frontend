@@ -7,10 +7,22 @@
             video-title(:source="video.body.source")
         template(v-for="(annot, index) in annotations")
           q-item-separator
-          q-item
+
+          template(v-if="$store.state.auth.payload.userId && showAnnotationInput(index)")
+            q-item.annotation-input-container
+              q-input.annotation-input(type="textarea", max-height="200", min-rows="3"
+                style="width:100%", v-model="newAnnotationText",
+                @keyup.enter="handleInputChanged", stack-label="Leave Comment")
+            q-item-separator
+
+          q-item.annotation
             a(:class="{'active': contextTime && inContextTime(annot, index)}",
-              @click.prevent="event => {handleAnnotationClick(event, annot, index)}") {{formatDate(annot, index)}} - {{annot.body.value}} –
-              username(:uuid="annot.author")
+              @click.prevent="event => {handleAnnotationClick(event, annot, index)}")
+              span.date {{formatDate(annot, index).split(':').slice(1).join(':')}}
+              span.author {{annot.author.substring(0,6)}}
+              span.content {{annot.body.value}}
+
+        q-item-separator
 
     template(v-else)
       strong Annotation List
@@ -18,17 +30,21 @@
 </template>
 
 <script>
-  import { QItem, QItemSeparator, QListHeader } from 'quasar-framework'
+  import { QItem, QItemSeparator, QListHeader, QInput } from 'quasar-framework'
   import { DateTime } from 'luxon'
   import constants from '../../../../lib/constants'
   import Username from '../../../shared/partials/Username'
   import VideoTitle from '../../../shared/partials/VideoTitle'
+  import annotations from '../../../../lib/annotations'
+
+  const TimelineSelector = annotations.selectors.TimelineSelector
 
   export default {
     components: {
       QItem,
       QItemSeparator,
       QListHeader,
+      QInput,
       Username,
       VideoTitle
     },
@@ -41,7 +57,9 @@
         contextTime: {},
         annotations: [],
         map: {},
-        annotationTimes: []
+        annotationTimes: [],
+        inputIndex: 0,
+        newAnnotationText: ''
       }
     },
     mounted () {
@@ -53,42 +71,52 @@
             _this.video.target.id === origin.origin.target.id &&
             _this.videoTime <= globalTime) {
             _this.contextTime = globalTime
+            let inputTime = _this.annotationTimes.find(t => {
+              return t >= _this.contextTime
+            })
+            if (inputTime) {
+              _this.inputIndex = _this.annotationTimes.indexOf(inputTime)
+            }
+            else {
+              _this.inputIndex = 0
+            }
           }
         })
       }
     },
     watch: {
       videoUuid () {
-        const _this = this
-        this.$store.dispatch('annotations/find', {query: {'uuid': this.videoUuid}})
-          .then(videoAnnotations => {
-            const videoAnnotation = videoAnnotations.shift()
-            if (videoAnnotation) {
-              _this.video = videoAnnotation
-              _this.videoTime = Date.parse(_this.video.target.selector.value)
-              _this.$store.dispatch('maps/find', {query: {'uuid': videoAnnotation.target.id}})
-                .then(maps => {
-                  const map = maps.shift()
-                  if (map) {
-                    _this.map = map
-                  }
-                })
-              _this.$store.dispatch('annotations/find', {query: {'target.id': videoAnnotation.target.id, 'body.purpose': 'commenting'}})
-                .then(annotations => {
-                  annotations = annotations.sort((a, b) => {
-                    return Date.parse(a.target.selector.value) - Date.parse(b.target.selector.value)
-                  })
-                  _this.annotations = annotations
-                  _this.annotationTimes = []
-                  annotations.forEach(a => {
-                    _this.annotationTimes.push(Date.parse(a.target.selector.value))
-                  })
-                })
-            } // TODO: else, show not found?
-          })
+        this.fetchAnnotations()
       }
     },
     methods: {
+      handleInputChanged (event) {
+        const _this = this
+        if (this.newAnnotationText) {
+          let newAnnotation = {
+            author: this.$store.state.auth.payload.userId,
+            type: 'Annotation',
+            body: {
+              type: 'TextualBody',
+              purpose: 'commenting',
+              value: this.newAnnotationText
+            },
+            target: {
+              id: this.map.uuid,
+              type: this.map.type,
+              selector: {
+                type: 'Fragment',
+                value: TimelineSelector.fromMilliseconds(_this.contextTime).isoString
+              }
+            }
+          }
+          this.$store.dispatch('annotations/create', newAnnotation)
+            .then(a => {
+              _this.fetchAnnotations()
+            })
+        }
+        this.newAnnotationText = ''
+      },
       handleAnnotationClick (event, annot, index) {
         this.messenger.$emit('annotation-trigger', annot, this.annotationTimes[index])
       },
@@ -104,6 +132,46 @@
           .fromISO(annot.target.selector.value)
           .minus(this.videoTime)
           .toFormat(constants.TIMECODE_FORMAT)
+      },
+      showAnnotationInput (index) {
+        return index === this.inputIndex
+      },
+      fetchAnnotations () {
+        const _this = this
+        this.$store.dispatch('annotations/find', {query: {'uuid': this.videoUuid}})
+          .then(videoAnnotations => {
+            const videoAnnotation = videoAnnotations.shift()
+            if (videoAnnotation) {
+              _this.video = videoAnnotation
+              _this.videoTime = Date.parse(_this.video.target.selector.value)
+              _this.contextTime = _this.videoTime
+              _this.$store.dispatch('maps/find', {query: {'uuid': videoAnnotation.target.id}})
+                .then(maps => {
+                  const map = maps.shift()
+                  if (map) {
+                    _this.map = map
+                  }
+                })
+              _this.$store.dispatch('annotations/find', {query: {'target.id': videoAnnotation.target.id, 'body.purpose': 'commenting'}})
+                .then(annotations => {
+                  annotations = annotations.filter(a => {
+                    return Date.parse(a.target.selector.value) >= _this.videoTime
+                  })
+                  annotations = annotations.sort((a, b) => {
+                    let tDiff = Date.parse(a.target.selector.value) - Date.parse(b.target.selector.value)
+                    if (tDiff === 0) {
+                      tDiff = Date.parse(b.created) - Date.parse(a.created)
+                    }
+                    return tDiff
+                  })
+                  _this.annotations = annotations
+                  _this.annotationTimes = []
+                  annotations.forEach(a => {
+                    _this.annotationTimes.push(Date.parse(a.target.selector.value))
+                  })
+                })
+            } // TODO: else, show not found?
+          })
       }
     }
   }
@@ -132,5 +200,34 @@
     .q-item
       font-size 1em
       line-height 1.5em
+
+  .annotation
+
+    a
+      width 100%
+
+    .date
+    .author
+      font-size 0.8em
+      color lightgray
+      padding-right 1em
+      float left
+
+    .author
+      float right
+
+    .content
+      width 100%
+
+  .q-input.annotation-input
+    margin-top 0.5em
+
+  .annotation-input-container
+    margin-top -0.5em
+    margin-bottom -0.5em
+    border-left 10px solid #95b4ff
+
+  .annotation-input-container:hover
+    background-color #e7e9ff
 
 </style>
