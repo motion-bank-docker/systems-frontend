@@ -271,14 +271,15 @@
       padding-top: 0;
       height: 100%;
       overflow-x: scroll;
+      padding-bottom: 100vh;
     }
   .author {
     font-size: .8em;
     padding-top: 5px;
   }
   .highlight {
-    background-color: rgba( 0, 255, 0, .5 );
-    transition: background-color ease 500ms;
+    /* background-color: rgba( 0, 255, 0, .5 );
+    transition: background-color ease 500ms; */
   }
   .layout-page {
     height: calc(100vh - 52px)!important;
