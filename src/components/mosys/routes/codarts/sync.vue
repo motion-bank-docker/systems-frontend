@@ -44,8 +44,6 @@
           br
           q-btn(v-if="targetTimecode") {{ targetTimecode }}
 
-
-
     div.text-center
       q-btn(color="primary", @click="applySync()") {{ $t('buttons.apply_synchronisation') }}
 
