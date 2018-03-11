@@ -6,7 +6,8 @@
         template(v-for="annot in annotations")
           li
             a(:class="{'active': contextTime && inContextTime(annot)}",
-              @click.prevent="event => {handleAnnotationClick(event, annot)}") {{annot.body.value}}
+              @click.prevent="event => {handleAnnotationClick(event, annot)}") {{annot.body.value}} –
+              username(:uuid="annot.author")
 
     template(v-else)
       strong Annotation List
@@ -14,7 +15,12 @@
 </template>
 
 <script>
+  import Username from '../../../shared/partials/Username'
+
   export default {
+    components: {
+      Username
+    },
     props: ['cell', 'display', 'preview', 'messenger'],
     data () {
       return {

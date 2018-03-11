@@ -54,9 +54,10 @@
             }
           })
       }
-      if (this.display && this.messenger && this.video) {
+      if (this.display && this.messenger) {
         this.messenger.$on('annotation-trigger', annotation => {
-          if (annotation.target.id === _this.video.target.id) {
+          if (_this.video.target &&
+              annotation.target.id === _this.video.target.id) {
             const timeAnnot = Date.parse(annotation.target.selector.value)
             const movieTime = (timeAnnot - _this.videoTime) / 1000.0
             if (movieTime && movieTime >= 0 && _this.player) {
