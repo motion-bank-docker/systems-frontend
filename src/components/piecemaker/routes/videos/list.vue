@@ -38,10 +38,8 @@
           case 'synchronize':
             return _this.$router.push(`/mosys/codarts/sync/${_this.$route.params.groupId}/${data.row.uuid}`)
           case 'delete':
-            _this.$store.dispatch('maps/remove', data.row.uuid)
-              .then(() => {
-                return _this.loadVideos().then(maps => { _this.maps = maps })
-              })
+            _this.$store.dispatch('annotations/remove', data.row.uuid)
+              .then(() => { _this.maps = _this.loadVideos() })
         }
       },
       loadVideos () {
@@ -72,10 +70,7 @@
     },
     mounted () {
       const _this = this
-      this.loadVideos()
-        .then(maps => {
-          _this.maps = maps
-        })
+      _this.maps = this.loadVideos()
     },
     data () {
       const _this = this

@@ -30,7 +30,7 @@
         q-list.no-border
           q-item.annotation(v-for="(annotation, i) in annotations", :class="{ highlight: i === currentIndex }", :key="annotation.uuid", v-bind:id="annotation.uuid")
             q-item-main.row
-              q-item-tile.col-6
+              q-item-tile.col-6(v-if="annotation.target.selector")
                 q-btn(@click="gotoSelector(annotation.target.selector.value), changeState()" small) {{ formatSelectorForList(annotation.target.selector.value) }}
               q-item-tile.col-6
                 q-btn(@click="deleteAnnotation(annotation.uuid), changeState()", small) {{ $t('buttons.delete') }}
@@ -88,7 +88,7 @@
         video: undefined,
         groupId: undefined,
         baseSelector: undefined,
-        active: true,
+        active: false,
         annotations: [],
         currentBody: {
           value: undefined,
@@ -221,7 +221,8 @@
           annoCount = this.annotations.length,
           selector, idx = 0, running = true
         while (running && this.annotations[idx]) {
-          selector = TimelineSelector.fromISOString(this.annotations[idx].target.selector.value)
+          selector = this.annotations[idx].target.selector
+            ? TimelineSelector.fromISOString(this.annotations[idx].target.selector.value) : undefined
           running = selector && baseMillis < selector.millis
           if (!running) this.currentIndex = idx
           if (idx >= annoCount) break

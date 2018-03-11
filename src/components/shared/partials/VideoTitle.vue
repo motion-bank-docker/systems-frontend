@@ -13,7 +13,9 @@
     return Promise.resolve()
       .then(() => {
         if (source.indexOf('http') !== 0) return
-        if (path.extname(url.parse(source).path) === '.mp4') return
+        if (path.extname(url.parse(source).path) === '.mp4') {
+          source = source.replace(/\.mp4/i, '.html')
+        }
         return superagent.get(`${buildVars().apiHost}/proxy?url=${encodeURIComponent(source)}`)
           .then(result => {
             let title = result.text.match(/<title[^>]*>([^<]+)<\/title>/)[1]

@@ -13,23 +13,17 @@
       QBtn
     },
     props: ['redirectTo'],
-    mounted () {
-      const context = this
-      if (this.$route.params.id) {
-        this.$store.dispatch('annotations/get', this.$route.params.id)
-          .then(result => {
-            context.payload = {
-              url: result.body.source
-            }
-          })
-      }
-    },
     data () {
       const context = this
       return {
         // FIXME: i know this is bullshit!!! (but i hope it works for now)
         apiPayload: undefined,
-        payload: undefined,
+        payload: context.$route.params.id ? context.$store.dispatch('annotations/get', context.$route.params.id)
+          .then(result => {
+            return {
+              url: result.body.source
+            }
+          }) : undefined,
         schema: {
           fields: {
             url: {
@@ -68,7 +62,6 @@
                   return context.$store.dispatch('annotations/create', context.apiPayload)
                 })
                 .then(() => {
-                  console.log(context.$route.params)
                   context.$router.push(`/piecemaker/groups/${context.$route.params.groupId}/videos`)
                 })
             }

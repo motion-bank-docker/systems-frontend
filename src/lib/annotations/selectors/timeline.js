@@ -7,13 +7,16 @@ class TimelineSelector {
   /**
    * Create a new selector from local time or (optionally) UTC time
    * @param utc
+   * @param locale
    */
-  constructor (utc = false) {
+  constructor (utc = false, locale = undefined) {
     if (utc) {
-      this._dateTime = DateTime.local().toUTC()
+      this._dateTime = DateTime
+        .local({ locale: locale || Settings.defaultLocale }).toUTC()
     }
     else {
-      this._dateTime = DateTime.local()
+      this._dateTime = DateTime
+        .local({ locale: locale || Settings.defaultLocale })
     }
   }
 
@@ -35,11 +38,14 @@ class TimelineSelector {
   /**
    * Get custom formatted string
    * @param format
+   * @param locale
    * @return {*|string}
    */
   toFormat (format, locale = undefined) {
     assert.equal(typeof format, 'string')
-    return this._dateTime.toFormat(format, { locale: this.locale || Settings.defaultLocale })
+    if (locale) assert.equal(typeof locale, 'string')
+    return this._dateTime.toFormat(format,
+      { locale: this._dateTime.locale || Settings.defaultLocale })
   }
 
   /**
@@ -83,7 +89,8 @@ class TimelineSelector {
    */
   set millis (val) {
     assert.equal(typeof val, 'number')
-    this._dateTime = DateTime.fromMillis(val, { locale: this.locale || Settings.defaultLocale })
+    this._dateTime = DateTime.fromMillis(val,
+      { locale: this._dateTime.locale || Settings.defaultLocale })
   }
 
   /**
@@ -123,8 +130,8 @@ class TimelineSelector {
    * @param val
    * @return {TimelineSelector}
    */
-  static fromMilliseconds (val) {
-    const selector = new TimelineSelector()
+  static fromMilliseconds (val, utc = undefined, locale = undefined) {
+    const selector = new TimelineSelector(utc, locale)
     selector.millis = val
     return selector
   }

@@ -139,7 +139,14 @@
         }
         return this.$store.dispatch('annotations/patch', [video.uuid, update])
           .then(annotation => {
-            console.log('sync updated', video.uuid, annotation, diff)
+            console.log(
+              'sync updated',
+              this.targetSelector.millis,
+              this.srcSelector.millis,
+              diff,
+              video.uuid,
+              annotation
+            )
             _this.$router.push(`/piecemaker/videos/${_this.$route.params.videoId}/edit`)
           })
       }

@@ -10,14 +10,12 @@
 
 <script>
   import { QBtn } from 'quasar-framework'
-  // import CenterCardFull from '../../../shared/layouts/CenterCardFull'
   import CardFull from '../../../shared/layouts/CardFull'
   import GroupList from '../../partials/GroupsList'
 
   export default {
     components: {
       QBtn,
-      // CenterCardFull,
       CardFull,
       GroupList
     }
