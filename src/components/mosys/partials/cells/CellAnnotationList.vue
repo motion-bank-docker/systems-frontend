@@ -8,7 +8,7 @@
         template(v-for="(annot, index) in annotations")
           q-item-separator
 
-          template(v-if="showAnnotationInput(index)")
+          template(v-if="$store.state.auth.payload.userId && showAnnotationInput(index)")
             q-item.annotation-input-container
               q-input.annotation-input(type="textarea", max-height="200", min-rows="3"
                 style="width:100%", v-model="newAnnotationText",
@@ -154,8 +154,15 @@
                 })
               _this.$store.dispatch('annotations/find', {query: {'target.id': videoAnnotation.target.id, 'body.purpose': 'commenting'}})
                 .then(annotations => {
+                  annotations = annotations.filter(a => {
+                    return Date.parse(a.target.selector.value) >= _this.videoTime
+                  })
                   annotations = annotations.sort((a, b) => {
-                    return Date.parse(a.target.selector.value) - Date.parse(b.target.selector.value)
+                    let tDiff = Date.parse(a.target.selector.value) - Date.parse(b.target.selector.value)
+                    if (tDiff === 0) {
+                      tDiff = Date.parse(b.created) - Date.parse(a.created)
+                    }
+                    return tDiff
                   })
                   _this.annotations = annotations
                   _this.annotationTimes = []
