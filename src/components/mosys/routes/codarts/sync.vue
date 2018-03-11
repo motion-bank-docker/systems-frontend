@@ -2,7 +2,8 @@
 
   //center-card-full
   card-full
-    q-btn(slot="backButton" @click="$router.push(`/piecemaker/groups/${$route.params.groupId}/videos`)", icon="keyboard_backspace", small, round)
+    q-btn(slot="backButton", @click="$router.push(`/piecemaker/videos/${$route.params.videoId}/edit`)",
+      icon="keyboard_backspace", small, round)
     div(slot="form-logo")
     div(slot="form-title")
 
@@ -17,9 +18,7 @@
         div.video.col-12(v-if="video")
           video-player(:src="video.body", @ready="onSrcPlayerReady($event)")
           div.col-12
-          // q-btn {{ $t('buttons.arrow_prev') }}
           q-btn(@click="setMarker(srcPlayer)") {{ $t('buttons.set_marker') }}
-          // q-btn {{ $t('buttons.arrow_next') }}
           br
           q-btn(v-if="srcTimecode") {{ srcTimecode }}
 
@@ -38,9 +37,7 @@
               video-title(:source="vid.body.source")
 
         div.col-12.text-right(v-if="video && refIndex > -1")
-          // q-btn {{ $t('buttons.arrow_prev') }}
           q-btn(@click="setMarker(targetPlayer, 1)") {{ $t('buttons.set_marker') }}
-          // q-btn {{ $t('buttons.arrow_next') }}
           br
           q-btn(v-if="targetTimecode") {{ targetTimecode }}
 
@@ -51,7 +48,6 @@
 
 <script>
   import { QBtn, QList, QItem } from 'quasar-framework'
-  // import CenterCardFull from '../../../shared/layouts/CenterCardFull'
   import CardFull from '../../../shared/layouts/CardFull'
   import constants from '../../../../lib/constants'
   import TimelineSelector from '../../../../lib/annotations/selectors/timeline'
@@ -63,7 +59,6 @@
       QBtn,
       QList,
       QItem,
-      // CenterCardFull,
       CardFull,
       VideoPlayer,
       VideoTitle
@@ -135,15 +130,16 @@
           selector = TimelineSelector.fromISOString(video.target.selector.value)
         selector.add(diff)
         const update = {
-          target: {
+          target: Object.assign({}, video.target, {
             selector: {
+              type: 'Fragment',
               value: selector.toString()
             }
-          }
+          })
         }
         return this.$store.dispatch('annotations/patch', [video.uuid, update])
           .then(annotation => {
-            console.log('sync updated', video.uuid, annotation)
+            console.log('sync updated', video.uuid, annotation, diff)
             _this.$router.push(`/piecemaker/videos/${_this.$route.params.videoId}/edit`)
           })
       }
