@@ -131,7 +131,6 @@
             grid = g
             let gridMetadata = {
               autor: authorUuid,
-              type: 'Annotation',
               body: {
                 purpose: 'linking',
                 type: '2DGridMetadata',
@@ -173,16 +172,17 @@
                 let url = videoURLs[v]
                 let cell = {
                   uuid: null,
+                  type: 'Video',
                   x: x,
                   y: 2,
                   width: 2,
                   height: 2,
-                  content: url
+                  content: url,
+                  sourceUuid: v.uuid
                 }
                 x += 3
                 let cellAnnotation = {
                   author: authorUuid,
-                  type: 'Annotation',
                   body: {
                     purpose: 'linking',
                     type: '2DCell',
