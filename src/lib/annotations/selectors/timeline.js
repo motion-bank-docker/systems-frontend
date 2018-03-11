@@ -1,5 +1,7 @@
-import { DateTime } from 'luxon'
+import { DateTime, Settings } from 'luxon'
 import assert from 'assert'
+
+Settings.defaultLocale = DateTime.local().resolvedLocaleOpts().locale
 
 class TimelineSelector {
   /**
@@ -35,9 +37,9 @@ class TimelineSelector {
    * @param format
    * @return {*|string}
    */
-  toFormat (format) {
+  toFormat (format, locale = undefined) {
     assert.equal(typeof format, 'string')
-    return this._dateTime.toFormat(format)
+    return this._dateTime.toFormat(format, { locale: this.locale || Settings.defaultLocale })
   }
 
   /**
@@ -81,7 +83,7 @@ class TimelineSelector {
    */
   set millis (val) {
     assert.equal(typeof val, 'number')
-    this._dateTime = DateTime.fromMillis(val)
+    this._dateTime = DateTime.fromMillis(val, { locale: this.locale || Settings.defaultLocale })
   }
 
   /**
