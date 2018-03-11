@@ -218,13 +218,15 @@
         let
           baseMillis = this.baseSelector.millis + seconds * 1000,
           annoCount = this.annotations.length,
-          selector, idx = -1
-        while (idx < annoCount) {
-          idx++
+          selector, idx = 0, running = true
+        while (running && this.annotations[idx]) {
           selector = TimelineSelector.fromISOString(this.annotations[idx].target.selector.value)
-          if (idx === annoCount || (selector && baseMillis >= selector.millis)) break
+          running = selector && baseMillis < selector.millis
+          if (!running) this.currentIndex = idx
+          if (idx >= annoCount) break
+          idx++
         }
-        this.currentIndex = idx > -1 ? idx : undefined
+        if (running) this.currentIndex = undefined
       }
     }
   }
