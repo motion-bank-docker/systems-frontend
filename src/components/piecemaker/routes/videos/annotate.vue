@@ -1,7 +1,7 @@
 <template lang="pug">
 
-  div(style="height: calc(60vh - 52px);")
-    q-layout
+  div(style="height: calc(100vh - 52px); overflow: hidden;")
+    q-layout#video-annotate-wrap
 
       div#btn-back
         q-btn(@click="$router.push('/piecemaker/groups/' + groupId + '/videos')",
@@ -9,7 +9,8 @@
         q-btn(v-if="!fullscreen", @click="toggleFullscreen(), fullscreenHandler()", icon="fullscreen", round, flat, small)
         q-btn(v-if="fullscreen", @click="toggleFullscreen(), fullscreenHandler()", icon="fullscreen_exit", round, flat, small)
 
-      video-player(v-if="video", :src="video", @ready="playerReady($event)", @time="onPlayerTime($event)")
+      div(style="height: calc(100vh - 52px); overflow: hidden;")
+        video-player(v-if="video", :src="video", @ready="playerReady($event)", @time="onPlayerTime($event)")
 
       #pop-up(v-bind:class="{ activeCondition: active }")
 
@@ -279,4 +280,10 @@
     background-color: rgba( 0, 255, 0, .5 );
     transition: background-color ease 500ms;
   }
+  .layout-page {
+    height: calc(100vh - 52px)!important;
+    overflow: hidden!important;
+  }
+
+
 </style>
