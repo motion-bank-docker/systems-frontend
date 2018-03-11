@@ -1,35 +1,31 @@
 <template lang="pug">
 
-  center-card-full
+  //center-card-full
+  card-full
+    q-btn(slot="backButton" @click="$router.push(`/piecemaker/videos/${$route.params.videoId}/edit`)", icon="keyboard_backspace", small, round)
     div(slot="form-logo")
     div(slot="form-title")
-      // h4
-        q-btn back
-        | Video synchronisation
 
-    div.row
-
+    div.row(style="margin-top: -2em;")
 
       // zu synchronisierende Videos
       div.col-6.row
-        p.col-12
+        p.col-12(style="min-height: 5em;")
           | Video to be synchronized:
           br
           video-title(:source="video.body.source")
         div.video.col-12(v-if="video")
           video-player(:src="video.body", @ready="onSrcPlayerReady($event)")
           div.col-12
-          q-btn {{ $t('buttons.arrow_prev') }}
+          // q-btn {{ $t('buttons.arrow_prev') }}
           q-btn(@click="setMarker(srcPlayer)") {{ $t('buttons.set_marker') }}
-          q-btn {{ $t('buttons.arrow_next') }}
+          // q-btn {{ $t('buttons.arrow_next') }}
           br
           q-btn(v-if="srcTimecode") {{ srcTimecode }}
 
-
-
       // Referenz-Video
       div.col-6.row
-        p.col-12.text-right
+        p.col-12.text-right(style="min-height: 5em;")
           | Synchronize with:
           br
           video-title(v-if="video && refIndex > -1", :source="refVideos[refIndex].body.source")
@@ -42,9 +38,9 @@
               video-title(:source="vid.body.source")
 
         div.col-12.text-right(v-if="video && refIndex > -1")
-          q-btn {{ $t('buttons.arrow_prev') }}
+          // q-btn {{ $t('buttons.arrow_prev') }}
           q-btn(@click="setMarker(targetPlayer, 1)") {{ $t('buttons.set_marker') }}
-          q-btn {{ $t('buttons.arrow_next') }}
+          // q-btn {{ $t('buttons.arrow_next') }}
           br
           q-btn(v-if="targetTimecode") {{ targetTimecode }}
 
@@ -52,14 +48,13 @@
 
     div.text-center
       q-btn(color="primary", @click="applySync()") {{ $t('buttons.apply_synchronisation') }}
-      br
-      q-btn(@click="$router.push(`/piecemaker/videos/${$route.params.videoId}/edit`)") {{ $t('buttons.done') }}
 
 </template>
 
 <script>
   import { QBtn, QList, QItem } from 'quasar-framework'
-  import CenterCardFull from '../../../shared/layouts/CenterCardFull'
+  // import CenterCardFull from '../../../shared/layouts/CenterCardFull'
+  import CardFull from '../../../shared/layouts/CardFull'
   import constants from '../../../../lib/constants'
   import TimelineSelector from '../../../../lib/annotations/selectors/timeline'
   import VideoPlayer from '../../../shared/media/VideoPlayer'
@@ -70,7 +65,8 @@
       QBtn,
       QList,
       QItem,
-      CenterCardFull,
+      // CenterCardFull,
+      CardFull,
       VideoPlayer,
       VideoTitle
     },
@@ -156,3 +152,10 @@
     }
   }
 </script>
+
+<style>
+  .layout-padding {
+    padding-top: 0!important;
+    margin-top: 0!important;
+  }
+</style>
