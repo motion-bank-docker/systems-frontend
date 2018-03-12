@@ -36,7 +36,8 @@
     props: ['source'],
     asyncComputed: {
       async videoTitle () {
-        return await fetchTitle(this.source)
+        const title = await fetchTitle(this.source)
+        return title
       }
     }
   }

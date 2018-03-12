@@ -8,10 +8,8 @@
     asyncComputed: {
       async username () {
         if (!this.uuid) return '---'
-        return await this.$store.dispatch('users/get', this.uuid)
-          .then(user => {
-            return user.name
-          })
+        const user = await this.$store.dispatch('users/get', this.uuid)
+        return user.name
       }
     }
   }
