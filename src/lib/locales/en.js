@@ -39,7 +39,6 @@ const en = {
     annotations: 'Annotations',
     annotation_body: 'Annotation text',
     accept_terms: 'I accept the Terms and Conditions',
-    associated_map: 'Associate Video with Map',
     author: 'Author',
     created: 'Created',
     updated: 'Updated',
@@ -214,7 +213,7 @@ const en = {
     copyright: 'Copyright 2018 Motion Bank',
     license: 'License',
     tagline: 'Digital Research and Annotation Platform for Contemporary Dance.',
-    title: 'MoTools',
+    title: 'Web Systems',
     version: 'UI Version:'
   },
   table: {
