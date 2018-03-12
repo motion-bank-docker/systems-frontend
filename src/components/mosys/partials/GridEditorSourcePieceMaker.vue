@@ -2,9 +2,10 @@
   q-list.piecemaker-source-container
 
     q-list-header
-      template(v-if="currentGroup") Videos in Group #[strong {{currentGroup.title}}]
-        q-btn(flat, round, small, fixed, class="fixed",
-          style="right: 24px", @click="handleClickUnsetCurrentGroup", icon="close")
+      template(v-if="currentGroup")
+        q-btn(flat, round, small, style="margin-right: 0.5em",
+          @click="handleClickUnsetCurrentGroup", icon="keyboard backspace")
+        span Videos in Group #[strong {{currentGroup.title}}]
       template(v-else)
         router-link(:to="{name: 'piecemaker.groups.list'}") Piecemaker Groups
 
