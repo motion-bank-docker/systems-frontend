@@ -134,7 +134,6 @@
               context.groupId = result.target.id
               context.video = result.body
               context.baseSelector = TimelineSelector.fromISOString(result.target.selector.value)
-              console.log(result, context.groupId)
             }
           })
       },
@@ -146,7 +145,6 @@
             'target.type': constants.MAP_TYPE_TIMELINE,
             'body.type': 'TextualBody'
           }
-        console.log(query, context.groupId)
         return this.$store.dispatch('annotations/find', { query })
           .then(results => {
             if (results) {
