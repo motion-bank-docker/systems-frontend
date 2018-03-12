@@ -113,7 +113,6 @@ class TimelineSelector {
    * @return {TimelineSelector}
    */
   static fromISOString (val) {
-    console.log(val)
     const selector = new TimelineSelector()
     selector.isoString = val
     return selector
