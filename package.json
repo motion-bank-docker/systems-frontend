@@ -133,6 +133,7 @@
   "appConfig": {
     "apiHost": "https://motionbank-api.herokuapp.com",
     "apiHostLocal": "https://motionbank-api.herokuapp.com",
+    "streamerHost": "http://localhost:3030",
     "idField": "uuid"
   }
 }
