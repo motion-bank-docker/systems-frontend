@@ -85,10 +85,10 @@
     data () {
       return {
         cellContextMenuActions: {
-          edit: {
-            label: 'Edit',
-            handler: this.handleCellContextMenuEdit
-          },
+          // edit: {
+          //   label: 'Edit',
+          //   handler: this.handleCellContextMenuEdit
+          // },
           delete: {
             label: 'Delete',
             handler: this.handleCellContextMenuDelete
@@ -103,10 +103,10 @@
           }
         },
         gridContextMenuActions: {
-          add_cell: {
-            label: 'Add Cell',
-            handler: this.handleGridContextMenuAddCell
-          },
+          // add_cell: {
+          //   label: 'Add Cell',
+          //   handler: this.handleGridContextMenuAddCell
+          // },
           insert_column_left: {
             label: 'Insert Column Left',
             handler: this.handleGridContextMenuInsertColumnLeft
@@ -168,7 +168,14 @@
         this.updateCellStore(cell)
       },
       handleCellClick (event, cell) {
+        const _this = this
         this.cellUIStates[cell.uuid].selected = !this.cellUIStates[cell.uuid].selected
+        let selectedCells = Object.keys(this.cellUIStates).filter(k => {
+          return _this.cellUIStates[k].selected
+        }).map(k => {
+          return _this.cells.find(c => c.uuid === k)
+        })
+        this.$store.commit('mosysGridEditorStore/setSelectedCells', selectedCells)
       },
       handleCellDragStart (event, cell) {
         if (this.cellUIStates[cell.uuid].beingResized) {
@@ -196,6 +203,8 @@
       handleCellContextMenuClick (event) {
       },
       handleCellContextMenuEdit (event, cell) {
+        // this.$store.commit('mosysGridEditorStore/showSources')
+        // this.$store.commit('mosysGridEditorStore/setSourcesTab', 'tab-default-cells')
       },
       handleCellContextMenuDelete (event, cell, refId) {
         const _this = this

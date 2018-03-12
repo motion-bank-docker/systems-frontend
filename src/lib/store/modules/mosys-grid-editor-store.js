@@ -1,9 +1,17 @@
 const mosysGridEditorStore = {
   namespaced: true,
   state: {
-    showSources: false
+    sourcesTabName: '',
+    showSources: false,
+    selectedCells: []
   },
   mutations: {
+    setSelectedCells (state, cells) {
+      state.selectedCells = cells
+    },
+    setSourcesTab (state, tabName) {
+      state.sourcesTabName = tabName
+    },
     showSources: (state) => {
       state.showSources = true
     },

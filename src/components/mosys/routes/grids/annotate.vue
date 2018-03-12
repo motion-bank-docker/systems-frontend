@@ -11,13 +11,12 @@
   import { QBtn } from 'quasar-framework'
   import GridEditor from '../../partials/GridEditor'
   import GridEditorSources from '../../partials/GridEditorSources'
+
   export default {
     components: {
       QBtn,
       GridEditor,
       GridEditorSources
-    },
-    mounted () {
     }
   }
 </script>
