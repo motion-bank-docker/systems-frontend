@@ -19,7 +19,7 @@
             a(:class="{'active': contextTime && inContextTime(annot, index)}",
               @click.prevent="event => {handleAnnotationClick(event, annot, index)}")
               span.date {{formatDate(annot, index).split(':').slice(1).join(':')}}
-              span.author {{annot.author.substring(0,6)}}
+              Username.author(:uuid="annot.author")
               span.content {{annot.body.value}}
 
         q-item-separator
