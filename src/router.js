@@ -76,7 +76,8 @@ const router = new VueRouter({
     { path: '/mosys/setPublic', component: mosys.setPublic, name: 'mosys.setPublic', meta: { private: true } },
     { path: '/mosys/setGridView', component: mosys.setGridView, name: 'mosys.setGridView', meta: { private: true } },
     { path: '/mosys/setListView', component: mosys.setListView, name: 'mosys.setListView', meta: { private: true } },
-    { path: '/mosys/codarts/tagging', component: mosys.codarts.tagging, name: 'mosys.codarts.tagging', meta: { private: true } },
+
+    // { path: '/mosys/codarts/tagging', component: mosys.codarts.tagging, name: 'mosys.codarts.tagging', meta: { private: true } },
     { path: '/mosys/codarts/sync/:groupId/:videoId', component: mosys.codarts.sync, name: 'mosys.codarts.sync', meta: { private: true } },
 
     //
@@ -109,6 +110,8 @@ const router = new VueRouter({
     { path: '/piecemaker/groupPrivateDetail', component: piecemaker.groupPrivateDetail, name: 'piecemaker.groupPrivateDetail', meta: { private: true } },
     { path: '/piecemaker/sourcebrowser', component: piecemaker.sourcebrowser, name: 'piecemaker.sourcebrowser', meta: { private: true } },
     { path: '/piecemaker/VideoDetail', component: piecemaker.VideoDetail, name: 'piecemaker.VideoDetail', meta: { private: true } },
+
+    { path: '/piecemaker/codarts/:groupId/annotate', component: pm.codarts.liveAnnotation, name: 'piecemaker.codarts.live-annotation', meta: { private: true } },
 
     // Catchall
     { path: '*', component: errors.notFound, name: 'errors.notFound' }
