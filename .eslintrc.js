@@ -32,7 +32,6 @@ module.exports = {
     'import/namespace': 2,
     'import/default': 2,
     'import/export': 2,
-    'no-return-await': 0,
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
     'brace-style': [2, 'stroustrup', { 'allowSingleLine': true }]

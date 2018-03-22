@@ -18,10 +18,10 @@ function resolve (dir) {
   return path.join(__dirname, '..', dir)
 }
 
-process.stdout.write(` API_HOST set to:      ${apiHost}\n`)
+process.stdout.write(` API_HOST set to: ${apiHost}\n`)
 process.stdout.write(` STREAMER_HOST set to: ${streamerHost}\n`)
-process.stdout.write(` ID_FIELD set to:      ${appConfig.idField}\n`)
-process.stdout.write(` ROUTER MODE:          ${env.routerMode}\n\n`)
+process.stdout.write(` ID_FIELD set to: ${appConfig.idField}\n`)
+process.stdout.write(` ROUTER MODE:     ${env.routerMode}\n\n`)
 
 module.exports = {
   entry: {
