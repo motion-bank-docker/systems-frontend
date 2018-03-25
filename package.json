@@ -1,7 +1,7 @@
 {
-  "name": "@motionbank-js/quasar-app",
+  "name": "motionbank-systems-frontend",
   "productName": "Motion Bank Systems Frontend",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "private": true,
   "description": "Combined frontend project for Motion Bank web services",
   "metapak": {
@@ -133,7 +133,7 @@
   "appConfig": {
     "apiHost": "https://motionbank-api.herokuapp.com",
     "apiHostLocal": "https://motionbank-api.herokuapp.com",
-    "streamerHost": "http://localhost:3030",
+    "streamerHost": "http://localhost:8888",
     "idField": "uuid"
   }
 }

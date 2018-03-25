@@ -4,8 +4,8 @@
 # Motion Bank Systems Frontend
 > Combined frontend project for Motion Bank web services
 
-[![NPM version](https://badge.fury.io/js/@motionbank-js/quasar-app.svg)](https://npmjs.org/package/@motionbank-js/quasar-app)
-[![Code Climate](https://codeclimate.com/github/motionbank-js/@motionbank-js/quasar-app.svg)](https://codeclimate.com/github/motionbank-js/@motionbank-js/quasar-app)
+[![NPM version](https://badge.fury.io/js/motionbank-systems-frontend.svg)](https://npmjs.org/package/motionbank-systems-frontend)
+[![Code Climate](https://codeclimate.com/github/motionbank-js/motionbank-systems-frontend.svg)](https://codeclimate.com/github/motionbank-js/motionbank-systems-frontend)
 
 
 ## Install
@@ -30,5 +30,5 @@ npm run dev
 ## License
 
 :copyright: 2018 Mainz University of Applied Sciences (Motion Bank Project) – 
-Released under the [MIT](https://github.com/motionbank-js/@motionbank-js/quasar-app/blob/master/LICENSE) license
+Released under the [MIT](https://github.com/motionbank-js/motionbank-systems-frontend/blob/master/LICENSE) license
 
