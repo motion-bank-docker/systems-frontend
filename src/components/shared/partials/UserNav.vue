@@ -12,11 +12,19 @@
     q-btn(color="primary", flat, icon="settings",
     v-if="user", @click="$router.push(`/users/me/edit`)") {{ $t('navigation.manage_account') }}
 
+    // Local
+    //q-btn(color="primary", flat, icon="eject",
+    //v-if="user", @click="logout") {{ $t('navigation.logout') }}
+
+    // q-btn(color="primary", flat, icon="arrow_forward",
+    // v-if="!user", @click="$router.push({ name: 'users.login' })") {{ $t('navigation.login') }}
+
+    // Auth0
     q-btn(color="primary", flat, icon="eject",
-    v-if="user", @click="logout") {{ $t('navigation.logout') }}
+    v-if="authenticated", @click="auth.logout()") {{ $t('navigation.logout') }}
 
     q-btn(color="primary", flat, icon="arrow_forward",
-    v-if="!user", @click="$router.push({ name: 'users.login' })") {{ $t('navigation.login') }}
+    v-if="!authenticated", @click="auth.login()") {{ $t('navigation.login') }}
 </template>
 
 <script>
@@ -33,6 +41,7 @@
       QIcon,
       QBtn
     },
+    props: ['authenticated', 'auth'],
     data () {
       return {
         currentApp: null

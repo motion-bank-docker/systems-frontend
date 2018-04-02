@@ -31,6 +31,8 @@
     "@feathersjs/feathers": "^3.0.2",
     "@feathersjs/primus-client": "^1.0.1",
     "@feathersjs/rest-client": "^1.3.2",
+    "EventEmitter": "^1.0.0",
+    "auth0-js": "^9.4.2",
     "bluebird": "^3.5.1",
     "d3": "^4.13.0",
     "es6-promise": "^4.1.1",
@@ -132,7 +134,7 @@
   "license": "MIT",
   "appConfig": {
     "apiHost": "https://motionbank-api.herokuapp.com",
-    "apiHostLocal": "https://motionbank-api.herokuapp.com",
+    "apiHostLocal": "http://localhost:3030",
     "streamerHost": "http://localhost:8888",
     "idField": "uuid"
   }

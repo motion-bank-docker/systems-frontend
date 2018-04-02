@@ -66,3 +66,5 @@ _book
 *.pdf
 
 .idea
+
+auth0.json

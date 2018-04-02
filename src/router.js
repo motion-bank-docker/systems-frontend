@@ -47,6 +47,7 @@ const router = new VueRouter({
     //
     // User management
     //
+    { path: '/users/callback', component: users.callback, name: 'users.callback', meta: {} },
     { path: '/users/create', component: users.create, name: 'users.create', meta: { anonymous: true } },
     { path: '/users/login', component: users.login, name: 'users.login', meta: { anonymous: true } },
     { path: '/users/forgot', component: users.forgot, name: 'users.forgot', meta: { anonymous: true } },

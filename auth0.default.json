@@ -1,0 +1,6 @@
+{
+  "domain": "yourdomain.auth0.com",
+  "clientID": "YOUR_CLIENT_ID",
+  "audience": "https://yourdomain.com/userinfo",
+  "redirectUri": "http://localhost:8080/users/callback"
+}
