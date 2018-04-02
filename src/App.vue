@@ -25,7 +25,7 @@ const { login, logout, authenticated, authNotifier } = auth
 export default {
   data () {
     authNotifier.on('authChange', authState => {
-      console.log('authChange', authState)
+      console.log('Auth0 state change:', authState)
       this.authenticated = authState.authenticated
     })
     return {
@@ -35,17 +35,19 @@ export default {
   },
   methods: {
     login,
-    logout,
-    isAuthenticated () {
-      return this.authenticated
-    }
+    logout
   },
   components: {
     QLayout,
     AnimatedBackground,
     UserNav
   },
-  created: function () {
+  mounted: function () {
+    auth.checkSession().then(res => {
+      console.log('Auth0 existing session:', res)
+    }).catch(err => {
+      console.log('Auth0 no session:', err.error, err.error_description)
+    })
     /*
     const { $store } = this
     $store.dispatch('auth/authenticate')
