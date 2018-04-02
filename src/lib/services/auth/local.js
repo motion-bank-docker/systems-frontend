@@ -30,9 +30,13 @@ class Local extends BaseAuth {
     /**
      * Strategy 'local' for retrieving the JWT via email/password
      */
+    const _this = this
     payload.strategy = 'local'
     return conf.store.dispatch('auth/authenticate', payload)
-      .then(() => {
+      .then(res => {
+        if (res) {
+          _this.emit(BaseAuth.EVENT_AUTH_CHANGE, { authenticated: true })
+        }
         /**
          * If there is a saved original destination, redirect there
          */
