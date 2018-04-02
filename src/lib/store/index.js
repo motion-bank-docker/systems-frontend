@@ -1,54 +1,65 @@
 import buildVars from '../build-vars'
 
-import mosysGridEditorStore from './modules/mosys-grid-editor-store'
-import notifications from './modules/notifications'
-import forms from './modules/forms'
-
-// import primus from '../clients/primus'
-import rest from '../clients/rest'
-
 import Vue from 'vue'
 import Vuex from 'vuex'
 import feathersVuex from 'feathers-vuex'
 
+import mosysGridEditorStore from './modules/mosys-grid-editor-store'
+import notifications from './modules/notifications'
+import forms from './modules/forms'
+
+import primus from '../clients/primus'
+import rest from '../clients/rest'
+
 Vue.use(Vuex)
 
-let client
-
-try {
+const setupStore = function (Vue) {
   /**
-   * WebSocket API connections
+   * Set up VueX store with API service backends
    */
-  // client = primus(buildVars().apiHost)
-}
-catch (err) {
-  console.warn(`Failed to instantiate WebSockets API client: ${err.message}`)
-  console.log('Falling back to REST API client...')
-}
+  let
+    client,
+    authClient = Vue.authService() ? Vue.authService().auth : undefined
 
-if (!client) {
-  /**
-   * HTTP / REST API connections
-   */
-  client = rest(buildVars().apiHost)
-}
-
-/**
- * Set up VueX store with API service backends
- */
-const { service, auth } = feathersVuex(client, { idField: buildVars().idField })
-const store = new Vuex.Store({
-  plugins: [
-    service('annotations', { idField: buildVars().idField }),
-    service('maps', { idField: buildVars().idField }),
-    service('users', { idField: buildVars().idField }),
-    auth({ userService: 'users' })
-  ],
-  modules: {
-    notifications,
-    forms,
-    mosysGridEditorStore
+  if (buildVars().useWebSockets) {
+    try {
+      /**
+       * WebSocket API connections
+       */
+      client = primus(buildVars().apiHost, authClient)
+    }
+    catch (err) {
+      console.debug(`Failed to instantiate WebSockets API client: ${err.message}`)
+      console.warn('Falling back to REST API client...')
+    }
   }
-})
 
-export default store
+  if (!client) {
+    /**
+     * HTTP / REST API connections
+     */
+    client = rest(buildVars().apiHost, authClient)
+  }
+
+  const
+    idField = buildVars().idField,
+    {service, auth} = feathersVuex(client, {idField})
+
+  return new Vuex.Store({
+    plugins: [
+      service('annotations', {idField}),
+      service('maps', {idField}),
+      service('users', {idField}),
+      auth({userService: 'users'})
+    ],
+    modules: {
+      notifications,
+      forms,
+      mosysGridEditorStore
+    }
+  })
+}
+
+export {
+  setupStore
+}

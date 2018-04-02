@@ -1,5 +1,5 @@
 <template lang="pug">
-  center-card-three-quarter
+  center-card-three-quarter(v-if="showLogin")
     span(slot="form-title") {{ $t('routes.users.login.title') }}
     p.caption(slot="form-caption")
       | {{ $t('routes.users.login.caption') }}
@@ -21,28 +21,25 @@
       CenterCardThreeQuarter,
       FormMain
     },
+    props: ['auth'],
+    beforeMount () {
+      const _this = this
+      this.$authService()
+        .checkSession(this.$store)
+        .then(res => {
+          if (res) {
+            _this.$router.replace(_this.redirect || { name: 'users.edit', params: { id: 'me' } })
+          }
+          else {
+            _this.showLogin = true
+          }
+        })
+        .catch(() => {
+          _this.showLogin = true
+        })
+    },
     data () {
       const _this = this
-      function handler () {
-        /**
-         * Strategy 'local' for retrieving the JWT via email/password
-         */
-        _this.payload.strategy = 'local'
-        return _this.$store.dispatch('auth/authenticate', _this.payload)
-          .then(() => {
-            /**
-             * If there is a saved original destination, redirect there
-             */
-            if (_this.redirect) {
-              return _this.$router.replace(_this.redirect)
-            }
-            /**
-             * Otherwise redirect to users edit page
-             */
-            _this.$router.replace(`/users/${_this.$store.state.auth.payload.userId}/edit`)
-          })
-      }
-
       const schema = {
         fields: {
           email: {
@@ -61,7 +58,15 @@
           }
         },
         submit: {
-          handler
+          handler () {
+            return _this.$authService()
+              .handleAuthentication(
+                _this.payload,
+                {
+                  store: _this.$store,
+                  redirect: _this.redirect
+                })
+          }
         }
       }
 
@@ -69,7 +74,8 @@
         /**
          * Save the original destination when redirected from a private route
          */
-        redirect: this.$route.query.redirect,
+        showLogin: false,
+        redirect: _this.$route.query.redirect,
         label: 'buttons.login',
         message: 'messages.login_success',
         payload: undefined,

@@ -8,8 +8,10 @@ var
   projectRoot = path.resolve(__dirname, '../'),
   ProgressBarPlugin = require('progress-bar-webpack-plugin'),
   appConfig = require('../package.json').appConfig,
-  apiHost = process.env.API_HOST || appConfig.apiHostLocal,
+  apiHost = process.env.API_HOST || appConfig.apiHost,
   streamerHost = process.env.STREAMER_HOST || appConfig.streamerHost,
+  useAuth0 = (process.env.USE_AUTH0) || (appConfig.useAuth0),
+  useWebSockets = (process.env.USE_AUTH0) || (appConfig.useWebSockets),
   useCssSourceMap =
     (env.dev && config.dev.cssSourceMap) ||
     (env.prod && config.build.productionSourceMap)
@@ -18,10 +20,12 @@ function resolve (dir) {
   return path.join(__dirname, '..', dir)
 }
 
-process.stdout.write(` API_HOST set to: ${apiHost}\n`)
-process.stdout.write(` STREAMER_HOST set to: ${streamerHost}\n`)
-process.stdout.write(` ID_FIELD set to: ${appConfig.idField}\n`)
-process.stdout.write(` ROUTER MODE:     ${env.routerMode}\n\n`)
+process.stdout.write(` idField:          ${appConfig.idField}\n`)
+process.stdout.write(` Router mode:      ${env.routerMode}\n\n`)
+process.stdout.write(` API_HOST:         ${apiHost}\n`)
+process.stdout.write(` STREAMER_HOST:    ${streamerHost}\n\n`)
+process.stdout.write(` USE_AUTH0:        ${useAuth0}\n`)
+process.stdout.write(` USE_WEBSOCKETS:   ${useWebSockets}\n\n`)
 
 module.exports = {
   entry: {
@@ -95,15 +99,17 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       'process.env': config[env.prod ? 'build' : 'dev'].env,
-      'DEV': env.dev,
-      'PROD': env.prod,
-      '__THEME': '"' + env.platform.theme + '"',
-      'ROUTER_MODE': '"' + env.routerMode + '"'
+      DEV: env.dev,
+      PROD: env.prod,
+      __THEME: '"' + env.platform.theme + '"',
+      ROUTER_MODE: '"' + env.routerMode + '"'
     }),
     new webpack.DefinePlugin({
-      'API_HOST': JSON.stringify(apiHost),
-      'STREAMER_HOST': JSON.stringify(streamerHost),
-      'ID_FIELD': JSON.stringify(appConfig.idField)
+      API_HOST: JSON.stringify(apiHost),
+      STREAMER_HOST: JSON.stringify(streamerHost),
+      ID_FIELD: JSON.stringify(appConfig.idField),
+      USE_AUTH0: JSON.stringify(useAuth0),
+      USE_WEBSOCKETS: JSON.stringify(useWebSockets)
     }),
     new webpack.LoaderOptionsPlugin({
       minimize: env.prod,

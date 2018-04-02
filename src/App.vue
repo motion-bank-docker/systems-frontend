@@ -1,6 +1,5 @@
 <template lang="pug">
   #q-app
-    animated-background
     q-layout(ref="layout", view="hHh LpR fFf")
       user-nav(slot="header", :login="login", :auth="auth", :authenticated="authenticated")
       router-view(:auth="auth", :authenticated="authenticated")
@@ -10,60 +9,45 @@
 /*
  * Root component
  */
-import AnimatedBackground from './components/shared/partials/AnimatedBackground'
 import UserNav from './components/shared/partials/UserNav'
+import { EVENT_AUTH_CHANGE } from './lib/services/auth'
 import {
   QLayout
 } from 'quasar-framework'
 
-import * as auth0Conf from '../auth0.json'
-import Auth0 from './lib/services/auth0'
-
-const auth = new Auth0(auth0Conf)
-const { login, logout, authenticated, authNotifier } = auth
-
 export default {
   data () {
-    authNotifier.on('authChange', authState => {
-      console.log('Auth0 state change:', authState)
-      this.authenticated = authState.authenticated
+    const
+      _this = this,
+      { auth, authenticated } = _this.$authService()
+
+    this.$authService().on(EVENT_AUTH_CHANGE, authState => {
+      _this.authenticated = authState.authenticated
     })
+
+    this.$authService().checkSession(this.$store).then(res => {
+      console.debug('Existing session:', res)
+    }).catch(err => {
+      console.debug('No session:',
+        err.error || err.message, err.error_description)
+    })
+
     return {
       auth,
       authenticated
     }
   },
   methods: {
-    login,
-    logout
+    login () {
+      this.$authService().login()
+    },
+    logout () {
+      this.$authService().logout(this.$store)
+    }
   },
   components: {
     QLayout,
-    AnimatedBackground,
     UserNav
-  },
-  mounted: function () {
-    auth.checkSession().then(res => {
-      console.log('Auth0 existing session:', res)
-    }).catch(err => {
-      console.log('Auth0 no session:', err.error, err.error_description)
-    })
-    /*
-    const { $store } = this
-    $store.dispatch('auth/authenticate')
-      .catch(err => {
-        if (err) {
-          console.debug(err.message)
-          const message = `${err.message}${err.code ? ' (Code: ' + err.code + ')' : ''}`
-          if (err.code !== 401) {
-            $store.commit('notifications/addMessage', {
-              body: message,
-              type: 'error'
-            })
-          }
-        }
-      })
-      */
   }
 }
 </script>

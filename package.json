@@ -1,7 +1,7 @@
 {
   "name": "motionbank-systems-frontend",
   "productName": "Motion Bank Systems Frontend",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "Combined frontend project for Motion Bank web services",
   "metapak": {
@@ -31,11 +31,11 @@
     "@feathersjs/feathers": "^3.0.2",
     "@feathersjs/primus-client": "^1.0.1",
     "@feathersjs/rest-client": "^1.3.2",
+    "assign-deep": "^0.4.7",
     "auth0-js": "^9.4.2",
     "bluebird": "^3.5.1",
     "d3": "^4.13.0",
     "es6-promise": "^4.1.1",
-    "EventEmitter": "^1.0.0",
     "fastclick": "^1.0.6",
     "feathers-vuex": "^1.1.1",
     "he": "^1.1.1",
@@ -45,6 +45,7 @@
     "quasar-framework": "^0.14.6",
     "roboto-fontface": "^0.8.0",
     "superagent": "^3.8.2",
+    "tiny-emitter": "^2.0.2",
     "uuid-validate": "0.0.2",
     "videojs-framebyframe": "^1.0.1",
     "videojs-hotkeys": "git+https://github.com/ctd1500/videojs-hotkeys.git",
@@ -104,7 +105,7 @@
     "json-loader": "^0.5.4",
     "material-design-icons": "^3.0.1",
     "metapak": "^1.0.2",
-    "metapak-motionbank": "^1.7.1",
+    "metapak-motionbank": "^1.7.4",
     "mkdirp": "^0.5.1",
     "mocha": "^4.0.1",
     "opn": "^5.0.0",
@@ -135,8 +136,9 @@
   "license": "MIT",
   "appConfig": {
     "apiHost": "https://motionbank-api.herokuapp.com",
-    "apiHostLocal": "http://localhost:3030",
     "streamerHost": "http://localhost:8888",
-    "idField": "uuid"
+    "idField": "uuid",
+    "useAuth0": false,
+    "useWebSockets": false
   }
 }

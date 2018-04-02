@@ -5,28 +5,34 @@ require(`./themes/app.${__THEME}.styl`)
 // require(`quasar/dist/quasar.ie.${__THEME}.css`)
 
 import Vue from 'vue'
-import AsyncComputed from 'vue-async-computed'
 import Quasar, {
   AddressbarColor
 } from 'quasar-framework'
 
+import 'quasar-extras/material-icons'
+import AsyncComputed from 'vue-async-computed'
+
+import AuthService from './lib/services/auth'
+import { setupStore } from './lib/store'
+
+import router from './router'
+import i18n from './lib/locales'
+import services from './lib/services'
+
 Vue.config.productionTip = false
+AddressbarColor.set('#252324')
+
 Vue.use(Quasar)
 Vue.use(AsyncComputed)
+Vue.use(AuthService)
 
-AddressbarColor.set('#252324')
+Vue.component('mb-notification-service', services.notifications)
 
 if (__THEME === 'mat') {
   require('quasar-extras/roboto-font')
 }
-import 'quasar-extras/material-icons'
 
-import router from './router'
-import store from './lib/store'
-import i18n from './lib/locales'
-import services from './lib/services'
-
-Vue.component('mb-notification-service', services.notifications)
+const store = setupStore(Vue)
 
 Quasar.start(() => {
   /* eslint-disable no-new */

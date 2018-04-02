@@ -1,10 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import { Events } from 'quasar-framework'
 
 Vue.use(VueRouter)
 
-import store from './lib/store'
 import * as pm from './components/piecemaker/routes'
 import mosys from './components/mosys/routes'
 import piecemaker from './components/piecemaker/routes/stash'
@@ -41,13 +39,13 @@ const router = new VueRouter({
     //
     // Site content
     //
-    { path: '/', component: site.welcome, name: 'site.welcome', meta: { animatedBackground: false } },
-    { path: '/terms', component: site.terms, name: 'site.terms', meta: { animatedBackground: true } },
+    { path: '/', component: site.welcome, name: 'site.welcome' },
+    { path: '/terms', component: site.terms, name: 'site.terms' },
     { path: '/apps', component: site.apps, name: 'site.apps', meta: { private: true } },
     //
     // User management
     //
-    { path: '/users/callback', component: users.callback, name: 'users.callback', meta: {} },
+    { path: '/users/callback', component: users.callback, name: 'users.callback' },
     { path: '/users/create', component: users.create, name: 'users.create', meta: { anonymous: true } },
     { path: '/users/login', component: users.login, name: 'users.login', meta: { anonymous: true } },
     { path: '/users/forgot', component: users.forgot, name: 'users.forgot', meta: { anonymous: true } },
@@ -120,17 +118,23 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  Events.$emit('show-animated-background', to.matched.some(route => route.meta.animatedBackground))
-  if (store.state.auth.payload) {
-    if (to.matched.some(route => route.meta.anonymous)) {
-      return next(`/users/${store.state.auth.payload.userId}/edit`)
+  let payload
+  try {
+    payload = router.app.$store.state.auth.payload
+  }
+  catch (e) { /* ignored */ }
+
+  if (to.matched.some(route => route.meta.anonymous)) {
+    if (payload) {
+      return next({name: 'users.edit', params: {id: 'me'}, replace: true})
     }
   }
-  else {
-    if (to.matched.some(route => route.meta.private)) {
-      return next({ name: 'users.login', query: { redirect: to.fullPath } })
+  if (to.matched.some(route => route.meta.private)) {
+    if (!payload) {
+      return next({name: 'users.login', query: {redirect: to.fullPath}, replace: true})
     }
   }
+
   next()
 })
 
