@@ -11,7 +11,7 @@ var
   apiHost = process.env.API_HOST || appConfig.apiHost,
   streamerHost = process.env.STREAMER_HOST || appConfig.streamerHost,
   useAuth0 = (process.env.USE_AUTH0) || (appConfig.useAuth0),
-  useWebSockets = (process.env.USE_AUTH0) || (appConfig.useWebSockets),
+  useWebSockets = (process.env.USE_WEBSOCKETS) || (appConfig.useWebSockets),
   useCssSourceMap =
     (env.dev && config.dev.cssSourceMap) ||
     (env.prod && config.build.productionSourceMap)
