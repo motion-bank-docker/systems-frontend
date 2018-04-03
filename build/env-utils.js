@@ -1,5 +1,5 @@
 var
-  config = require('../config'),
+  config = require('../src/config'),
   theme = process.argv[2] || config.defaultTheme
 
 module.exports = {

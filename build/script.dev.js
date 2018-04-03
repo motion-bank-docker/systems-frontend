@@ -10,28 +10,28 @@ const
 
   // Configuration
   env = require('./env-utils'),
-  config = require('../config'),
+  config = require('../src/config'),
   webpackConfig = require('./webpack.dev.conf'),
   compiler = webpack(webpackConfig),
 
   // Define HTTP proxies to your custom API backend
   // https://github.com/chimurai/http-proxy-middleware
-  proxyTable = config.dev.proxyTable,
+  proxyTable = config.webpack.dev.proxyTable,
 
   // Express
   app = express(),
-  port = process.env.PORT || config.dev.port,
-  uri = 'http://localhost:' + port
+  port = process.env.PORT || config.webpack.dev.port,
+  uri = config.app.hosts.frontend
 
+const theme = col(`"${config.webpack.defaultTheme}"`, 'yellow', 'bold')
 let output = [
-  '\n', col(separator(), 'cyan'),
-  col('Starting dev server with "', 'cyan') +
-  col(process.argv[2] || env.platform.theme, 'yellow', 'bold') + col('" theme...'),
-  col(separator(), 'cyan'), '\n',
-  col('Will listen at ') + col(uri, 'white', 'bold')
+  col(separator(), 'cyan'),
+  col('Starting dev server with ', 'cyan') + theme + col(' theme...', 'cyan'),
+  col('Will listen at ') + col(uri, 'white', 'bold'),
+  col(separator(), 'cyan')
 ]
-if (config.dev.openBrowser) {
-  output = output.concat([col('Browser will open when build is ready.', 'yellow', 'bold')])
+if (config.webpack.dev.openBrowser) {
+  output = output.concat(['\n', col('Browser will open when build is ready.', 'yellow', 'bold')])
 }
 print(output.concat(['\n\n']))
 
@@ -86,7 +86,7 @@ module.exports = app.listen(port, function (err) {
   }
 
   // open browser if set so in /config/index.js
-  if (config.dev.openBrowser) {
+  if (config.webpack.dev.openBrowser) {
     devMiddleware.waitUntilValid(function () {
       opn(uri)
     })

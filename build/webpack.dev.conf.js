@@ -1,6 +1,6 @@
 const
   { col, separator, print } = require('./cli-utils'),
-  config = require('../config'),
+  config = require('../src/config'),
   webpack = require('webpack'),
   merge = require('webpack-merge'),
   cssUtils = require('./css-utils'),
@@ -9,7 +9,7 @@ const
   FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 
 print([
-  col(separator(), 'yellow'),
+  col(separator('='), 'yellow'),
   col('DEV build', 'yellow', 'bold'), '\n'
 ])
 
@@ -27,7 +27,7 @@ module.exports = merge(baseWebpackConfig, {
   },
   module: {
     rules: cssUtils.styleRules({
-      sourceMap: config.dev.cssSourceMap,
+      sourceMap: (config.webpack.dev.cssSourceMap),
       postcss: true
     })
   },
@@ -40,7 +40,7 @@ module.exports = merge(baseWebpackConfig, {
       inject: true
     }),
     new FriendlyErrorsPlugin({
-      clearConsole: config.dev.clearConsoleOnRebuild
+      clearConsole: (config.webpack.dev.clearConsoleOnRebuild)
     })
   ],
   performance: {

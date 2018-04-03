@@ -1,7 +1,7 @@
-import router from '../../../router'
 import auth from '@feathersjs/authentication-client'
 import assert from 'assert'
 
+import router from '../../../router'
 import BaseAuth from './base'
 
 class Local extends BaseAuth {
@@ -26,11 +26,13 @@ class Local extends BaseAuth {
   }
 
   handleAuthentication (payload, conf = {}) {
-    assert.equal(typeof conf.store, 'object', 'You need to pass a store in conf obj')
+    const _this = this
+    assert.equal(typeof conf.store, 'object',
+      `${this.TAG} You need to pass a store in conf obj`)
+
     /**
      * Strategy 'local' for retrieving the JWT via email/password
      */
-    const _this = this
     payload.strategy = 'local'
     return conf.store.dispatch('auth/authenticate', payload)
       .then(res => {

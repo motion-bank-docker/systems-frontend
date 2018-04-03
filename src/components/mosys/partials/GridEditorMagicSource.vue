@@ -47,7 +47,6 @@
   import { QInput, QIcon, QBtn, QList, QListHeader, QItem, QItemSide, QItemMain, QItemSeparator, QScrollArea, QSpinner } from 'quasar-framework'
   import url from 'url'
   import superagent from 'superagent'
-  import buildVars from '../../../lib/build-vars'
 
   const hostToTypeMap = {
     'vimeo.com': 'Video',
@@ -166,7 +165,7 @@
             if (!type) {
               type = 'IFrame'
 
-              superagent.get(`${buildVars().apiHost}/proxy?url=${encodeURIComponent(this.term)}`)
+              superagent.get(`${_this.$globalConfig.app.hosts.api}/proxy?url=${encodeURIComponent(this.term)}`)
                 .then(resp => {
                   if (resp.status === 301) { // prem redirect
                     if (resp.headers['location']) _this.term = resp.headers['location']

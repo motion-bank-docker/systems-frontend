@@ -1,25 +1,27 @@
-import buildVars from '../../build-vars'
+import GlobalConfig from '../../../global-config'
 import auth from '@feathersjs/authentication-client'
 
 import BaseAuth from './base'
 import Auth0 from './auth0'
 import Local from './local'
 
-const authConfig = require('../../../../config').auth
+const {
+  EVENT_AUTH_CHANGE
+} = BaseAuth
 
 class AuthService {
-  static install (Vue) {
+  static install (Vue, authConfig = GlobalConfig.auth) {
     let
       provider,
-      client = auth(Object.assign({}, authConfig.feathers, {
+      client = auth(Object.assign({}, {
         storage: window.localStorage
-      }))
+      }, authConfig.client.feathers))
 
-    if (buildVars().useAuth0) {
-      provider = new Auth0(authConfig.auth0, { client, Vue })
+    if (GlobalConfig.app.useAuth0) {
+      provider = new Auth0(authConfig.client.auth0, { client, Vue })
     }
     else {
-      provider = new Local(authConfig.local, { client, Vue })
+      provider = new Local(authConfig.client.local, { client, Vue })
     }
 
     Vue.prototype.$authService = function () {
@@ -31,7 +33,6 @@ class AuthService {
   }
 }
 
-const { EVENT_AUTH_CHANGE } = BaseAuth
 export {
   EVENT_AUTH_CHANGE
 }

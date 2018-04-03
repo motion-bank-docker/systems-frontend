@@ -1,5 +1,3 @@
-import buildVars from '../build-vars'
-
 import Vue from 'vue'
 import Vuex from 'vuex'
 import feathersVuex from 'feathers-vuex'
@@ -17,16 +15,17 @@ const setupStore = function (Vue) {
   /**
    * Set up VueX store with API service backends
    */
+  const apiHost = Vue.globalConfig.app.hosts.api
   let
     client,
     authClient = Vue.authService() ? Vue.authService() : undefined
 
-  if (buildVars().useWebSockets) {
+  if (Vue.globalConfig.app.useWebSockets) {
     try {
       /**
        * WebSocket API connections
        */
-      client = primus(buildVars().apiHost, authClient)
+      client = primus(apiHost, authClient)
     }
     catch (err) {
       console.debug(`Failed to instantiate WebSockets API client: ${err.message}`)
@@ -38,11 +37,11 @@ const setupStore = function (Vue) {
     /**
      * HTTP / REST API connections
      */
-    client = rest(buildVars().apiHost, authClient)
+    client = rest(apiHost, authClient)
   }
 
   const
-    idField = buildVars().idField,
+    idField = Vue.globalConfig.app.idField,
     {service, auth} = feathersVuex(client, {idField})
 
   return new Vuex.Store({

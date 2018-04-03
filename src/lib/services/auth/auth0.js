@@ -1,31 +1,33 @@
 import auth0 from 'auth0-js'
 import auth from '@feathersjs/authentication-client'
-import router from '../../../router'
 import assignDeep from 'assign-deep'
+
+import router from '../../../router'
+import GlobalConfig from '../../../global-config'
 
 import BaseAuth from './base'
 
 class Auth0 extends BaseAuth {
   constructor (opts = {}, env = {}) {
     super(assignDeep({
-      responseType: 'token id_token',
-      scope: 'openid profile email'
+      responseType: 'token',
+      scope: 'openid'
     }, opts), env)
 
     const
-      config = require('../../../../config'),
-      feathersConfig = Object.assign({}, config.auth.feathers, {
+      feathersConfig = Object.assign({
         storage: window.localStorage
-      })
+      }, GlobalConfig.auth.client.feathers)
 
     this._auth = auth(feathersConfig)
-    this._webAuth = new auth0.WebAuth(this.config)
+    this._webAuth = new auth0.WebAuth(this.options)
     this._feathersConfig = feathersConfig
+
     this._authDefaults = {
-      audience: this.config.audience,
-      scope: this.config.scope,
-      responseType: this.config.responseType
-      // redirectUri: this.config.redirectUri
+      audience: this.options.audience,
+      scope: this.options.scope,
+      responseType: this.options.responseType
+      // redirectUri: this.options.redirectUri
     }
 
     this._defaultHeaders = {}
@@ -49,26 +51,33 @@ class Auth0 extends BaseAuth {
   }
 
   handleAuthentication () {
-    const _this = this
+    const
+      _this = this,
+      TAG = this.TAG
     return new Promise((resolve, reject) => {
       _this.webAuth.parseHash({ hash: window.location.hash }, (err, authResult) => {
+        if (err) return reject(err)
+
         if (authResult && authResult.accessToken && authResult.idToken) {
-          console.debug('Auth0 Access Token:', authResult.accessToken)
-          console.debug('Auth0 ID Token:', authResult.idToken)
+          console.debug(TAG, 'Access Token:', authResult.accessToken)
+          console.debug(TAG, 'ID Token:', authResult.idToken)
+
           _this.setSession(authResult)
           _this.webAuth.client.userInfo(authResult.accessToken, (err, user) => {
             if (err) return reject(err)
+
             localStorage.setItem('user', user)
             _this.emit(BaseAuth.EVENT_AUTH_CHANGE, { authenticated: true })
+
             resolve()
           })
         }
         else if (err) {
-          console.error('Auth0:', err.error || err.message, err.error_description)
+          console.error(TAG, err.error_description || err.code, err.error || err.message)
           reject(err)
         }
         else {
-          reject(new Error('Auth0: Handle auth result null or invalid'))
+          reject(new Error(`${TAG} Handle auth result null or invalid`))
         }
       })
     })
@@ -83,16 +92,19 @@ class Auth0 extends BaseAuth {
   }
 
   checkSession () {
-    const _this = this
+    const
+      _this = this,
+      TAG = this.TAG
     return new Promise((resolve, reject) => {
       _this.webAuth.checkSession(_this._authDefaults, (err, res) => {
         if (err) {
           if (err.error === 'login_required') return resolve()
           else {
-            console.debug('Auth0 check session:', err.error, err)
+            console.debug(TAG, 'checkSession:', err.error, err)
             return reject(err)
           }
         }
+
         _this.emit(BaseAuth.EVENT_AUTH_CHANGE, { authenticated: true })
         resolve(res)
       })

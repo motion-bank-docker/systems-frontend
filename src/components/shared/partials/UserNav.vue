@@ -20,7 +20,6 @@
 </template>
 
 <script>
-  import buildVars from '../../../lib/build-vars'
   import {
     QToolbar,
     QToolbarTitle,
@@ -42,7 +41,7 @@
     },
     methods: {
       login () {
-        if (buildVars().useAuth0) {
+        if (this.$globalConfig.app.useAuth0) {
           this.$authService().login()
         }
         else {

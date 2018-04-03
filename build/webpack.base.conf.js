@@ -1,21 +1,15 @@
 const
   path = require('path'),
   webpack = require('webpack'),
-  config = require('../config'),
+  config = require('../src/config'),
   cssUtils = require('./css-utils'),
   env = require('./env-utils'),
   merge = require('webpack-merge'),
   projectRoot = path.resolve(__dirname, '../'),
   ProgressBarPlugin = require('progress-bar-webpack-plugin'),
-  appConfig = require('../package.json').appConfig,
-  apiHost = process.env.API_HOST || appConfig.apiHost,
-  frontendHost = process.env.FRONTEND_HOST || appConfig.frontendHost,
-  streamerHost = process.env.STREAMER_HOST || appConfig.streamerHost,
-  useAuth0 = (process.env.USE_AUTH0) || (appConfig.useAuth0),
-  useWebSockets = (process.env.USE_WEBSOCKETS) || (appConfig.useWebSockets),
   useCssSourceMap =
-    (env.dev && config.dev.cssSourceMap) ||
-    (env.prod && config.build.productionSourceMap)
+    (env.dev && config.webpack.dev.cssSourceMap) ||
+    (env.prod && config.webpack.build.productionSourceMap)
 
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
@@ -29,7 +23,7 @@ module.exports = {
   },
   output: {
     path: path.resolve(__dirname, '../dist'),
-    publicPath: config[env.prod ? 'build' : 'dev'].publicPath,
+    publicPath: config.webpack[env.prod ? 'build' : 'dev'].publicPath,
     filename: 'js/[name].js',
     chunkFilename: 'js/[id].[chunkhash].js'
   },
@@ -39,7 +33,7 @@ module.exports = {
       resolve('src'),
       resolve('node_modules')
     ],
-    alias: config.aliases
+    alias: config.webpack.aliases
   },
   module: {
     rules: [
@@ -94,28 +88,27 @@ module.exports = {
   },
   plugins: [
     new webpack.DefinePlugin({
-      'process.env': config[env.prod ? 'build' : 'dev'].env,
+      'process.env': config.webpack[env.prod ? 'build' : 'dev'].env,
       DEV: env.dev,
       PROD: env.prod,
-      __THEME: '"' + env.platform.theme + '"',
+      __THEME: '"' + config.webpack.defaultTheme + '"',
       ROUTER_MODE: '"' + env.routerMode + '"'
     }),
     new webpack.DefinePlugin({
-      API_HOST: JSON.stringify(apiHost),
-      STREAMER_HOST: JSON.stringify(streamerHost),
-      ID_FIELD: JSON.stringify(appConfig.idField),
-      USE_AUTH0: JSON.stringify(useAuth0),
-      USE_WEBSOCKETS: JSON.stringify(useWebSockets)
+      CONFIG_APP: JSON.stringify(config.app),
+      CONFIG_AUTH: JSON.stringify(config.auth),
+      CONFIG_SCOPES: JSON.stringify(config.scopes),
+      CONFIG_WEBPACK: JSON.stringify(config.webpack)
     }),
     new webpack.LoaderOptionsPlugin({
-      minimize: env.prod,
+      minimize: (env.prod),
       options: {
         context: path.resolve(__dirname, '../src'),
         postcss: cssUtils.postcss
       }
     }),
     new ProgressBarPlugin({
-      format: config.progressFormat
+      format: config.webpack.progressFormat
     })
   ],
   performance: {
@@ -125,33 +118,35 @@ module.exports = {
 
 function printBuildInfo () {
   const
+    { app, auth } = config,
+    //
     // Some weird ass CLI stats
     CLI = require('./cli-utils'),
+    //
     // Get some tools
     { col, line, separator, print } = CLI,
-    spacer = '\n\n',
+    //
     // Convert object to JSON
-    text = CLI.toText(useAuth0 ? config.auth.auth0 : config.auth.local)
-
+    text = CLI.toText(app.useAuth0 ? auth.client.auth0 : auth.client.local)
+  //
   // Assemble lines and print dat shit
   print([
-    col(separator(), 'cyan'),
+    col(separator('='), 'cyan'),
     col('WEBPACK', 'cyan', 'bold'),
     col('Environment variables', 'cyan'),
     col(separator(), 'cyan'),
-    line('API_HOST', apiHost),
-    line('FRONTEND_HOST', frontendHost),
-    line('STREAMER_HOST', streamerHost),
+    line('HOSTS_API', app.hosts.api),
+    line('HOSTS_FRONTEND', app.hosts.frontend),
+    line('HOSTS_STREAMER', app.hosts.streamer),
     col(separator(), 'cyan'),
-    line('USE_AUTH0', useAuth0),
-    line('USE_WEBSOCKETS', useWebSockets),
+    line('USE_AUTH0', app.useAuth0),
+    line('USE_WEBSOCKETS', app.useWebSockets),
     col(separator(), 'cyan'),
-    line('idField', appConfig.idField),
-    line('Router mode', env.routerMode),
-    spacer,
-    col(separator(), 'cyan'),
+    line('idField', app.idField),
+    line('Router mode', env.routerMode), '\n',
+    col(separator('='), 'cyan'),
     col(`AUTH`, 'cyan', 'bold'),
-    col(`Active configuration: ${useAuth0 ? 'Auth0' : 'Local'}`, 'cyan'),
+    col(`Active configuration: ${app.useAuth0 ? 'Auth0' : 'Local'}`, 'cyan'),
     col(separator(), 'cyan')
-  ].concat(CLI.toLines(text).concat([spacer])))
+  ].concat(CLI.toLines(text).concat(['\n\n'])))
 }

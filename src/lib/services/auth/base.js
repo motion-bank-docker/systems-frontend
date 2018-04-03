@@ -1,37 +1,30 @@
 import TinyEmitter from 'tiny-emitter'
 
+const { isUserAllowed } = require('../../../config/scopes')
+
 class BaseAuth extends TinyEmitter {
   constructor (opts = {}, env = {}) {
     super()
 
-    this._config = opts
+    this._options = opts
     this._client = env.client
     this._defaultHeaders = Object.assign({}, env.defaultHeaders || {})
 
     this._auth = undefined
     this._user = undefined
 
-    this.login = this.login.bind(this)
-    this.setSession = this.setSession.bind(this)
-    this.logout = this.logout.bind(this)
     this.isAuthenticated = this.isAuthenticated.bind(this)
+    this.logout = this.logout.bind(this)
+    this.setSession = this.setSession.bind(this)
   }
 
   defaultHeaders () {
     return this._defaultHeaders
   }
 
-  login () {
-    /* noop */
-  }
-
   logout () {
     this._user = null
     this.emit(BaseAuth.EVENT_AUTH_CHANGE, { authenticated: false })
-  }
-
-  handleAuthentication () {
-    /* noop */
   }
 
   setSession (authResult = undefined, silent = false) {
@@ -44,6 +37,10 @@ class BaseAuth extends TinyEmitter {
 
   isAuthenticated () {
     return (this.user)
+  }
+
+  isUserScopeAllowed (action, resource, fine) {
+    return isUserAllowed(action, resource, fine)
   }
 
   getAuthHeader (token = undefined) {
@@ -60,8 +57,8 @@ class BaseAuth extends TinyEmitter {
     return this.isAuthenticated()
   }
 
-  get config () {
-    return this._config
+  get options () {
+    return this._options
   }
 
   get auth () {
@@ -78,6 +75,13 @@ class BaseAuth extends TinyEmitter {
 
   static get EVENT_AUTH_CHANGE () {
     return 'authChange'
+  }
+
+  get TAG () {
+    return `${this.constructor.name}:`
+  }
+  static get TAG () {
+    return `${this.name}:`
   }
 }
 

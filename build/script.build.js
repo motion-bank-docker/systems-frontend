@@ -1,45 +1,21 @@
 process.env.NODE_ENV = 'production'
 
-require('colors')
-
 const
   { col, separator, print } = require('./cli-utils'),
   shell = require('shelljs'),
   path = require('path'),
-  env = require('./env-utils'),
   css = require('./css-utils'),
-  config = require('../config'),
+  config = require('../src/config'),
   webpack = require('webpack'),
   webpackConfig = require('./webpack.prod.conf'),
   targetPath = path.join(__dirname, '../dist')
 
 require('./script.clean.js')
 
-const theme = col(env.platform.theme, 'yellow', 'bold')
-print([
-  col(separator(), 'red'),
-  col('WARNING!', 'red', 'bold'),
-  col(separator(), 'red'),
-  col('Do NOT use VueRouter\'s "history" mode if'),
-  col('building for Cordova or Electron.'),
-  '\n\n',
-  col('Building Quasar App with "', 'cyan') + theme + col('" theme...', 'cyan'),
-  col(separator(), 'cyan')
-])
+printBuildInfo()
 
 shell.mkdir('-p', targetPath)
 shell.cp('-R', 'src/statics', targetPath)
-
-function finalize () {
-  print([
-    '\n', col(separator(), 'cyan'),
-    col('Build complete with "' + theme + '" theme in ' +
-      col('"/dist"', 'yellow', 'bold') + col(' folder.', 'cyan')),
-    col(separator(), 'cyan'),
-    col('Built files are meant to be served over an HTTP server.'),
-    col('Opening index.html over file:// won\'t work.'), '\n\n'
-  ])
-}
 
 webpack(webpackConfig, function (err, stats) {
   if (err) throw err
@@ -56,10 +32,34 @@ webpack(webpackConfig, function (err, stats) {
     process.exit(1)
   }
 
-  if (config.build.purifyCSS) {
+  if (config.webpack.build.purifyCSS) {
     css.purify(finalize)
   }
   else {
     finalize()
   }
 })
+
+function printBuildInfo () {
+  const theme = col(`"${config.webpack.defaultTheme}"`, 'yellow', 'bold')
+  print([
+    col(separator(), 'red'),
+    col('WARNING!', 'red', 'bold'),
+    col(separator(), 'red'),
+    col('Do NOT use VueRouter\'s "history" mode if'),
+    col('building for Cordova or Electron.'), '\n',
+    col('Building Quasar App with ', 'cyan') + theme + col(' theme...', 'cyan'),
+    col(separator(), 'cyan')
+  ])
+}
+function finalize () {
+  const theme = col(`"${config.webpack.defaultTheme}"`, 'yellow', 'bold')
+  print([
+    '\n', col(separator('='), 'cyan'),
+    col('Build complete with "' + theme + '" theme in ' +
+      col('"/dist"', 'yellow', 'bold') + col(' folder.', 'yellow')), '\n',
+    col(separator(), 'cyan'),
+    col('Built files are meant to be served over an HTTP server.'),
+    col('Opening index.html over file:// won\'t work.'), '\n\n'
+  ])
+}
