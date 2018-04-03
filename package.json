@@ -105,7 +105,7 @@
     "json-loader": "^0.5.4",
     "material-design-icons": "^3.0.1",
     "metapak": "^1.0.2",
-    "metapak-motionbank": "^1.8.3",
+    "metapak-motionbank": "^1.8.4",
     "mkdirp": "^0.5.1",
     "mocha": "^4.0.1",
     "opn": "^5.0.0",
