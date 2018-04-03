@@ -27,8 +27,8 @@ let output = [
   '\n', col(separator(), 'cyan'),
   col('Starting dev server with "', 'cyan') +
     col(process.argv[2] || env.platform.theme, 'yellow', 'bold') + col('" theme...'),
-  col(separator(), 'cyan'),
-  col('Will listen at ') + col(uri.bold, 'white', 'bold'), '\n'
+  col(separator(), 'cyan'), '\n',
+  col('Will listen at ') + col(uri, 'white', 'bold')
 ]
 if (config.dev.openBrowser) {
   output = output.concat([col('Browser will open when build is ready.', 'yellow', 'bold')])

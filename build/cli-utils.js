@@ -1,22 +1,22 @@
 const chalk = require('chalk')
 
 class CLI {
-  static separator (len = 60, char = '-') {
+  static separator (len = 64, char = '-') {
     return new Array(len).fill(char).join('')
   }
   static writer (msg, out = process.stdout) {
     if (typeof out.write === 'function') out.write(' ' + msg + '\n')
   }
-  static padLen (str, len = 24, char = ' ') {
+  static padLen (str, len = 23, char = ' ') {
     return str + new Array(len - str.length).fill(char).join('')
   }
   static label (str) {
-    return CLI.padLen(str, 24, chalk.gray('.'))
+    return CLI.padLen(str, 23, chalk.gray('.'))
   }
   static data (str) {
     return chalk.bold(str)
   }
-  static line (label, datum, sep = '') {
+  static line (label, datum, sep = ' ') {
     return `${CLI.label(label)}${sep}${CLI.data(datum)}`
   }
   static col (str, color = 'white', style = undefined) {

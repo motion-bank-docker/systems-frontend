@@ -136,7 +136,7 @@ function printBuildInfo () {
   // Assemble lines and print dat shit
   print([
     col(separator(), 'cyan'),
-    col('WEBPACK Build settings', 'cyan', 'bold'),
+    col('WEBPACK configuration variables', 'cyan', 'bold'),
     col(separator(), 'cyan'),
     line('API_HOST', apiHost),
     line('FRONTEND_HOST', frontendHost),
