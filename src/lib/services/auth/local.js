@@ -8,9 +8,9 @@ class Local extends BaseAuth {
   constructor (opts = {}, env = {}) {
     super(opts, env)
 
-    this._auth = auth({
+    this._auth = auth(Object.assign({
       storage: window.localStorage
-    })
+    }, opts))
   }
 
   login () {

@@ -30,12 +30,12 @@ class BaseAuth extends TinyEmitter {
     /* noop */
   }
 
-  setSession (authResult = undefined) {
-    this.emit(BaseAuth.EVENT_AUTH_CHANGE, { authenticated: true })
+  setSession (authResult = undefined, silent = false) {
+    if (!silent) this.emit(BaseAuth.EVENT_AUTH_CHANGE, { authenticated: true })
   }
 
   checkSession () {
-    /* noop */
+    return Promise.resolve(false)
   }
 
   isAuthenticated () {

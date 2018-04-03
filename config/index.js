@@ -1,4 +1,6 @@
-var path = require('path')
+const
+  path = require('path'),
+  pkg = require('../package.json')
 
 module.exports = {
   // Webpack aliases
@@ -16,6 +18,26 @@ module.exports = {
 
   // Default theme to build with ('ios' or 'mat')
   defaultTheme: 'mat',
+
+  appConfig: {
+    apiHost: 'https://motionbank-api.herokuapp.com',
+    streamerHost: 'http://localhost:8888',
+    frontendHost: 'http://localhost:8080',
+    idField: 'uuid',
+    useAuth0: false,
+    useWebSockets: false
+  },
+
+  auth: {
+    common: {},
+    auth0: {
+      domain: process.env.AUTH0_DOMAIN || 'motionbank.eu.auth0.com',
+      clientID: process.env.AUTH0_CLIENT_ID || 'lyVRrHYxUCOosFip40Ws5BRJyfHWSWTi',
+      audience: process.env.AUTH0_AUDIENCE || 'https://motionbank.eu.auth0.com/userinfo',
+      redirectUri: (process.env.FRONTEND_HOST || pkg.appConfig.frontendHost) + '/users/callback'
+    },
+    local: {}
+  },
 
   build: {
     env: require('./prod.env'),

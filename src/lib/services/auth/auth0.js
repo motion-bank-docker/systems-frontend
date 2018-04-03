@@ -1,4 +1,5 @@
 import auth0 from 'auth0-js'
+import auth from '@feathersjs/authentication-client'
 import router from '../../../router'
 import assignDeep from 'assign-deep'
 
@@ -11,7 +12,16 @@ class Auth0 extends BaseAuth {
       scope: 'openid profile email'
     }, opts), env)
 
-    this._auth = new auth0.WebAuth(this.config)
+    const config = this.config
+
+    this._auth = auth({ storage: window.localStorage })
+    this._webAuth = new auth0.WebAuth(config)
+    this._authDefaults = {
+      audience: config.audience,
+      scope: config.scope,
+      responseType: config.responseType,
+      redirectUri: config.redirectUri
+    }
 
     if (this._Vue && localStorage.getItem('access_token')) {
       const _this = this
@@ -20,68 +30,64 @@ class Auth0 extends BaseAuth {
           common: _this.getAuthHeader(localStorage.getItem('access_token'))
         }
       })
+      console.debug(this._Vue.http)
     }
   }
 
   login () {
-    const config = this.config
-    this.auth.authorize({
-      audience: config.audience,
-      scope: config.scope,
-      responseType: config.responseType,
-      redirectUri: config.redirectUri
-    })
+    this.webAuth.authorize(this._authDefaults)
   }
 
   logout () {
     localStorage.removeItem('access_token')
     localStorage.removeItem('id_token')
     localStorage.removeItem('expires_at')
+    localStorage.removeItem('user')
     super.logout()
-    router.replace('site.welcome')
+    router.replace({ name: 'site.welcome' })
   }
 
   handleAuthentication () {
     const _this = this
     return new Promise((resolve, reject) => {
-      _this.auth.parseHash({ hash: window.location.hash }, (err, authResult) => {
+      _this.webAuth.parseHash({ hash: window.location.hash }, (err, authResult) => {
         if (authResult && authResult.accessToken && authResult.idToken) {
-          _this.setSession(authResult)
           console.debug('Auth0 Access Token:', authResult.accessToken)
           console.debug('Auth0 ID Token:', authResult.idToken)
-          _this.auth.client.userInfo(authResult.accessToken, (err, user) => {
+          _this.setSession(authResult)
+          _this.webAuth.client.userInfo(authResult.accessToken, (err, user) => {
             if (err) return reject(err)
-            _this._user = user
-            resolve({ authResult, user })
+            localStorage.setItem('user', user)
+            _this.emit(BaseAuth.EVENT_AUTH_CHANGE, { authenticated: true })
+            resolve()
           })
         }
         else if (err) {
           console.error('Auth0:', err.error || err.message, err.error_description)
           reject(err)
         }
+        else {
+          reject(new Error('Auth0: Handle auth result null or invalid'))
+        }
       })
     })
   }
 
-  setSession (authResult) {
+  setSession (authResult, silent = false) {
     let expiresAt = JSON.stringify(authResult.expiresIn * 1000 + new Date().getTime())
     localStorage.setItem('access_token', authResult.accessToken)
     localStorage.setItem('id_token', authResult.idToken)
     localStorage.setItem('expires_at', expiresAt)
-    super.setSession(authResult)
+    super.setSession(authResult, silent)
   }
 
   checkSession () {
-    const
-      _this = this,
-      config = this.config
+    const _this = this
     return new Promise((resolve, reject) => {
-      _this.auth.checkSession({
-        audience: config.audience,
-        scope: config.scope,
-        responseType: config.responseType
-      }, (err, res) => {
-        if (err) return reject(err)
+      _this.webAuth.checkSession(_this._authDefaults, (err, res) => {
+        if (err) {
+          return reject(err)
+        }
         _this.emit(BaseAuth.EVENT_AUTH_CHANGE, { authenticated: true })
         resolve(res)
       })
@@ -91,6 +97,18 @@ class Auth0 extends BaseAuth {
   isAuthenticated () {
     const expiresAt = JSON.parse(localStorage.getItem('expires_at'))
     return new Date().getTime() < expiresAt && (localStorage.getItem('id_token'))
+  }
+
+  getAuthHeader () {
+    return super.getAuthHeader(localStorage.getItem('id_token'))
+  }
+
+  get webAuth () {
+    return this._webAuth
+  }
+
+  get user () {
+    return localStorage.getItem('user')
   }
 }
 

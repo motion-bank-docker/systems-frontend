@@ -5,20 +5,21 @@ import BaseAuth from './base'
 import Auth0 from './auth0'
 import Local from './local'
 
+const authConfig = require('../../../../config').auth
+
 class AuthService {
   static install (Vue) {
     let
       provider,
-      client = auth({
+      client = auth(Object.assign({
         storage: window.localStorage
-      })
+      }, authConfig.common))
 
     if (buildVars().useAuth0) {
-      const auth0Config = require('../../../../auth0.json')
-      provider = new Auth0(auth0Config, { client, Vue })
+      provider = new Auth0(authConfig.auth0, { client, Vue })
     }
     else {
-      provider = new Local({}, { client, Vue })
+      provider = new Local(authConfig.local, { client, Vue })
     }
 
     Vue.prototype.$authService = function () {

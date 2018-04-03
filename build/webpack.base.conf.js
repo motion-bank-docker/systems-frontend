@@ -9,6 +9,7 @@ var
   ProgressBarPlugin = require('progress-bar-webpack-plugin'),
   appConfig = require('../package.json').appConfig,
   apiHost = process.env.API_HOST || appConfig.apiHost,
+  frontendHost = process.env.FRONTEND_HOST || appConfig.frontendHost,
   streamerHost = process.env.STREAMER_HOST || appConfig.streamerHost,
   useAuth0 = (process.env.USE_AUTH0) || (appConfig.useAuth0),
   useWebSockets = (process.env.USE_WEBSOCKETS) || (appConfig.useWebSockets),
@@ -20,12 +21,22 @@ function resolve (dir) {
   return path.join(__dirname, '..', dir)
 }
 
-process.stdout.write(` idField:          ${appConfig.idField}\n`)
-process.stdout.write(` Router mode:      ${env.routerMode}\n\n`)
 process.stdout.write(` API_HOST:         ${apiHost}\n`)
+process.stdout.write(` FRONTEND_HOST:    ${frontendHost}\n`)
 process.stdout.write(` STREAMER_HOST:    ${streamerHost}\n\n`)
 process.stdout.write(` USE_AUTH0:        ${useAuth0}\n`)
 process.stdout.write(` USE_WEBSOCKETS:   ${useWebSockets}\n\n`)
+process.stdout.write(` idField:          ${appConfig.idField}\n`)
+process.stdout.write(` Router mode:      ${env.routerMode}\n\n`)
+
+const
+  conf = JSON.stringify(
+    useAuth0 ? config.auth.auth0 : config.auth.local,
+    null,
+    ' '
+  ).replace(/"/g, '')
+process.stdout.write(` Auth config (${useAuth0 ? 'Auth0' : 'Local'}):\n`)
+process.stdout.write(`${conf.substr(2, conf.length - 4)}\n\n`)
 
 module.exports = {
   entry: {

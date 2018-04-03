@@ -1,25 +1,32 @@
 <template lang="pug">
-  p Logging in...
+  .row.fullscreen.vertical-middle.justify-center.items-center
+    q-spinner-tail(color="primary", :size="72")
 </template>
 
 <script>
+  import {
+    QSpinnerTail
+  } from 'quasar-framework'
   export default {
+    components: {
+      QSpinnerTail
+    },
     props: ['auth'],
     mounted () {
       const _this = this
-      this.auth.handleAuthentication().then(res => {
-        console.log(res)
-        _this.$router.replace({ name: 'users.edit', params: { id: 'me' } })
+      this.$authService().handleAuthentication().then(() => {
         _this.$store.commit('notifications/addMessage', {
           body: _this.$t('messages.login_success'),
           type: 'success'
         })
+        _this.$router.replace({ name: 'users.edit', params: { id: 'me' } })
       }).catch(err => {
-        _this.$router.replace({ name: 'site.welcome' })
+        console.debug('Auth0 callback error:', err)
         _this.$store.commit('notifications/addMessage', {
           body: err.message,
           type: 'error'
         })
+        _this.$router.replace({ name: 'site.welcome' })
       })
     }
   }

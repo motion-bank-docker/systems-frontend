@@ -11,15 +11,13 @@
  */
 import UserNav from './components/shared/partials/UserNav'
 import { EVENT_AUTH_CHANGE } from './lib/services/auth'
-import {
-  QLayout
-} from 'quasar-framework'
+import { QLayout } from 'quasar-framework'
 
 export default {
   data () {
     const
       _this = this,
-      { auth, authenticated } = _this.$authService()
+      { auth, authenticated } = this.$authService()
 
     this.$authService().on(EVENT_AUTH_CHANGE, authState => {
       _this.authenticated = authState.authenticated
@@ -30,6 +28,7 @@ export default {
     }).catch(err => {
       console.debug('No session:',
         err.error || err.message, err.error_description)
+      if (err.stack) console.debug(err.stack)
     })
 
     return {
