@@ -1,40 +1,48 @@
 process.env.NODE_ENV = 'development'
 
-require('colors')
-
-var
+const
+  { col, separator, print } = require('./cli-utils'),
   path = require('path'),
   express = require('express'),
   webpack = require('webpack'),
-  env = require('./env-utils'),
-  config = require('../config'),
   opn = require('opn'),
   proxyMiddleware = require('http-proxy-middleware'),
+
+  // Configuration
+  env = require('./env-utils'),
+  config = require('../config'),
   webpackConfig = require('./webpack.dev.conf'),
+  compiler = webpack(webpackConfig),
+
+  // Define HTTP proxies to your custom API backend
+  // https://github.com/chimurai/http-proxy-middleware
+  proxyTable = config.dev.proxyTable,
+
+  // Express
   app = express(),
   port = process.env.PORT || config.dev.port,
   uri = 'http://localhost:' + port
 
-console.log(' Starting dev server with "' + (process.argv[2] || env.platform.theme).bold + '" theme...')
-console.log(' Will listen at ' + uri.bold)
+let output = [
+  '\n', col(separator(), 'cyan'),
+  col('Starting dev server with "', 'cyan') +
+    col(process.argv[2] || env.platform.theme, 'yellow', 'bold') + col('" theme...'),
+  col(separator(), 'cyan'),
+  col('Will listen at ') + col(uri.bold, 'white', 'bold'), '\n'
+]
 if (config.dev.openBrowser) {
-  console.log(' Browser will open when build is ready.\n')
+  output = output.concat([col('Browser will open when build is ready.', 'yellow', 'bold')])
 }
+print(output.concat(['\n\n']))
 
-var compiler = webpack(webpackConfig)
-
-// Define HTTP proxies to your custom API backend
-// https://github.com/chimurai/http-proxy-middleware
-var proxyTable = config.dev.proxyTable
-
-var devMiddleware = require('webpack-dev-middleware')(compiler, {
-  publicPath: webpackConfig.output.publicPath,
-  quiet: true
-})
-
-var hotMiddleware = require('webpack-hot-middleware')(compiler, {
-  log: function () {}
-})
+const
+  devMiddleware = require('webpack-dev-middleware')(compiler, {
+    publicPath: webpackConfig.output.publicPath,
+    quiet: true
+  }),
+  hotMiddleware = require('webpack-hot-middleware')(compiler, {
+    log: function () {}
+  })
 
 // force page reload when html-webpack-plugin template changes
 compiler.plugin('compilation', function (compilation) {
@@ -47,7 +55,7 @@ compiler.plugin('compilation', function (compilation) {
 // proxy requests like API. See /config/index.js -> dev.proxyTable
 // https://github.com/chimurai/http-proxy-middleware
 Object.keys(proxyTable).forEach(function (context) {
-  var options = proxyTable[context]
+  let options = proxyTable[context]
   if (typeof options === 'string') {
     options = { target: options }
   }
@@ -65,7 +73,7 @@ app.use(devMiddleware)
 app.use(hotMiddleware)
 
 // serve pure static assets
-var staticsPath = path.posix.join(webpackConfig.output.publicPath, 'statics/')
+const staticsPath = path.posix.join(webpackConfig.output.publicPath, 'statics/')
 app.use(staticsPath, express.static('./src/statics'))
 
 // try to serve Cordova statics for Play App

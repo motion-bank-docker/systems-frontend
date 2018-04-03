@@ -1,4 +1,5 @@
-var
+const
+  { col, separator, print } = require('./cli-utils'),
   config = require('../config'),
   webpack = require('webpack'),
   merge = require('webpack-merge'),
@@ -6,6 +7,12 @@ var
   baseWebpackConfig = require('./webpack.base.conf'),
   HtmlWebpackPlugin = require('html-webpack-plugin'),
   FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
+
+print([
+  col(separator(), 'yellow'),
+  col('DEV build', 'yellow', 'bold'),
+  '\n'
+])
 
 // add hot-reload related code to entry chunks
 Object.keys(baseWebpackConfig.entry).forEach(function (name) {
@@ -17,7 +24,7 @@ module.exports = merge(baseWebpackConfig, {
   devtool: '#cheap-module-eval-source-map',
   devServer: {
     historyApiFallback: true,
-    noInfo: true
+    noInfo: false
   },
   module: {
     rules: cssUtils.styleRules({

@@ -1,4 +1,5 @@
-var
+const
+  { col, separator, print } = require('./cli-utils'),
   path = require('path'),
   config = require('../config'),
   cssUtils = require('./css-utils'),
@@ -9,6 +10,12 @@ var
   HtmlWebpackPlugin = require('html-webpack-plugin'),
   OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin'),
   UglifyEsPlugin = require('uglify-es-webpack-plugin')
+
+print([
+  col(separator(), 'yellow'),
+  col('PRODUCTION build', 'yellow', 'bold'),
+  '\n'
+])
 
 module.exports = merge(baseWebpackConfig, {
   module: {

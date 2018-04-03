@@ -1,4 +1,4 @@
-var
+const
   path = require('path'),
   webpack = require('webpack'),
   config = require('../config'),
@@ -21,22 +21,7 @@ function resolve (dir) {
   return path.join(__dirname, '..', dir)
 }
 
-process.stdout.write(` API_HOST:         ${apiHost}\n`)
-process.stdout.write(` FRONTEND_HOST:    ${frontendHost}\n`)
-process.stdout.write(` STREAMER_HOST:    ${streamerHost}\n\n`)
-process.stdout.write(` USE_AUTH0:        ${useAuth0}\n`)
-process.stdout.write(` USE_WEBSOCKETS:   ${useWebSockets}\n\n`)
-process.stdout.write(` idField:          ${appConfig.idField}\n`)
-process.stdout.write(` Router mode:      ${env.routerMode}\n\n`)
-
-const
-  conf = JSON.stringify(
-    useAuth0 ? config.auth.auth0 : config.auth.local,
-    null,
-    ' '
-  ).replace(/"/g, '')
-process.stdout.write(` Auth config (${useAuth0 ? 'Auth0' : 'Local'}):\n`)
-process.stdout.write(`${conf.substr(2, conf.length - 4)}\n\n`)
+printBuildInfo()
 
 module.exports = {
   entry: {
@@ -136,4 +121,34 @@ module.exports = {
   performance: {
     hints: false
   }
+}
+
+function printBuildInfo () {
+  const
+    // Some weird ass CLI stats
+    CLI = require('./cli-utils'),
+    // Get some tools
+    { col, line, separator, print } = CLI,
+    spacer = '\n\n',
+    // Convert object to JSON
+    text = CLI.toText(useAuth0 ? config.auth.auth0 : config.auth.local)
+
+  // Assemble lines and print dat shit
+  print([
+    col(separator(), 'cyan'),
+    col('WEBPACK Build settings', 'cyan', 'bold'),
+    col(separator(), 'cyan'),
+    line('API_HOST', apiHost),
+    line('FRONTEND_HOST', frontendHost),
+    line('STREAMER_HOST', streamerHost),
+    col(separator(), 'cyan'),
+    line('USE_AUTH0', useAuth0),
+    line('USE_WEBSOCKETS', useWebSockets),
+    col(separator(), 'cyan'),
+    line('idField', appConfig.idField),
+    line('Router mode', env.routerMode),
+    spacer,
+    col(`Auth config (${useAuth0 ? 'Auth0' : 'Local'}):`, 'cyan', 'bold'),
+    col(separator(), 'cyan')
+  ].concat(CLI.toLines(text).concat([spacer])))
 }
