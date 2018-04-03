@@ -9,9 +9,8 @@ class Auth0 extends BaseAuth {
   constructor (opts = {}, env = {}) {
     super(assignDeep({}, opts), env)
 
-    const feathersConfig = assignDeep({
-      storage: window.localStorage
-    }, env.config)
+    const feathersConfig = assignDeep({}, env.config)
+    feathersConfig.storage = window.localStorage
 
     this._auth = env.client || auth(feathersConfig)
     this._webAuth = new auth0.WebAuth(this.options)
@@ -116,7 +115,7 @@ class Auth0 extends BaseAuth {
   }
 
   get token () {
-    return localStorage.getItem('id_token')
+    return localStorage.getItem(this.feathersConfig.storageKey)
   }
 
   get webAuth () {

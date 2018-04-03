@@ -46,6 +46,7 @@
 <script>
   import { QInput, QIcon, QBtn, QList, QListHeader, QItem, QItemSide, QItemMain, QItemSeparator, QScrollArea, QSpinner } from 'quasar-framework'
   import url from 'url'
+  import assignDeep from 'assign-deep'
   import superagent from 'superagent'
 
   const hostToTypeMap = {
@@ -215,7 +216,7 @@
           else {
             res.body.type = 'title'
             results.push(res)
-            let body = Object.assign({}, res.body)
+            let body = assignDeep({}, res.body)
             body.type = 'text'
             results.push({body})
           }

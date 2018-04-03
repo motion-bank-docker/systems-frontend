@@ -1,4 +1,5 @@
 import TinyEmitter from 'tiny-emitter'
+import assignDeep from 'assign-deep'
 
 const { isUserAllowed } = require('../../../config/scopes')
 
@@ -9,7 +10,7 @@ class BaseAuth extends TinyEmitter {
     this._options = opts
     this._client = env.client
     this._config = env.config
-    this._defaultHeaders = Object.assign({}, env.defaultHeaders || {})
+    this._defaultHeaders = assignDeep({}, env.defaultHeaders || {})
 
     this._auth = undefined
     this._user = undefined

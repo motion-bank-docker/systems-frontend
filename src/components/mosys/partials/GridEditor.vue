@@ -60,6 +60,7 @@
 <script>
   // import Vue from 'vue'
   // import constants from '../../../lib/constants'
+  import assignDeep from 'assign-deep'
   import {
     QContextMenu, QList,
     QItem, QItemMain, QFixedPosition, QBtn,
@@ -146,7 +147,7 @@
       },
       gridUuid () {
         console.log('Grid UUID changed, fetch metadata again??')
-        // this.gridMetadata = Object.assign({}, this.grid)
+        // this.gridMetadata = assignDeep({}, this.grid)
       },
       gridMetadata () {
         this.updateGridDimensions()
@@ -320,7 +321,7 @@
           return cell
         })
 
-        this.gridMetadata = Object.assign({}, this.gridMetadata, {columns: this.gridMetadata.columns + 1})
+        this.gridMetadata = assignDeep({}, this.gridMetadata, {columns: this.gridMetadata.columns + 1})
 
         this.updateGridMetadataStore()
       },
@@ -342,7 +343,7 @@
           }
           return cell
         })
-        this.gridMetadata = Object.assign({}, this.gridMetadata, {rows: this.gridMetadata.rows + 1})
+        this.gridMetadata = assignDeep({}, this.gridMetadata, {rows: this.gridMetadata.rows + 1})
 
         this.updateGridMetadataStore()
       },

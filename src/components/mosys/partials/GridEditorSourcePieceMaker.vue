@@ -60,6 +60,7 @@
   import url from 'url'
   import path from 'path'
   import he from 'he'
+  import assignDeep from 'assign-deep'
 
   export default {
     components: {
@@ -89,7 +90,7 @@
         this.$store.dispatch('annotations/find', { query: { type: 'Annotation', 'body.purpose': 'linking', 'target.id': this.currentGroup.uuid } })
           .then(videos => {
             return Promise.map(videos, entry => {
-              const newEntry = Object.assign({}, entry)
+              const newEntry = assignDeep({}, entry)
               newEntry.title = entry.body.source
               return Promise.resolve()
                 .then(() => {
