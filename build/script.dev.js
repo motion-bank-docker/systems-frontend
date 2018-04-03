@@ -26,7 +26,7 @@ const
 let output = [
   '\n', col(separator(), 'cyan'),
   col('Starting dev server with "', 'cyan') +
-    col(process.argv[2] || env.platform.theme, 'yellow', 'bold') + col('" theme...'),
+  col(process.argv[2] || env.platform.theme, 'yellow', 'bold') + col('" theme...'),
   col(separator(), 'cyan'), '\n',
   col('Will listen at ') + col(uri, 'white', 'bold')
 ]

@@ -136,7 +136,8 @@ function printBuildInfo () {
   // Assemble lines and print dat shit
   print([
     col(separator(), 'cyan'),
-    col('WEBPACK configuration variables', 'cyan', 'bold'),
+    col('WEBPACK', 'cyan', 'bold'),
+    col('Environment variables', 'cyan'),
     col(separator(), 'cyan'),
     line('API_HOST', apiHost),
     line('FRONTEND_HOST', frontendHost),
@@ -148,7 +149,9 @@ function printBuildInfo () {
     line('idField', appConfig.idField),
     line('Router mode', env.routerMode),
     spacer,
-    col(`Auth config (${useAuth0 ? 'Auth0' : 'Local'}):`, 'cyan', 'bold'),
+    col(separator(), 'cyan'),
+    col(`AUTH`, 'cyan', 'bold'),
+    col(`Active configuration: ${useAuth0 ? 'Auth0' : 'Local'}`, 'cyan'),
     col(separator(), 'cyan')
   ].concat(CLI.toLines(text).concat([spacer])))
 }

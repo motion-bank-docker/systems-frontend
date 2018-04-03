@@ -13,7 +13,7 @@ const
 
 print([
   col(separator(), 'yellow'),
-  col('PRODUCTION build', 'yellow', 'bold')
+  col('PRODUCTION build', 'yellow', 'bold'), '\n'
 ])
 
 module.exports = merge(baseWebpackConfig, {
