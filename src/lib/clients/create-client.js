@@ -3,11 +3,11 @@ import assignDeep from 'assign-deep'
 
 function createClient (transport, auth = undefined) {
   const
-    config = require('../../config/'),
+    cg = require('../../config'),
     client = feathers()
 
   let feathersConfig
-  try { feathersConfig = assignDeep({}, config.auth.feathers.client) }
+  try { feathersConfig = assignDeep({}, cg.auth.feathers.client) }
   catch (e) { /* ignored */ }
 
   client.configure(transport)

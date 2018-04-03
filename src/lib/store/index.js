@@ -12,15 +12,16 @@ import rest from '../clients/rest'
 Vue.use(Vuex)
 
 const setupStore = function (Vue) {
+  const
+    cg = Vue.mbConf,
+    apiHost = cg.app.hosts.api,
+    authClient = Vue.mbAuth() ? Vue.mbAuth() : undefined
   /**
    * Set up VueX store with API service backends
    */
-  const apiHost = Vue.globalConfig.app.hosts.api
-  let
-    client,
-    authClient = Vue.authService() ? Vue.authService() : undefined
+  let client
 
-  if (Vue.globalConfig.app.useWebSockets) {
+  if (cg.app.useWebSockets) {
     try {
       /**
        * WebSocket API connections
@@ -41,7 +42,7 @@ const setupStore = function (Vue) {
   }
 
   const
-    idField = Vue.globalConfig.app.idField,
+    idField = cg.app.idField,
     {service, auth} = feathersVuex(client, {idField})
 
   return new Vuex.Store({

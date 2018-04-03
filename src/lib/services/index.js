@@ -1,4 +1,4 @@
-import auth from './auth'
+import auth from './mb-auth'
 import notifications from './notifications'
 import logging from './logging'
 

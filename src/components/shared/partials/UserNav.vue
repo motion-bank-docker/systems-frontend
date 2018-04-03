@@ -42,14 +42,14 @@
     methods: {
       login () {
         if (this.$globalConfig.app.useAuth0) {
-          this.$authService().login()
+          this.$mbAuth().login()
         }
         else {
           this.$router.push({ name: 'users.login' })
         }
       },
       logout () {
-        this.$authService().logout(this.$store)
+        this.$mbAuth().logout(this.$store)
       }
     }
   }

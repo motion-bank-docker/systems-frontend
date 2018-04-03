@@ -119,7 +119,7 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   let payload
-  try { payload = router.app.$authService().isAuthenticated() }
+  try { payload = router.app.$mbAuth().isAuthenticated() }
   catch (e) { console.debug('Route auth fail:', e) }
 
   if (to.matched.some(route => route.meta.anonymous)) {

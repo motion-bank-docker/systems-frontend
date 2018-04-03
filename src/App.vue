@@ -10,20 +10,20 @@
  * Root component
  */
 import UserNav from './components/shared/partials/UserNav'
-import { EVENT_AUTH_CHANGE } from './lib/services/auth'
+import { EVENT_AUTH_CHANGE } from './lib/services/mb-auth'
 import { QLayout } from 'quasar-framework'
 
 export default {
   data () {
     const
       _this = this,
-      { auth, authenticated } = this.$authService()
+      { auth, authenticated } = this.$mbAuth()
 
-    this.$authService().on(EVENT_AUTH_CHANGE, authState => {
+    this.$mbAuth().on(EVENT_AUTH_CHANGE, authState => {
       _this.authenticated = authState.authenticated
     })
 
-    this.$authService().checkSession(this.$store).then(res => {
+    this.$mbAuth().checkSession(this.$store).then(res => {
       if (res) console.debug('Existing auth session:', res)
       return res
     }).catch(err => {
@@ -39,10 +39,10 @@ export default {
   },
   methods: {
     login () {
-      this.$authService().login()
+      this.$mbAuth().login()
     },
     logout () {
-      this.$authService().logout(this.$store)
+      this.$mbAuth().logout(this.$store)
     }
   },
   components: {

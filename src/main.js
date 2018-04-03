@@ -12,8 +12,8 @@ import Quasar, {
 import 'quasar-extras/material-icons'
 import AsyncComputed from 'vue-async-computed'
 
-import GlobalConfig from './global-config'
-import AuthService from './lib/services/auth'
+import MBConf from './mb-conf'
+import MBAuth from './lib/services/mb-auth'
 import { setupStore } from './lib/store'
 
 import router from './router'
@@ -25,8 +25,8 @@ AddressbarColor.set('#252324')
 
 Vue.use(Quasar)
 Vue.use(AsyncComputed)
-Vue.use(GlobalConfig)
-Vue.use(AuthService)
+Vue.use(MBConf)
+Vue.use(MBAuth)
 
 Vue.component('mb-notification-service', services.notifications)
 

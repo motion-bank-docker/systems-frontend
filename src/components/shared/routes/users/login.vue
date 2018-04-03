@@ -24,7 +24,7 @@
     props: ['auth'],
     beforeMount () {
       const _this = this
-      this.$authService()
+      this.$mbAuth()
         .checkSession(this.$store)
         .then(res => {
           if (res) {
@@ -59,7 +59,7 @@
         },
         submit: {
           handler () {
-            return _this.$authService()
+            return _this.$mbAuth()
               .handleAuthentication(
                 _this.payload,
                 {

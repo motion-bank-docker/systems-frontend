@@ -8,6 +8,7 @@ class BaseAuth extends TinyEmitter {
 
     this._options = opts
     this._client = env.client
+    this._config = env.config
     this._defaultHeaders = Object.assign({}, env.defaultHeaders || {})
 
     this._auth = undefined

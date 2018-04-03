@@ -14,7 +14,7 @@
     props: ['auth'],
     mounted () {
       const _this = this
-      this.$authService().handleAuthentication().then(() => {
+      this.$mbAuth().handleAuthentication().then(() => {
         _this.$store.commit('notifications/addMessage', {
           body: _this.$t('messages.login_success'),
           type: 'success'

@@ -3,25 +3,19 @@ import auth from '@feathersjs/authentication-client'
 import assignDeep from 'assign-deep'
 
 import router from '../../../router'
-import GlobalConfig from '../../../global-config'
-
 import BaseAuth from './base'
 
 class Auth0 extends BaseAuth {
   constructor (opts = {}, env = {}) {
-    super(assignDeep({
-      responseType: 'token',
-      scope: 'openid'
-    }, opts), env)
+    super(assignDeep({}, opts), env)
 
-    const
-      feathersConfig = Object.assign({
-        storage: window.localStorage
-      }, GlobalConfig.auth.client.feathers)
+    const feathersConfig = assignDeep({
+      storage: window.localStorage
+    }, env.config)
 
-    this._auth = auth(feathersConfig)
+    this._auth = env.client || auth(feathersConfig)
     this._webAuth = new auth0.WebAuth(this.options)
-    this._feathersConfig = feathersConfig
+    this._feathersConfig = env.config || feathersConfig
 
     this._authDefaults = {
       audience: this.options.audience,
@@ -31,9 +25,10 @@ class Auth0 extends BaseAuth {
     }
 
     this._defaultHeaders = {}
-    if (localStorage.getItem('id_token')) {
-      this._defaultHeaders = Object.assign({}, this._defaultHeaders,
-        this.getAuthHeader(localStorage.getItem('id_token')))
+    const storageKey = this._feathersConfig.storageKey
+    if (localStorage.getItem(storageKey)) {
+      this._defaultHeaders = assignDeep({}, this._defaultHeaders,
+        this.getAuthHeader(localStorage.getItem(storageKey)))
     }
   }
 
