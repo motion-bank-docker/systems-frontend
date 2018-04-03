@@ -14,7 +14,11 @@ class Auth0 extends BaseAuth {
 
     const config = this.config
 
-    this._auth = auth({ storage: window.localStorage })
+    this._auth = auth({
+      storage: window.localStorage,
+      storageKey: 'id_token',
+      jwtStrategy: 'auth0'
+    })
     this._webAuth = new auth0.WebAuth(config)
     this._authDefaults = {
       audience: config.audience,
@@ -23,14 +27,10 @@ class Auth0 extends BaseAuth {
       redirectUri: config.redirectUri
     }
 
-    if (this._Vue && localStorage.getItem('access_token')) {
-      const _this = this
-      this._Vue.http = assignDeep(this._Vue.http || {}, {
-        headers: {
-          common: _this.getAuthHeader(localStorage.getItem('access_token'))
-        }
-      })
-      console.debug(this._Vue.http)
+    this._defaultHeaders = {}
+    if (localStorage.getItem('access_token')) {
+      this._defaultHeaders = Object.assign(this._defaultHeaders,
+        this.getAuthHeader(localStorage.getItem('access_token')))
     }
   }
 

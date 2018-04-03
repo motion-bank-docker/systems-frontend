@@ -19,7 +19,7 @@ const setupStore = function (Vue) {
    */
   let
     client,
-    authClient = Vue.authService() ? Vue.authService().auth : undefined
+    authClient = Vue.authService() ? Vue.authService() : undefined
 
   if (buildVars().useWebSockets) {
     try {

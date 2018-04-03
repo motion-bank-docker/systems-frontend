@@ -6,7 +6,7 @@ class BaseAuth extends TinyEmitter {
 
     this._config = opts
     this._client = env.client
-    this._Vue = env.Vue
+    this._defaultHeaders = Object.assign({}, env.defaultHeaders || {})
 
     this._auth = undefined
     this._user = undefined
@@ -15,6 +15,10 @@ class BaseAuth extends TinyEmitter {
     this.setSession = this.setSession.bind(this)
     this.logout = this.logout.bind(this)
     this.isAuthenticated = this.isAuthenticated.bind(this)
+  }
+
+  defaultHeaders () {
+    return this._defaultHeaders
   }
 
   login () {
@@ -43,8 +47,12 @@ class BaseAuth extends TinyEmitter {
   }
 
   getAuthHeader (token = undefined) {
+    const authHeader = token ? `Bearer ${token}` : undefined
+    if (this._defaultHeaders.Authorization) {
+      this._defaultHeaders.Authorization = authHeader
+    }
     return {
-      Authorization: token ? `Bearer ${token}` : undefined
+      Authorization: authHeader
     }
   }
 
