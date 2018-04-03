@@ -1,15 +1,15 @@
 const
   path = require('path'),
-  webpack = require('webpack'),
-  config = require('../src/config'),
+  Webpack = require('webpack'),
+  { app, auth, webpack, scopes } = require('../src/config'),
   cssUtils = require('./css-utils'),
   env = require('./env-utils'),
   merge = require('webpack-merge'),
   projectRoot = path.resolve(__dirname, '../'),
   ProgressBarPlugin = require('progress-bar-webpack-plugin'),
   useCssSourceMap =
-    (env.dev && config.webpack.dev.cssSourceMap) ||
-    (env.prod && config.webpack.build.productionSourceMap)
+    (env.dev && webpack.dev.cssSourceMap) ||
+    (env.prod && webpack.build.productionSourceMap)
 
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
@@ -23,7 +23,7 @@ module.exports = {
   },
   output: {
     path: path.resolve(__dirname, '../dist'),
-    publicPath: config.webpack[env.prod ? 'build' : 'dev'].publicPath,
+    publicPath: webpack[env.prod ? 'build' : 'dev'].publicPath,
     filename: 'js/[name].js',
     chunkFilename: 'js/[id].[chunkhash].js'
   },
@@ -33,7 +33,7 @@ module.exports = {
       resolve('src'),
       resolve('node_modules')
     ],
-    alias: config.webpack.aliases
+    alias: webpack.aliases
   },
   module: {
     rules: [
@@ -87,20 +87,20 @@ module.exports = {
     ]
   },
   plugins: [
-    new webpack.DefinePlugin({
-      'process.env': config.webpack[env.prod ? 'build' : 'dev'].env,
+    new Webpack.DefinePlugin({
+      'process.env': webpack[env.prod ? 'build' : 'dev'].env,
       DEV: env.dev,
       PROD: env.prod,
-      __THEME: '"' + config.webpack.defaultTheme + '"',
+      __THEME: '"' + webpack.defaultTheme + '"',
       ROUTER_MODE: '"' + env.routerMode + '"'
     }),
-    new webpack.DefinePlugin({
-      CONFIG_APP: JSON.stringify(config.app),
-      CONFIG_AUTH: JSON.stringify(config.auth),
-      CONFIG_SCOPES: JSON.stringify(config.scopes),
-      CONFIG_WEBPACK: JSON.stringify(config.webpack)
+    new Webpack.DefinePlugin({
+      CONFIG_APP: JSON.stringify(app),
+      CONFIG_AUTH: JSON.stringify(auth),
+      CONFIG_SCOPES: JSON.stringify(scopes),
+      CONFIG_WEBPACK: JSON.stringify(webpack)
     }),
-    new webpack.LoaderOptionsPlugin({
+    new Webpack.LoaderOptionsPlugin({
       minimize: (env.prod),
       options: {
         context: path.resolve(__dirname, '../src'),
@@ -108,7 +108,7 @@ module.exports = {
       }
     }),
     new ProgressBarPlugin({
-      format: config.webpack.progressFormat
+      format: webpack.progressFormat
     })
   ],
   performance: {
@@ -118,7 +118,6 @@ module.exports = {
 
 function printBuildInfo () {
   const
-    { app, auth } = config,
     //
     // Some weird ass CLI stats
     CLI = require('./cli-utils'),

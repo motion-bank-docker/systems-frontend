@@ -24,4 +24,4 @@ const App = function () {
 }
 
 const { config } = App()
-module.exports = config
+module.exports = { config }

@@ -1,4 +1,4 @@
-const { hosts } = require('./app')
+const app = require('./app').config
 /**
  * AUTHENTICATION
  * Configures client & server auth
@@ -19,7 +19,7 @@ const Auth = function () {
           domain: process.env.AUTH0_DOMAIN || 'motionbank.eu.auth0.com',
           clientID: process.env.AUTH0_CLIENT_ID || 'lyVRrHYxUCOosFip40Ws5BRJyfHWSWTi',
           audience: process.env.AUTH0_AUDIENCE || 'https://motionbank.eu.auth0.com/userinfo',
-          redirectUri: !process.env.AUTH0_NO_REDIRECT ? (hosts.frontend + '/users/callback') : undefined,
+          redirectUri: !process.env.AUTH0_NO_REDIRECT ? (app.hosts.frontend + '/users/callback') : undefined,
           scope: process.env.AUTH0_INIT_SCOPE || 'openid profile email',
           responseType: process.env.AUTH0_RESPONSE_TYPE || 'token id_token'
         },
