@@ -11,9 +11,9 @@ class AuthService {
   static install (Vue) {
     let
       provider,
-      client = auth(Object.assign({
+      client = auth(Object.assign({}, authConfig.feathers, {
         storage: window.localStorage
-      }, authConfig.common))
+      }))
 
     if (buildVars().useAuth0) {
       provider = new Auth0(authConfig.auth0, { client, Vue })

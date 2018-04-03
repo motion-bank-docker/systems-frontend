@@ -24,9 +24,10 @@ export default {
     })
 
     this.$authService().checkSession(this.$store).then(res => {
-      console.debug('Existing session:', res)
+      if (res) console.debug('Existing auth session:', res)
+      return res
     }).catch(err => {
-      console.debug('No session:',
+      console.debug('No existing auth session:',
         err.error || err.message, err.error_description)
       if (err.stack) console.debug(err.stack)
     })

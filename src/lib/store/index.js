@@ -50,7 +50,7 @@ const setupStore = function (Vue) {
       service('annotations', {idField}),
       service('maps', {idField}),
       service('users', {idField}),
-      auth({userService: 'users'})
+      auth(authClient.feathersConfig)
     ],
     modules: {
       notifications,

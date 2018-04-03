@@ -12,25 +12,26 @@ class Auth0 extends BaseAuth {
       scope: 'openid profile email'
     }, opts), env)
 
-    const config = this.config
+    const
+      config = require('../../../../config'),
+      feathersConfig = Object.assign({}, config.auth.feathers, {
+        storage: window.localStorage
+      })
 
-    this._auth = auth({
-      storage: window.localStorage,
-      storageKey: 'id_token',
-      jwtStrategy: 'auth0'
-    })
-    this._webAuth = new auth0.WebAuth(config)
+    this._auth = auth(feathersConfig)
+    this._webAuth = new auth0.WebAuth(this.config)
+    this._feathersConfig = feathersConfig
     this._authDefaults = {
-      audience: config.audience,
-      scope: config.scope,
-      responseType: config.responseType,
-      redirectUri: config.redirectUri
+      audience: this.config.audience,
+      scope: this.config.scope,
+      responseType: this.config.responseType
+      // redirectUri: this.config.redirectUri
     }
 
     this._defaultHeaders = {}
-    if (localStorage.getItem('access_token')) {
-      this._defaultHeaders = Object.assign(this._defaultHeaders,
-        this.getAuthHeader(localStorage.getItem('access_token')))
+    if (localStorage.getItem('id_token')) {
+      this._defaultHeaders = Object.assign({}, this._defaultHeaders,
+        this.getAuthHeader(localStorage.getItem('id_token')))
     }
   }
 
@@ -86,7 +87,11 @@ class Auth0 extends BaseAuth {
     return new Promise((resolve, reject) => {
       _this.webAuth.checkSession(_this._authDefaults, (err, res) => {
         if (err) {
-          return reject(err)
+          if (err.error === 'login_required') return resolve()
+          else {
+            console.debug('Auth0 check session:', err.error, err)
+            return reject(err)
+          }
         }
         _this.emit(BaseAuth.EVENT_AUTH_CHANGE, { authenticated: true })
         resolve(res)
@@ -96,15 +101,23 @@ class Auth0 extends BaseAuth {
 
   isAuthenticated () {
     const expiresAt = JSON.parse(localStorage.getItem('expires_at'))
-    return new Date().getTime() < expiresAt && (localStorage.getItem('id_token'))
+    return new Date().getTime() < expiresAt && (this.token)
   }
 
   getAuthHeader () {
-    return super.getAuthHeader(localStorage.getItem('id_token'))
+    return super.getAuthHeader(this.token)
+  }
+
+  get token () {
+    return localStorage.getItem('id_token')
   }
 
   get webAuth () {
     return this._webAuth
+  }
+
+  get feathersConfig () {
+    return this._feathersConfig
   }
 
   get user () {

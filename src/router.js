@@ -119,19 +119,27 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   let payload
-  try {
-    payload = router.app.$store.state.auth.payload
-  }
-  catch (e) { /* ignored */ }
+  try { payload = router.app.$authService().isAuthenticated() }
+  catch (e) { console.debug('Route auth fail:', e) }
 
   if (to.matched.some(route => route.meta.anonymous)) {
     if (payload) {
-      return next({name: 'users.edit', params: {id: 'me'}, replace: true})
+      return next({
+        name: 'users.edit',
+        params: {
+          id: 'me'
+        },
+        replace: true
+      })
     }
   }
   if (to.matched.some(route => route.meta.private)) {
     if (!payload) {
-      return next({name: 'users.login', query: {redirect: to.fullPath}, replace: true})
+      return next({
+        name: 'users.login',
+        query: {redirect: to.fullPath},
+        replace: true
+      })
     }
   }
 

@@ -29,12 +29,18 @@ module.exports = {
   },
 
   auth: {
+    feathers: {
+      storageKey: process.env.FEATHERS_STORAGE_KEY || 'id_token',
+      jwtStrategy: process.env.FEATHERS_JWT_STRATEGY || 'jwt'
+    },
     common: {},
     auth0: {
       domain: process.env.AUTH0_DOMAIN || 'motionbank.eu.auth0.com',
       clientID: process.env.AUTH0_CLIENT_ID || 'lyVRrHYxUCOosFip40Ws5BRJyfHWSWTi',
       audience: process.env.AUTH0_AUDIENCE || 'https://motionbank.eu.auth0.com/userinfo',
-      redirectUri: (process.env.FRONTEND_HOST || pkg.appConfig.frontendHost) + '/users/callback'
+      redirectUri: (process.env.FRONTEND_HOST || pkg.appConfig.frontendHost) + '/users/callback',
+      scope: 'openid profile email',
+      responseType: 'token id_token'
     },
     local: {}
   },
