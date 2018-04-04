@@ -94,7 +94,7 @@ class Auth0 extends BaseAuth {
         if (err) {
           if (err.error === 'login_required') return resolve()
           else {
-            console.debug(TAG, 'checkSession:', err.error, err)
+            console.debug(TAG, 'checkSession:', err.error || err.message)
             return reject(err)
           }
         }

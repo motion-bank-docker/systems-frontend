@@ -13,15 +13,15 @@ Vue.use(Vuex)
 
 const setupStore = function (Vue) {
   const
-    cg = Vue.mbConf,
-    apiHost = cg.app.hosts.api,
+    mbConf = Vue.mbConf,
+    apiHost = mbConf.app.hosts.api,
     authClient = Vue.mbAuth() ? Vue.mbAuth() : undefined
   /**
    * Set up VueX store with API service backends
    */
   let client
 
-  if (cg.app.useWebSockets) {
+  if (mbConf.app.useWebSockets) {
     try {
       /**
        * WebSocket API connections
@@ -42,14 +42,15 @@ const setupStore = function (Vue) {
   }
 
   const
-    idField = cg.app.idField,
-    {service, auth} = feathersVuex(client, {idField})
+    opts = {idField: mbConf.app.idField},
+    {service, auth} = feathersVuex(client, opts)
 
   return new Vuex.Store({
     plugins: [
-      service('annotations', {idField}),
-      service('maps', {idField}),
-      service('users', {idField}),
+      service('acls', opts),
+      service('annotations', opts),
+      service('maps', opts),
+      service('users', opts),
       auth(authClient.feathersConfig)
     ],
     modules: {

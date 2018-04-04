@@ -1,4 +1,6 @@
-const app = require('./app').config
+const
+  frontendURL = require('./app').config.hosts.frontend,
+  env = process.env
 /**
  * AUTHENTICATION
  * Configures client & server auth
@@ -16,27 +18,28 @@ const Auth = function () {
          *  Auth0
          */
         auth0: {
-          domain: process.env.AUTH0_DOMAIN || 'motionbank.eu.auth0.com',
-          clientID: process.env.AUTH0_CLIENT_ID || 'lyVRrHYxUCOosFip40Ws5BRJyfHWSWTi',
-          audience: process.env.AUTH0_AUDIENCE || 'https://motionbank.eu.auth0.com/userinfo',
-          redirectUri: !process.env.AUTH0_NO_REDIRECT ? (app.hosts.frontend + '/users/callback') : undefined,
-          scope: process.env.AUTH0_INIT_SCOPE || 'openid profile email',
-          responseType: process.env.AUTH0_RESPONSE_TYPE || 'token id_token'
+          domain: env.AUTH0_DOMAIN || 'motionbank.eu.auth0.com',
+          clientID: env.AUTH0_CLIENT_ID || 'lyVRrHYxUCOosFip40Ws5BRJyfHWSWTi',
+          clientSecret: env.AUTH0_CLIENT_SECRET || 'cTJ7wxsxzWC2lqZKcg5gv5Hng2DWvDf3e0txRUrLgp2GRxr2kiiCRgvhfq1kbEW8',
+          audience: env.AUTH0_AUDIENCE || 'https://motionbank.eu.auth0.com/userinfo',
+          redirectUri: !env.AUTH0_NO_REDIRECT ? (frontendURL + '/users/callback') : undefined,
+          scope: env.AUTH0_INIT_SCOPE || 'openid profile email',
+          responseType: env.AUTH0_RESPONSE_TYPE || 'token id_token'
         },
         /**
          * Feathers
          * */
         feathers: {
-          storageKey: process.env.FEATHERS_STORAGE_KEY || 'id_token',
-          jwtStrategy: process.env.FEATHERS_JWT_STRATEGY || 'jwt'
+          storageKey: env.FEATHERS_STORAGE_KEY || 'id_token',
+          jwtStrategy: env.FEATHERS_JWT_STRATEGY || 'jwt'
         },
         /**
          * Local
          */
         local: {
           // TODO: storage should become configurable (nedb, memory, localforage, ...)
-          storageKey: process.env.LOCAL_STORAGE_KEY || 'motionbank-jwt',
-          jwtStrategy: process.env.LOCAL_JWT_STRATEGY || 'jwt'
+          storageKey: env.LOCAL_STORAGE_KEY || 'motionbank-jwt',
+          jwtStrategy: env.LOCAL_JWT_STRATEGY || 'jwt'
         }
       },
       /**
@@ -48,10 +51,10 @@ const Auth = function () {
          * JWT
          */
         jwt: {
-          cache: !process.env.JWT_NO_CACHE,
-          rateLimit: !process.env.JWT_NO_RATE_LIMIT,
-          jwksRequestsPerMinute: parseInt(process.env.JWT_JWKS_PER_MIN || 5),
-          jwksUri: process.env.JWT_JWKS_URI || 'https://motionbank.eu.auth0.com/.well-known/jwks.json'
+          cache: !env.JWT_NO_CACHE,
+          rateLimit: !env.JWT_NO_RATE_LIMIT,
+          jwksRequestsPerMinute: parseInt(env.JWT_JWKS_PER_MIN || 5),
+          jwksUri: env.JWT_JWKS_URI || 'https://motionbank.eu.auth0.com/.well-known/jwks.json'
         }
       }
     }

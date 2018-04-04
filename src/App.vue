@@ -29,7 +29,6 @@ export default {
     }).catch(err => {
       console.debug('No existing auth session:',
         err.error || err.message, err.error_description)
-      if (err.stack) console.debug(err.stack)
     })
 
     return {
