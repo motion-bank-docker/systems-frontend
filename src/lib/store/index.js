@@ -50,6 +50,7 @@ const setupStore = function (Vue) {
       service('acls', opts),
       service('annotations', opts),
       service('maps', opts),
+      service('profiles', opts),
       service('users', opts),
       auth(authClient.feathersConfig)
     ],

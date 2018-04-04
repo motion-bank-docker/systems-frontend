@@ -40,6 +40,7 @@
     "feathers-vuex": "^1.1.1",
     "he": "^1.1.1",
     "identicon.js": "^2.3.1",
+    "jdenticon": "^2.0.0",
     "luxon": "^0.5.3",
     "quasar-extras": "0.0.8",
     "quasar-framework": "^0.14.6",
