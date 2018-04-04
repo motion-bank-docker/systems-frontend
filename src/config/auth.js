@@ -23,23 +23,23 @@ const Auth = function () {
           clientSecret: env.AUTH0_CLIENT_SECRET || 'cTJ7wxsxzWC2lqZKcg5gv5Hng2DWvDf3e0txRUrLgp2GRxr2kiiCRgvhfq1kbEW8',
           audience: env.AUTH0_AUDIENCE || 'https://motionbank.eu.auth0.com/userinfo',
           redirectUri: !env.AUTH0_NO_REDIRECT ? (frontendURL + '/users/callback') : undefined,
-          scope: env.AUTH0_INIT_SCOPE || 'openid profile email',
+          scope: env.AUTH0_INIT_SCOPE || 'offline_access openid profile email',
           responseType: env.AUTH0_RESPONSE_TYPE || 'token id_token'
         },
         /**
          * Feathers
          * */
         feathers: {
-          storageKey: env.FEATHERS_STORAGE_KEY || 'id_token',
-          jwtStrategy: env.FEATHERS_JWT_STRATEGY || 'jwt'
+          storageKey: env.FEATHERS_STORAGE_KEY,
+          jwtStrategy: env.FEATHERS_JWT_STRATEGY
         },
         /**
          * Local
          */
         local: {
           // TODO: storage should become configurable (nedb, memory, localforage, ...)
-          storageKey: env.LOCAL_STORAGE_KEY || 'motionbank-jwt',
-          jwtStrategy: env.LOCAL_JWT_STRATEGY || 'jwt'
+          storageKey: env.LOCAL_STORAGE_KEY,
+          jwtStrategy: env.LOCAL_JWT_STRATEGY
         }
       },
       /**

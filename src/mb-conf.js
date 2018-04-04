@@ -8,12 +8,14 @@ class MBConf {
   static get webpack () { return CONFIG_WEBPACK }
 
   static install (Vue) {
-    Vue.mbConf = assignDeep({}, {
+    const mbConf = assignDeep({}, {
       app: MBConf.app,
       auth: MBConf.auth,
       scopes: MBConf.scopes,
       webpack: MBConf.webpack
     })
+    Vue.mbConf = mbConf
+    Vue.prototype.$mbConf = mbConf
     console.debug(`Configurations registered: ${Object.keys(Vue.mbConf).join(', ')}`)
   }
 }

@@ -41,7 +41,7 @@
     },
     methods: {
       login () {
-        if (this.$globalConfig.app.useAuth0) {
+        if (this.$mbConf.app.useAuth0) {
           this.$mbAuth().login()
         }
         else {
