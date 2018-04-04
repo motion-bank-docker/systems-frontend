@@ -1,7 +1,7 @@
 {
   "name": "motionbank-systems-frontend",
   "productName": "Motion Bank Systems Frontend",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "private": true,
   "description": "Combined frontend project for Motion Bank web services",
   "metapak": {

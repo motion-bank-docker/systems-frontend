@@ -8,9 +8,9 @@ const App = function () {
       //
       // Hosts definitions
       hosts: {
-        api: process.env.HOSTS_API || 'https://motionbank-api.herokuapp.com',
-        frontend: process.env.HOSTS_FRONTEND || 'http://localhost:8080',
-        streamer: process.env.HOSTS_STREAMER || 'http://localhost:8888'
+        api: process.env.HOSTS_API || 'https://api.motionbank.org',
+        frontend: process.env.HOSTS_FRONTEND || 'https://app.motionbank.org',
+        streamer: process.env.HOSTS_STREAMER || 'https://streamer.motionbank.org'
       },
       //
       // Params
