@@ -1,6 +1,7 @@
 const
   frontendURL = require('./app').config.hosts.frontend,
   env = process.env
+
 /**
  * AUTHENTICATION
  * Configures client & server auth

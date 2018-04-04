@@ -20,6 +20,17 @@ import router from './router'
 import i18n from './lib/locales'
 import services from './lib/services'
 
+import AirbrakeClient from 'airbrake-js'
+
+/** Airbrake for detecting exceptions and errors **/
+if (process.env.USE_AIRBRAKE) {
+  const airbrake = new AirbrakeClient({
+    projectId: process.env.AIRBRAKE_PROJECT_ID,
+    projectKey: process.env.AIRBRAKE_API_KEY
+  })
+  console.debug('Airbrake has been set up.', (airbrake))
+}
+
 Vue.config.productionTip = false
 AddressbarColor.set('#252324')
 
