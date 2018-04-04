@@ -1,7 +1,7 @@
 const chalk = require('chalk')
 
 class CLI {
-  static separator (char = '-', len = 72) {
+  static separator (char = '-', len = 90) {
     return new Array(len).fill(char).join('')
   }
   static writer (msg, out = process.stdout) {

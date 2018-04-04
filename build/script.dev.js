@@ -23,17 +23,20 @@ const
   port = process.env.PORT || config.webpack.dev.port,
   uri = config.app.hosts.frontend
 
-const theme = col(`"${config.webpack.defaultTheme}"`, 'yellow', 'bold')
+const theme = col(`"${config.webpack.defaultTheme}"`, 'cyan', 'bold')
 let output = [
-  col(separator(), 'cyan'),
-  col('Starting dev server with ', 'cyan') + theme + col(' theme...', 'cyan'),
-  col('Will listen at ') + col(uri, 'white', 'bold'),
-  col(separator(), 'cyan')
+  col('Starting dev server with ', 'yellow') + theme + col(' theme...', 'yellow'),
+  col(separator(), 'yellow'), '\n',
+  col('Will listen at ') + col(uri, 'white', 'bold')
 ]
 if (config.webpack.dev.openBrowser) {
-  output = output.concat(['\n', col('Browser will open when build is ready.', 'yellow', 'bold')])
+  output = output.concat([
+    col('Browser will open when build is ready.', 'white', 'bold')
+  ])
 }
-print(output.concat(['\n\n']))
+print(
+  output.concat(['\n'])
+)
 
 const
   devMiddleware = require('webpack-dev-middleware')(compiler, {

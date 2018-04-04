@@ -46,18 +46,18 @@ function printBuildInfo () {
     col(separator(), 'red'),
     col('WARNING!', 'red', 'bold'),
     col(separator(), 'red'),
-    col('Do NOT use VueRouter\'s "history" mode if'),
-    col('building for Cordova or Electron.'), '\n',
-    col('Building Quasar App with ', 'cyan') + theme + col(' theme...', 'cyan'),
-    col(separator(), 'cyan')
+    col('Do NOT use VueRouter\'s ' + col('"history"', 'white', 'bold') + ' mode'),
+    col('if building for Cordova or Electron.'), '\n\n',
+    col(separator(), 'cyan'),
+    col('Building Quasar App with ', 'cyan') + theme + col(' theme...', 'cyan'), '\n'
   ])
 }
 function finalize () {
   const theme = col(`"${config.webpack.defaultTheme}"`, 'yellow', 'bold')
   print([
     '\n', col(separator('='), 'cyan'),
-    col('Build complete with "' + theme + '" theme in ' +
-      col('"/dist"', 'yellow', 'bold') + col(' folder.', 'yellow')), '\n',
+    col('Build complete with ' + theme + ' theme in ' +
+      col('"/dist"', 'yellow', 'bold') + ' folder.'),
     col(separator(), 'cyan'),
     col('Built files are meant to be served over an HTTP server.'),
     col('Opening index.html over file:// won\'t work.'), '\n\n'

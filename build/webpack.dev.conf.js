@@ -10,7 +10,7 @@ const
 
 print([
   col(separator('='), 'yellow'),
-  col('DEV build', 'yellow', 'bold'), '\n'
+  col('DEV build', 'yellow', 'bold')
 ])
 
 // add hot-reload related code to entry chunks
