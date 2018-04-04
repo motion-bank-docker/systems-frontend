@@ -4,6 +4,10 @@
 npm install
 ```
 
+## Run
+
+Just execute ``npm start`` to serve the static files. Control server address through ``HOST`` and ``PORT`` env variables.
+
 ## Customise
 
 **Do not edit the `apiConf` in `package.json`, it is auto-generated and will be overwritten**
