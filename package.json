@@ -13,11 +13,16 @@
       "babel",
       "eslint",
       "readme",
-      "codeclimate",
+      "codacy",
+      "tidelift",
+      "travis",
       "webpack",
       "vue",
       "quasar"
-    ]
+    ],
+    "codacy": {
+      "hash": "068aa9defed5426e91e2c2f4c1e2190d"
+    }
   },
   "scripts": {
     "babel": "babel src --out-dir dist",
@@ -28,7 +33,7 @@
     "metapak": "metapak",
     "serve": "static-server dist/",
     "start": "node ./",
-    "test": "npm run lint",
+    "test": "echo \"No tests specified...\"; exit 0",
     "webpack": "node build/"
   },
   "dependencies": {
@@ -113,7 +118,7 @@
     "json-loader": "^0.5.4",
     "material-design-icons": "^3.0.1",
     "metapak": "^1.0.2",
-    "metapak-motionbank": "^1.8.5",
+    "metapak-motionbank": "^1.9.0",
     "mkdirp": "^0.5.1",
     "mocha": "^4.0.1",
     "opn": "^5.0.0",
@@ -140,5 +145,13 @@
     "webpack-merge": "^4.1.1"
   },
   "author": "Mainz University of Applied Sciences (Motion Bank Project)",
-  "license": "MIT"
+  "license": "MIT",
+  "appConfig": {
+    "apiHost": "https://motionbank-api.herokuapp.com",
+    "streamerHost": "http://localhost:8888",
+    "frontendHost": "http://localhost:8080",
+    "idField": "uuid",
+    "useAuth0": false,
+    "useWebSockets": false
+  }
 }
