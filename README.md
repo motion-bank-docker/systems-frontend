@@ -7,6 +7,7 @@
 [![NPM version](https://badge.fury.io/js/motionbank-systems-frontend.svg)](https://npmjs.org/package/motionbank-systems-frontend)
 [![Build status](https://secure.travis-ci.org/motionbank-js/motionbank-systems-frontend.svg)](https://travis-ci.org/motionbank-js/motionbank-systems-frontend)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/068aa9defed5426e91e2c2f4c1e2190d)](https://www.codacy.com/app/motionbank-js/motionbank-systems-frontend)
+[![Maintainability](https://api.codeclimate.com/v1/badges/cba51f9e40aef7db5dec/maintainability)](https://codeclimate.com/github/motionbank-js/motionbank-systems-frontend)
 [![Dependency Status](https://tidelift.com/badges/github/motionbank-js/motionbank-systems-frontend)](https://tidelift.com/repo/github/motionbank-js/motionbank-systems-frontend)
 
 

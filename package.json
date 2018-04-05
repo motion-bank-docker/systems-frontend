@@ -13,6 +13,7 @@
       "babel",
       "eslint",
       "readme",
+      "codeclimate",
       "codacy",
       "tidelift",
       "travis",
@@ -22,6 +23,9 @@
     ],
     "codacy": {
       "hash": "068aa9defed5426e91e2c2f4c1e2190d"
+    },
+    "codeclimate": {
+      "hash": "cba51f9e40aef7db5dec"
     }
   },
   "scripts": {
@@ -118,7 +122,7 @@
     "json-loader": "^0.5.4",
     "material-design-icons": "^3.0.1",
     "metapak": "^1.0.2",
-    "metapak-motionbank": "^1.9.0",
+    "metapak-motionbank": "^1.9.2",
     "mkdirp": "^0.5.1",
     "mocha": "^4.0.1",
     "opn": "^5.0.0",
