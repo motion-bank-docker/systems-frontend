@@ -75,7 +75,7 @@
         }
       },
       playerReady (player) {
-        console.debug('player ready', player.id())
+        console.debug('Video.js: player ready - ID', player.id())
         this.player = player
       },
       loadAnnotations () {

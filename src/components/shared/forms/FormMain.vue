@@ -149,7 +149,7 @@
             })
             .catch(function (err) {
               Loading.hide()
-              console.debug(err)
+              console.debug('Form submit:', err)
               $store.commit('notifications/addMessage', {
                 body: err.message
                   ? `${err.message}${err.code

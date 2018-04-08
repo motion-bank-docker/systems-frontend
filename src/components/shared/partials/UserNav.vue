@@ -10,13 +10,13 @@
         big, flat, @click="currentApp = 'mosys'; $router.push({ name: 'mosys.grids.list' })") Mosys
 
     q-btn(color="primary", flat, icon="settings",
-    v-if="user", @click="$router.push(`/users/me/edit`)") {{ $t('navigation.manage_account') }}
+    v-if="authenticated", @click="$router.push({ name: 'users.edit', params: { id: 'me' } })") {{ $t('navigation.manage_account') }}
 
     q-btn(color="primary", flat, icon="eject",
-    v-if="user", @click="logout") {{ $t('navigation.logout') }}
+    v-if="authenticated", @click="logout") {{ $t('navigation.logout') }}
 
     q-btn(color="primary", flat, icon="arrow_forward",
-    v-if="!user", @click="$router.push({ name: 'users.login' })") {{ $t('navigation.login') }}
+    v-if="!authenticated", @click="login") {{ $t('navigation.login') }}
 </template>
 
 <script>
@@ -33,20 +33,23 @@
       QIcon,
       QBtn
     },
+    props: ['authenticated', 'auth'],
     data () {
       return {
         currentApp: null
       }
     },
-    computed: {
-      user () {
-        return this.$store.state.auth.payload
-      }
-    },
     methods: {
+      login () {
+        if (this.$mbConf.app.useAuth0) {
+          this.$mbAuth().login()
+        }
+        else {
+          this.$router.push({ name: 'users.login' })
+        }
+      },
       logout () {
-        return this.$store.dispatch('auth/logout')
-          .then(() => this.$router.replace({ name: 'site.welcome' }))
+        this.$mbAuth().logout(this.$store)
       }
     }
   }

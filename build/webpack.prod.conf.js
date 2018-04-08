@@ -1,6 +1,7 @@
-var
+const
+  { col, separator, print } = require('./cli-utils'),
   path = require('path'),
-  config = require('../config'),
+  config = require('../src/config'),
   cssUtils = require('./css-utils'),
   webpack = require('webpack'),
   merge = require('webpack-merge'),
@@ -10,15 +11,20 @@ var
   OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin'),
   UglifyEsPlugin = require('uglify-es-webpack-plugin')
 
+print([
+  col(separator('='), 'yellow'),
+  col('PRODUCTION build', 'yellow', 'bold')
+])
+
 module.exports = merge(baseWebpackConfig, {
   module: {
     rules: cssUtils.styleRules({
-      sourceMap: config.build.productionSourceMap,
+      sourceMap: config.webpack.build.productionSourceMap,
       extract: true,
       postcss: true
     })
   },
-  devtool: config.build.productionSourceMap ? '#source-map' : false,
+  devtool: config.webpack.build.productionSourceMap ? '#source-map' : false,
   plugins: [
     new UglifyEsPlugin({
       sourceMap: true,

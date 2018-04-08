@@ -1,27 +1,21 @@
-var
+const
   path = require('path'),
-  webpack = require('webpack'),
-  config = require('../config'),
+  Webpack = require('webpack'),
+  { app, auth, webpack, scopes } = require('../src/config'),
   cssUtils = require('./css-utils'),
   env = require('./env-utils'),
   merge = require('webpack-merge'),
   projectRoot = path.resolve(__dirname, '../'),
   ProgressBarPlugin = require('progress-bar-webpack-plugin'),
-  appConfig = require('../package.json').appConfig,
-  apiHost = process.env.API_HOST || appConfig.apiHostLocal,
-  streamerHost = process.env.STREAMER_HOST || appConfig.streamerHost,
   useCssSourceMap =
-    (env.dev && config.dev.cssSourceMap) ||
-    (env.prod && config.build.productionSourceMap)
+    (env.dev && webpack.dev.cssSourceMap) ||
+    (env.prod && webpack.build.productionSourceMap)
 
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
 }
 
-process.stdout.write(` API_HOST set to:      ${apiHost}\n`)
-process.stdout.write(` STREAMER_HOST set to: ${streamerHost}\n`)
-process.stdout.write(` ID_FIELD set to:      ${appConfig.idField}\n`)
-process.stdout.write(` ROUTER MODE:          ${env.routerMode}\n\n`)
+printBuildInfo()
 
 module.exports = {
   entry: {
@@ -29,7 +23,7 @@ module.exports = {
   },
   output: {
     path: path.resolve(__dirname, '../dist'),
-    publicPath: config[env.prod ? 'build' : 'dev'].publicPath,
+    publicPath: webpack[env.prod ? 'build' : 'dev'].publicPath,
     filename: 'js/[name].js',
     chunkFilename: 'js/[id].[chunkhash].js'
   },
@@ -39,7 +33,7 @@ module.exports = {
       resolve('src'),
       resolve('node_modules')
     ],
-    alias: config.aliases
+    alias: webpack.aliases
   },
   module: {
     rules: [
@@ -93,30 +87,65 @@ module.exports = {
     ]
   },
   plugins: [
-    new webpack.DefinePlugin({
-      'process.env': config[env.prod ? 'build' : 'dev'].env,
-      'DEV': env.dev,
-      'PROD': env.prod,
-      '__THEME': '"' + env.platform.theme + '"',
-      'ROUTER_MODE': '"' + env.routerMode + '"'
+    new Webpack.DefinePlugin({
+      'process.env': webpack[env.prod ? 'build' : 'dev'].env,
+      DEV: env.dev,
+      PROD: env.prod,
+      __THEME: '"' + webpack.defaultTheme + '"',
+      ROUTER_MODE: '"' + env.routerMode + '"'
     }),
-    new webpack.DefinePlugin({
-      'API_HOST': JSON.stringify(apiHost),
-      'STREAMER_HOST': JSON.stringify(streamerHost),
-      'ID_FIELD': JSON.stringify(appConfig.idField)
+    new Webpack.DefinePlugin({
+      CONFIG_APP: JSON.stringify(app),
+      CONFIG_AUTH: JSON.stringify(auth),
+      CONFIG_SCOPES: JSON.stringify(scopes),
+      CONFIG_WEBPACK: JSON.stringify(webpack)
     }),
-    new webpack.LoaderOptionsPlugin({
-      minimize: env.prod,
+    new Webpack.LoaderOptionsPlugin({
+      minimize: (env.prod),
       options: {
         context: path.resolve(__dirname, '../src'),
         postcss: cssUtils.postcss
       }
     }),
     new ProgressBarPlugin({
-      format: config.progressFormat
+      format: webpack.progressFormat
     })
   ],
   performance: {
     hints: false
   }
+}
+
+function printBuildInfo () {
+  const
+    //
+    // Some weird ass CLI stats
+    CLI = require('./cli-utils'),
+    //
+    // Get some tools
+    { col, line, separator, print } = CLI,
+    //
+    // Convert object to JSON
+    text = CLI.toText(app.useAuth0 ? auth.client.auth0 : auth.client.local)
+  //
+  // Assemble lines and print dat shit
+  print([
+    col(separator('='), 'cyan'),
+    col('WEBPACK', 'cyan', 'bold'),
+    col('Environment variables', 'cyan'),
+    col(separator(), 'cyan'),
+    line('HOSTS_API', app.hosts.api),
+    line('HOSTS_FRONTEND', app.hosts.frontend),
+    line('HOSTS_STREAMER', app.hosts.streamer),
+    col(separator(), 'cyan'),
+    line('USE_AUTH0', app.useAuth0),
+    line('USE_WEBSOCKETS', app.useWebSockets),
+    col(separator(), 'cyan'),
+    line('idField', app.idField),
+    line('Router mode', env.routerMode), '\n',
+    col(separator('='), 'cyan'),
+    col(`AUTH`, 'cyan', 'bold'),
+    col(`Active configuration: ${app.useAuth0 ? 'Auth0' : 'Local'}`, 'cyan'),
+    col(separator(), 'cyan')
+  ].concat(CLI.toLines(text).concat(['\n\n'])))
 }

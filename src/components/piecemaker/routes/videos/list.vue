@@ -18,8 +18,8 @@
   import superagent from 'superagent'
   import url from 'url'
   import path from 'path'
-  import buildVars from '../../../../lib/build-vars'
   import he from 'he'
+  import assignDeep from 'assign-deep'
 
   export default {
     components: {
@@ -43,16 +43,17 @@
         }
       },
       loadVideos () {
+        const _this = this
         return this.$store.dispatch('annotations/find', { query: { 'body.purpose': 'linking', 'target.id': this.$route.params.groupId } })
           .then(entries => {
             return Promise.map(entries, entry => {
-              const newEntry = Object.assign({}, entry)
+              const newEntry = assignDeep({}, entry)
               newEntry.title = entry.body.source
               return Promise.resolve()
                 .then(() => {
                   if (entry.body.source.indexOf('http') !== 0) return
                   if (path.extname(url.parse(entry.body.source).path) === '.mp4') return
-                  return superagent.get(`${buildVars().apiHost}/proxy?url=${encodeURIComponent(entry.body.source)}`)
+                  return superagent.get(`${_this.$globalConfig.app.hosts.api}/proxy?url=${encodeURIComponent(entry.body.source)}`)
                     .then(result => {
                       let title = result.text.match(/<title[^>]*>([^<]+)<\/title>/)[1]
                       newEntry.title = he.decode(title)

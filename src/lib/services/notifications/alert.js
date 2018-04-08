@@ -1,10 +1,11 @@
 import { Alert } from 'quasar-framework'
+import assignDeep from 'assign-deep'
 
 import 'quasar-extras/animate/bounceInDown.css'
 import 'quasar-extras/animate/bounceOutUp.css'
 
 function alert (msg, type = null, opts = {}) {
-  const alert = Object.assign({
+  const alert = assignDeep({
     enter: 'bounceInDown',
     leave: 'bounceOutUp',
     color: 'faded',

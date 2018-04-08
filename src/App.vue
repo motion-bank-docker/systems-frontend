@@ -1,41 +1,52 @@
 <template lang="pug">
   #q-app
-    animated-background
     q-layout(ref="layout", view="hHh LpR fFf")
-      user-nav(slot="header")
-      router-view
+      user-nav(slot="header", :login="login", :auth="auth", :authenticated="authenticated")
+      router-view(:auth="auth", :authenticated="authenticated")
 </template>
 
 <script>
 /*
  * Root component
  */
-import AnimatedBackground from './components/shared/partials/AnimatedBackground'
 import UserNav from './components/shared/partials/UserNav'
-import {
-  QLayout
-} from 'quasar-framework'
+import { EVENT_AUTH_CHANGE } from './lib/services/mb-auth'
+import { QLayout } from 'quasar-framework'
+
 export default {
+  data () {
+    const
+      _this = this,
+      { auth, authenticated } = this.$mbAuth()
+
+    this.$mbAuth().on(EVENT_AUTH_CHANGE, authState => {
+      _this.authenticated = authState.authenticated
+    })
+
+    this.$mbAuth().checkSession(this.$store).then(res => {
+      if (res) console.debug('Existing auth session:', res)
+      return res
+    }).catch(err => {
+      console.debug('No existing auth session:',
+        err.error || err.message, err.error_description)
+    })
+
+    return {
+      auth,
+      authenticated
+    }
+  },
+  methods: {
+    login () {
+      this.$mbAuth().login()
+    },
+    logout () {
+      this.$mbAuth().logout(this.$store)
+    }
+  },
   components: {
     QLayout,
-    AnimatedBackground,
     UserNav
-  },
-  created: function () {
-    const { $store } = this
-    $store.dispatch('auth/authenticate')
-      .catch(err => {
-        if (err) {
-          console.debug(err.message)
-          const message = `${err.message}${err.code ? ' (Code: ' + err.code + ')' : ''}`
-          if (err.code !== 401) {
-            $store.commit('notifications/addMessage', {
-              body: message,
-              type: 'error'
-            })
-          }
-        }
-      })
   }
 }
 </script>

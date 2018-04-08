@@ -46,6 +46,7 @@
   import { AppFullscreen, ActionSheet, Dialog, QBtn, QLayout, QInput, QList, QItem, QItemMain, QItemTile } from 'quasar-framework'
   // import { ActionSheet, Dialog, QBtn, QLayout, QInput, QList, QItem, QItemMain, QItemTile } from 'quasar-framework'
   import assert from 'assert'
+  import assignDeep from 'assign-deep'
   import uuidValidate from 'uuid-validate'
   import VideoPlayer from '../../../shared/media/VideoPlayer'
   import annotations from '../../../../lib/annotations'
@@ -173,11 +174,11 @@
         const _this = this
         const annotation = {
           author: _this.$store.state.auth.payload.userId,
-          body: Object.assign({}, _this.currentBody),
+          body: assignDeep({}, _this.currentBody),
           target: {
             id: _this.groupId,
             type: constants.MAP_TYPE_TIMELINE,
-            selector: Object.assign({}, _this.currentSelector)
+            selector: assignDeep({}, _this.currentSelector)
           }
         }
         return this.$store.dispatch('annotations/create', annotation)
