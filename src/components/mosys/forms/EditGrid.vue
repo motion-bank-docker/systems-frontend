@@ -10,6 +10,15 @@
       .padding-1em
         form-main(v-model="payload", :schema="schema")
 
+      users-table(
+        :headline="$t('routes.mosys.grids.users.title')",
+        :entries="users",
+        :columns="columns",
+        :actions="actions",
+        @action="onAction"
+        )
+
+
 </template>
 
 <script>
@@ -19,18 +28,32 @@
   import constants from '../../../lib/constants'
   import Tags from '../../shared/partials/Tags'
   import CardFull from '../../shared/layouts/CardFull'
+  import UsersTable from '../../shared/partials/UsersTable'
 
   export default {
     components: {
       FormMain,
       QBtn,
       Tags,
-      CardFull
+      CardFull,
+      UsersTable
     },
     props: ['redirectTo'],
     data () {
       const context = this
       return {
+        columns: [
+          {
+            label: 'Name',
+            field: 'name',
+            type: 'string',
+            sort: true
+          }
+        ],
+        actions: [
+          { type: 'edit', title: 'Settings', scope: 'grid' },
+          { type: 'delete', title: 'Remove' }
+        ],
         payload: this.$route.params.id ? context.$store.dispatch('maps/get', context.$route.params.id) : undefined,
         schema: {
           fields: {
