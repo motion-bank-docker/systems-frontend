@@ -6,6 +6,7 @@ Vue.use(VueRouter)
 import * as pm from './components/piecemaker/routes'
 import mosys from './components/mosys/routes'
 import piecemaker from './components/piecemaker/routes/stash'
+import administration from './components/administration/routes'
 import {
   errors,
   site,
@@ -63,6 +64,7 @@ const router = new VueRouter({
     //
     { path: '/mosys/grids', component: mosys.grids.list, name: 'mosys.grids.list', meta: { private: true } },
     { path: '/mosys/grids/create', component: mosys.grids.create, name: 'mosys.grids.create', meta: { private: true } },
+    { path: '/mosys/grids/user', component: mosys.grids.user, name: 'mosys.grids.user', meta: { private: true } },
     { path: '/mosys/grids/:id', component: mosys.grids.show, name: 'mosys.grids.show' },
     { path: '/mosys/grids/:id/edit', component: mosys.grids.edit, name: 'mosys.grids.edit', meta: { private: true } },
     { path: '/mosys/grids/:id/annotate', component: mosys.grids.annotate, name: 'mosys.grids.annotate', meta: { private: true } },
@@ -86,6 +88,7 @@ const router = new VueRouter({
 
     { path: '/piecemaker/groups', component: pm.groups.list, name: 'piecemaker.groups.list', meta: { private: true } },
     { path: '/piecemaker/groups/create', component: pm.groups.create, name: 'piecemaker.groups.create', meta: { private: true } },
+    { path: '/piecemaker/groups/user', component: pm.groups.user, name: 'piecemaker.groups.user', meta: { private: true } },
     { path: '/piecemaker/groups/:id', component: pm.groups.show, name: 'piecemaker.groups.show' },
     { path: '/piecemaker/groups/:id/annotate', component: pm.groups.annotate, name: 'piecemaker.groups.annotate', meta: { private: true } },
     { path: '/piecemaker/groups/:groupId/videos', component: pm.videos.list, name: 'piecemaker.videos.list', meta: { private: true } },
@@ -94,6 +97,8 @@ const router = new VueRouter({
 
     { path: '/piecemaker/videos/:id/annotate', component: pm.videos.annotate, name: 'piecemaker.videos.annotate', meta: { private: true } },
     { path: '/piecemaker/videos/:id/edit', component: pm.videos.edit, name: 'piecemaker.videos.edit', meta: { private: true } },
+
+    // { path: '/piecemaker/users/edit', component: pm.users.edit, name: 'piecemaker.users.edit', meta: { private: false } },
 
     { path: '/piecemaker/annotator', component: piecemaker.annotator, name: 'piecemaker.annotator', meta: { private: true } },
     // { path: '/piecemaker/dashboard', component: piecemaker.dashboard, name: 'stash.dashboard', meta: { private: true } },
@@ -111,6 +116,8 @@ const router = new VueRouter({
     { path: '/piecemaker/VideoDetail', component: piecemaker.VideoDetail, name: 'piecemaker.VideoDetail', meta: { private: true } },
 
     { path: '/piecemaker/codarts/:groupId/annotate', component: pm.codarts.liveAnnotation, name: 'piecemaker.codarts.live-annotation', meta: { private: true } },
+
+    { path: '/administration/users', component: administration.users, name: 'administration.users', meta: { private: false } },
 
     // Catchall
     { path: '*', component: errors.notFound, name: 'errors.notFound' }
