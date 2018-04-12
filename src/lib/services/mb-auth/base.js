@@ -37,8 +37,8 @@ class BaseAuth extends TinyEmitter {
     return Promise.resolve(false)
   }
 
-  isAuthenticated () {
-    return (this.user)
+  isAuthenticated (store) {
+    return (this.user || (store && store.state.auth.payload.userId))
   }
 
   isUserScopeAllowed (action, resource, fine) {
@@ -73,6 +73,10 @@ class BaseAuth extends TinyEmitter {
 
   get client () {
     return this._client
+  }
+
+  get store () {
+    return this._store
   }
 
   static get EVENT_AUTH_CHANGE () {

@@ -38,7 +38,7 @@ class Local extends BaseAuth {
     return conf.store.dispatch('auth/authenticate', payload)
       .then(res => {
         if (res) {
-          _this.emit(BaseAuth.EVENT_AUTH_CHANGE, { authenticated: true })
+          _this.setSession(res)
         }
         /**
          * If there is a saved original destination, redirect there
@@ -63,10 +63,6 @@ class Local extends BaseAuth {
   }
 
   setSession (authResult) {
-    let expiresAt = JSON.stringify(authResult.expiresIn * 1000 + new Date().getTime())
-    localStorage.setItem('access_token', authResult.accessToken)
-    localStorage.setItem('id_token', authResult.idToken)
-    localStorage.setItem('expires_at', expiresAt)
     super.setSession(authResult)
   }
 
@@ -74,7 +70,7 @@ class Local extends BaseAuth {
     const _this = this
     return store.dispatch('auth/authenticate')
       .then(res => {
-        _this.emit(BaseAuth.EVENT_AUTH_CHANGE, { authenticated: true })
+        _this.setSession(res)
         return res
       })
       .catch(err => { if (err) throw err })

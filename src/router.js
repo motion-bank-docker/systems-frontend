@@ -120,13 +120,14 @@ const router = new VueRouter({
     { path: '/administration/users', component: administration.users, name: 'administration.users', meta: { private: false } },
 
     // Catchall
-    { path: '*', component: errors.notFound, name: 'errors.notFound' }
+    // { path: '*', component: errors.notFound, name: 'errors.notFound' }
+    { path: '*', component: errors.notFound, name: 'site.welcome' }
   ]
 })
 
 router.beforeEach((to, from, next) => {
   let payload
-  try { payload = router.app.$mbAuth().isAuthenticated() }
+  try { payload = router.app.$mbAuth().isAuthenticated(router.app.$store) }
   catch (e) { console.debug('Route auth fail:', e) }
 
   if (to.matched.some(route => route.meta.anonymous)) {
@@ -139,6 +140,7 @@ router.beforeEach((to, from, next) => {
         replace: true
       })
     }
+    next()
   }
   if (to.matched.some(route => route.meta.private)) {
     if (!payload) {
@@ -148,9 +150,11 @@ router.beforeEach((to, from, next) => {
         replace: true
       })
     }
+    next()
   }
-
-  next()
+  else {
+    next()
+  }
 })
 
 export default router

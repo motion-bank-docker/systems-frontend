@@ -73,7 +73,7 @@ module.exports.purify = function (cb) {
 
   Promise.all(css.map(function (file) {
     return new Promise(function (resolve) {
-      console.log('\n Purifying ' + path.relative(path.join(__dirname, '../dist'), file).bold + '...')
+      console.log('\n Purifying ' + path.relative(path.join(__dirname, '../dist'), file) + '...')
       purify(js, [file], {minify: true}, function (purified) {
         var oldSize = fs.statSync(file).size
         fs.writeFileSync(file, purified)
