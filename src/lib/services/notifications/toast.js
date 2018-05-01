@@ -1,7 +1,8 @@
 import { Toast } from 'quasar-framework'
+import assignDeep from 'assign-deep'
 
 function toast (msg, type = null, opts = {}) {
-  const toast = Object.assign({
+  const toast = assignDeep({
     html: msg,
     color: 'white',
     bgColor: 'dark',

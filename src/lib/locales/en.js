@@ -9,7 +9,8 @@ const en = {
     add_and_go: 'Add & Go',
     back: 'Back',
     create_account: 'Create Account',
-    create_group: 'Create Group',
+    // create_group: 'Create Group',
+    create_group: 'Create Timeline',
     cancel: 'Cancel',
     change: 'Change',
     delete: 'Delete',
@@ -49,7 +50,8 @@ const en = {
     email: 'Email',
     embedded: 'Embedded in',
     elements_length: 'Used Elements',
-    group_title: 'Group title',
+    // group_title: 'Group title',
+    group_title: 'Timeline title',
     last_annotation: 'Last annotated',
     last_edit: 'Last edit',
     location: 'Location',
@@ -156,16 +158,24 @@ const en = {
       },
       groups: {
         create: {
-          title: 'New Group',
-          caption: 'Create a group representing a global timeline.'
+          // title: 'New Group',
+          title: 'New Timeline',
+          // caption: 'Create a group representing a global timeline.'
+          caption: 'Create a global group timeline.'
         },
         list: {
-          title: 'Groups',
-          caption: 'All your most wonderful groups are here.'
+          // title: 'Groups',
+          title: 'Timelines',
+          caption: 'All your most wonderful timelines are here.'
         },
         edit: {
-          title: 'Edit Group',
-          caption: 'Edit group details.'
+          // title: 'Edit Group',
+          title: 'Edit Timeline',
+          caption: 'Edit timeline details.'
+        },
+        users: {
+          title: 'Users in this timeline',
+          caption: '.'
         }
       },
       videos: {
@@ -206,6 +216,10 @@ const en = {
         edit: {
           title: 'Edit grid',
           caption: 'Edit grid details'
+        },
+        users: {
+          title: 'Users in this grid',
+          caption: '.'
         }
       }
     }

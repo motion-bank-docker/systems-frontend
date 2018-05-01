@@ -1,13 +1,12 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import { Events } from 'quasar-framework'
 
 Vue.use(VueRouter)
 
-import store from './lib/store'
 import * as pm from './components/piecemaker/routes'
 import mosys from './components/mosys/routes'
 import piecemaker from './components/piecemaker/routes/stash'
+import administration from './components/administration/routes'
 import {
   errors,
   site,
@@ -41,12 +40,13 @@ const router = new VueRouter({
     //
     // Site content
     //
-    { path: '/', component: site.welcome, name: 'site.welcome', meta: { animatedBackground: false } },
-    { path: '/terms', component: site.terms, name: 'site.terms', meta: { animatedBackground: true } },
+    { path: '/', component: site.welcome, name: 'site.welcome' },
+    { path: '/terms', component: site.terms, name: 'site.terms' },
     { path: '/apps', component: site.apps, name: 'site.apps', meta: { private: true } },
     //
     // User management
     //
+    { path: '/users/callback', component: users.callback, name: 'users.callback' },
     { path: '/users/create', component: users.create, name: 'users.create', meta: { anonymous: true } },
     { path: '/users/login', component: users.login, name: 'users.login', meta: { anonymous: true } },
     { path: '/users/forgot', component: users.forgot, name: 'users.forgot', meta: { anonymous: true } },
@@ -64,6 +64,7 @@ const router = new VueRouter({
     //
     { path: '/mosys/grids', component: mosys.grids.list, name: 'mosys.grids.list', meta: { private: true } },
     { path: '/mosys/grids/create', component: mosys.grids.create, name: 'mosys.grids.create', meta: { private: true } },
+    { path: '/mosys/grids/user', component: mosys.grids.user, name: 'mosys.grids.user', meta: { private: true } },
     { path: '/mosys/grids/:id', component: mosys.grids.show, name: 'mosys.grids.show' },
     { path: '/mosys/grids/:id/edit', component: mosys.grids.edit, name: 'mosys.grids.edit', meta: { private: true } },
     { path: '/mosys/grids/:id/annotate', component: mosys.grids.annotate, name: 'mosys.grids.annotate', meta: { private: true } },
@@ -87,6 +88,7 @@ const router = new VueRouter({
 
     { path: '/piecemaker/groups', component: pm.groups.list, name: 'piecemaker.groups.list', meta: { private: true } },
     { path: '/piecemaker/groups/create', component: pm.groups.create, name: 'piecemaker.groups.create', meta: { private: true } },
+    { path: '/piecemaker/groups/user', component: pm.groups.user, name: 'piecemaker.groups.user', meta: { private: true } },
     { path: '/piecemaker/groups/:id', component: pm.groups.show, name: 'piecemaker.groups.show' },
     { path: '/piecemaker/groups/:id/annotate', component: pm.groups.annotate, name: 'piecemaker.groups.annotate', meta: { private: true } },
     { path: '/piecemaker/groups/:groupId/videos', component: pm.videos.list, name: 'piecemaker.videos.list', meta: { private: true } },
@@ -96,6 +98,8 @@ const router = new VueRouter({
 
     { path: '/piecemaker/videos/:id/annotate', component: pm.videos.annotate, name: 'piecemaker.videos.annotate', meta: { private: true } },
     { path: '/piecemaker/videos/:id/edit', component: pm.videos.edit, name: 'piecemaker.videos.edit', meta: { private: true } },
+
+    // { path: '/piecemaker/users/edit', component: pm.users.edit, name: 'piecemaker.users.edit', meta: { private: false } },
 
     { path: '/piecemaker/annotator', component: piecemaker.annotator, name: 'piecemaker.annotator', meta: { private: true } },
     // { path: '/piecemaker/dashboard', component: piecemaker.dashboard, name: 'stash.dashboard', meta: { private: true } },
@@ -114,24 +118,44 @@ const router = new VueRouter({
 
     { path: '/piecemaker/codarts/:groupId/annotate', component: pm.codarts.liveAnnotation, name: 'piecemaker.codarts.live-annotation', meta: { private: true } },
 
+    { path: '/administration/users', component: administration.users, name: 'administration.users', meta: { private: false } },
+
     // Catchall
-    { path: '*', component: errors.notFound, name: 'errors.notFound' }
+    // { path: '*', component: errors.notFound, name: 'errors.notFound' }
+    { path: '*', component: errors.notFound, name: 'site.welcome' }
   ]
 })
 
 router.beforeEach((to, from, next) => {
-  Events.$emit('show-animated-background', to.matched.some(route => route.meta.animatedBackground))
-  if (store.state.auth.payload) {
-    if (to.matched.some(route => route.meta.anonymous)) {
-      return next(`/users/${store.state.auth.payload.userId}/edit`)
+  let payload
+  try { payload = router.app.$mbAuth().isAuthenticated(router.app.$store) }
+  catch (e) { console.debug('Route auth fail:', e) }
+
+  if (to.matched.some(route => route.meta.anonymous)) {
+    if (payload) {
+      return next({
+        name: 'users.edit',
+        params: {
+          id: 'me'
+        },
+        replace: true
+      })
     }
+    next()
+  }
+  if (to.matched.some(route => route.meta.private)) {
+    if (!payload) {
+      return next({
+        name: 'users.login',
+        query: {redirect: to.fullPath},
+        replace: true
+      })
+    }
+    next()
   }
   else {
-    if (to.matched.some(route => route.meta.private)) {
-      return next({ name: 'users.login', query: { redirect: to.fullPath } })
-    }
+    next()
   }
-  next()
 })
 
 export default router

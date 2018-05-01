@@ -48,6 +48,7 @@
 
 <script>
   import { QBtn, QList, QItem } from 'quasar-framework'
+  import assignDeep from 'assign-deep'
   import CardFull from '../../../shared/layouts/CardFull'
   import constants from '../../../../lib/constants'
   import TimelineSelector from '../../../../lib/annotations/selectors/timeline'
@@ -130,7 +131,7 @@
           selector = TimelineSelector.fromISOString(video.target.selector.value)
         selector.add(diff)
         const update = {
-          target: Object.assign({}, video.target, {
+          target: assignDeep({}, video.target, {
             selector: {
               type: 'Fragment',
               value: selector.toString()

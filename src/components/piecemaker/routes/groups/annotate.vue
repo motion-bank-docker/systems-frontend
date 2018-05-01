@@ -21,6 +21,7 @@
   import { QBtn, QInput, QList, QItem, QItemMain, QItemSide, QItemTile } from 'quasar-framework'
   import Full from '../../../shared/layouts/Full'
   import assert from 'assert'
+  import assignDeep from 'assign-deep'
   import uuidValidate from 'uuid-validate'
   import constants from '../../../../lib/constants'
   import annotations from '../../../../lib/annotations'
@@ -77,11 +78,11 @@
         const _this = this
         const annotation = {
           author: _this.$store.state.auth.payload.userId,
-          body: Object.assign({}, _this.currentBody),
+          body: assignDeep({}, _this.currentBody),
           target: {
             id: _this.$route.params.id,
             type: constants.MAP_TYPE_TIMELINE,
-            selector: Object.assign({}, _this.currentSelector)
+            selector: assignDeep({}, _this.currentSelector)
           }
         }
         this.currentBody.value = undefined

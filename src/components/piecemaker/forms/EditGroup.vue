@@ -1,29 +1,66 @@
 <template lang="pug">
-  div
+
     .row
+
       .padding-1em
-        tags(v-if="payload", :targetUuid="payload.uuid", fullWidth)
+        tags(
+          v-if="payload",
+          :targetUuid="payload.uuid",
+          fullWidth
+          )
+
       .padding-1em
-        form-main(v-model="payload", :schema="schema")
+        form-main(
+          v-model="payload",
+          :schema="schema"
+          )
+
+      users-table(
+        :columns="columns",
+        :actions="actions",
+        :headline="$t('routes.piecemaker.groups.users.title')",
+        @action="onAction"
+        )
+
 </template>
 
 <script>
   import FormMain from '../../shared/forms/FormMain'
-  import { QBtn } from 'quasar-framework'
+  import { QBtn, QRadio, QToggle, QList, QItem, QListHeader, QDataTable } from 'quasar-framework'
   import { required } from 'vuelidate/lib/validators'
   import constants from '../../../lib/constants'
   import Tags from '../../shared/partials/Tags'
+  import UsersTable from '../../shared/partials/UsersTable'
 
   export default {
     components: {
       FormMain,
       Tags,
-      QBtn
+      QBtn,
+      QRadio,
+      QToggle,
+      QList,
+      QItem,
+      QListHeader,
+      QDataTable,
+      UsersTable
     },
     props: ['redirectTo'],
     data () {
       const context = this
       return {
+        columns: [
+          {
+            label: 'Name',
+            field: 'name',
+            type: 'string',
+            sort: true
+          }
+        ],
+        actions: [
+          { type: 'edit', title: 'Settings', scope: 'timeline' },
+          { type: 'delete', title: 'Remove' }
+        ],
         type: constants.MAP_TYPE_TIMELINE,
         payload: this.$route.params.id ? context.$store.dispatch('maps/get', context.$route.params.id) : undefined,
         schema: {
@@ -63,3 +100,6 @@
     }
   }
 </script>
+
+<style>
+</style>

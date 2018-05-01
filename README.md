@@ -5,7 +5,10 @@
 > Combined frontend project for Motion Bank web services
 
 [![NPM version](https://badge.fury.io/js/motionbank-systems-frontend.svg)](https://npmjs.org/package/motionbank-systems-frontend)
-[![Code Climate](https://codeclimate.com/github/motionbank-js/motionbank-systems-frontend.svg)](https://codeclimate.com/github/motionbank-js/motionbank-systems-frontend)
+[![Build status](https://secure.travis-ci.org/motionbank-js/motionbank-systems-frontend.svg)](https://travis-ci.org/motionbank-js/motionbank-systems-frontend)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/068aa9defed5426e91e2c2f4c1e2190d)](https://www.codacy.com/app/motionbank-js/motionbank-systems-frontend)
+[![Maintainability](https://api.codeclimate.com/v1/badges/cba51f9e40aef7db5dec/maintainability)](https://codeclimate.com/github/motionbank-js/motionbank-systems-frontend)
+[![Dependency Status](https://tidelift.com/badges/github/motionbank-js/motionbank-systems-frontend)](https://tidelift.com/repo/github/motionbank-js/motionbank-systems-frontend)
 
 
 ## Install
@@ -13,6 +16,20 @@
 ```shell
 npm install
 ```
+
+## Run
+
+Just execute ``npm start`` to serve the static files. Control server address through ``HOST`` and ``PORT`` env variables.
+
+## Customise
+
+**Do not edit the `apiConf` in `package.json`, it is auto-generated and will be overwritten**
+
+In order to customize the build, use these env vars:
+
+```shell
+API_HOST=http://localhost:3030 STREAMER_HOST=http://localhost:1234 npm run dev  # (or npm run build)
+``` 
 
 ## Build
 

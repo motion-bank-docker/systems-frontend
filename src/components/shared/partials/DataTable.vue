@@ -24,6 +24,7 @@
   } from 'quasar-framework'
   import Username from './Username'
   import { DateTime } from 'luxon'
+  import assignDeep from 'assign-deep'
   export default {
     components: {
       QBtn,
@@ -68,7 +69,7 @@
         */
       }
       const cols = this.columns.map(column => {
-        return Object.assign({
+        return assignDeep({
           filter: false,
           sort: false
           // classes: 'bg-dark'
@@ -83,7 +84,7 @@
       })
       return {
         rows: [],
-        conf: Object.assign(defaultConfig, _this.config),
+        conf: assignDeep(defaultConfig, _this.config),
         cols: cols,
         actns: _this.actions
       }

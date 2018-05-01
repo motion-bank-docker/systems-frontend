@@ -1,35 +1,21 @@
 process.env.NODE_ENV = 'production'
 
-require('colors')
-
-var
+const
+  { col, separator, print } = require('./cli-utils'),
   shell = require('shelljs'),
   path = require('path'),
-  env = require('./env-utils'),
   css = require('./css-utils'),
-  config = require('../config'),
+  config = require('../src/config'),
   webpack = require('webpack'),
   webpackConfig = require('./webpack.prod.conf'),
   targetPath = path.join(__dirname, '../dist')
 
-console.log(' WARNING!'.bold)
-console.log(' Do NOT use VueRouter\'s "history" mode if')
-console.log(' building for Cordova or Electron.\n')
-
 require('./script.clean.js')
-console.log((' Building Quasar App with "' + env.platform.theme + '" theme...\n').bold)
+
+printBuildInfo()
 
 shell.mkdir('-p', targetPath)
 shell.cp('-R', 'src/statics', targetPath)
-
-function finalize () {
-  console.log((
-    '\n Build complete with "' + env.platform.theme.bold + '" theme in ' +
-    '"/dist"'.bold + ' folder.\n').cyan)
-
-  console.log(' Built files are meant to be served over an HTTP server.'.bold)
-  console.log(' Opening index.html over file:// won\'t work.'.bold)
-}
 
 webpack(webpackConfig, function (err, stats) {
   if (err) throw err
@@ -46,10 +32,34 @@ webpack(webpackConfig, function (err, stats) {
     process.exit(1)
   }
 
-  if (config.build.purifyCSS) {
+  if (config.webpack.build.purifyCSS) {
     css.purify(finalize)
   }
   else {
     finalize()
   }
 })
+
+function printBuildInfo () {
+  const theme = col(`"${config.webpack.defaultTheme}"`, 'yellow', 'bold')
+  print([
+    col(separator(), 'red'),
+    col('WARNING!', 'red', 'bold'),
+    col(separator(), 'red'),
+    col('Do NOT use VueRouter\'s ' + col('"history"', 'white', 'bold') + ' mode'),
+    col('if building for Cordova or Electron.'), '\n\n',
+    col(separator(), 'cyan'),
+    col('Building Quasar App with ', 'cyan') + theme + col(' theme...', 'cyan'), '\n'
+  ])
+}
+function finalize () {
+  const theme = col(`"${config.webpack.defaultTheme}"`, 'yellow', 'bold')
+  print([
+    '\n', col(separator('='), 'cyan'),
+    col('Build complete with ' + theme + ' theme in ' +
+      col('"/dist"', 'yellow', 'bold') + ' folder.'),
+    col(separator(), 'cyan'),
+    col('Built files are meant to be served over an HTTP server.'),
+    col('Opening index.html over file:// won\'t work.'), '\n\n'
+  ])
+}
