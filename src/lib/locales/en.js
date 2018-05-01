@@ -26,6 +26,7 @@ const en = {
     set_marker: 'Set Marker',
     submit: 'Submit',
     synchronize: 'Sync',
+    upload_video: 'Upload Video',
     videos: 'Videos'
   },
   errors: {

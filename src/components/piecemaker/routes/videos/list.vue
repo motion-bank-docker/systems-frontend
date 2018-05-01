@@ -7,6 +7,8 @@
     p
       q-btn(@click="$router.push({ name: 'piecemaker.videos.create', params: { groupId: $route.params.groupId } })",
         color="primary") {{ $t('buttons.add_video') }}
+      q-btn(@click="$router.push({ name: 'piecemaker.videos.upload', params: { groupId: $route.params.groupId } })",
+        color="primary") {{ $t('buttons.upload_video') }}
     data-table(:entries="maps", :columns="columns", :actions="actions", @action="onAction")
 </template>
 

@@ -54,6 +54,7 @@
     "he": "^1.1.1",
     "jdenticon": "^2.1.0",
     "luxon": "^0.5.3",
+    "mbjs-utils": "0.0.4",
     "moment": "^2.22.1",
     "quasar-extras": "0.0.8",
     "quasar-framework": "^0.14.6",
