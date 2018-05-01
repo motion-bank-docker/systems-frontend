@@ -39,6 +39,7 @@
     "he": "^1.1.1",
     "identicon.js": "^2.3.1",
     "luxon": "^0.5.3",
+    "mbjs-utils": "0.0.4",
     "quasar-extras": "0.0.8",
     "quasar-framework": "^0.14.6",
     "roboto-fontface": "^0.8.0",
@@ -101,7 +102,7 @@
     "json-loader": "^0.5.4",
     "material-design-icons": "^3.0.1",
     "metapak": "^1.0.2",
-    "metapak-motionbank": "^1.6.10",
+    "metapak-motionbank": "1.6.10",
     "mkdirp": "^0.5.1",
     "mocha": "^4.0.1",
     "opn": "^5.0.0",
@@ -132,8 +133,10 @@
   "license": "MIT",
   "appConfig": {
     "apiHost": "https://motionbank-api.herokuapp.com",
-    "apiHostLocal": "https://motionbank-api.herokuapp.com",
     "streamerHost": "http://localhost:8888",
-    "idField": "uuid"
+    "frontendHost": "http://localhost:8080",
+    "idField": "uuid",
+    "useAuth0": false,
+    "useWebSockets": false
   }
 }
