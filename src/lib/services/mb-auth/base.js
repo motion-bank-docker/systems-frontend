@@ -1,5 +1,5 @@
 import TinyEmitter from 'tiny-emitter'
-import assignDeep from 'assign-deep'
+import { ObjectUtil } from 'mbjs-utils'
 
 const { isUserAllowed } = require('../../../config/scopes')
 
@@ -10,7 +10,7 @@ class BaseAuth extends TinyEmitter {
     this._options = opts
     this._client = env.client
     this._config = env.config
-    this._defaultHeaders = assignDeep({}, env.defaultHeaders || {})
+    this._defaultHeaders = ObjectUtil.merge({}, env.defaultHeaders || {})
 
     this._auth = undefined
     this._user = undefined
@@ -30,7 +30,7 @@ class BaseAuth extends TinyEmitter {
   }
 
   setSession (authResult = undefined, silent = false) {
-    if (!silent) this.emit(BaseAuth.EVENT_AUTH_CHANGE, { authenticated: true })
+    if (!silent) this.emit(BaseAuth.EVENT_AUTH_CHANGE, { authenticated: true, authResult })
   }
 
   checkSession () {

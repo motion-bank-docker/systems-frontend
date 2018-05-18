@@ -1,6 +1,6 @@
 import auth from '@feathersjs/authentication-client'
 import assert from 'assert'
-import assignDeep from 'assign-deep'
+import { ObjectUtil } from 'mbjs-utils'
 
 import router from '../../../router'
 import BaseAuth from './base'
@@ -9,7 +9,7 @@ class Local extends BaseAuth {
   constructor (opts = {}, env = {}) {
     super(opts, env)
 
-    this._auth = auth(assignDeep({
+    this._auth = auth(ObjectUtil.merge({
       storage: window.localStorage
     }, opts))
   }

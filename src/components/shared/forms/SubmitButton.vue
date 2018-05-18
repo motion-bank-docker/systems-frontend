@@ -5,13 +5,7 @@
 </template>
 
 <script>
-  import {
-    QBtn
-  } from 'quasar-framework'
   export default {
-    components: {
-      QBtn
-    },
     props: ['active', 'click'],
     methods: {
       clickHandler (...args) {

@@ -1,16 +1,19 @@
 ## Install
 
 ```shell
+npm install -g vue-cli quasar-cli
 npm install
 ```
 
-## Run
+## Run in third-party webserver
 
-Just execute ``npm start`` to serve the static files. Control server address through ``HOST`` and ``PORT`` env variables.
+Point your webserver config to the ``dist`` directory. Configure your webserver to serve ``index.html`` with a 200 status code instead of a 404 error page.
+
+## Run as standalone server
+
+Execute ``npm start`` to start the built-in webserver. Control server address through ``HOST`` and ``PORT`` env variables.
 
 ## Customise
-
-**Do not edit the `apiConf` in `package.json`, it is auto-generated and will be overwritten**
 
 In order to customize the build, use these env vars:
 

@@ -11,19 +11,7 @@
 </template>
 
 <script>
-  import {
-    QField,
-    QBtn,
-    QInput
-  } from 'quasar-framework'
-  export default {
-    components: {
-      QField,
-      QBtn,
-      QInput
-    }
-    // name: "form-add"
-  }
+  export default {}
 </script>
 
 <style scoped>

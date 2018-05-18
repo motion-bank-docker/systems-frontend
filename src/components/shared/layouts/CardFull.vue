@@ -5,7 +5,6 @@
     div#back-button
       slot(name="backButton")
 
-    // .column.col-12.sm-gutter
     .column.col-12
       q-card.full-width(color="dark").no-margin
         .layout-padding
@@ -14,7 +13,7 @@
 
             .row.justify-between.content-stretch
               .column.width-3of4
-                h5.caption.light-paragraph.no-margin
+                h5.caption.light-paragraph
                   slot(name="form-title")
 
                 slot(name="form-caption")
@@ -31,18 +30,10 @@
 </template>
 
 <script>
-  import {
-    QCard,
-    QCardMain,
-    QLayout,
-    openURL
-  } from 'quasar-framework'
+  import { openURL } from 'quasar'
   import SiteFooter from '../partials/SiteFooter'
   export default {
     components: {
-      QCard,
-      QCardMain,
-      QLayout,
       SiteFooter
     },
     data: function () {

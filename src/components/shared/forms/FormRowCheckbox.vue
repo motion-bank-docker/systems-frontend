@@ -4,15 +4,7 @@
 </template>
 
 <script>
-  import {
-    QCheckbox,
-    QField
-  } from 'quasar-framework'
   export default {
-    components: {
-      QCheckbox,
-      QField
-    },
     props: ['value', 'validation', 'type', 'label'],
     data () {
       return {

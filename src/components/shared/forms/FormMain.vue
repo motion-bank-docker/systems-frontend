@@ -39,14 +39,14 @@
   import Vuelidate from 'vuelidate'
   import Promise from 'bluebird'
 
-  import {
-    Loading,
-    QSpinnerPuff
-  } from 'quasar-framework'
-
   import FormRow from './FormRow'
   import FormRowCheckbox from './FormRowCheckbox'
   import SubmitButton from './SubmitButton'
+
+  import {
+    Loading,
+    QSpinnerPuff
+  } from 'quasar'
 
   Vue.use(Vuelidate)
 
@@ -54,9 +54,7 @@
     components: {
       FormRow,
       FormRowCheckbox,
-      SubmitButton,
-      Loading,
-      QSpinnerPuff
+      SubmitButton
     },
     props: ['value', 'schema'],
     data () {

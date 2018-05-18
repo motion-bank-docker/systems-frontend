@@ -1,5 +1,5 @@
 <template lang="pug">
-  q-toolbar.z-absolute.all-pointer-events(color="dark")
+  q-toolbar(color="dark")
     // q-btn.hide-on-drawer-visible(flat, icon="menu", @click='$refs.drawer.open()')
     q-toolbar-title(:padding='2')
       q-btn(:class="{ 'text-primary': currentApp === null }", big, flat,
@@ -20,19 +20,7 @@
 </template>
 
 <script>
-  import {
-    QToolbar,
-    QToolbarTitle,
-    QIcon,
-    QBtn
-  } from 'quasar-framework'
   export default {
-    components: {
-      QToolbar,
-      QToolbarTitle,
-      QIcon,
-      QBtn
-    },
     props: ['authenticated', 'auth'],
     data () {
       return {

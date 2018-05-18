@@ -16,7 +16,7 @@
 </template>
 
 <script>
-  import { openURL } from 'quasar-framework'
+  import { openURL } from 'quasar'
   import * as pkg from '../../../../package.json'
   export default {
     data: function () {

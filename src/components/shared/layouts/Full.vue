@@ -19,18 +19,10 @@
 </template>
 
 <script>
-  import {
-    QCard,
-    QCardMain,
-    QLayout,
-    openURL
-  } from 'quasar-framework'
+  import { openURL } from 'quasar'
   import SiteFooter from '../partials/SiteFooter'
   export default {
     components: {
-      QCard,
-      QCardMain,
-      QLayout,
       SiteFooter
     },
     data: function () {

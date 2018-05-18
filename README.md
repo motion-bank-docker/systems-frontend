@@ -2,28 +2,31 @@
 [comment]: # (To edit its contents please refer to the project dir '.readme')
 
 # Motion Bank Systems Frontend
+
 > Combined frontend project for Motion Bank web services
 
-[![NPM version](https://badge.fury.io/js/motionbank-systems-frontend.svg)](https://npmjs.org/package/motionbank-systems-frontend)
 [![Build status](https://secure.travis-ci.org/motionbank-js/motionbank-systems-frontend.svg)](https://travis-ci.org/motionbank-js/motionbank-systems-frontend)
+[![Dependency Status](https://tidelift.com/badges/github/motionbank-js/motionbank-systems-frontend?style=flat)](https://tidelift.com/repo/github/motionbank-js/motionbank-systems-frontend)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/068aa9defed5426e91e2c2f4c1e2190d)](https://www.codacy.com/app/motionbank-js/motionbank-systems-frontend)
-[![Maintainability](https://api.codeclimate.com/v1/badges/cba51f9e40aef7db5dec/maintainability)](https://codeclimate.com/github/motionbank-js/motionbank-systems-frontend)
-[![Dependency Status](https://tidelift.com/badges/github/motionbank-js/motionbank-systems-frontend)](https://tidelift.com/repo/github/motionbank-js/motionbank-systems-frontend)
+[![Maintainability](https://api.codeclimate.com/v1/badges/cba51f9e40aef7db5dec/maintainability)](https://codeclimate.com/github/motionbank-js/motionbank-systems-frontend/maintainability)
 
 
 ## Install
 
 ```shell
+npm install -g vue-cli quasar-cli
 npm install
 ```
 
-## Run
+## Run in third-party webserver
 
-Just execute ``npm start`` to serve the static files. Control server address through ``HOST`` and ``PORT`` env variables.
+Point your webserver config to the ``dist`` directory. Configure your webserver to serve ``index.html`` with a 200 status code instead of a 404 error page.
+
+## Run as standalone server
+
+Execute ``npm start`` to start the built-in webserver. Control server address through ``HOST`` and ``PORT`` env variables.
 
 ## Customise
-
-**Do not edit the `apiConf` in `package.json`, it is auto-generated and will be overwritten**
 
 In order to customize the build, use these env vars:
 

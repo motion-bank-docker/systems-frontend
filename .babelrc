@@ -1,12 +1,7 @@
 {
   "presets": [
-    ["env", {
-      "targets": {
-        "chrome": 52,
-        "uglify": true
-      },
-      "modules": false
-    }]
+    [ "env", {"modules": false} ],
+    "stage-2"
   ],
   "plugins": ["transform-runtime"],
   "comments": false

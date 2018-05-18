@@ -5,10 +5,10 @@
     .column.col-9.sm-gutter
       q-card.full-width(color="dark")
         .layout-padding
-          q-card-main.no-margin
-            .row.justify-between.content-stretch
+          q-card-main(color="dark").no-margin
+            .row
               .column.width-3of4
-                h4.caption.light-paragraph.no-margin
+                h4.caption
                   slot(name="form-title")
                 slot(name="form-caption")
               slot(name="form-logo")
@@ -20,18 +20,10 @@
 </template>
 
 <script>
-  import {
-    QCard,
-    QCardMain,
-    QLayout,
-    openURL
-  } from 'quasar-framework'
+  import { openURL } from 'quasar'
   import SiteFooter from '../partials/SiteFooter'
   export default {
     components: {
-      QCard,
-      QCardMain,
-      QLayout,
       SiteFooter
     },
     data: function () {

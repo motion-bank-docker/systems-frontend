@@ -7,17 +7,7 @@
 </template>
 
 <script>
-  import {
-    QSelect,
-    QInput,
-    QField
-  } from 'quasar-framework'
   export default {
-    components: {
-      QSelect,
-      QInput,
-      QField
-    },
     props: [
       'value',
       'attributes',

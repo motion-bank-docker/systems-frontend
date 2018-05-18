@@ -1,9 +1,17 @@
+import feathers from '@feathersjs/feathers'
+
 import primus from './primus'
 import rest from './rest'
-import createClient from './create-client'
+
+function createClient (transport, auth) {
+  const client = feathers()
+  client.configure(transport)
+  client.configure(auth)
+  return client
+}
+export default createClient
 
 export {
   primus,
   rest
 }
-export default createClient

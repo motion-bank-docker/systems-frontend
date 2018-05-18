@@ -1,15 +1,15 @@
 import auth0 from 'auth0-js'
 import auth from '@feathersjs/authentication-client'
-import assignDeep from 'assign-deep'
+import { ObjectUtil } from 'mbjs-utils'
 
 import router from '../../../router'
 import BaseAuth from './base'
 
 class Auth0 extends BaseAuth {
   constructor (opts = {}, env = {}) {
-    super(assignDeep({}, opts), env)
+    super(ObjectUtil.merge({}, opts), env)
 
-    const feathersConfig = assignDeep({}, env.config)
+    const feathersConfig = ObjectUtil.merge({}, env.config)
     feathersConfig.storage = window.localStorage
 
     this._auth = env.client || auth(feathersConfig)
@@ -26,7 +26,7 @@ class Auth0 extends BaseAuth {
     this._defaultHeaders = {}
     const storageKey = this._feathersConfig.storageKey
     if (localStorage.getItem(storageKey)) {
-      this._defaultHeaders = assignDeep({}, this._defaultHeaders,
+      this._defaultHeaders = ObjectUtil.merge({}, this._defaultHeaders,
         this.getAuthHeader(localStorage.getItem(storageKey)))
     }
   }
