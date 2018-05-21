@@ -10,13 +10,13 @@
         big, flat, @click="currentApp = 'mosys'; $router.push({ name: 'mosys.grids.list' })") Mosys
 
     q-btn(color="primary", flat, icon="settings",
-    v-if="authenticated", @click="$router.push({ name: 'users.edit', params: { id: 'me' } })") {{ $t('navigation.manage_account') }}
+      v-if="authenticated", @click="$router.push({ name: 'users.edit', params: { id: 'me' } })") {{ $t('navigation.manage_account') }}
 
     q-btn(color="primary", flat, icon="eject",
-    v-if="authenticated", @click="logout") {{ $t('navigation.logout') }}
+      v-if="authenticated", @click="logout") {{ $t('navigation.logout') }}
 
     q-btn(color="primary", flat, icon="arrow_forward",
-    v-if="!authenticated", @click="login") {{ $t('navigation.login') }}
+      v-if="!authenticated", @click="login") {{ $t('navigation.login') }}
 </template>
 
 <script>
