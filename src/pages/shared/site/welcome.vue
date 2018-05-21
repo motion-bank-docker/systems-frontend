@@ -27,6 +27,9 @@
       return {
         openURL
       }
+    },
+    mounted () {
+      console.log('mounted')
     }
   }
 </script>

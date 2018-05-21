@@ -29,15 +29,17 @@
     },
     methods: {
       login () {
+        /*
         if (this.$mbConf.app.useAuth0) {
           this.$mbAuth().login()
         }
         else {
           this.$router.push({ name: 'users.login' })
         }
+        */
       },
       logout () {
-        this.$mbAuth().logout(this.$store)
+        // this.$mbAuth().logout(this.$store)
       }
     }
   }

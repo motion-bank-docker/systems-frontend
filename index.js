@@ -3,7 +3,7 @@ const
   pkg = require('./package.json')
 
 const server = new StaticServer({
-  rootPath: './dist',
+  rootPath: './dist/spa-mat',
   port: process.env.PORT || 9090,
   name: pkg.name,
   host: process.env.HOST,
