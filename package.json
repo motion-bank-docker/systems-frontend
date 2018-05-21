@@ -57,7 +57,7 @@
     "metapak": "^1.0.3",
     "metapak-motionbank": "^1.11.8",
     "pug": "^2.0.3",
-    "quasar-cli": "^0.16.0",
+    "quasar-cli": "^0.16.1",
     "static-server": "^2.2.1"
   },
   "engines": {
