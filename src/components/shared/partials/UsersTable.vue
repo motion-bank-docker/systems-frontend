@@ -50,15 +50,6 @@
 </template>
 
 <script>
-  import {
-    QBtn,
-    QDataTable,
-    QRadio,
-    QToggle,
-    QIcon,
-    QCheckbox,
-    QModal
-  } from 'quasar-framework'
   import FormMain from '../forms/FormMain'
   import Username from './Username'
   import { DateTime } from 'luxon'
@@ -67,14 +58,7 @@
 
   export default {
     components: {
-      QBtn,
-      QDataTable,
       Username,
-      QRadio,
-      QToggle,
-      QIcon,
-      QCheckbox,
-      QModal,
       FormMain
     },
     // props: ['entries', 'config', 'columns', 'actions'],
@@ -172,14 +156,14 @@
         const _this = this
         // const hl = this.headline
         switch (type) {
-          case 'edit':
+        case 'edit':
             // return _this.$router.push({ name: 'piecemaker.groups.user' })
-            if (scope === 'grid') {
-              return _this.$router.push({ name: 'mosys.grids.user' })
-            }
-            else if (scope === 'timeline') {
-              return _this.$router.push({ name: 'piecemaker.groups.user' })
-            }
+          if (scope === 'grid') {
+            return _this.$router.push({ name: 'mosys.grids.user' })
+          }
+          else if (scope === 'timeline') {
+            return _this.$router.push({ name: 'piecemaker.groups.user' })
+          }
         }
       },
       updateEntries () {

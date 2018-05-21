@@ -19,12 +19,7 @@
 </template>
 
 <script>
-  import { QField, QInput, QList, QItem, QItemSeparator } from 'quasar-framework'
-
   export default {
-    components: {
-      QField, QInput, QList, QItem, QItemSeparator
-    },
     props: ['cells'],
     data () {
       return {

@@ -30,9 +30,8 @@
 <script>
   import Vue from 'vue'
   import Promise from 'bluebird'
-  import { QChipsInput, QChip, QField, QInput, QBtn } from 'quasar-framework'
-  import constants from '../../../../lib/constants'
-  import CardFull from '../../../shared/layouts/CardFull'
+  import constants from '../../../lib/constants'
+  import CardFull from '../../../components/shared/layouts/CardFull'
 
   const tagsVideosMap = {
     'achilles': {
@@ -95,7 +94,7 @@
 
   export default {
     components: {
-      QChipsInput, QField, QChip, QInput, QBtn, CardFull
+      CardFull
     },
     data () {
       return {
@@ -136,10 +135,10 @@
           })
         })
         let grid, gridTemplate = {
-          title: `Generated Grid for ${_this.studentName}`,
-          owner: authorUuid,
-          type: [constants.MAP_TYPE_2D_GRID]
-        }
+            title: `Generated Grid for ${_this.studentName}`,
+            owner: authorUuid,
+            type: [constants.MAP_TYPE_2D_GRID]
+          }
         _this.$store.dispatch('maps/create', gridTemplate)
           .then(g => {
             grid = g

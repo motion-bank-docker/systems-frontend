@@ -28,7 +28,6 @@
           q-item-side.text-white
             q-toggle(v-for="ut in u.timelines", v-model="ut.live_annotate", :key="ut")
 
-
       q-list.col-7.no-border.no-padding.margin-bottom(v-if="sc == 'grid'")
         q-item.item-hover
           q-item-main ...is allowed to add videos to this grid.
@@ -46,7 +45,6 @@
           q-item-main ...is allowed to live annotate this grid.
           q-item-side.text-white
             q-toggle(v-model="toggle")
-
 
       q-list.col-7.no-border.no-padding.margin-bottom(v-if="sc == 'timeline'")
         q-item.item-hover
@@ -69,7 +67,6 @@
           q-item-side.text-white
             q-toggle(v-model="toggle")
 
-
       q-list.col-7.no-border.no-padding.margin-bottom(v-if="sc == 'timeline' || sc == 'grid'")
         q-item.item-hover
           q-item-main ...is allowed to add new users.
@@ -86,16 +83,7 @@
 </template>
 
 <script>
-  import { QList, QItem, QItemMain, QItemSide, QToggle, QBtn } from 'quasar-framework'
   export default {
-    components: {
-      QList,
-      QItem,
-      QItemMain,
-      QItemSide,
-      QToggle,
-      QBtn
-    },
     props: ['user', 'scope'],
     data () {
       return {

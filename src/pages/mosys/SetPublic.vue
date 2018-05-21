@@ -11,24 +11,21 @@
       .row(v-for="n in 10")
         .cell(v-for="n in 8")
 
-
 </template>
 
 <script>
-  import { QBtn } from 'quasar-framework'
-  import ContentBar from '../../shared/partials/ContentBar'
-  import DataTable from '../../shared/partials/DataTable'
-  import CancelButton from '../../shared/forms/CancelButton'
+  import ContentBar from '../../components/shared/partials/ContentBar'
+  import DataTable from '../../components/shared/partials/DataTable'
+  import CancelButton from '../../components/shared/forms/CancelButton'
 
-  import { FormMain } from '../../shared/forms'
+  import { FormMain } from '../../components/shared/forms'
   import { required } from 'vuelidate/lib/validators'
   export default {
     components: {
       ContentBar,
       DataTable,
       FormMain,
-      CancelButton,
-      QBtn
+      CancelButton
     },
     methods: {
       goBack () {

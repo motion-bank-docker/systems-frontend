@@ -81,7 +81,7 @@
         this.messenger.$emit('video-loaded', this.getSignature())
         this.player = player
       },
-      handlePlayerPlaying (event) {
+      handlePlayerPlaying () {
         this.messenger.$emit('video-started-playing', this.getSignature())
       },
       handlePlayerTimeChange (localTime) {

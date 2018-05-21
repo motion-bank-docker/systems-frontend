@@ -5,7 +5,6 @@
 <script>
   import path from 'path'
   import url from 'url'
-  import superagent from 'superagent'
   import he from 'he'
 
   const fetchTitle = function (source) {
@@ -16,7 +15,7 @@
         if (path.extname(url.parse(source).path) === '.mp4') {
           source = source.replace(/\.mp4/i, '.html')
         }
-        return superagent.get(`${_this.$globalConfig.app.hosts.api}/proxy?url=${encodeURIComponent(source)}`)
+        return this.$axios.get(`${_this.$globalConfig.app.hosts.api}/proxy?url=${encodeURIComponent(source)}`)
           .then(result => {
             let title = result.text.match(/<title[^>]*>([^<]+)<\/title>/)[1]
             return he.decode(title)

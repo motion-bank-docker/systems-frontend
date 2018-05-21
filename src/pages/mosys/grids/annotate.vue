@@ -8,13 +8,11 @@
 </template>
 
 <script>
-  import { QBtn } from 'quasar-framework'
-  import GridEditor from '../../partials/GridEditor'
-  import GridEditorSources from '../../partials/GridEditorSources'
+  import GridEditor from '../../../components/mosys/partials/GridEditor'
+  import GridEditorSources from '../../../components/mosys/partials/GridEditorSources'
 
   export default {
     components: {
-      QBtn,
       GridEditor,
       GridEditorSources
     }

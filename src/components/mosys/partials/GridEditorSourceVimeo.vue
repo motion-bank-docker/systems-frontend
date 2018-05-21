@@ -33,17 +33,11 @@
 </template>
 
 <script>
-  import { QInput, QIcon, QBtn, QList, QListHeader, QItem, QItemSide, QItemMain, QItemSeparator, QScrollArea, QSpinner } from 'quasar-framework'
-  import superagent from 'superagent'
-
   const VIMEO_ACCESS_TOKEN = '8dbc7f72ddb834a4665dbb6989014699'
   const apiBase = 'https://api.vimeo.com'
   const apiSearchVideos = '/videos'
 
   export default {
-    components: {
-      QInput, QIcon, QBtn, QList, QListHeader, QItem, QItemSide, QItemMain, QItemSeparator, QScrollArea, QSpinner
-    },
     data () {
       return {
         searchTerm: '',
@@ -65,7 +59,8 @@
         if (this.searchTerm.length >= 3) {
           this.loadingVideos = true
           this.lastSearchTerm = this.searchTerm
-          superagent
+          // TODO: check if change from superagent to axios plugin is breaking
+          this.$axios
             .get(apiBase + apiSearchVideos, {
               query: this.searchTerm,
               access_token: VIMEO_ACCESS_TOKEN
@@ -92,7 +87,7 @@
           this.loadingVideos = false
         }
       },
-      handleVideoItemClick (event, video) {
+      handleVideoItemClick () {
       },
       handleVideoItemDragStart (event, video) {
         let videoCell = {

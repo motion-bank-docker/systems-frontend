@@ -30,7 +30,6 @@
 </template>
 
 <script>
-  import { QItem, QItemSeparator, QListHeader, QInput } from 'quasar-framework'
   import { DateTime } from 'luxon'
   import constants from '../../../../lib/constants'
   import Username from '../../../shared/partials/Username'
@@ -41,10 +40,6 @@
 
   export default {
     components: {
-      QItem,
-      QItemSeparator,
-      QListHeader,
-      QInput,
       Username,
       VideoTitle
     },
@@ -90,7 +85,7 @@
       }
     },
     methods: {
-      handleInputChanged (event) {
+      handleInputChanged () {
         const _this = this
         if (this.newAnnotationText) {
           let newAnnotation = {
@@ -111,7 +106,7 @@
             }
           }
           this.$store.dispatch('annotations/create', newAnnotation)
-            .then(a => {
+            .then(() => {
               _this.fetchAnnotations()
             })
         }
@@ -127,7 +122,7 @@
       contextTimeDiff (annot, index) {
         return this.annotationTimes[index] - this.contextTime
       },
-      formatDate (annot, index) {
+      formatDate (annot) {
         return DateTime
           .fromISO(annot.target.selector.value)
           .minus(this.videoTime)

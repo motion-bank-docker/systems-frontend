@@ -9,15 +9,13 @@
 </template>
 
 <script>
-  import { QBtn } from 'quasar-framework'
-  import DataTable from '../../../shared/partials/DataTable'
-  // import CenterCardFull from '../../../shared/layouts/CenterCardFull'
-  import CardFull from '../../../shared/layouts/CardFull'
-  import constants from '../../../../lib/constants'
+  import DataTable from '../../../components/shared/partials/DataTable'
+  // import CenterCardFull from '../../../components/shared/layouts/CenterCardFull'
+  import CardFull from '../../../components/shared/layouts/CardFull'
+  import constants from '../../../lib/constants'
 
   export default {
     components: {
-      QBtn,
       DataTable,
       // CenterCardFull
       CardFull
@@ -26,14 +24,14 @@
       onAction (type, data) {
         const _this = this
         switch (type) {
-          case 'show':
-            return _this.$router.push(`/mosys/grids/${data.row.uuid}`)
-          case 'edit':
-            return _this.$router.push(`/mosys/grids/${data.row.uuid}/edit`)
-          case 'annotate':
-            return _this.$router.push(`/mosys/grids/${data.row.uuid}/annotate`)
-          case 'delete':
-            _this.$store.dispatch('maps/remove', data.row.uuid).then(() => { _this.maps = _this.getGrids() })
+        case 'show':
+          return _this.$router.push(`/mosys/grids/${data.row.uuid}`)
+        case 'edit':
+          return _this.$router.push(`/mosys/grids/${data.row.uuid}/edit`)
+        case 'annotate':
+          return _this.$router.push(`/mosys/grids/${data.row.uuid}/annotate`)
+        case 'delete':
+          _this.$store.dispatch('maps/remove', data.row.uuid).then(() => { _this.maps = _this.getGrids() })
         }
       },
       getGrids () {

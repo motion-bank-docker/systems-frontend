@@ -14,7 +14,6 @@
       h5 alle gesetzten Zellen
       data-table.margin-bottom(:entries="maps", :columns="columns", :actions="actions", @action="onAction")
 
-
     div.form-wrap
       div
         h5 Generelle Set Informationen
@@ -24,20 +23,18 @@
 </template>
 
 <script>
-  import { QBtn } from 'quasar-framework'
-  import ContentBar from '../../shared/partials/ContentBar'
-  import DataTable from '../../shared/partials/DataTable'
-  import CancelButton from '../../shared/forms/CancelButton'
+  import ContentBar from '../../components/shared/partials/ContentBar'
+  import DataTable from '../../components/shared/partials/DataTable'
+  import CancelButton from '../../components/shared/forms/CancelButton'
 
-  import { FormMain } from '../../shared/forms'
+  import { FormMain } from '../../components/shared/forms'
   import { required } from 'vuelidate/lib/validators'
   export default {
     components: {
       ContentBar,
       DataTable,
       FormMain,
-      CancelButton,
-      QBtn
+      CancelButton
     },
     methods: {
       goBack () {

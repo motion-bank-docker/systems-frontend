@@ -9,14 +9,10 @@
 </template>
 
 <script>
-  import { QChipsInput } from 'quasar-framework'
   // import Promise from 'bluebird'
   import constants from '../../../lib/constants'
 
   export default {
-    components: {
-      QChipsInput
-    },
     props: ['targetUuid', 'targetType'],
     data () {
       return {
@@ -37,7 +33,7 @@
       }
     },
     methods: {
-      inputChanged (newTags) {
+      inputChanged () {
         this.updateTags()
       },
       enforceUniqueTags (tags) {

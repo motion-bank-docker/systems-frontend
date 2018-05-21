@@ -18,12 +18,10 @@
         @action="onAction"
         )
 
-
 </template>
 
 <script>
   import FormMain from '../../shared/forms/FormMain'
-  import { QBtn } from 'quasar-framework'
   import { required } from 'vuelidate/lib/validators'
   import constants from '../../../lib/constants'
   import Tags from '../../shared/partials/Tags'
@@ -33,7 +31,6 @@
   export default {
     components: {
       FormMain,
-      QBtn,
       Tags,
       CardFull,
       UsersTable

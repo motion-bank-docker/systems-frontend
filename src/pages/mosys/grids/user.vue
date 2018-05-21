@@ -16,26 +16,10 @@
 </template>
 
 <script>
-  import {
-    QBtn,
-    QList,
-    QItem,
-    QItemMain,
-    QItemSide,
-    QItemSeparator,
-    QToggle
-  } from 'quasar-framework'
-  import CardFull from '../../../shared/layouts/CardFull'
-  import userRights from '../../../shared/partials/UserRights'
+  import CardFull from '../../../components/shared/layouts/CardFull'
+  import userRights from '../../../components/shared/partials/UserRights'
   export default {
     components: {
-      QBtn,
-      QList,
-      QItem,
-      QItemMain,
-      QItemSide,
-      QItemSeparator,
-      QToggle,
       CardFull,
       userRights
     },

@@ -44,10 +44,8 @@
 </template>
 
 <script>
-  import { QInput, QIcon, QBtn, QList, QListHeader, QItem, QItemSide, QItemMain, QItemSeparator, QScrollArea, QSpinner } from 'quasar-framework'
   import url from 'url'
   import assignDeep from 'assign-deep'
-  import superagent from 'superagent'
 
   const hostToTypeMap = {
     'vimeo.com': 'Video',
@@ -96,9 +94,6 @@
   }
 
   export default {
-    components: {
-      QInput, QIcon, QBtn, QList, QListHeader, QItem, QItemSide, QItemMain, QItemSeparator, QScrollArea, QSpinner
-    },
     data () {
       return {
         term: '',
@@ -121,7 +116,7 @@
         }
         return iconName
       },
-      handleItemClick (event, result) {},
+      handleItemClick () {},
       handleItemDragStart (event, result) {
         let resourceCell = {
           uuid: null,
@@ -166,7 +161,8 @@
             if (!type) {
               type = 'IFrame'
 
-              superagent.get(`${_this.$globalConfig.app.hosts.api}/proxy?url=${encodeURIComponent(this.term)}`)
+              // TODO: check if change from superagent to axios plugin is breaking
+              _this.$axios.get(`${_this.$globalConfig.app.hosts.api}/proxy?url=${encodeURIComponent(this.term)}`)
                 .then(resp => {
                   if (resp.status === 301) { // prem redirect
                     if (resp.headers['location']) _this.term = resp.headers['location']
@@ -177,7 +173,7 @@
                     this.results = results
                   }
                 })
-                .catch(errResp => {
+                .catch(() => {
                   results.push(res)
                 })
             }

@@ -8,12 +8,10 @@
 </template>
 
 <script>
-  import { QBtn } from 'quasar-framework'
-  import CardFull from '../../../shared/layouts/CardFull'
-  import EditGrid from '../../forms/EditGrid'
+  import CardFull from '../../../components/shared/layouts/CardFull'
+  import EditGrid from '../../../components/mosys/forms/EditGrid'
   export default {
     components: {
-      QBtn,
       EditGrid,
       CardFull
     }

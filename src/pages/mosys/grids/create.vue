@@ -8,12 +8,10 @@
 </template>
 
 <script>
-  import { QBtn } from 'quasar-framework'
-  import EditGroup from '../../forms/EditGrid'
-  import CenterCardThreeQuarter from '../../../shared/layouts/CenterCardThreeQuarter'
+  import EditGroup from '../../../components/mosys/forms/EditGrid'
+  import CenterCardThreeQuarter from '../../../components/shared/layouts/CenterCardThreeQuarter'
   export default {
     components: {
-      QBtn,
       CenterCardThreeQuarter,
       EditGroup
     }

@@ -31,7 +31,6 @@
 </template>
 
 <script>
-  import { QBtn, QTabs, QTab, QTabPane } from 'quasar-framework'
   import CellEditor from './CellEditor'
   import SourceGridEditorDefault from './GridEditorDefaultSource'
   import SourceGridEditorMagic from './GridEditorMagicSource'
@@ -41,10 +40,6 @@
 
   export default {
     components: {
-      QBtn,
-      QTabs,
-      QTab,
-      QTabPane,
       CellEditor,
       SourceGridEditorDefault,
       SourceGridEditorMagic,

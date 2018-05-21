@@ -6,17 +6,7 @@
 </template>
 
 <script>
-  import {
-    // QBtnDropdown,
-    QSearch
-  } from 'quasar-framework'
-  export default {
-    components: {
-      // QBtnDropdown,
-      QSearch
-    }
-    // name: "content-bar"
-  }
+  export default {}
 </script>
 
 <style scoped>

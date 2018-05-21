@@ -26,7 +26,6 @@
 </template>
 
 <script>
-  import { QField, QInput, QIcon, QBtn, QList, QListHeader, QItem, QItemSide, QItemMain, QItemSeparator, QScrollArea, QSpinner } from 'quasar-framework'
   // import url from 'url'
   // import superagent from 'superagent'
   // import buildVars from '../../../lib/build-vars'
@@ -41,9 +40,6 @@
   }
 
   export default {
-    components: {
-      QField, QInput, QIcon, QBtn, QList, QListHeader, QItem, QItemSide, QItemMain, QItemSeparator, QScrollArea, QSpinner
-    },
     data () {
       return {
         items: [

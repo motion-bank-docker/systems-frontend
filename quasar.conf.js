@@ -65,12 +65,21 @@ module.exports = function (ctx) {
         'QItem',
         'QItemMain',
         'QItemSide',
+        'QItemSeparator',
+        'QContextMenu',
+        'QScrollArea',
         //
         // Grouping
         'QCard',
         'QCardMain',
+        'QTabs',
+        'QTab',
+        'QTabPane',
+        'QTable',
+        'QModal',
         //
         // Loading
+        'QSpinner',
         'QSpinnerTail',
         'QSpinnerPuff',
         //
@@ -78,7 +87,13 @@ module.exports = function (ctx) {
         'QSelect',
         'QInput',
         'QField',
-        'QCheckbox'
+        'QCheckbox',
+        'QRadio',
+        'QSlider',
+        'QToggle',
+        'QChipsInput',
+        'QChip',
+        'QSearch'
       ],
       directives: [
         'Ripple'

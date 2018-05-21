@@ -17,14 +17,13 @@
 
 <script>
   import Vue from 'vue'
-  import { QFixedPosition, QBtn, QIcon } from 'quasar-framework'
   import Cell from './Cell'
 
   const MessengerComponent = Vue.component('grid-editor-messenger', {})
 
   export default {
     components: {
-      Cell, QFixedPosition, QBtn, QIcon
+      Cell
     },
     props: ['gridUuid'],
     data () {
@@ -40,10 +39,10 @@
     mounted () {
       const _this = this
       window.addEventListener('resize', this.updateGridDimensions)
-      this.messenger.$on('video-loaded', origin => {
+      this.messenger.$on('video-loaded', (/* origin */) => {
         // console.log('video loaded', origin.origin)
       })
-      this.messenger.$on('video-time-changed', (time, globalTime, origin) => {
+      this.messenger.$on('video-time-changed', (/* time, globalTime, origin */) => {
         // console.log(videoUuid, time)
       })
       this.fetchMetadataAnnotations()

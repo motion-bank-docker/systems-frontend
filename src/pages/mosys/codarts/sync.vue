@@ -47,19 +47,15 @@
 </template>
 
 <script>
-  import { QBtn, QList, QItem } from 'quasar-framework'
   import assignDeep from 'assign-deep'
-  import CardFull from '../../../shared/layouts/CardFull'
-  import constants from '../../../../lib/constants'
-  import TimelineSelector from '../../../../lib/annotations/selectors/timeline'
-  import VideoPlayer from '../../../shared/media/VideoPlayer'
-  import VideoTitle from '../../../shared/partials/VideoTitle'
+  import CardFull from '../../../components/shared/layouts/CardFull'
+  import constants from '../../../lib/constants'
+  import TimelineSelector from '../../../lib/annotations/selectors/timeline'
+  import VideoPlayer from '../../../components/shared/media/VideoPlayer'
+  import VideoTitle from '../../../components/shared/partials/VideoTitle'
 
   export default {
     components: {
-      QBtn,
-      QList,
-      QItem,
       CardFull,
       VideoPlayer,
       VideoTitle
@@ -114,13 +110,13 @@
         if (!player) return
         const selector = TimelineSelector.fromMilliseconds(player.currentTime() * 1000.0)
         switch (target) {
-          case 1:
-            this.targetSelector = selector
-            this.targetTimecode = this.targetSelector.toFormat(constants.TIMECODE_FORMAT)
-            break
-          default:
-            this.srcSelector = selector
-            this.srcTimecode = this.srcSelector.toFormat(constants.TIMECODE_FORMAT)
+        case 1:
+          this.targetSelector = selector
+          this.targetTimecode = this.targetSelector.toFormat(constants.TIMECODE_FORMAT)
+          break
+        default:
+          this.srcSelector = selector
+          this.srcTimecode = this.srcSelector.toFormat(constants.TIMECODE_FORMAT)
         }
       },
       applySync () {

@@ -46,14 +46,12 @@
 </template>
 
 <script>
-  import { QBtn } from 'quasar-framework'
-  import ContentBar from '../../shared/partials/ContentBar'
-  import DataTable from '../../shared/partials/DataTable'
-  import CenterCardThreeQuarter from '../../shared/layouts/CenterCardThreeQuarter'
-  import SideMenuMosys from '../../shared/partials/SideMenuMosys'
-  // import CancelButton from '../../forms/CancelButton'
+  import ContentBar from '../../components/shared/partials/ContentBar'
+  import DataTable from '../../components/shared/partials/DataTable'
+  import CenterCardThreeQuarter from '../../components/shared/layouts/CenterCardThreeQuarter'
+  import SideMenuMosys from '../../components/shared/partials/SideMenuMosys'
 
-  import { FormMain } from '../../shared/forms'
+  import { FormMain } from '../../components/shared/forms'
   import { required } from 'vuelidate/lib/validators'
   export default {
     components: {
@@ -61,9 +59,7 @@
       DataTable,
       CenterCardThreeQuarter,
       SideMenuMosys,
-      FormMain,
-      // CancelButton,
-      QBtn
+      FormMain
     },
     methods: {
       onAction (type, data) {
@@ -73,12 +69,12 @@
           // return _this.$router.push(`/annotations/${data.row.uuid}/video`)
           // case 'annotate_edit':
           // return _this.$router.push(`/annotations/${data.row.uuid}/edit`)
-          case 'edit':
-            return _this.$router.push(`/maps/${data.row.uuid}/edit`)
+        case 'edit':
+          return _this.$router.push(`/maps/${data.row.uuid}/edit`)
           // case 'alert_ch':
           // return alert('geht')
-          case 'delete':
-            _this.$store.dispatch('maps/remove', data.row.uuid)
+        case 'delete':
+          _this.$store.dispatch('maps/remove', data.row.uuid)
               .then(() => { _this.maps = _this.$store.dispatch('maps/find') })
         }
       },

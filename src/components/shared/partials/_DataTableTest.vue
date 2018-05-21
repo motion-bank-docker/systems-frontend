@@ -21,13 +21,7 @@
 </template>
 
 <script>
-  import {
-    QDataTable
-  } from 'quasar-framework'
   export default {
-    components: {
-      QDataTable
-    },
     data: () => ({
       columns: [
         {

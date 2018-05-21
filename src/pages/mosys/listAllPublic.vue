@@ -23,14 +23,13 @@
 </template>
 
 <script>
-  import { QBtn } from 'quasar-framework'
-  import ContentBar from '../../shared/partials/ContentBar'
-  import DataTable from '../../shared/partials/DataTable'
-  import CenterCardThreeQuarter from '../../shared/layouts/CenterCardThreeQuarter'
-  import SideMenuMosys from '../../shared/partials/SideMenuMosys'
-  import CancelButton from '../../shared/forms/CancelButton'
+  import ContentBar from '../../components/shared/partials/ContentBar'
+  import DataTable from '../../components/shared/partials/DataTable'
+  import CenterCardThreeQuarter from '../../components/shared/layouts/CenterCardThreeQuarter'
+  import SideMenuMosys from '../../components/shared/partials/SideMenuMosys'
+  import CancelButton from '../../components/shared/forms/CancelButton'
 
-  import { FormMain } from '../../shared/forms'
+  import { FormMain } from '../../components/shared/forms'
   import { required } from 'vuelidate/lib/validators'
   export default {
     components: {
@@ -39,17 +38,16 @@
       CenterCardThreeQuarter,
       SideMenuMosys,
       FormMain,
-      CancelButton,
-      QBtn
+      CancelButton
     },
     methods: {
       onAction (type, data) {
         const _this = this
         switch (type) {
-          case 'annotate_edit':
-            return _this.$router.push(`/mosys/set`)
-          case 'edit':
-            return _this.$router.push(`/maps/${data.row.uuid}/edit`)
+        case 'annotate_edit':
+          return _this.$router.push(`/mosys/set`)
+        case 'edit':
+          return _this.$router.push(`/maps/${data.row.uuid}/edit`)
         }
         console.log('test')
       },

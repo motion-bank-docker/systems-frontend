@@ -21,9 +21,8 @@
 
 <script>
   import {
-    QTransition,
     Events
-  } from 'quasar-framework'
+  } from 'quasar'
 
   import 'quasar-extras/animate/fadeIn.css'
   import 'quasar-extras/animate/fadeOut.css'
@@ -36,9 +35,6 @@
   Vue.use(VueParticles)
 
   export default {
-    components: {
-      QTransition
-    },
     data: function () {
       return {
         show: false

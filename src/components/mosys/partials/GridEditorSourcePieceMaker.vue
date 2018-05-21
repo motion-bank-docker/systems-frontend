@@ -53,19 +53,14 @@
 </template>
 
 <script>
-  import { QIcon, QBtn, QList, QListHeader, QItem, QItemSide, QItemMain, QItemSeparator, QScrollArea, QSpinner } from 'quasar-framework'
   import constants from '../../../lib/constants'
   import Promise from 'bluebird'
-  import superagent from 'superagent'
   import url from 'url'
   import path from 'path'
   import he from 'he'
   import assignDeep from 'assign-deep'
 
   export default {
-    components: {
-      QIcon, QBtn, QList, QListHeader, QItem, QItemSide, QItemMain, QItemSeparator, QScrollArea, QSpinner
-    },
     data () {
       return {
         groups: [],
@@ -96,7 +91,8 @@
                 .then(() => {
                   if (entry.body.source.indexOf('http') !== 0) return
                   if (path.extname(url.parse(entry.body.source).path) === '.mp4') return
-                  return superagent.get(`${_this.$globalConfig.app.hosts.api}/proxy?url=${encodeURIComponent(entry.body.source)}`)
+                  // TODO: check if change from superagent to axios plugin is breaking
+                  return _this.$axios.get(`${_this.$globalConfig.app.hosts.api}/proxy?url=${encodeURIComponent(entry.body.source)}`)
                     .then(result => {
                       let title = result.text.match(/<title[^>]*>([^<]+)<\/title>/)[1]
                       newEntry.title = he.decode(title)
@@ -115,11 +111,11 @@
             this.loadingVideos = false
           })
       },
-      handleClickUnsetCurrentGroup (event) {
+      handleClickUnsetCurrentGroup () {
         this.currentGroup = null
         this.currentVideos = []
       },
-      handleVideoItemClick (event, video) {
+      handleVideoItemClick () {
       },
       handleVideoItemDragStart (event, video, type = 'Video') {
         let videoCell = {

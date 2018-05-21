@@ -34,17 +34,11 @@
 </template>
 
 <script>
-  import { QInput, QIcon, QBtn, QList, QListHeader, QItem, QItemSide, QItemMain, QItemSeparator, QScrollArea, QSpinner } from 'quasar-framework'
-  import superagent from 'superagent'
-
   const YOUTUBE_API_KEY = 'AIzaSyCMfeZXhTec0elm19N_2TTBHNZR2hpl-5Q'
   const apiBase = 'https://www.googleapis.com'
   const apiSearchVideos = '/youtube/v3/search'
 
   export default {
-    components: {
-      QInput, QIcon, QBtn, QList, QListHeader, QItem, QItemSide, QItemMain, QItemSeparator, QScrollArea, QSpinner
-    },
     data () {
       return {
         searchTerm: '',
@@ -66,7 +60,8 @@
         if (this.searchTerm.length >= 3) {
           this.loadingVideos = true
           this.lastSearchTerm = this.searchTerm
-          superagent
+          // TODO: check if change from superagent to axios plugin is breaking
+          this.$axios
             .get(apiBase + apiSearchVideos, {
               q: this.searchTerm,
               part: 'snippet',
@@ -95,7 +90,7 @@
           this.loadingVideos = false
         }
       },
-      handleVideoItemClick (event, video) {
+      handleVideoItemClick () {
       },
       handleVideoItemDragStart (event, video) {
         let videoCell = {

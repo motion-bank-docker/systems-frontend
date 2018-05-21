@@ -1,5 +1,5 @@
 <template lang="pug">
-  q-data-table(
+  q-table(
   @rowclick="onRowClick($event)",
   :dark="true",
   :data="rows",
@@ -18,17 +18,11 @@
 </template>
 
 <script>
-  import {
-    QBtn,
-    QDataTable
-  } from 'quasar-framework'
   import Username from './Username'
   import { DateTime } from 'luxon'
   import assignDeep from 'assign-deep'
   export default {
     components: {
-      QBtn,
-      QDataTable,
       Username
     },
     props: ['entries', 'config', 'columns', 'actions'],

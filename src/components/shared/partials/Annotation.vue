@@ -27,17 +27,9 @@
 </template>
 
 <script>
-  import {
-    QBtn,
-    QInput,
-    QField
-  } from 'quasar-framework'
   import FormAdd from '../forms/FormAdd'
   export default {
     components: {
-      QBtn,
-      QInput,
-      QField,
       FormAdd
     },
     methods: {
@@ -47,13 +39,13 @@
         // el[0].style.display = 'none'
         el[0].style.backgroundColor = 'red'
       },
-      DeleteAnnotation (target) {
+      DeleteAnnotation () {
       },
       EditForm (target) {
         var el = target.parentNode.parentNode.parentElement.getElementsByClassName('annotation-form')
         el[0].style.display = 'block'
       },
-      SaveEdit (target) {
+      SaveEdit () {
       }
     }
     // name: "annotation"

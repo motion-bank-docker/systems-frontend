@@ -61,11 +61,6 @@
   // import Vue from 'vue'
   // import constants from '../../../lib/constants'
   import assignDeep from 'assign-deep'
-  import {
-    QContextMenu, QList,
-    QItem, QItemMain, QFixedPosition, QBtn,
-    QIcon
-  } from 'quasar-framework'
   import Cell from './Cell'
 
   const nullImage = new Image()
@@ -73,13 +68,6 @@
 
   export default {
     components: {
-      QContextMenu,
-      QList,
-      QItem,
-      QItemMain,
-      QFixedPosition,
-      QBtn,
-      QIcon,
       Cell
     },
     props: ['gridUuid'],
@@ -201,9 +189,9 @@
         this.cellUIStates[cell.uuid].beingDragged = false
       },
 
-      handleCellContextMenuClick (event) {
+      handleCellContextMenuClick () {
       },
-      handleCellContextMenuEdit (event, cell) {
+      handleCellContextMenuEdit (/* event, cell */) {
         // this.$store.commit('mosysGridEditorStore/showSources')
         // this.$store.commit('mosysGridEditorStore/setSourcesTab', 'tab-default-cells')
       },
@@ -281,7 +269,7 @@
       handleGridContextMenu (event) {
         this.contextMenuClickPosition = this.getGridPositionForEvent(event)
       },
-      handleGridContextMenuAddCell (event) {
+      handleGridContextMenuAddCell () {
         const _this = this
         let position = this.contextMenuClickPosition
         let newCell = {
@@ -302,7 +290,7 @@
             _this.fetchCellAnnotations()
           })
       },
-      handleGridContextMenuInsertColumnLeft (event) {
+      handleGridContextMenuInsertColumnLeft () {
         const _this = this
         let position = this.contextMenuClickPosition
         this.cells.map(cell => {
@@ -325,7 +313,7 @@
 
         this.updateGridMetadataStore()
       },
-      handleGridContextMenuInsertRowAbove (event) {
+      handleGridContextMenuInsertRowAbove () {
         const _this = this
         let position = this.contextMenuClickPosition
         this.cells.map(cell => {
@@ -348,11 +336,11 @@
         this.updateGridMetadataStore()
       },
 
-      handleGridButtonClickEdit (event) {
+      handleGridButtonClickEdit () {
         this.$store.commit('mosysGridEditorStore/toggleSources')
       },
 
-      handleGridKeyReleased (event) {
+      handleGridKeyReleased () {
       },
 
       updateCellUIStates () {

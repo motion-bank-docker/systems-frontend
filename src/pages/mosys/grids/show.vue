@@ -6,11 +6,9 @@
 </template>
 
 <script>
-  import { QBtn } from 'quasar-framework'
-  import GridDisplay from '../../partials/GridDisplay'
+  import GridDisplay from '../../../components/mosys/partials/GridDisplay'
   export default {
     components: {
-      QBtn,
       GridDisplay
     }
   }

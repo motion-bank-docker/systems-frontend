@@ -3,7 +3,6 @@
 </template>
 
 <script>
-  import superagent from 'superagent'
   export default {
     props: ['tag', 'apiKey'],
     created: function () {
@@ -21,7 +20,7 @@
         _this.retries = 0
         function fetch () {
           if (_this.retries > 3) return
-          superagent.get(`http://api.giphy.com/v1/gifs/random?api_key=${apiKey}&tag=${tag}`)
+          _this.$axios.get(`http://api.giphy.com/v1/gifs/random?api_key=${apiKey}&tag=${tag}`)
             .then(res => {
               if (res.body && res.body.data) {
                 _this.gifURL = res.body.data.fixed_height_downsampled_url
