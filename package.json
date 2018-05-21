@@ -57,6 +57,7 @@
     "eslint-plugin-vue": "^4.3.0",
     "metapak": "^1.0.3",
     "metapak-motionbank": "^1.11.8",
+    "pug-plain-loader": "^1.0.0",
     "quasar-cli": "^0.16.1",
     "static-server": "^2.2.1"
   },
