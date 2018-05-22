@@ -1,7 +1,7 @@
 import TinyEmitter from 'tiny-emitter'
 import { ObjectUtil } from 'mbjs-utils'
 
-const { isUserAllowed } = require('../../../config/scopes')
+const { isUserAllowed } = require('../../config/scopes')
 
 class BaseAuth extends TinyEmitter {
   constructor (opts = {}, env = {}) {

@@ -3,7 +3,7 @@ import { ObjectUtil } from 'mbjs-utils'
 
 function createClient (transport, auth = undefined) {
   const
-    cg = require('../../config'),
+    cg = require('../config'),
     client = feathers()
 
   let feathersConfig
