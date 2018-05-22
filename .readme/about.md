@@ -1,7 +1,6 @@
 ## Install
 
 ```shell
-npm install -g vue-cli quasar-cli
 npm install
 ```
 
@@ -22,6 +21,8 @@ API_HOST=http://localhost:3030 STREAMER_HOST=http://localhost:1234 npm run dev  
 ``` 
 
 ## Build
+
+To remove any prior build artifacts run `npm run clean`.
 
 ```shell
 npm run build

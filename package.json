@@ -7,8 +7,8 @@
   "author": "Mainz University of Applied Sciences (Motion Bank Project)",
   "scripts": {
     "build": "cross-env NODE_ENV=production quasar build",
-    "dev": "cross-env NODE_ENV=production quasar dev",
     "clean": "quasar clean",
+    "dev": "cross-env NODE_ENV=production quasar dev",
     "lint": "eslint --ext .js,.vue src",
     "metapak": "metapak",
     "start": "node ./",
