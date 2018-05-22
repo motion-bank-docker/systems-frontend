@@ -1,5 +1,6 @@
 <template lang="pug">
-  center-card-three-quarter
+  // center-card-three-quarter
+  card-full
     span(slot="form-title") {{ $t('routes.users.create.title') }}
     p.caption(slot="form-caption") {{ $t('routes.users.create.caption') }}
     form-main(v-model="payload", :schema="schema")
@@ -7,10 +8,12 @@
 
 <script>
   import CenterCardThreeQuarter from '../../../components/shared/layouts/CenterCardThreeQuarter'
+  import CardFull from '../../../components/shared/layouts/CardFull'
   import { FormMain } from '../../../components/shared/forms'
   import { required, sameAs, minLength, email } from 'vuelidate/lib/validators'
   export default {
     components: {
+      CardFull,
       CenterCardThreeQuarter,
       FormMain
     },

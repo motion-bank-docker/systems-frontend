@@ -3,13 +3,23 @@
   // card-full
     span(slot="form-logo")
     h4 Edit Grid
-  div
-    .row
-      .padding-1em
-        tags(v-if="payload", :targetUuid="payload.uuid", fullWidth)
-      .padding-1em
-        form-main(v-model="payload", :schema="schema")
+  // div
+  .row
 
+    .padding-1em
+      tags(
+        v-if="payload",
+        :targetUuid="payload.uuid",
+        fullWidth
+        )
+
+    .padding-1em.full-width
+      form-main(
+        v-model="payload",
+        :schema="schema"
+        )
+
+    .full-width.q-mt-lg(style="border: 1px solid #333;")
       users-table(
         :headline="$t('routes.mosys.grids.users.title')",
         :entries="users",

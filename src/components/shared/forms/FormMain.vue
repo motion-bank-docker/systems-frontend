@@ -1,6 +1,8 @@
 <template lang="pug">
-  form.column.md-gutter.justify-between.items-around(v-on:submit.prevent="handleSubmit")
-    .row.md-gutter.justify-between.items-between
+  // form.column.md-gutter.justify-between.items-around.full-width(v-on:submit.prevent="handleSubmit")
+  form(v-on:submit.prevent="handleSubmit")
+    // .row.md-gutter.justify-between.items-between
+    div
       template(v-if="loaded", v-for="(field, key) in fields")
         form-row-checkbox.col-sm-12.no-margin(
         v-if="isType(field.type, 'checkbox')",
@@ -28,7 +30,7 @@
     .row.xs-gutter.full-width.justify-end.items-end
       slot(name="form-buttons-add")
       slot(name="form-buttons")
-        submit-button(
+        submit-button.q-mt-md(
         :active="maySubmit",
         ) {{ $t(schema.submit.label) || $t('buttons.submit') }}
     mb-notification-service

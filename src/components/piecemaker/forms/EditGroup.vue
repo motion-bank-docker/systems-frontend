@@ -9,18 +9,19 @@
           fullWidth
           )
 
-      .padding-1em
+      .padding-1em.full-width
         form-main(
           v-model="payload",
           :schema="schema"
           )
 
-      users-table(
-        :columns="columns",
-        :actions="actions",
-        :headline="$t('routes.piecemaker.groups.users.title')",
-        @action="onAction"
-        )
+      .full-width.q-mt-lg(style="border: 1px solid #333;")
+        users-table(
+          :columns="columns",
+          :actions="actions",
+          :headline="$t('routes.piecemaker.groups.users.title')",
+          @action="onAction"
+          )
 
 </template>
 

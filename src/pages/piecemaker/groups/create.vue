@@ -1,6 +1,13 @@
 <template lang="pug">
-  center-card-three-quarter
-    q-btn(slot="backButton", @click="$router.push(`/piecemaker/groups/`)", icon="keyboard_backspace", round, small)
+  //center-card-three-quarter
+  card-full
+    q-btn(
+      slot="backButton",
+      @click="$router.push(`/piecemaker/groups/`)",
+      icon="keyboard_backspace",
+      round, small,
+      style="position: absolute; top: calc(50px + 2rem); left: 2rem;"
+      )
     span(slot="form-logo")
     span(slot="form-title") {{ $t('routes.piecemaker.groups.create.title') }}
     // p.caption(slot="form-caption") {{ $t('routes.piecemaker.groups.create.caption') }}
@@ -11,8 +18,10 @@
 <script>
   import EditGroup from '../../../components/piecemaker/forms/EditGroup'
   import CenterCardThreeQuarter from '../../../components/shared/layouts/CenterCardThreeQuarter'
+  import CardFull from '../../../components/shared/layouts/CardFull'
   export default {
     components: {
+      CardFull,
       CenterCardThreeQuarter,
       EditGroup
     }
