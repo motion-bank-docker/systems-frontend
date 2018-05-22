@@ -29,29 +29,11 @@
 </template>
 
 <script>
-  import {
-    QList,
-    QListHeader,
-    QItem,
-    QItemMain,
-    QItemTile,
-    QBtn,
-    QTabs,
-    QRouteTab
-  } from 'quasar-framework'
-  import CardFull from '../../shared/layouts/CardFull'
-  import CenterCardFull from '../../shared/layouts/CenterCardFull'
-  import constants from '../../../lib/constants'
+  import CardFull from '../../components/shared/layouts/CardFull'
+  import CenterCardFull from '../../components/shared/layouts/CenterCardFull'
+  import constants from '../../lib/constants'
   export default {
     components: {
-      QList,
-      QListHeader,
-      QItem,
-      QItemMain,
-      QItemTile,
-      QBtn,
-      QTabs,
-      QRouteTab,
       CardFull,
       CenterCardFull
     },

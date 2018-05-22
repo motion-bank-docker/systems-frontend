@@ -11,18 +11,15 @@
       .col-6.padding-1em
         edit-video.col-6
 
-
 </template>
 
 <script>
-  import { QBtn } from 'quasar-framework'
-  import EditVideo from '../../forms/EditVideo'
-  import CardFull from '../../../shared/layouts/CardFull'
-  import Tags from '../../../shared/partials/Tags'
+  import EditVideo from '../../../components/piecemaker/forms/EditVideo'
+  import CardFull from '../../../components/shared/layouts/CardFull'
+  import Tags from '../../../components/shared/partials/Tags'
 
   export default {
     components: {
-      QBtn,
       Tags,
       EditVideo,
       CardFull

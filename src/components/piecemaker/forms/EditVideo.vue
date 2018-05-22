@@ -4,14 +4,12 @@
 
 <script>
   import FormMain from '../../shared/forms/FormMain'
-  import { QBtn } from 'quasar-framework'
   import { required } from 'vuelidate/lib/validators'
   import { DateTime } from 'luxon'
   import constants from '../../../lib/constants'
   export default {
     components: {
-      FormMain,
-      QBtn
+      FormMain
     },
     props: ['redirectTo'],
     data () {

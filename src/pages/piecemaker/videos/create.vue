@@ -9,12 +9,10 @@
 </template>
 
 <script>
-  import { QBtn } from 'quasar-framework'
-  import EditVideo from '../../forms/EditVideo'
-  import CenterCardThreeQuarter from '../../../shared/layouts/CenterCardThreeQuarter'
+  import EditVideo from '../../../components/piecemaker/forms/EditVideo'
+  import CenterCardThreeQuarter from '../../../components/shared/layouts/CenterCardThreeQuarter'
   export default {
     components: {
-      QBtn,
       EditVideo,
       CenterCardThreeQuarter
     }

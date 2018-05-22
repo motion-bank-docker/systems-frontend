@@ -43,29 +43,19 @@
 </template>
 
 <script>
-  import { AppFullscreen, ActionSheet, Dialog, QBtn, QLayout, QInput, QList, QItem, QItemMain, QItemTile } from 'quasar-framework'
-  // import { ActionSheet, Dialog, QBtn, QLayout, QInput, QList, QItem, QItemMain, QItemTile } from 'quasar-framework'
+  import { AppFullscreen } from 'quasar'
   import assert from 'assert'
   import assignDeep from 'assign-deep'
   import uuidValidate from 'uuid-validate'
-  import VideoPlayer from '../../../shared/media/VideoPlayer'
-  import annotations from '../../../../lib/annotations'
-  import constants from '../../../../lib/constants'
-  import Username from '../../../shared/partials/Username'
+  import VideoPlayer from '../../../components/shared/media/VideoPlayer'
+  import annotations from '../../../lib/annotations'
+  import constants from '../../../lib/constants'
+  import Username from '../../../components/shared/partials/Username'
 
   const TimelineSelector = annotations.selectors.TimelineSelector
 
   export default {
     components: {
-      ActionSheet,
-      Dialog,
-      QBtn,
-      QLayout,
-      QInput,
-      QList,
-      QItem,
-      QItemMain,
-      QItemTile,
       VideoPlayer,
       Username
     },
@@ -293,6 +283,5 @@
     height: calc(100vh - 52px)!important;
     overflow: hidden!important;
   }
-
 
 </style>

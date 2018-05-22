@@ -15,15 +15,11 @@
 </template>
 
 <script>
-  import {
-    QBtn
-  } from 'quasar-framework'
-  import ContentBar from '../../../shared/partials/ContentBar'
-  import DataTableTest from '../../../shared/partials/_DataTableTest'
-  import SideMenu from '../../../shared/partials/Sidemenu'
+  import ContentBar from '../../../components/shared/partials/ContentBar'
+  import DataTableTest from '../../../components/shared/partials/_DataTableTest'
+  import SideMenu from '../../../components/shared/partials/Sidemenu'
   export default {
     components: {
-      QBtn,
       ContentBar,
       DataTableTest,
       SideMenu

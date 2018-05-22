@@ -9,12 +9,10 @@
 </template>
 
 <script>
-  import { QBtn } from 'quasar-framework'
-  import EditGroup from '../../forms/EditGroup'
-  import CenterCardThreeQuarter from '../../../shared/layouts/CenterCardThreeQuarter'
+  import EditGroup from '../../../components/piecemaker/forms/EditGroup'
+  import CenterCardThreeQuarter from '../../../components/shared/layouts/CenterCardThreeQuarter'
   export default {
     components: {
-      QBtn,
       CenterCardThreeQuarter,
       EditGroup
     }

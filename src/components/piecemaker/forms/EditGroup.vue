@@ -26,7 +26,6 @@
 
 <script>
   import FormMain from '../../shared/forms/FormMain'
-  import { QBtn, QRadio, QToggle, QList, QItem, QListHeader, QDataTable } from 'quasar-framework'
   import { required } from 'vuelidate/lib/validators'
   import constants from '../../../lib/constants'
   import Tags from '../../shared/partials/Tags'
@@ -36,13 +35,6 @@
     components: {
       FormMain,
       Tags,
-      QBtn,
-      QRadio,
-      QToggle,
-      QList,
-      QItem,
-      QListHeader,
-      QDataTable,
       UsersTable
     },
     props: ['redirectTo'],

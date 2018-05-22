@@ -6,8 +6,8 @@
 </template>
 
 <script>
-  import CenterCardThreeQuarter from '../../shared/layouts/CenterCardThreeQuarter'
-  import { FormMain } from '../../shared/forms/index'
+  import CenterCardThreeQuarter from '../../../components/shared/layouts/CenterCardThreeQuarter'
+  import { FormMain } from '../../../components/shared/forms/index'
   import { required, url } from 'vuelidate/lib/validators'
   export default {
     components: {

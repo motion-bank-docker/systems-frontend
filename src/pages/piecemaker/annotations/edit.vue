@@ -23,22 +23,12 @@
 </template>
 
 <script>
-  import { QBtn, QSelect, QList, QListHeader, QItem, QItemMain, QItemSide, QItemTile, QItemSeparator } from 'quasar-framework'
-  import CenterCardFull from '../../shared/layouts/CenterCardFull'
-  import VideoPlayer from '../../shared/media/VideoPlayer'
-  import { FormMain } from '../../shared/forms/index'
+  import CenterCardFull from '../../../components/shared/layouts/CenterCardFull'
+  import VideoPlayer from '../../../components/shared/media/VideoPlayer'
+  import { FormMain } from '../../../components/shared/forms/index'
   import { required } from 'vuelidate/lib/validators'
   export default {
     components: {
-      QBtn,
-      QItem,
-      QItemMain,
-      QItemSide,
-      QItemSeparator,
-      QItemTile,
-      QList,
-      QListHeader,
-      QSelect,
       CenterCardFull,
       VideoPlayer,
       FormMain

@@ -8,7 +8,6 @@
 
       a(@click="OpenForm") Add new video
 
-
       // div(slot="table-form-item")#piecemaker-add-form
       div#piecemaker-add-form
         div blablabla
@@ -21,11 +20,9 @@
         form-add
           q-input(slot="form-middle-item" v-model="text" float-label="URL" value="11111111" name="set-title")
 
-
         a(@click="$router.push({ name: 'stash.annotator' })") add & annotate
         a(@click="AddNew") add & stay
         a(@click="HideForm") cancel
-
 
         // form-add#piecemaker-add-form
 
@@ -55,29 +52,16 @@
 </template>
 
 <script>
-  import {
-    QBtn,
-    QField,
-    QInput,
-    QRadio
-  } from 'quasar-framework'
-  import ContentBar from '../../../shared/partials/ContentBar'
-  import DataTable from '../../../shared/partials/DataTable'
-  // import DataTableTest from '../../../partials/DataTableTest'
-  import FormAdd from '../../../shared/forms/FormAdd'
-  import SideMenu from '../../../shared/partials/Sidemenu'
-  import { FormMain } from '../../../shared/forms'
-  // import { FormMain } from '../../forms'
+  import ContentBar from '../../../components/shared/partials/ContentBar'
+  import DataTable from '../../../components/shared/partials/DataTable'
+  import FormAdd from '../../../components/shared/forms/FormAdd'
+  import SideMenu from '../../../components/shared/partials/Sidemenu'
+  import { FormMain } from '../../../components/shared/forms'
   import { required } from 'vuelidate/lib/validators'
   export default {
     components: {
-      QBtn,
-      QField,
-      QInput,
-      QRadio,
       ContentBar,
       DataTable,
-      // DataTableTest,
       FormAdd,
       FormMain,
       SideMenu
@@ -99,14 +83,14 @@
       onAction (type, data) {
         const _this = this
         switch (type) {
-          case 'add_video':
-            return _this.$router.push(`/annotations/${data.row.uuid}/video`)
-          case 'annotate_edit':
-            return _this.$router.push(`/annotations/${data.row.uuid}/edit`)
-          case 'edit':
-            return _this.$router.push(`/maps/${data.row.uuid}/edit`)
-          case 'delete':
-            _this.$store.dispatch('maps/remove', data.row.uuid)
+        case 'add_video':
+          return _this.$router.push(`/annotations/${data.row.uuid}/video`)
+        case 'annotate_edit':
+          return _this.$router.push(`/annotations/${data.row.uuid}/edit`)
+        case 'edit':
+          return _this.$router.push(`/maps/${data.row.uuid}/edit`)
+        case 'delete':
+          _this.$store.dispatch('maps/remove', data.row.uuid)
               .then(() => { _this.maps = _this.$store.dispatch('maps/find') })
         }
       }

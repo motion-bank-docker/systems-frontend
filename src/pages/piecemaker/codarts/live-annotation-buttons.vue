@@ -13,17 +13,15 @@
 </template>
 
 <script>
-  import { QBtn } from 'quasar-framework'
-  import CardFull from '../../../shared/layouts/CardFull'
-  import constants from '../../../../lib/constants'
-  import annotations from '../../../../lib/annotations'
+  import CardFull from '../../../components/shared/layouts/CardFull'
+  import constants from '../../../lib/constants'
+  import annotations from '../../../lib/annotations'
 
   const TimelineSelector = annotations.selectors.TimelineSelector
 
   export default {
     components: {
-      CardFull,
-      QBtn
+      CardFull
     },
     data () {
       return {
@@ -84,6 +82,5 @@
 
   .button
     margin-bottom 1.5em
-
 
 </style>

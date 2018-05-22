@@ -13,13 +13,11 @@
 </template>
 
 <script>
-  import { QBtn } from 'quasar-framework'
-  import EditGroup from '../../forms/EditGroup'
-  import CardFull from '../../../shared/layouts/CardFull'
+  import EditGroup from '../../../components/piecemaker/forms/EditGroup'
+  import CardFull from '../../../components/shared/layouts/CardFull'
 
   export default {
     components: {
-      QBtn,
       EditGroup,
       CardFull
     },

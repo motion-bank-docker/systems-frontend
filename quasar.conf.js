@@ -65,6 +65,7 @@ module.exports = function (ctx) {
         'QItem',
         'QItemMain',
         'QItemSide',
+        'QItemTile',
         'QItemSeparator',
         'QContextMenu',
         'QScrollArea',
@@ -75,6 +76,7 @@ module.exports = function (ctx) {
         'QTabs',
         'QTab',
         'QTabPane',
+        'QRouteTab',
         'QTable',
         'QModal',
         //
@@ -101,7 +103,9 @@ module.exports = function (ctx) {
       // Quasar plugins
       plugins: [
         'Notify',
-        'Loading'
+        'Dialog',
+        'Loading',
+        'ActionSheet'
       ]
     },
     // animations: 'all' --- includes all animations

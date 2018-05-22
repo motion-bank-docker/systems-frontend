@@ -17,13 +17,11 @@
 </template>
 
 <script>
-  import { QBtn } from 'quasar-framework'
-  import CardFull from '../../../shared/layouts/CardFull'
-  import GroupList from '../../partials/GroupsList'
+  import CardFull from '../../../components/shared/layouts/CardFull'
+  import GroupList from '../../../components/piecemaker/partials/GroupsList'
 
   export default {
     components: {
-      QBtn,
       CardFull,
       GroupList
     },

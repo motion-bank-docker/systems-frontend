@@ -64,29 +64,12 @@
         .col-7.text-right(style="border-top: 1px solid white; padding-top: 1rem;")
           q-btn save changes
 
-
 </template>
 
 <script>
-  import {
-    QBtn,
-    QList,
-    QItem,
-    QItemMain,
-    QItemSide,
-    QItemSeparator,
-    QToggle
-  } from 'quasar-framework'
-  import CardFull from '../../../shared/layouts/CardFull'
+  import CardFull from '../../../components/shared/layouts/CardFull'
   export default {
     components: {
-      QBtn,
-      QList,
-      QItem,
-      QItemMain,
-      QItemSide,
-      QItemSeparator,
-      QToggle,
       CardFull
     },
     data () {

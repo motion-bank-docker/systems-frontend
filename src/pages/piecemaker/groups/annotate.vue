@@ -18,25 +18,17 @@
 </template>
 
 <script>
-  import { QBtn, QInput, QList, QItem, QItemMain, QItemSide, QItemTile } from 'quasar-framework'
-  import Full from '../../../shared/layouts/Full'
+  import Full from '../../../components/shared/layouts/Full'
   import assert from 'assert'
   import assignDeep from 'assign-deep'
   import uuidValidate from 'uuid-validate'
-  import constants from '../../../../lib/constants'
-  import annotations from '../../../../lib/annotations'
+  import constants from '../../../lib/constants'
+  import annotations from '../../../lib/annotations'
 
   const TimelineSelector = annotations.selectors.TimelineSelector
 
   export default {
     components: {
-      QBtn,
-      QInput,
-      QList,
-      QItem,
-      QItemMain,
-      QItemTile,
-      QItemSide,
       Full
     },
     data () {
@@ -103,7 +95,7 @@
             this.annotations.splice(index, 1)
           })
       },
-      scrollToElement (uuid) {
+      scrollToElement () {
         // alert(uuid)
         // window.location.href = '#' + uuid
         // window.scrollTo(0, document.body.scrollHeight)

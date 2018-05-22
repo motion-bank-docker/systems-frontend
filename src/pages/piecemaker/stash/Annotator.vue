@@ -16,13 +16,9 @@
 </template>
 
 <script>
-  import {
-    QDataTable
-  } from 'quasar-framework'
-  import Annotation from '../../../shared/partials/annotation.vue'
+  import Annotation from '../../../components/shared/partials/annotation.vue'
   export default {
     components: {
-      QDataTable,
       Annotation
     },
     created: function () {
