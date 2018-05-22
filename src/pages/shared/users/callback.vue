@@ -8,12 +8,13 @@
     props: ['auth'],
     mounted () {
       const _this = this
-      this.$mbAuth().handleAuthentication().then(() => {
+      this.$auth.handleAuthentication().then(user => {
+        console.log('Auth0 authenticated user', user)
         _this.$store.commit('notifications/addMessage', {
           body: _this.$t('messages.login_success'),
           type: 'success'
         })
-        _this.$router.replace({ name: 'users.edit', params: { id: 'me' } })
+        _this.$router.replace({ name: 'site.welcome' })
       }).catch(err => {
         console.debug('Auth0 callback error:', err.error || err.message, err.error_description)
         _this.$store.commit('notifications/addMessage', {
