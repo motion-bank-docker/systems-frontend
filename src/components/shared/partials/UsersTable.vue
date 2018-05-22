@@ -1,19 +1,19 @@
 <template lang="pug">
 
-  div.shadow-10(style="padding: 1rem;")
+  div.shadow-3(style="padding: 1rem;")
 
     q-modal(v-model="openModal")
-      div.bg-black(style="padding: 1rem 2rem;")
-        h5.no-margin.no-padding Send an invitation
+      div.bg-black.q-pa-lg.row
+        h5.no-margin.no-padding.col-12 Send an invitation
 
-        form-main(
+        form-main.col-12(
           :schema="schemaMail"
           )
 
-        .text-center
+        // .text-center
           q-btn(@click="openModal = false") Abort
 
-    div
+    div.q-px-md
       h5.light-paragraph
         | {{ headl }}
         span.float-right
