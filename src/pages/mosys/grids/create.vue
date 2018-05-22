@@ -1,5 +1,6 @@
 <template lang="pug">
-  center-card-three-quarter
+  // center-card-three-quarter
+  card-full
     q-btn(
       slot="backButton",
       @click="$router.push(`/mosys/grids/`)",
@@ -16,8 +17,10 @@
 <script>
   import EditGroup from '../../../components/mosys/forms/EditGrid'
   import CenterCardThreeQuarter from '../../../components/shared/layouts/CenterCardThreeQuarter'
+  import CardFull from '../../../components/shared/layouts/CardFull'
   export default {
     components: {
+      CardFull,
       CenterCardThreeQuarter,
       EditGroup
     }

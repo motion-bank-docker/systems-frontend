@@ -5,7 +5,7 @@
     div#back-button
       slot(name="backButton")
 
-    .column.col-12
+    .column.col-10
       q-card.full-width(color="dark").no-margin
         .layout-padding
           q-card-main.no-margin

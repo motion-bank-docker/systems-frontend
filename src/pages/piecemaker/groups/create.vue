@@ -1,5 +1,6 @@
 <template lang="pug">
-  center-card-three-quarter
+  //center-card-three-quarter
+  card-full
     q-btn(
       slot="backButton",
       @click="$router.push(`/piecemaker/groups/`)",
@@ -17,8 +18,10 @@
 <script>
   import EditGroup from '../../../components/piecemaker/forms/EditGroup'
   import CenterCardThreeQuarter from '../../../components/shared/layouts/CenterCardThreeQuarter'
+  import CardFull from '../../../components/shared/layouts/CardFull'
   export default {
     components: {
+      CardFull,
       CenterCardThreeQuarter,
       EditGroup
     }
