@@ -13,24 +13,24 @@ function alert (msg, type = null, opts = {}) {
     position: 'top-center'
   }, opts)
   switch (type) {
-    case 'success':
-      alert.icon = alert.icon || 'done'
-      alert.color = 'positive'
-      return Alert.create(alert)
-    case 'error':
-      alert.icon = alert.icon || 'error'
-      alert.color = 'negative'
-      return Alert.create(alert)
-    case 'warn':
-      alert.icon = alert.icon || 'warning'
-      alert.color = 'warning'
-      return Alert.create(alert)
-    case 'info':
-      alert.icon = alert.icon || 'info'
-      alert.color = 'info'
-      return Alert.create(alert)
-    default:
-      return Alert.create(alert)
+  case 'success':
+    alert.icon = alert.icon || 'done'
+    alert.color = 'positive'
+    return Alert.create(alert)
+  case 'error':
+    alert.icon = alert.icon || 'error'
+    alert.color = 'negative'
+    return Alert.create(alert)
+  case 'warn':
+    alert.icon = alert.icon || 'warning'
+    alert.color = 'warning'
+    return Alert.create(alert)
+  case 'info':
+    alert.icon = alert.icon || 'info'
+    alert.color = 'info'
+    return Alert.create(alert)
+  default:
+    return Alert.create(alert)
   }
 }
 

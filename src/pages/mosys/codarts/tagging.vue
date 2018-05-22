@@ -116,14 +116,14 @@
     },
     mounted () {
       this.tags = Object.keys(tagsVideosMap)
-      this.disabled = this.tags.map(t => false)
+      this.disabled = this.tags.map(() => false)
       this.videos = videoURLs
     },
     methods: {
       handleTagClick (event, tag, index) {
         Vue.set(this.disabled, index, !this.disabled[index])
       },
-      handleSubmit (event) {
+      handleSubmit () {
         const _this = this
         const authorUuid = _this.$store.state.auth.payload.userId
         const videos = []
@@ -161,7 +161,7 @@
             return _this.$store.dispatch('annotations/create', gridMetadata)
           })
           .then(() => {
-            return Promise.map(_this.selectedTags, (tag, i) => {
+            return Promise.map(_this.selectedTags, (tag) => {
               let tagAnnotation = {
                 author: authorUuid,
                 body: {

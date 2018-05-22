@@ -7,7 +7,6 @@
       .col-6.text-right
         q-btn(@click="") Add user
 
-
     .row.border-bottom(v-for="user in users", :key="user.user")
 
       h6.col-12
@@ -45,7 +44,6 @@
         .col-12.text-right
           q-btn(v-if="user.changed", @click="user.changed = false", style="margin-top: .75rem;") undo
           q-btn(v-if="user.changed", @click="user.changed = false", style="margin: .75rem 0 0 .5rem;") save changes
-
 
       .col-lg-6(style="padding: 0 1.25rem;")
         p Access to timelines:

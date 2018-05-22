@@ -83,14 +83,14 @@
       onAction (type, data) {
         const _this = this
         switch (type) {
-          case 'add_video':
-            return _this.$router.push(`/annotations/${data.row.uuid}/video`)
-          case 'annotate_edit':
-            return _this.$router.push(`/annotations/${data.row.uuid}/edit`)
-          case 'edit':
-            return _this.$router.push(`/maps/${data.row.uuid}/edit`)
-          case 'delete':
-            _this.$store.dispatch('maps/remove', data.row.uuid)
+        case 'add_video':
+          return _this.$router.push(`/annotations/${data.row.uuid}/video`)
+        case 'annotate_edit':
+          return _this.$router.push(`/annotations/${data.row.uuid}/edit`)
+        case 'edit':
+          return _this.$router.push(`/maps/${data.row.uuid}/edit`)
+        case 'delete':
+          _this.$store.dispatch('maps/remove', data.row.uuid)
               .then(() => { _this.maps = _this.$store.dispatch('maps/find') })
         }
         console.log('test')

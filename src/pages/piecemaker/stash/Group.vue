@@ -11,7 +11,6 @@
     div(slot="table-button")
       q-btn(icon="create") Add Video
 
-
 </template>
 
 <script>
