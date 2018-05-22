@@ -8,6 +8,7 @@
   "scripts": {
     "build": "cross-env NODE_ENV=production quasar build",
     "dev": "cross-env NODE_ENV=production quasar dev",
+    "clean": "quasar clean",
     "lint": "eslint --ext .js,.vue src",
     "metapak": "metapak",
     "start": "node ./",
