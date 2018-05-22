@@ -1,4 +1,4 @@
-import { Alert } from 'quasar-framework'
+import { Alert } from 'quasar'
 import assignDeep from 'assign-deep'
 
 import 'quasar-extras/animate/bounceInDown.css'

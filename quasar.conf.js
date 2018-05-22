@@ -6,7 +6,8 @@ module.exports = function (ctx) {
     plugins: [
       'i18n',
       'axios',
-      'mb-conf'
+      'mb-conf',
+      'mb-notifications'
     ],
     css: [
       'app.styl'

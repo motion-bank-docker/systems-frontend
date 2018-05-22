@@ -1,5 +1,7 @@
-import alert from './alert'
-import toast from './toast'
+// FIXME: notifications are broken!
+
+// import alert from './alert'
+// import toast from './toast'
 
 const notifications = {
   data () {
@@ -29,13 +31,13 @@ const notifications = {
           /**
            * Show Alert
            */
-          this.alertInstance = this.alert(this.$t(msg.body), msg.type, {icon: msg.icon})
+          // this.alertInstance = this.alert(this.$t(msg.body), msg.type, {icon: msg.icon})
         }
         else {
           /**
            * Show Toast (default)
            */
-          this.toast(this.$t(msg.body), msg.type, {icon: msg.icon})
+          // this.toast(this.$t(msg.body), msg.type, {icon: msg.icon})
         }
       }
     }
@@ -46,12 +48,12 @@ const notifications = {
         this.alertInstance.dismiss()
         this.alertInstance = undefined
       }
-    },
+    }
     /**
      * Registered Display Methods
      */
-    alert,
-    toast
+    // alert,
+    // toast
   },
   render: h => h('div')
 }

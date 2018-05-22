@@ -1,4 +1,4 @@
-import { Toast } from 'quasar-framework'
+import { Toast } from 'quasar'
 import assignDeep from 'assign-deep'
 
 function toast (msg, type = null, opts = {}) {
