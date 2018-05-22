@@ -10,7 +10,7 @@
         big, flat, @click="currentApp = 'mosys'; $router.push({ name: 'mosys.grids.list' })") Mosys
 
     q-btn(color="primary", flat, icon="settings",
-      v-if="user", @click="$router.push({ name: 'users.edit', params: { id: 'me' } })") {{ $t('navigation.manage_account') }}
+      v-if="user", @click="$router.push({ name: 'users.manage', params: { id: 'me' } })") {{ user.name }}
 
     q-btn(color="primary", flat, icon="eject",
       v-if="user", @click="logout") {{ $t('navigation.logout') }}
@@ -33,6 +33,7 @@
         console.log('auth state', user)
         _this.user = user
       })
+      // this.$auth.checkSession()
     },
     methods: {
       login () {

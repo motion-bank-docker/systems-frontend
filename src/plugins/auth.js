@@ -7,6 +7,7 @@ class AuthService extends TinyEmitter {
 
     this._webAuth = new auth0.WebAuth(opts)
     this._user = undefined
+    this._token = undefined
   }
 
   authenticate () {
@@ -22,6 +23,23 @@ class AuthService extends TinyEmitter {
     this.emit('auth-state', undefined)
   }
 
+  checkSession () {
+    const _this = this
+    return new Promise((resolve, reject) => {
+      this.webAuth.checkSession({}, (err, authResult) => {
+        if (err) {
+          console.log('check session error', err)
+          return reject(err)
+        }
+        console.log('check session authResult', authResult)
+        _this._token = authResult.accessToken
+        resolve(authResult)
+      })
+    }).then(authResult => {
+      return _this.getUserInfo(authResult.accessToken)
+    })
+  }
+
   handleAuthentication () {
     const _this = this
     return new Promise((resolve, reject) => {
@@ -30,21 +48,36 @@ class AuthService extends TinyEmitter {
           console.error('auth error', err)
           return reject(err)
         }
-        _this.webAuth.client.userInfo(authResult.accessToken, function (err, user) {
-          if (err) {
-            console.error('user error', err)
-            return reject(err)
-          }
-          _this._user = user
-          _this.emit('auth-state', user)
-          resolve(user)
-        })
+        console.log('authResult', authResult)
+        _this._token = authResult.accessToken
+        resolve(authResult)
+      })
+    }).then(authResult => {
+      return _this.getUserInfo(authResult.accessToken)
+    })
+  }
+
+  getUserInfo (token) {
+    const _this = this
+    return new Promise((resolve, reject) => {
+      _this.webAuth.client.userInfo(token, function (err, user) {
+        if (err) {
+          console.error('user error', err)
+          return reject(err)
+        }
+        _this._user = user
+        _this.emit('auth-state', user)
+        resolve(user)
       })
     })
   }
 
   get user () {
     return this._user
+  }
+
+  get token () {
+    return this._token
   }
 
   get isAuthenticated () {
