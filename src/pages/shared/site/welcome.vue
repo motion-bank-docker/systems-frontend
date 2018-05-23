@@ -9,7 +9,6 @@
         p.caption {{ $t('site.tagline') }}
       .layout-padding
         .group
-          q-btn(outline, size="big", color="primary", @click="$router.push('/users/create')") {{ $t('buttons.create_account') }}
           q-btn(outline, size="big", color="primary", @click="openURL('http://www.motionbank.org')") {{ $t('buttons.more_info') }}
       .layout-padding(style="padding-top: 120px;")
         site-footer(position-corners)
