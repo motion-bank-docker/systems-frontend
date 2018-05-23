@@ -7,7 +7,6 @@ class AuthService extends TinyEmitter {
 
     this._webAuth = new auth0.WebAuth(opts)
     this._user = undefined
-    this._token = undefined
   }
 
   authenticate () {
@@ -19,7 +18,9 @@ class AuthService extends TinyEmitter {
   }
 
   logout () {
-    this.webAuth.logout()
+    localStorage.removeItem('access_token')
+    localStorage.removeItem('id_token')
+    localStorage.removeItem('expires_at')
     this.emit('auth-state', undefined)
   }
 
@@ -32,7 +33,7 @@ class AuthService extends TinyEmitter {
           return reject(err)
         }
         console.log('check session authResult', authResult)
-        _this._token = authResult.accessToken
+        _this.setSession(authResult.accessToken)
         resolve(authResult)
       })
     }).then(authResult => {
@@ -49,7 +50,7 @@ class AuthService extends TinyEmitter {
           return reject(err)
         }
         console.log('authResult', authResult)
-        _this._token = authResult.accessToken
+        _this.setSession(authResult)
         resolve(authResult)
       })
     }).then(authResult => {
@@ -72,16 +73,28 @@ class AuthService extends TinyEmitter {
     })
   }
 
+  setSession (authResult) {
+    // Set the time that the Access Token will expire at
+    const expiresAt = JSON.stringify(
+      authResult.expiresIn * 1000 + new Date().getTime()
+    )
+    localStorage.setItem('access_token', authResult.accessToken)
+    localStorage.setItem('id_token', authResult.idToken)
+    localStorage.setItem('expires_at', expiresAt)
+  }
+
   get user () {
     return this._user
   }
 
   get token () {
-    return this._token
+    return localStorage.getItem('access_token')
   }
 
   get isAuthenticated () {
-    return this._user !== undefined
+    const expiresAt = JSON.parse(localStorage.getItem('expires_at'))
+    const isValidToken = new Date().getTime() < expiresAt
+    return isValidToken && this._user !== undefined
   }
 
   get webAuth () {

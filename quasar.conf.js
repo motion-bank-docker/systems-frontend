@@ -7,6 +7,7 @@ module.exports = function (ctx) {
       'i18n',
       'auth',
       'axios',
+      'feathers',
       'mb-conf',
       'mb-notifications'
     ],

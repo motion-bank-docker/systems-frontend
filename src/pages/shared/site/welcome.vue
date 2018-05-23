@@ -29,7 +29,11 @@
       }
     },
     mounted () {
-      console.log('mounted')
+      /*
+      this.$feathers.service('annotations').find({}).then(res => {
+        console.log('find', res)
+      })
+      */
     }
   }
 </script>
