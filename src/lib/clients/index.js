@@ -6,7 +6,7 @@ import rest from './rest'
 function createClient (transport, auth) {
   const client = feathers()
   client.configure(transport)
-  client.configure(auth)
+  if (auth) client.configure(auth)
   return client
 }
 export default createClient
