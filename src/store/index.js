@@ -40,7 +40,11 @@ const store = new Vuex.Store({
     service('annotations', { idField: process.env.ID_FIELD }),
     service('maps', { idField: process.env.ID_FIELD }),
     service('users', { idField: process.env.ID_FIELD }),
-    auth({ userService: 'users' })
+    auth({
+      userService: 'users',
+      storage: window.localStorage,
+      storageKey: 'access_token'
+    })
   ],
   modules: {
     notifications,
