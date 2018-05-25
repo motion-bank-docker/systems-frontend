@@ -7,6 +7,7 @@ class AuthService extends TinyEmitter {
 
     this._webAuth = new auth0.WebAuth(opts)
     this._user = undefined
+    this._scope = []
   }
 
   authenticate () {
@@ -22,22 +23,23 @@ class AuthService extends TinyEmitter {
     localStorage.removeItem('id_token')
     localStorage.removeItem('expires_at')
     this.emit('auth-state', undefined)
+    this.webAuth.logout({ returnTo: process.env.UI_HOST })
   }
 
   checkSession () {
     const _this = this
     return new Promise((resolve, reject) => {
+      if (!localStorage.getItem('access_token')) return resolve()
       this.webAuth.checkSession({}, (err, authResult) => {
         if (err) {
           console.log('check session error', err)
           return reject(err)
         }
-        console.log('check session authResult', authResult)
-        _this.setSession(authResult.accessToken)
+        _this.setSession(authResult)
         resolve(authResult)
       })
     }).then(authResult => {
-      return _this.getUserInfo(authResult.accessToken)
+      if (authResult) return _this.getUserInfo(authResult.accessToken)
     })
   }
 
@@ -46,10 +48,9 @@ class AuthService extends TinyEmitter {
     return new Promise((resolve, reject) => {
       _this.webAuth.parseHash({ hash: window.location.hash }, function (err, authResult) {
         if (err) {
-          console.error('auth error', err)
+          console.error('Auth0 Error', err)
           return reject(err)
         }
-        console.log('authResult', authResult)
         _this.setSession(authResult)
         resolve(authResult)
       })
@@ -63,7 +64,7 @@ class AuthService extends TinyEmitter {
     return new Promise((resolve, reject) => {
       _this.webAuth.client.userInfo(token, function (err, user) {
         if (err) {
-          console.error('user error', err)
+          console.error('Auth0 User Info Error', err)
           return reject(err)
         }
         _this._user = user
@@ -74,13 +75,19 @@ class AuthService extends TinyEmitter {
   }
 
   setSession (authResult) {
+    console.debug('Auth0 Result', authResult)
     // Set the time that the Access Token will expire at
     const expiresAt = JSON.stringify(
       authResult.expiresIn * 1000 + new Date().getTime()
     )
+    if (typeof authResult.scope === 'string') this._scope = authResult.scope.split(' ')
     localStorage.setItem('access_token', authResult.accessToken)
     localStorage.setItem('id_token', authResult.idToken)
     localStorage.setItem('expires_at', expiresAt)
+  }
+
+  hasScope (scope) {
+    return this.scope.indexOf(scope) > -1
   }
 
   get user () {
@@ -89,6 +96,10 @@ class AuthService extends TinyEmitter {
 
   get token () {
     return localStorage.getItem('access_token')
+  }
+
+  get scope () {
+    return this._scope
   }
 
   get isAuthenticated () {
@@ -107,6 +118,8 @@ export default ({ Vue }) => {
     domain: process.env.AUTH0_DOMAIN,
     clientID: process.env.AUTH0_CLIENT_ID,
     redirectUri: process.env.AUTH0_REDIRECT_URL,
+    audience: process.env.AUTH0_AUDIENCE,
+    scope: 'openid profile write',
     responseType: 'token id_token'
   })
   Vue.prototype.$auth = authService

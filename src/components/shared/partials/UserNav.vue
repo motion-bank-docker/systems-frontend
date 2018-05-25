@@ -36,10 +36,10 @@
     mounted () {
       const _this = this
       this.$auth.on('auth-state', user => {
-        console.log('auth state', user)
         _this.user = user
+        console.debug('Auth0 state change', _this.$auth.hasScope('openid'))
       })
-      // this.$auth.checkSession()
+      this.$auth.checkSession()
     },
     methods: {
       login () {
