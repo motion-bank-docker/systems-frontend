@@ -4,13 +4,12 @@ import request from 'request'
 
 import createClient from './index'
 
-const requestClient = request.defaults({
-  headers: {
-    Authorization: localStorage.getItem('access_token')
-  }
-})
-
 export default function (host) {
+  const requestClient = request.defaults({
+    headers: {
+      Authorization: localStorage.getItem('access_token')
+    }
+  })
   return createClient(
     // rest(host).axios(axios)
     rest(host).request(requestClient)
