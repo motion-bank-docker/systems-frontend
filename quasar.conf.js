@@ -42,7 +42,7 @@ module.exports = function (ctx) {
       },
       // Runtime globals
       env: {
-        API_HOST: JSON.stringify(process.env.API_HOST || 'http://localhost:3030'),
+        API_HOST: JSON.stringify(process.env.API_HOST || 'https://motionbank-api.herokuapp.com'),
         UI_HOST: JSON.stringify(process.env.UI_HOST || 'http://localhost:8080'),
         ID_FIELD: JSON.stringify(process.env.ID_FIELD || 'uuid'),
         AUTH0_DOMAIN: JSON.stringify(process.env.AUTH0_DOMAIN || 'motionbank.eu.auth0.com'),
