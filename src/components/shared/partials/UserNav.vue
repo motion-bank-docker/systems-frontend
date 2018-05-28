@@ -9,14 +9,11 @@
       q-btn(:color="currentApp === 'mosys' ? 'primary' : ''",
         big, flat, @click="currentApp = 'mosys'; $router.push({ name: 'mosys.grids.list' })") Mosys
 
-    q-btn(color="primary", flat, icon="settings",
-      v-if="user", @click="$router.push({ name: 'users.manage', params: { id: 'me' } })") {{ user.name }}
-
     q-btn(color="primary", flat, icon="help",
     v-if="user")
 
     q-btn(color="primary", flat, icon="settings",
-    v-if="user")
+    v-if="user", @click="$router.push({ name: 'users.manage', params: { id: 'me' } })") {{ user.name }}
 
     q-btn(color="primary", flat, icon="eject",
       v-if="user", @click="logout") {{ $t('navigation.logout') }}
