@@ -2,15 +2,18 @@
   q-toolbar(color="dark")
     // q-btn.hide-on-drawer-visible(flat, icon="menu", @click='$refs.drawer.open()')
     q-toolbar-title(:padding='2')
-      q-btn(:class="{ 'text-primary': currentApp === null }", big, flat,
+      //q-btn(:class="{ 'text-primary': currentApp === null }", big, flat,
         @click="currentApp = null; $router.push({ name: 'site.welcome' })") Motionbank
       q-btn(:class="{ 'text-primary': currentApp === 'piecemaker' }", big, flat,
         @click="currentApp = 'piecemaker'; $router.push({ name: 'piecemaker.groups.list' })") Piecemaker
       q-btn(:color="currentApp === 'mosys' ? 'primary' : ''",
         big, flat, @click="currentApp = 'mosys'; $router.push({ name: 'mosys.grids.list' })") Mosys
 
+    q-btn(color="primary", flat, icon="help",
+    v-if="user")
+
     q-btn(color="primary", flat, icon="settings",
-      v-if="user", @click="$router.push({ name: 'users.manage', params: { id: 'me' } })") {{ user.name }}
+    v-if="user", @click="$router.push({ name: 'users.manage', params: { id: 'me' } })") {{ user.name }}
 
     q-btn(color="primary", flat, icon="eject",
       v-if="user", @click="logout") {{ $t('navigation.logout') }}
@@ -30,10 +33,10 @@
     mounted () {
       const _this = this
       this.$auth.on('auth-state', user => {
-        console.log('auth state', user)
         _this.user = user
+        console.debug('Auth0 state change', _this.$auth.hasScope('openid'))
       })
-      // this.$auth.checkSession()
+      this.$auth.checkSession()
     },
     methods: {
       login () {
