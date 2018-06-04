@@ -4,10 +4,26 @@
     q-toolbar-title(:padding='2')
       //q-btn(:class="{ 'text-primary': currentApp === null }", big, flat,
         @click="currentApp = null; $router.push({ name: 'site.welcome' })") Motionbank
-      q-btn(:class="{ 'text-primary': currentApp === 'piecemaker' }", big, flat,
-        @click="currentApp = 'piecemaker'; $router.push({ name: 'piecemaker.groups.list' })") Piecemaker
-      q-btn(:color="currentApp === 'mosys' ? 'primary' : ''",
-        big, flat, @click="currentApp = 'mosys'; $router.push({ name: 'mosys.grids.list' })") Mosys
+      q-btn(
+        :class="{ 'text-primary': currentApp === 'piecemaker' }",
+        @click="currentApp = 'piecemaker'; $router.push({ name: 'piecemaker.groups.list' })",
+        big, flat
+        ) Piecemaker
+      q-btn(
+        :color="currentApp === 'mosys' ? 'primary' : ''",
+        @click="currentApp = 'mosys'; $router.push({ name: 'mosys.grids.list' })",
+        big, flat
+        ) Mosys
+      // q-btn(
+        // :color="currentApp === 'site.account' ? 'primary' : ''",
+        @click="currentApp = 'site.account'; $router.push({ name: 'site.account' })",
+        big, flat
+        ) Account
+      q-btn(
+        :color="currentApp === 'site.help' ? 'primary' : ''",
+        @click="currentApp = 'site.help'; $router.push({ name: 'site.help' })",
+        big, flat
+        ) Help
 
     q-btn(color="primary", flat, icon="help",
     v-if="user")

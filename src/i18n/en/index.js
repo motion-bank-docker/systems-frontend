@@ -148,6 +148,10 @@ export default {
       terms: {
         title: 'Terms & Conditions',
         caption: 'Lorem ipsum dolores dings.'
+      },
+      help: {
+        title: 'Help',
+        caption: 'Lorem ipsum dolores help.'
       }
     },
     piecemaker: {
