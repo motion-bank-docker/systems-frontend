@@ -7,6 +7,11 @@ export default {
       name: 'site.welcome',
       component: () => import('pages/shared/site/welcome')
     }, {
+      path: '/account',
+      component: () => import('pages/shared/site/account'),
+      name: 'site.account',
+      meta: {private: true}
+    }, {
       path: '/help',
       component: () => import('pages/shared/site/help'),
       name: 'site.help',

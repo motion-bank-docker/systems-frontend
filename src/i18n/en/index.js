@@ -145,13 +145,17 @@ export default {
       }
     },
     site: {
-      terms: {
-        title: 'Terms & Conditions',
-        caption: 'Lorem ipsum dolores dings.'
+      account: {
+        title: 'Account',
+        caption: 'Lorem ipsum dolores account.'
       },
       help: {
         title: 'Help',
         caption: 'Lorem ipsum dolores help.'
+      },
+      terms: {
+        title: 'Terms & Conditions',
+        caption: 'Lorem ipsum dolores dings.'
       }
     },
     piecemaker: {
