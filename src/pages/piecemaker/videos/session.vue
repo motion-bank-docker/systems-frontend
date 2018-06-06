@@ -12,6 +12,15 @@
     div
 
       //
+      // dev info window
+      //
+      .fixed(
+        v-model="previewLine",
+        v-if="previewLine.visibility",
+        style="top: 50px; left: 0;"
+        ) {{ previewLine.positionY }}
+
+      //
       // Sessions
       //
       div
@@ -51,6 +60,9 @@
             br
             span(v-model="annotations") inlcuding hard coded annotations: {{ annotations.length }}
 
+        //
+        // diagramm wrap
+        //
         .row.col-12(
           style="border-top: 1px solid #333;"
           )
@@ -79,6 +91,7 @@
 
             //
             // annotations - dots
+            // ALL
             //
             svg(
               v-for="n in arrFilter",
@@ -93,40 +106,26 @@
                 style="stroke: rgba(255,255,255,.1); stroke-width: 1;"
                 )
 
-              circle.moba-svg-entry(
-                v-for="annotation in filteredAnnotations",
-                r="3",
-                cx="3",
-                :cy="annotation.referencetime"
-                style="fill: rgb(255,255,255);"
-                )
-
               g(
                 v-for="annotation in filteredAnnotations",
                 :y="annotation.referencetime"
                 )
 
                 circle.moba-svg-entry.moba-hover-test(
+                  @mouseenter="hoverVal = annotation.referencetime, previewLine.positionY = annotation.referencetime, previewLine.visibility = true",
+                  @mouseleave="hoverVal = '', previewLine.visibility = false",
                   r="3",
                   cx="3",
                   :cy="annotation.referencetime"
                   style="fill: rgb(255,255,255);"
                   )
 
-                text.text-grey-7(
-                  x="30",
-                  :y="annotation.referencetime + 3",
-                  font-size="15",
-                  fill="#666"
-                  )
-                  | {{ annotation.text }}
-
             //
             // annotations - dots
             //
             svg(
-              v-for="n in arrFilter",
-              x="230"
+              v-for="(n, i) in arrFilter.length",
+              :x="230 + (30 * i)"
               )
 
               line(
@@ -175,6 +174,14 @@
                 height="1",
                 :y="annotation.referencetime"
                 style="fill: rgba(255,255,255, .4)!important;"
+                )
+
+              rect(
+                v-if="previewLine.visibility",
+                width="180",
+                height="1",
+                :y="previewLine.positionY"
+                style="fill: rgba(255,0,0, 1)!important;"
                 )
 
           //
@@ -307,9 +314,14 @@
         }],
         byReferencetime: [],
         filteredAnnotations: [],
+        hoverVal: '',
         // maps: [],
         numberRandomAnnotations: 200,
         prevCreated: '100',
+        previewLine: {
+          visibility: false,
+          positionY: ''
+        },
         svgHeight: '100',
         columns: [
           {
