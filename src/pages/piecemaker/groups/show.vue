@@ -1,11 +1,36 @@
 <template lang="pug">
-  div
-    h4(v-if="map") {{ map.title }}
-    p Annotations: {{ annotations.length }}
+  card-full
+    span(slot="form-logo")
+    span(slot="form-title") {{ $t('routes.piecemaker.groups.show.title') }}
+    span(slot="form-caption") {{ $t('routes.piecemaker.groups.show.caption') }}
+
+    div {{ $t('routes.piecemaker.groups.session.title') }}
+    div {{ $t('routes.piecemaker.groups.session.caption') }}
+    q-list
+      q-item(v-for="n in 3")
+        q-item-side side
+        q-item-main main
+    // div
+      h4(v-if="map") {{ map.title }}
+      p Annotations: {{ annotations.length }}
+
+    q-btn(
+      @click="$router.push({ name: 'piecemaker.groups.annotate' })",
+      ) Live Annotate
 </template>
 
 <script>
+  import CardFull from '../../../components/shared/layouts/CardFull'
+  import { QList, QItem, QItemMain, QItemSide } from 'quasar'
+
   export default {
+    components: {
+      CardFull,
+      QList,
+      QItem,
+      QItemMain,
+      QItemSide
+    },
     mounted () {
       const
         _this = this,
