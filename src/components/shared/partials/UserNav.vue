@@ -14,18 +14,19 @@
         @click="currentApp = 'mosys'; $router.push({ name: 'mosys.grids.list' })",
         big, flat
         ) Mosys
-      q-btn(
-        :color="currentApp === 'site.account' ? 'primary' : ''",
+      //q-btn(
+        // :color="currentApp === 'site.account' ? 'primary' : ''",
         @click="currentApp = 'site.account'; $router.push({ name: 'site.account' })",
         big, flat
         ) Account
-      q-btn(
-        :color="currentApp === 'site.help' ? 'primary' : ''",
+      // q-btn(
+        // :color="currentApp === 'site.help' ? 'primary' : ''",
         @click="currentApp = 'site.help'; $router.push({ name: 'site.help' })",
         big, flat
         ) Help
 
     q-btn(color="primary", flat, icon="help",
+    @click="currentApp = 'site.help'; $router.push({ name: 'site.help' })",
     v-if="user")
 
     q-btn(color="primary", flat, icon="settings",
