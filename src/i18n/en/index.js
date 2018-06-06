@@ -165,20 +165,25 @@ export default {
       },
       groups: {
         create: {
-          // title: 'New Group',
           title: 'New Timeline',
           // caption: 'Create a group representing a global timeline.'
           caption: 'Create a global group timeline.'
         },
-        list: {
-          // title: 'Groups',
-          title: 'Timelines',
-          caption: 'All your most wonderful timelines are here.'
-        },
         edit: {
-          // title: 'Edit Group',
           title: 'Edit Timeline',
           caption: 'Edit timeline details.'
+        },
+        list: {
+          title: 'All timelines',
+          caption: 'All timelines you have access to.'
+        },
+        session: {
+          title: 'Session',
+          caption: 'Lorem ipsum session.'
+        },
+        show: {
+          title: 'Timeline',
+          caption: 'Lorem ipsum show.'
         },
         users: {
           title: 'Users in this timeline',
