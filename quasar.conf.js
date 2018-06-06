@@ -6,6 +6,7 @@ module.exports = function (ctx) {
     plugins: [
       'i18n',
       'auth',
+      'api',
       'axios',
       'feathers',
       'mb-conf',
