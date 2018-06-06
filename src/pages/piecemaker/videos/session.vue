@@ -94,7 +94,6 @@
             // ALL
             //
             svg(
-              v-for="n in arrFilter",
               x="200"
               )
 
@@ -106,26 +105,24 @@
                 style="stroke: rgba(255,255,255,.1); stroke-width: 1;"
                 )
 
-              g(
-                v-for="annotation in filteredAnnotations",
-                :y="annotation.referencetime"
-                )
-
+              g
                 circle.moba-svg-entry.moba-hover-test(
+                  v-for="annotation in filteredAnnotations",
                   @mouseenter="hoverVal = annotation.referencetime, previewLine.positionY = annotation.referencetime, previewLine.visibility = true",
                   @mouseleave="hoverVal = '', previewLine.visibility = false",
                   r="3",
                   cx="3",
-                  :cy="annotation.referencetime"
+                  :cy="annotation.referencetime",
                   style="fill: rgb(255,255,255);"
                   )
 
             //
             // annotations - dots
+            // FILTERED
             //
             svg(
               v-for="(n, i) in arrFilter.length",
-              :x="230 + (30 * i)"
+              :x="280 + (30 * i)"
               )
 
               line(
@@ -136,33 +133,14 @@
                 style="stroke: rgba(255,255,255,.1); stroke-width: 1;"
                 )
 
-              circle.moba-svg-entry(
-                v-for="annotation in filteredAnnotations",
-                r="3",
-                cx="3",
-                :cy="annotation.referencetime"
-                style="fill: rgb(255,255,255);"
-                )
-
-              g(
-                v-for="annotation in filteredAnnotations",
-                :y="annotation.referencetime"
-                )
-
+              g
                 circle.moba-svg-entry.moba-hover-test(
+                  v-for="annotation in filteredAnnotations",
                   r="3",
                   cx="3",
                   :cy="annotation.referencetime"
                   style="fill: rgb(255,255,255);"
                   )
-
-                text.text-grey-7(
-                  x="30",
-                  :y="annotation.referencetime + 3",
-                  font-size="15",
-                  fill="#666"
-                  )
-                  | {{ annotation.text }}
 
             //
             // annotations - lines
@@ -194,37 +172,38 @@
               | Zeitraum
             // .q-item.text-grey-6
               div() {{ arrFilter }}
-            .q-item
-              // q-checkbox(@click="selectAllCheckboxes()", color="white")
-              q-btn.q-mx-sm.q-mb-md(
-                @click="filterAnnotations(0, 100000000)",
-                label="all",
-                no-ripple, no-caps
-                )
-            .q-item
-              // q-checkbox(v-model="arrFilter", val="1", color="white")
-              q-btn.q-mx-sm(
-                @click="filterAnnotations(0, 20)",
-                label="Annotation Session 1",
-                no-ripple, flat, no-caps
-                )
-              span.text-grey-8 (0-20)
-            .q-item
-              // q-checkbox(v-model="arrFilter", val="2", color="white")
-              q-btn.q-mx-sm(
-                @click="filterAnnotations(21, 50)",
-                label="Annotation Session 2",
-                no-ripple, flat, no-caps
-                )
-              span.text-grey-8 (21-50)
-            .q-item
-              // q-checkbox(v-model="arrFilter", val="3", color="white")
-              q-btn.q-mx-sm(
-                @click="filterAnnotations(80, 120)",
-                label="Annotation Session 3",
-                no-ripple, flat, no-caps
-                )
-              span.text-grey-8 (80-120)
+            //
+              .q-item
+                // q-checkbox(@click="selectAllCheckboxes()", color="white")
+                q-btn.q-mx-sm.q-mb-md(
+                  @click="filterAnnotations(0, 100000000)",
+                  label="all",
+                  no-ripple, no-caps
+                  )
+              .q-item
+                // q-checkbox(v-model="arrFilter", val="1", color="white")
+                q-btn.q-mx-sm(
+                  @click="filterAnnotations(0, 20)",
+                  label="Annotation Session 1",
+                  no-ripple, flat, no-caps
+                  )
+                span.text-grey-8 (0-20)
+              .q-item
+                // q-checkbox(v-model="arrFilter", val="2", color="white")
+                q-btn.q-mx-sm(
+                  @click="filterAnnotations(21, 50)",
+                  label="Annotation Session 2",
+                  no-ripple, flat, no-caps
+                  )
+                span.text-grey-8 (21-50)
+              .q-item
+                // q-checkbox(v-model="arrFilter", val="3", color="white")
+                q-btn.q-mx-sm(
+                  @click="filterAnnotations(80, 120)",
+                  label="Annotation Session 3",
+                  no-ripple, flat, no-caps
+                  )
+                span.text-grey-8 (80-120)
 
 </template>
 
