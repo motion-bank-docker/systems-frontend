@@ -1,29 +1,75 @@
 <template lang="pug">
+
   q-table(
-  @rowclick="onRowClick($event)",
-  :dark="true",
-  :data="rows",
-  :config="conf",
-  :columns="cols",
-  :actions="actns")
-    template(slot="col-action", slot-scope="cell")
-      q-btn(flat, small, v-for="a in actions", :color="a.color || 'neutral'", :key="a.type",
-      @click="action(a.type, cell)") {{ $t(a.title) }}
-    template(slot="col-created", slot-scope="cell")
-      span(v-if="cell.data") {{ formatDateTime(cell.data) }}
-    template(slot="col-updated", slot-scope="cell")
-      span(v-if="cell.data") {{ formatDateTime(cell.data) }}
-    template(slot="col-author", slot-scope="cell")
-      username(:uuid="cell.data")
+    @rowclick="onRowClick($event)",
+    :dark="true",
+    :data="rows",
+    :config="conf",
+    :columns="cols",
+    :actions="actns",
+    row-key="title"
+    )
+
+    //
+      template(slot="col-actions", slot-scope="cell")
+        q-btn(flat, small, v-for="a in actions", :color="a.color || 'neutral'", :key="a.type",
+        @click="action(a.type, cell)") {{ $t(a.title) }}
+
+      template(slot="col-created", slot-scope="cell")
+        span(v-if="cell.data") {{ formatDateTime(cell.data) }}
+
+      template(slot="col-updated", slot-scope="cell")
+        span(v-if="cell.data") {{ formatDateTime(cell.data) }}
+
+      template(slot="col-author", slot-scope="cell")
+        username(:uuid="cell.data")
+
+    //
+    // cell "title"
+    //
+    q-td(
+      slot="body-cell-title",
+      slot-scope="props",
+      :props="props"
+      )
+      q-btn(
+        flat, small
+        ) {{ props.row.title }}
+
+    //
+    // cell "actions"
+    //
+    q-td(
+      slot="body-cell-actions",
+      slot-scope="props",
+      :props="props"
+      )
+      // q-btn(
+        v-for="a in actions",
+        // :key="a.type",
+        flat, small
+        ) {{ $t(a.title) }} {{ $t(a.type) }}
+
+      q-btn(
+        @click="action(a.action)",
+        v-for="a in actions",
+        :color="a.color || 'neutral'",
+        :key="a.type",
+        flat, small
+        ) {{ $t(a.title) }}
+
 </template>
 
 <script>
   import Username from './Username'
   import { DateTime } from 'luxon'
   import assignDeep from 'assign-deep'
+  import { QTr, QTd } from 'quasar'
   export default {
     components: {
-      Username
+      Username,
+      QTr,
+      QTd
     },
     props: ['entries', 'config', 'columns', 'actions'],
     data () {
@@ -73,6 +119,8 @@
         }, column)
       })
       cols.push({
+        label: 'Actions',
+        name: 'actions',
         field: 'action',
         classes: 'bg-dark text-right'
       })
@@ -87,8 +135,9 @@
       onRowClick (target) {
         this.$emit('row-click', target)
       },
-      action (type, target) {
-        this.$emit('action', type, target)
+      action (action) {
+        console.log(action)
+        // this.$emit('action', type, target)
       },
       updateEntries () {
         const _this = this

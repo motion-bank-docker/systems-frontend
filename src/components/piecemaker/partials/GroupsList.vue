@@ -4,7 +4,7 @@
 
 <script>
   import DataTable from '../../shared/partials/DataTable'
-  import constants from '../../../lib/constants'
+  // import constants from '../../../lib/constants'
 
   export default {
     components: {
@@ -29,35 +29,59 @@
     data () {
       const _this = this
       return {
-        maps: _this.$store.dispatch('maps/find', { query: { type: constants.MAP_TYPE_TIMELINE } }),
+        // maps: _this.$store.dispatch('maps/find', { query: { type: constants.MAP_TYPE_TIMELINE } }),
+        maps: [{
+          author: 'ch',
+          created: '1.1.1970',
+          title: 'aaaaaaa',
+          updated: '4.6.2018',
+          users: '2'
+        }, {
+          author: 'ch',
+          created: '1.1.1970',
+          title: 'bbbb',
+          updated: '4.6.2018',
+          users: '5'
+        }],
         columns: [
           {
-            label: _this.$t('labels.title'),
+            name: 'title',
             field: 'title',
+            label: _this.$t('labels.title'),
             type: 'string',
             sort: true,
             filter: true
           },
           {
-            label: _this.$t('labels.created'),
+            name: 'created',
             field: 'created',
+            label: _this.$t('labels.created'),
             type: 'date',
             sort: true
           },
           {
-            label: _this.$t('labels.updated'),
+            name: 'updated',
             field: 'updated',
+            label: _this.$t('labels.updated'),
             type: 'date',
             sort: true
           },
           {
-            label: _this.$t('labels.author'),
-            field: 'author'
+            name: 'users',
+            field: 'users',
+            label: _this.$t('labels.users'),
+            type: 'number',
+            sort: true
+          },
+          {
+            name: 'author',
+            field: 'author',
+            label: _this.$t('labels.author')
           }
         ],
         actions: [
-          { type: 'live-annotate', title: 'buttons.live_annotate', color: 'primary' },
-          { type: 'videos', title: 'buttons.videos', color: 'primary' },
+          // { type: 'live-annotate', title: 'buttons.live_annotate', color: 'primary' },
+          // { type: 'videos', title: 'buttons.videos', color: 'primary' },
           { type: 'edit', title: 'buttons.edit' },
           { type: 'delete', title: 'buttons.delete' }
         ]
