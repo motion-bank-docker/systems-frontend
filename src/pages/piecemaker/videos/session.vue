@@ -230,11 +230,11 @@
       this.getSvgHeight(this.videos)
       this.appendRandomAnnotations()
       this.divideInBlocks(this.annotations)
-      this.filterAnnotations()
+      this.filterAnnotations(0, this.numberRandomAnnotations)
     },
     methods: {
-      filterAnnotations () {
-        // this.filteredAnnotations = this.annotations.filter(annotation => annotation.created > valFrom && annotation.created <= valTo)
+      filterAnnotations (valFrom, valTo) {
+        this.filteredAnnotations = this.annotations.filter(annotation => annotation.created > valFrom && annotation.created <= valTo)
         // console.log(this.filteredAnnotations)
         // console.log(this.arrFilter)
         let i = 0
@@ -293,20 +293,16 @@
         annotationsBlocks: [],
         arrFilter: [{
           rangebegin: 0,
-          rangeend: 30,
-          annotations: []
+          rangeend: 30
         }, {
           rangebegin: 31,
-          rangeend: 120,
-          annotations: []
+          rangeend: 120
         }, {
           rangebegin: 121,
-          rangeend: 150,
-          annotations: []
+          rangeend: 150
         }, {
           rangebegin: 151,
-          rangeend: 200,
-          annotations: []
+          rangeend: 200
         }],
         byReferencetime: [],
         filteredAnnotations: [],
