@@ -167,7 +167,7 @@
 
               g
                 circle.moba-svg-entry.moba-hover-test(
-                  v-for="annotation in filteredAnnotations",
+                  v-for="annotation in annotationsBlocks[i]",
                   @mouseenter="hoverVal = annotation.referencetime, previewLine.positionY = annotation.referencetime, previewLine.visibility = true",
                   @mouseleave="hoverVal = '', previewLine.visibility = false",
                   r="3",
@@ -230,12 +230,17 @@
       this.getSvgHeight(this.videos)
       this.appendRandomAnnotations()
       this.divideInBlocks(this.annotations)
-      this.filterAnnotations(0, 100000000)
+      this.filterAnnotations()
     },
     methods: {
-      filterAnnotations (valFrom, valTo) {
-        this.filteredAnnotations = this.annotations.filter(annotation => annotation.created > valFrom && annotation.created <= valTo)
+      filterAnnotations () {
+        // this.filteredAnnotations = this.annotations.filter(annotation => annotation.created > valFrom && annotation.created <= valTo)
         // console.log(this.filteredAnnotations)
+        // console.log(this.arrFilter)
+        let i = 0
+        for (i = 0; i < this.arrFilter.length; i++) {
+          this.annotationsBlocks.push(this.annotations.filter(annotation => annotation.created > this.arrFilter[i]['rangebegin'] && annotation.created <= this.arrFilter[i]['rangeend']))
+        }
       },
       appendRandomAnnotations () {
         let i = 0
@@ -259,12 +264,14 @@
         this.svgHeight = newArr[arrLength - 1]
       },
       divideInBlocks (arr) {
+        // let ab = this.annotationsBlocks
+        // console.log(ab)
         var byReferencetime = arr.slice(0)
         byReferencetime.sort(function (a, b) {
           return a.byReferencetime - b.byReferencetime
         })
-        console.log(byReferencetime)
-        console.log(arr)
+        // console.log(byReferencetime)
+        // console.log(arr)
       },
       setPrevCreated (val, valPrev) {
         // console.log(val)
@@ -282,15 +289,24 @@
     data () {
       const _this = this
       return {
+        annotations: [],
+        annotationsBlocks: [],
         arrFilter: [{
           rangebegin: 0,
-          rangeend: 30
+          rangeend: 30,
+          annotations: []
         }, {
           rangebegin: 31,
-          rangeend: 120
+          rangeend: 120,
+          annotations: []
         }, {
           rangebegin: 121,
-          rangeend: 200
+          rangeend: 150,
+          annotations: []
+        }, {
+          rangebegin: 151,
+          rangeend: 200,
+          annotations: []
         }],
         byReferencetime: [],
         filteredAnnotations: [],
@@ -358,8 +374,8 @@
           id: '',
           referencetime: '12',
           title: 'video 1'
-        }],
-        annotations: [{
+        }]
+        /* annotations: [{
           created: '1',
           id: '',
           referencetime: '110',
@@ -444,7 +460,7 @@
           id: '',
           referencetime: '500',
           text: 'öoij adfdsv bfdsvdf'
-        }]
+        }] */
       }
     }
   }
