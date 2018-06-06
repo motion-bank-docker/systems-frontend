@@ -1,17 +1,22 @@
 <template lang="pug">
-  center-card-three-quarter
+  // center-card-three-quarter
+  card-full
+
     span(slot="form-title") {{ $t('routes.users.manage.title') }}
     p.caption(slot="form-caption") {{ $t('routes.users.manage.caption') }}
     form-main(v-if="payload !== undefined", v-model="payload", :schema="schema")
+
 </template>
 
 <script>
-  import CenterCardThreeQuarter from '../../../components/shared/layouts/CenterCardThreeQuarter'
+  // import CenterCardThreeQuarter from '../../../components/shared/layouts/CenterCardThreeQuarter'
+  import CardFull from '../../../components/shared/layouts/CardFull'
   import { FormMain } from '../../../components/shared/forms'
   import { required, sameAs, minLength, email } from 'vuelidate/lib/validators'
   export default {
     components: {
-      CenterCardThreeQuarter,
+      // CenterCardThreeQuarter,
+      CardFull,
       FormMain
     },
     data () {
