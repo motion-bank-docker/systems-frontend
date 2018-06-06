@@ -1,6 +1,9 @@
 <template lang="pug">
+
   card-full
+
     q-btn(slot="backButton", @click="$router.push({ name: 'piecemaker.groups.list' })", icon="keyboard_backspace", round, small)
+
     span(slot="form-logo")
     // span(slot="form-title") {{ $t('routes.piecemaker.videos.list.title') }}
     span(slot="form-title")
@@ -12,7 +15,7 @@
     div
 
       //
-      // dev info window
+      // info window – dev only
       //
       .fixed(
         v-model="previewLine",
@@ -21,12 +24,12 @@
         ) {{ previewLine.positionY }}
 
       //
-      // Sessions
+      // sessions – wrap
       //
       div
 
         //
-        // info
+        // top area
         //
         .row.q-mb-sm.text-grey-5
 
@@ -53,7 +56,7 @@
                 )
 
           //
-          // development information
+          // information – dev only
           //
           .col-6.text-right
             span(v-model="numberRandomAnnotations") randomly added annotations: {{ numberRandomAnnotations }}
@@ -64,7 +67,7 @@
         // diagramm wrap
         //
         .row.col-12(
-          style="border-top: 1px solid #333;"
+          style="border-top: 1px solid #333; border-bottom: 1px solid #333;"
           )
 
           //
@@ -76,22 +79,46 @@
             )
 
             //
-            // videos - swimlanes
+            // swimlanes – wrap
             //
-            svg(
-              x="15"
-              )
-              rect.moba-swimlane(
-                v-for="(video, i) in videos",
-                width="30",
-                :height="video.duration",
-                :x="(30 + 10) * i",
-                :y="video.referencetime"
+            svg
+
+              //
+              // vertical lines
+              //
+              svg(
+                x="15"
                 )
+                rect.moba-swimlane(
+                  v-for="(video, i) in videos",
+                  width="30",
+                  :height="video.duration",
+                  :x="(30 + 10) * i",
+                  :y="video.referencetime"
+                  )
+
+              //
+              // horizontal lines
+              //
+              g
+                rect.moba-svg-entry(
+                  v-for="annotation in filteredAnnotations",
+                  width="180",
+                  height="1",
+                  :y="annotation.referencetime"
+                  style="fill: rgba(255,255,255, .4)!important;"
+                  )
+
+                rect(
+                  v-if="previewLine.visibility",
+                  width="180",
+                  height="1",
+                  :y="previewLine.positionY"
+                  style="fill: rgba(255,0,0, 1)!important;"
+                  )
 
             //
-            // annotations - dots
-            // ALL
+            // dots – ALL
             //
             svg(
               x="200"
@@ -107,7 +134,7 @@
 
               g
                 circle.moba-svg-entry.moba-hover-test(
-                  v-for="annotation in filteredAnnotations",
+                  v-for="annotation in annotations",
                   @mouseenter="hoverVal = annotation.referencetime, previewLine.positionY = annotation.referencetime, previewLine.visibility = true",
                   @mouseleave="hoverVal = '', previewLine.visibility = false",
                   r="3",
@@ -117,18 +144,23 @@
                   )
 
             //
-            // annotations - dots
-            // FILTERED
+            // dots – FILTERED
             //
             svg(
-              v-for="(n, i) in arrFilter.length",
-              :x="280 + (30 * i)"
+              v-for="(n, i) in arrFilter",
+              :x="250 + ((30 + 10) * i)"
               )
 
+              rect(
+                width="30",
+                height="100%",
+                fill="rgba(255, 255, 255, .025)"
+                )
+
               line(
-                x1="3",
+                x1="15",
                 y1="0",
-                x2="3",
+                x2="15",
                 y2="100%",
                 style="stroke: rgba(255,255,255,.1); stroke-width: 1;"
                 )
@@ -136,74 +168,43 @@
               g
                 circle.moba-svg-entry.moba-hover-test(
                   v-for="annotation in filteredAnnotations",
+                  @mouseenter="hoverVal = annotation.referencetime, previewLine.positionY = annotation.referencetime, previewLine.visibility = true",
+                  @mouseleave="hoverVal = '', previewLine.visibility = false",
                   r="3",
-                  cx="3",
+                  cx="15",
                   :cy="annotation.referencetime"
                   style="fill: rgb(255,255,255);"
                   )
 
-            //
-            // annotations - lines
-            //
-            svg
-              rect.moba-svg-entry(
-                v-for="annotation in filteredAnnotations",
-                width="180",
-                height="1",
-                :y="annotation.referencetime"
-                style="fill: rgba(255,255,255, .4)!important;"
-                )
-
-              rect(
-                v-if="previewLine.visibility",
-                width="180",
-                height="1",
-                :y="previewLine.positionY"
-                style="fill: rgba(255,0,0, 1)!important;"
-                )
-
           //
-          // auswahl
+          // auswahl – wrap
           //
           q-list.col-6.no-border.no-padding(
             style="width: 20vw; min-height: 10vh; display: inline-block;"
             )
             .q-item.text-grey-6
               | Zeitraum
-            // .q-item.text-grey-6
-              div() {{ arrFilter }}
+
             //
-              .q-item
-                // q-checkbox(@click="selectAllCheckboxes()", color="white")
-                q-btn.q-mx-sm.q-mb-md(
-                  @click="filterAnnotations(0, 100000000)",
-                  label="all",
-                  no-ripple, no-caps
-                  )
-              .q-item
-                // q-checkbox(v-model="arrFilter", val="1", color="white")
-                q-btn.q-mx-sm(
-                  @click="filterAnnotations(0, 20)",
-                  label="Annotation Session 1",
-                  no-ripple, flat, no-caps
-                  )
-                span.text-grey-8 (0-20)
-              .q-item
-                // q-checkbox(v-model="arrFilter", val="2", color="white")
-                q-btn.q-mx-sm(
-                  @click="filterAnnotations(21, 50)",
-                  label="Annotation Session 2",
-                  no-ripple, flat, no-caps
-                  )
-                span.text-grey-8 (21-50)
-              .q-item
-                // q-checkbox(v-model="arrFilter", val="3", color="white")
-                q-btn.q-mx-sm(
-                  @click="filterAnnotations(80, 120)",
-                  label="Annotation Session 3",
-                  no-ripple, flat, no-caps
-                  )
-                span.text-grey-8 (80-120)
+            // select – ALL
+            //
+            .q-item
+              q-btn.q-mx-sm.q-mb-md(
+                @click="filterAnnotations(0, 100000000)",
+                label="all",
+                no-ripple, no-caps
+                )
+
+            //
+            // select – FILTERED
+            //
+            .q-item.text-grey-6(
+              v-for="(n, i) in arrFilter"
+              )
+              q-btn.q-mx-sm.q-mb-md(
+                @click="filterAnnotations(arrFilter[i].rangebegin, arrFilter[i].rangeend)",
+                no-ripple, no-caps
+                ) {{ arrFilter[i].rangebegin }} – {{ arrFilter[i].rangeend }}
 
 </template>
 
@@ -227,17 +228,14 @@
     },
     mounted () {
       this.getSvgHeight(this.videos)
-      this.divideInBlocks(this.annotations)
       this.appendRandomAnnotations()
+      this.divideInBlocks(this.annotations)
       this.filterAnnotations(0, 100000000)
     },
     methods: {
-      selectAllCheckboxes () {
-        console.log('geht check')
-      },
       filterAnnotations (valFrom, valTo) {
         this.filteredAnnotations = this.annotations.filter(annotation => annotation.created > valFrom && annotation.created <= valTo)
-        // console.log(result)
+        // console.log(this.filteredAnnotations)
       },
       appendRandomAnnotations () {
         let i = 0
@@ -256,7 +254,7 @@
         newArr.sort(function (a, b) {
           return a - b
         })
-        console.log(newArr)
+        // console.log(newArr)
 
         this.svgHeight = newArr[arrLength - 1]
       },
@@ -269,7 +267,7 @@
         console.log(arr)
       },
       setPrevCreated (val, valPrev) {
-        console.log(val)
+        // console.log(val)
         console.log(valPrev)
         this.prevCreated = parseInt(val) + parseInt(50)
       },
@@ -288,8 +286,11 @@
           rangebegin: 0,
           rangeend: 30
         }, {
-          rangebegin: 40,
+          rangebegin: 31,
           rangeend: 120
+        }, {
+          rangebegin: 121,
+          rangeend: 200
         }],
         byReferencetime: [],
         filteredAnnotations: [],
