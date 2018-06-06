@@ -60,8 +60,8 @@
           //
           .col-6.text-right
             span(v-model="numberRandomAnnotations") randomly added annotations: {{ numberRandomAnnotations }}
-            br
-            span(v-model="annotations") inlcuding hard coded annotations: {{ annotations.length }}
+            // br
+              span(v-model="annotations") inlcuding hard coded annotations: {{ annotations.length }}
 
         //
         // diagramm wrap
@@ -183,7 +183,7 @@
             style="width: 20vw; min-height: 10vh; display: inline-block;"
             )
             .q-item.text-grey-6
-              | Zeitraum
+              | Annotation sessions
 
             //
             // select – ALL
