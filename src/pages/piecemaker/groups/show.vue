@@ -1,24 +1,41 @@
 <template lang="pug">
   card-full
+    q-modal(v-model="showModal")
+      | bla
+
     span(slot="form-logo")
     span(slot="form-title") {{ $t('routes.piecemaker.groups.show.title') }}
-    span(slot="form-caption") {{ $t('routes.piecemaker.groups.show.caption') }}
+    // span(slot="form-caption") {{ $t('routes.piecemaker.groups.show.caption') }}
 
     q-btn(slot="backButton", @click="$router.push({ name: 'piecemaker.groups.list' })", icon="keyboard_backspace", round, small)
 
     span(slot="form-logo")
     // span(slot="form-title") {{ $t('routes.piecemaker.videos.list.title') }}
-    span(slot="form-title")
+    // span(slot="form-title")
       .text-grey-6 Session
 
-    .row.q-mb-md(v-for="(m, im) in arrTimelineDataDummy")
-      .col-2.bg-orange Month: {{ m.month }}
-      .col-10
-        .row(v-for="(d, id) in m.days")
-          .col-2.q-mb-md
-            .q-pa-xs.bg-red Day: D{{ d.entries }} ––– ID( {{ id }} )
-          .col-10.q-mb-md
-            .q-pa-xs.q-mb-xs.bg-green(v-for="(h, ih) in d.entries") Hour: {{ h }}
+    q-btn.float-right(
+    @click="$router.push({ name: 'piecemaker.groups.annotate' })",
+    ) Live Annotate
+
+    div(v-for="(y, iy) in arrTimelineDataDummy")
+      h5.no-padding.q-mb-xs {{ y.year }}
+      .row.q-mb-md(v-for="(m, im) in y.months")
+        .col-2.q-py-xs.moba-border-top
+          div {{ m.month }}
+        .col-10
+          .row(v-for="(d, id) in m.days")
+            .col-2
+              .q-py-xs.moba-border-top
+                div {{ d.date }}
+                  span(style="font-size: .66rem; vertical-align: top;") th
+            q-list.col-10.no-border.no-padding
+              q-item.q-py-xs.q-pb-md.moba-border-top.cursor-pointer(v-for="(h, ih) in d.entries", style="font-size: inherit; min-height: 10px; padding-left: 0; padding-top: 0; margin-top: 0;")
+                q-item-side {{ h.time }}h
+                q-item-main.q-pl-md
+                  a(@click="showModal = true") {{ h.title }}
+                q-item-side
+                  q-btn.no-margin(size="sm", flat) jump
 
     //
     // timeline test
@@ -205,14 +222,11 @@
               @click="filterAnnotations(arrFilter[i].rangebegin, arrFilter[i].rangeend)",
               no-ripple, no-caps
               ) {{ arrFilter[i].rangebegin }} – {{ arrFilter[i].rangeend }}
-    q-btn(
-      @click="$router.push({ name: 'piecemaker.groups.annotate' })",
-      ) Live Annotate
 </template>
 
 <script>
   import CardFull from '../../../components/shared/layouts/CardFull'
-  import { QList, QItem, QItemMain, QItemSide } from 'quasar'
+  import { QList, QItem, QItemMain, QItemSide, QModal } from 'quasar'
 
   export default {
     components: {
@@ -220,7 +234,8 @@
       QList,
       QItem,
       QItemMain,
-      QItemSide
+      QItemSide,
+      QModal
     },
     mounted () {
       const
@@ -296,6 +311,7 @@
     data () {
       const _this = this
       return {
+        showModal: false,
         map: undefined,
         annotations: [],
         annotationsBlocks: [],
@@ -313,36 +329,138 @@
           rangeend: 200
         }],
         arrTimelineDataDummy: [{ // dev only
-          month: '1',
-          days: [{
-            date: '4',
-            entries: [{
-              time: '12',
-              title: 'Titel abc'
+          year: 2018,
+          months: [{
+            month: 'January',
+            days: [{
+              date: '4',
+              entries: [{
+                time: '12',
+                title: 'Titel abc'
+              }]
+            }]
+          }, {
+            month: 'March',
+            days: [{
+              date: '15',
+              entries: [{
+                time: '8:24',
+                title: 'aaaa'
+              }]
+            }]
+          }, {
+            month: 'October',
+            days: [{
+              date: '18',
+              entries: [{
+                time: '7',
+                title: 'Titel abc'
+              }]
+            }, {
+              date: '21',
+              entries: [{
+                time: '7.30',
+                title: 'Titel abc'
+              }, {
+                time: '14.45',
+                title: 'Titel abc'
+              }]
+            }, {
+              date: '26',
+              entries: [{
+                time: '5',
+                title: 'Titel abc'
+              }]
+            }]
+          }, {
+            month: 'November',
+            days: [{
+              date: '2',
+              entries: [{
+                time: '8:50',
+                title: 'vdvdscdscd Titel abc'
+              }]
+            }, {
+              date: '4',
+              entries: [{
+                time: '8:43',
+                title: 'kgnvadvdscvads'
+              }]
             }]
           }]
         }, {
-          month: '12',
-          days: [{
-            date: '18',
-            entries: [{
-              time: '7',
-              title: 'Titel abc'
+          year: '2016',
+          months: [{
+            month: 'June',
+            days: [{
+              date: '9',
+              entries: [{
+                time: '19.12',
+                title: 'hallo'
+              }]
             }]
           }, {
-            date: '21',
-            entries: [{
-              time: '7.30',
-              title: 'Titel abc'
-            }, {
-              time: '14.45',
-              title: 'Titel abc'
+            month: 'July',
+            days: [{
+              date: '14',
+              entries: [{
+                time: '11:00',
+                title: 'vormittags'
+              }, {
+                time: '18:19',
+                title: 'blablabla'
+              }]
+            }]
+          }]
+        }, {
+          year: '2015',
+          months: [{
+            month: 'June',
+            days: [{
+              date: '9',
+              entries: [{
+                time: '19.12',
+                title: 'hallo'
+              }]
             }]
           }, {
-            date: '26',
-            entries: [{
-              time: '5',
-              title: 'Titel abc'
+            month: 'July',
+            days: [{
+              date: '14',
+              entries: [{
+                time: '11:00',
+                title: 'vormittags'
+              }, {
+                time: '18:19',
+                title: 'blablabla'
+              }]
+            }]
+          }, {
+            month: 'September',
+            days: [{
+              date: '9',
+              entries: [{
+                time: '19.12',
+                title: 'hallo'
+              }]
+            }]
+          }, {
+            month: 'December',
+            days: [{
+              date: '14',
+              entries: [{
+                time: '11:00',
+                title: 'vormittags'
+              }, {
+                time: '18:19',
+                title: 'blablabla'
+              }, {
+                time: '11:00',
+                title: 'vormittags'
+              }, {
+                time: '18:19',
+                title: 'blablabla'
+              }]
             }]
           }]
         }],
@@ -505,6 +623,10 @@
 </script>
 
 <style>
+  .moba-border-top {
+  border-top: 1px solid rgba( 255, 255, 255, .2 );
+  }
+
   .moba-swimlane {
     fill: rgba( 255, 255, 255, .1 );
     transition: fill ease 200ms;
