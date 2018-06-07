@@ -1,7 +1,7 @@
 <template lang="pug">
 
   .wrapper
-    q-btn#button-back(slot="nav-button", icon="keyboard_backspace", @click="$router.push(`/piecemaker/groups`)", round, small)
+    q-btn#button-back(slot="nav-button", icon="keyboard_backspace", @click="$router.push(`/piecemaker/groups/show`)", round, small)
     span(slot="form-logo")
     span(slot="form-title")
 
