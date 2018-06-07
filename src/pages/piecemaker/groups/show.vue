@@ -11,6 +11,15 @@
     span(slot="form-title")
       .text-grey-6 Session
 
+    .row.q-mb-md(v-for="(m, im) in arrTimelineDataDummy")
+      .col-2.bg-orange Month: {{ m.month }}
+      .col-10
+        .row(v-for="(d, id) in m.days")
+          .col-2.q-mb-md
+            .q-pa-xs.bg-red Day: D{{ d.entries }} ––– ID( {{ id }} )
+          .col-10.q-mb-md
+            .q-pa-xs.q-mb-xs.bg-green(v-for="(h, ih) in d.entries") Hour: {{ h }}
+
     //
     // timeline test
     //
@@ -79,12 +88,10 @@
           v-model="svgHeight",
           :height="svgHeight"
           )
-
             //
             // swimlanes – wrap
             //
             svg
-
               //
               // vertical lines
               //
@@ -98,7 +105,6 @@
                 :x="(30 + 10) * i",
                 :y="video.referencetime"
                 )
-
               //
               // horizontal lines
               //
@@ -110,7 +116,6 @@
                 :y="annotation.referencetime"
                 style="fill: rgba(255,255,255, .4)!important;"
                 )
-
                 rect(
                 v-if="previewLine.visibility",
                 width="180",
@@ -125,7 +130,6 @@
             svg(
             x="200"
             )
-
               line(
               x1="3",
               y1="0",
@@ -133,7 +137,6 @@
               y2="100%",
               style="stroke: rgba(255,255,255,.1); stroke-width: 1;"
               )
-
               g
                 circle.moba-svg-entry.moba-hover-test(
                 v-for="annotation in annotations",
@@ -152,13 +155,11 @@
             v-for="(n, i) in arrFilter",
             :x="250 + ((30 + 10) * i)"
             )
-
               rect(
               width="30",
               height="100%",
               fill="rgba(255, 255, 255, .025)"
               )
-
               line(
               x1="15",
               y1="0",
@@ -166,7 +167,6 @@
               y2="100%",
               style="stroke: rgba(255,255,255,.1); stroke-width: 1;"
               )
-
               g
                 circle.moba-svg-entry.moba-hover-test(
                 v-for="annotation in annotationsBlocks[i]",
@@ -186,7 +186,6 @@
           )
             .q-item.text-grey-6
               | Annotation sessions
-
             //
             // select – ALL
             //
@@ -196,7 +195,6 @@
               label="all",
               no-ripple, no-caps
               )
-
             //
             // select – FILTERED
             //
@@ -301,7 +299,7 @@
         map: undefined,
         annotations: [],
         annotationsBlocks: [],
-        arrFilter: [{
+        arrFilter: [{ // dev only
           rangebegin: 0,
           rangeend: 30
         }, {
@@ -314,11 +312,45 @@
           rangebegin: 151,
           rangeend: 200
         }],
+        arrTimelineDataDummy: [{ // dev only
+          month: '1',
+          days: [{
+            date: '4',
+            entries: [{
+              time: '12',
+              title: 'Titel abc'
+            }]
+          }]
+        }, {
+          month: '12',
+          days: [{
+            date: '18',
+            entries: [{
+              time: '7',
+              title: 'Titel abc'
+            }]
+          }, {
+            date: '21',
+            entries: [{
+              time: '7.30',
+              title: 'Titel abc'
+            }, {
+              time: '14.45',
+              title: 'Titel abc'
+            }]
+          }, {
+            date: '26',
+            entries: [{
+              time: '5',
+              title: 'Titel abc'
+            }]
+          }]
+        }],
         byReferencetime: [],
         filteredAnnotations: [],
         hoverVal: '',
         // maps: [],
-        numberRandomAnnotations: 200,
+        numberRandomAnnotations: 200, // dev only
         prevCreated: '100',
         previewLine: {
           visibility: false,
@@ -356,7 +388,7 @@
           { type: 'synchronize', title: 'buttons.synchronize' },
           { type: 'delete', title: 'buttons.delete', icon: 'highlight off' }
         ],
-        videos: [{
+        videos: [{ // dev only
           created: '1',
           duration: '1000',
           id: '',
@@ -381,7 +413,7 @@
           referencetime: '12',
           title: 'video 1'
         }]
-        /* annotations: [{
+        /* annotations: [{ // dev only
           created: '1',
           id: '',
           referencetime: '110',
