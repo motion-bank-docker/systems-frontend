@@ -112,7 +112,7 @@
         :props="props"
         )
         q-btn(
-          @click="$router.push('videos/session')",
+          @click="$router.push('groups/show')",
           flat, small
           )
           q-icon.flip-horizontal.q-mr-sm(name="keyboard_backspace")
