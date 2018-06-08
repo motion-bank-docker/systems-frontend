@@ -8,56 +8,56 @@
     q-modal(v-model="showModalAdd")
       .q-pa-xl.bg-dark(style="min-width: 50vw;")
         h5.caption.no-margin
-          q-icon(name="add")
+          // q-icon(name="add")
           | Create timeline
         q-input.q-my-sm(float-label="Title", color="white", dark)
         q-input.q-my-sm(float-label="Description", color="white", dark)
 
-        q-btn.text-white.q-mt-sm(v-if="!createTimelineAddUsers", @click="createTimelineAddUsers = true", no-caps)
-          q-icon.q-mr-sm(name="add")
-          | add users
+        h5.q-mt-xl.q-mb-none.caption
+          // q-icon(name="add")
+          | Inviting list
+          q-icon.q-ml-sm(name="help")
+            q-tooltip.q-caption.bg-black.text-white
+              | Every mail in this list will receive an invitation to this timeline.
+              | After creating a new timeline you can manage the users in this timline, too.
 
         // user list
-        div.q-mt-xl(v-if="createTimelineAddUsers")
-          h5.caption.no-margin
-            // q-icon(name="add")
-            | Inviting list
+        q-list(no-border)
 
-          q-list(no-border)
+          q-item.q-my-sm.q-pa-sm(
+          v-for="(n, i) in createTimelineUsers",
+          style="border: 1px solid #333;"
+          )
+            q-item-side
+              q-tooltip.bg-white.text-dark.q-caption Allow managing rights?
+              q-checkbox(v-model="n.createTimelineUsers", color="grey-9")
+            q-item-main
+              div.q-mb-xs() {{ n.mail }}
+            q-item-side
+              q-btn(
+              icon="clear",
+              round, no-caps
+              )
+                q-tooltip.bg-red.q-caption Remove from inviting list?
 
-            q-item.q-my-sm.q-pa-sm(
-            v-for="(n, i) in createTimelineUsers",
-            style="border: 1px solid #333;"
-            )
-              q-item-side
-                q-checkbox(v-model="n.createTimelineUsers", color="grey-9")
-                  q-tooltip.bg-white.text-dark.q-caption Allow managing rights?
-              q-item-main
-                div.q-mb-xs() {{ n.mail }}
-              q-item-side
-                q-btn(
-                icon="clear",
-                round, no-caps
-                )
-                  q-tooltip.bg-red.q-caption Remove from inviting list?
+          q-item.q-mt-sm.q-px-lg.q-py-md(
+          style="border: 1px solid #333;"
+          )
+            q-item-main
+              q-input.q-mb-md(
+              v-model="newUser.mail",
+              float-label="Enter mail",
+              color="white",
+              dark
+              )
+            q-item-side
+              q-btn(
+              @click="onAction('add-user-create')",
+              label="Add",
+              color="primary",
+              no-caps
+              )
 
-            q-item.q-mt-md.q-pa-md(
-            style="border: 1px solid #333;"
-            )
-              q-item-main
-                q-item-tile
-                  q-input.q-mb-md(
-                  v-model="newUser.mail",
-                  float-label="Enter mail",
-                  color="white",
-                  dark
-                  )
-                q-item-tile.text-center
-                  q-btn.bg-green(
-                  @click="onAction('add-user-create')",
-                  label="Add to inviting list",
-                  no-caps
-                  )
         .text-center
           q-btn.q-mx-xs.q-mt-xl.bg-green.text-white(
           @click="showModalAdd=false",
@@ -87,95 +87,169 @@
           )
 
     //
-    // modal: manage timeline
+    // modal: manage timeline information
     //
-    q-modal(v-model="showModalEdit")
+    q-modal(v-model="showModalEditInformation")
       .q-pa-xl.bg-dark(style="min-width: 50vw;")
         h5.caption.no-margin
-          q-icon(name="edit")
-          | Manage timeline
+          // q-icon(name="edit")
+          | Timeline information
 
         // title
-        div.q-mt-md(v-model="watchTest")
-          q-input(
+        .row.q-mt-md(v-model="watchTest")
+          q-input.col-10(
           v-model="maps[0].title",
           float-label="Title",
+          color="white",
           dark
           )
-          q-btn.q-mt-md(
-          :disable="disableBtn",
-          label="Save changes",
-          no-caps
+          .col-2.text-right
+            q-btn.q-mt-md(
+            :disable="disableBtn",
+            label="Save",
+            no-caps
+            )
+
+        // title
+        .row.q-mt-md(v-model="watchTest")
+          q-input.col-10(
+          v-model="maps[0].desc",
+          float-label="Description",
+          color="white",
+          dark
           )
+          .col-2.text-right
+            q-btn.q-mt-md(
+            :disable="disableBtn",
+            label="Save",
+            no-caps
+            )
 
         // user list
-        div.q-mt-xl
-          .row
-            h5.col-6.caption.no-margin Users
-            .col-6.no-margin.text-right
-              q-btn-dropdown.no-padding.no-margin(
-              :label="'Order by ' + orderBy",
-              style="min-height: auto;",
-              flat, dark, no-caps
-              )
-                div.q-px-md.q-py-sm.text-white.cursor-pointer.bg-dark Mail
-                div.q-px-md.q-py-sm.text-white.cursor-pointer.bg-dark Status
-                div.q-px-md.q-py-sm.text-white.cursor-pointer.bg-dark Managing rights
-
-          q-list(no-border)
-            q-item.q-my-sm.q-pa-md(
-            style="border: 1px solid #333;"
-            )
-              | {{ user.name }} (Owner)
-
-            //
-              q-item.q-my-sm.q-pa-md(
-                v-for="(n, i) in maps[0].users",
-                style="border: 1px solid #333;",
-                // :class="{ mobainactive : i > 1 }"
+        //
+          div.q-mt-xl
+            .row
+              h5.col-6.caption.no-margin Users: {{ maps[0].users.length + 1 }}
+              .col-6.no-margin.text-right
+                q-btn-dropdown.no-padding.no-margin(
+                // :label="'Order by ' + orderBy",
+                style="min-height: auto;",
+                flat, dark, no-caps
                 )
-            q-item.q-my-sm.q-pa-sm(
-              v-for="(n, i) in maps[0].users",
+                  div.q-px-md.q-py-sm.text-white.cursor-pointer.bg-dark Mail
+                  div.q-px-md.q-py-sm.text-white.cursor-pointer.bg-dark Status
+                  div.q-px-md.q-py-sm.text-white.cursor-pointer.bg-dark Managing rights
+
+            q-list(no-border)
+              q-item.q-my-sm.q-pa-md(
               style="border: 1px solid #333;"
               )
-              q-item-side.text-center
-                q-checkbox(v-model="n.managingrights", color="grey-9", dark)
-                  q-tooltip.bg-black.text-white.q-caption Allow managing rights?
-              q-item-main
-                div.q-mb-xs()
-                  span(v-if="i > 1")
-                    q-icon.q-mr-sm.text-red(name="error")
-                      q-tooltip.bg-black.q-caption Not confirmed yet
-                  | {{ n.mail }}
-              q-item-side
-                q-btn(
-                icon="clear",
-                round, no-caps
-                )
-                  q-tooltip.bg-red.q-caption Remove from this timeline?
+                | {{ user.name }} (Owner)
 
-            q-item.q-mt-md.q-pa-md(
-            style="border: 1px solid #333;"
-            )
-              q-item-main
-                q-item-tile
+              q-item.q-my-sm.q-pa-sm(
+                v-for="(n, i) in maps[0].users",
+                style="border: 1px solid #333;"
+                )
+                q-item-side.text-center
+                  q-tooltip.bg-black.text-white.q-caption Allow managing rights?
+                  q-checkbox(v-model="n.managingrights", color="grey-9", dark)
+                q-item-main
+                  div.q-mb-xs()
+                    span(v-if="i > 1")
+                      q-icon.q-mr-sm.text-red(name="error")
+                        q-tooltip.bg-black.q-caption Pending confirmation.
+                    | {{ n.mail }}
+                q-item-side
+                  q-btn(
+                  icon="clear",
+                  round, no-caps
+                  )
+                    q-tooltip.bg-red.q-caption Remove from this timeline?
+
+              q-item.q-mt-sm.q-px-lg.q-py-md(
+              style="border: 1px solid #333;"
+              )
+                q-item-main
                   q-input.q-mb-md(
                   v-model="newUser.mail",
-                  float-label="Enter mail to invite someone",
+                  float-label="Enter mail",
                   color="white",
                   dark
                   )
-                q-item-tile.text-center
-                  q-btn.q-mr-md(
-                  @click="onAction('add-user')",
-                  label="Send Invitation",
-                  no-caps
-                  )
+                q-item-side
                   q-btn(
-                  @click="newUser.mail = ''",
-                  label="Clear",
+                  @click="onAction('add-user')",
+                  label="Add",
+                  color="primary",
                   no-caps
                   )
+
+    //
+    // modal: manage users
+    //
+    q-modal(v-model="showModalUsers")
+      .q-pa-xl.bg-dark(style="min-width: 50vw;")
+        //
+          h5.caption.no-margin
+            // q-icon(name="edit")
+            | Manage users
+
+        // user list
+        .row
+          h5.col-6.caption.no-margin Users: {{ maps[0].users.length + 1 }}
+          .col-6.no-margin.text-right
+            q-btn-dropdown.no-padding.no-margin(
+            :label="'Order by ' + orderBy",
+            style="min-height: auto;",
+            flat, dark, no-caps
+            )
+              div.q-px-md.q-py-sm.text-white.cursor-pointer.bg-dark Mail
+              div.q-px-md.q-py-sm.text-white.cursor-pointer.bg-dark Status
+              div.q-px-md.q-py-sm.text-white.cursor-pointer.bg-dark Managing rights
+
+        q-list(no-border)
+          q-item.q-my-sm.q-pa-md(
+          style="border: 1px solid #333;"
+          )
+            | {{ user.name }} (Owner)
+
+          q-item.q-my-sm.q-pa-sm(
+          v-for="(n, i) in maps[0].users",
+          style="border: 1px solid #333;"
+          )
+            q-item-side.text-center
+              q-tooltip.bg-black.text-white.q-caption Allow managing rights?
+              q-checkbox(v-model="n.managingrights", color="grey-9", dark)
+            q-item-main
+              div.q-mb-xs()
+                span(v-if="i > 1")
+                  q-icon.q-mr-sm.text-red(name="error")
+                    q-tooltip.bg-black.q-caption Pending confirmation.
+                | {{ n.mail }}
+            q-item-side
+              q-btn(
+              icon="clear",
+              round, no-caps
+              )
+                q-tooltip.bg-red.q-caption Remove from this timeline?
+
+          q-item.q-mt-sm.q-px-lg.q-py-md(
+          style="border: 1px solid #333;"
+          )
+            q-item-main
+              q-input.q-mb-md(
+              v-model="newUser.mail",
+              float-label="Enter mail",
+              color="white",
+              dark
+              )
+            q-item-side
+              q-btn(
+              @click="onAction('add-user')",
+              label="Invite",
+              color="primary",
+              no-caps
+              )
 
     span(slot="form-logo")
     div(slot="form-title") {{ $t('routes.piecemaker.groups.list.title') }} you have access to, {{ user.name }}.
@@ -222,7 +296,8 @@
         slot-scope="props",
         :props="props"
         )
-        | {{ props.row.users.length }}
+        q-btn(@click="showModalUsers = true")
+          | {{ props.row.users.length }}
 
       //
       // cell "actions"
@@ -277,7 +352,7 @@
           this.showModalDelete = true
           return
         case 'edit':
-          this.showModalEdit = true
+          this.showModalEditInformation = true
           return
         case 'add-user':
           this.maps[0].users.push(this.newUser)
@@ -322,7 +397,6 @@
       const _this = this
       return {
         createTimelineUsers: [],
-        createTimelineAddUsers: false,
         disableBtn: true,
         newUser: [{
           name: '',
@@ -332,7 +406,8 @@
         orderBy: 'mail',
         showModalAdd: false,
         showModalDelete: false,
-        showModalEdit: false,
+        showModalEditInformation: false,
+        showModalUsers: false,
         user: undefined,
         userType: 'admin',
         maps: [{
@@ -420,7 +495,4 @@
 </script>
 
 <style scoped>
-  /* .mobainactive {
-    background-color: rgba( 255, 0, 0, .1 );
-    } */
 </style>
