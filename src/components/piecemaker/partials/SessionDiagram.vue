@@ -9,7 +9,13 @@
       v-model="previewLine",
       v-if="previewLine.visibility",
       style="top: 50px; left: 0;"
-      ) {{ previewLine.positionY }}
+      ) {{ previewLine.positionY }} {{ previewDot.referencetime }}
+
+      //
+        .fixed(
+        v-model="previewDot",
+        style="top: 50px; left: 0;"
+        ) xxx {{ previewDot.referencetime }} xxx
 
       //
       // sessions – wrap
@@ -25,31 +31,31 @@
           // title
           // calender
           //
-          .col-6
-            div.q-mb-sm Titel: Session von dann und dann
-            div
-              q-btn(
-              icon="arrow_left"
-              size="sm",
-              flat, round
-              )
-              q-btn.q-mx-xs(
-              label="27.7.2016",
-              size="sm"
-              )
-              q-btn(
-              icon="arrow_right"
-              size="sm",
-              flat, round
-              )
+            .col-6
+              div.q-mb-sm Titel: Session von dann und dann
+              div
+                q-btn(
+                @click="appendRandomAnnotations(), filterAnnotations(0, numberRandomAnnotations)",
+                icon="arrow_left"
+                size="sm",
+                flat, round
+                )
+                q-btn.q-mx-xs(
+                label="27.7.2016",
+                size="sm"
+                )
+                q-btn(
+                @click="appendRandomAnnotations(), filterAnnotations(0, numberRandomAnnotations)",
+                icon="arrow_right"
+                size="sm",
+                flat, round
+                )
 
           //
           // information – dev only
           //
-          .col-6.text-right
-            span(v-model="numberRandomAnnotations") randomly added annotations: {{ numberRandomAnnotations }}
-            // br
-              span(v-model="annotations") inlcuding hard coded annotations: {{ annotations.length }}
+            .col-6.text-right
+              span(v-model="numberRandomAnnotations") randomly added annotations: {{ numberRandomAnnotations }}
 
         //
         // diagramm wrap
@@ -88,6 +94,8 @@
               g
                 rect.moba-svg-entry(
                 v-for="annotation in filteredAnnotations",
+                @mouseenter="previewDot.visibility = true, previewDot.referencetime = annotation.referencetime, previewDot.positionY = annotation.referencetime",
+                @mouseleave="previewDot.visibility = false",
                 width="180",
                 height="1",
                 :y="annotation.referencetime"
@@ -129,7 +137,7 @@
             // dots – FILTERED
             //
             svg(
-            v-for="(n, i) in arrFilter",
+            v-for="(n, i) in selectedAnnotationSessions",
             :x="250 + ((30 + 10) * i)"
             )
               rect(
@@ -154,45 +162,77 @@
                 :cy="annotation.referencetime"
                 style="fill: rgb(255,255,255);"
                 )
-
+                // :class="[ annotation.referencetime = previewDot.referencetime ? mobafill : '' ]",
+                //
+                  circle(
+                  v-if="previewDot.visibility",
+                  r="3",
+                  cx="15",
+                  // :cy="previewDot.positionY",
+                  style="fill: rgb(255,0,0);"
+                  )
           //
           // auswahl – wrap
           //
-          q-list.col-6.no-border.no-padding(
-          style="width: 20vw; min-height: 10vh; display: inline-block;"
-          )
-            .q-item.text-grey-6
-              | Annotation sessions
-            //
-            // select – ALL
-            //
-            .q-item
-              q-btn.q-mx-sm.q-mb-md(
-              @click="filterAnnotations(0, 100000000)",
-              label="all",
-              no-ripple, no-caps
+          .col-6
+            div.q-py-md
+              div.text-grey-6
+                // | Annotation sessions
+                | Annotationen vom:
+                q-icon.q-ml-sm(name="help")
+                  q-tooltip.q-caption.bg-black Beschreibungstext
+
+              //
+              // select – ALL
+              //
+                div
+                  q-btn.q-mx-sm.q-mb-md(
+                  @click="filterAnnotations(0, 100000000)",
+                  label="all",
+                  no-ripple, no-caps
+                  )
+
+              //
+              // select – FILTERED
+              //
+              div.text-grey-6.q-pa-sm(
+              v-for="(n, i) in arrFilter",
+              @mouseenter="filterAnnotations(arrFilter[i].rangebegin, arrFilter[i].rangeend)",
+              @mouseleave="filterAnnotations(0, 200)"
               )
-            //
-            // select – FILTERED
-            //
-            .q-item.text-grey-6(
-            v-for="(n, i) in arrFilter"
-            )
-              q-btn.q-mx-sm.q-mb-md(
-              @click="filterAnnotations(arrFilter[i].rangebegin, arrFilter[i].rangeend)",
-              no-ripple, no-caps
-              ) {{ arrFilter[i].rangebegin }} – {{ arrFilter[i].rangeend }}
+                q-checkbox(
+                v-model="selectedAnnotationSessions",
+                :val="n",
+                checked-icon="check",
+                unchecked-icon="check",
+                color="white"
+                )
+                  span.q-ml-sm {{ arrFilter[i].rangebegin }} – {{ arrFilter[i].rangeend }}
+                //
+                  q-item-side
+                    q-icon(name="remove_red_eye")
+                  q-checkbox(v-model="selectedAnnotationSessions", :val="n")
+                  q-btn.q-mx-sm.q-mb-md(
+                  @click="filterAnnotations(arrFilter[i].rangebegin, arrFilter[i].rangeend)",
+                  no-ripple, no-caps
+                  ) {{ arrFilter[i].rangebegin }} – {{ arrFilter[i].rangeend }}
+
+              div
+                q-btn(@click="", no-caps) Detailview
+                // q-btn(:disable="selectedAnnotationSessions") go
+                // div {{ selectedAnnotationSessions }}
 </template>
 
 <script>
-  import { QList, QItem, QItemMain, QItemSide } from 'quasar'
+  import { QList, QItem, QItemMain, QItemSide, QTooltip } from 'quasar'
 
   export default {
     components: {
       QList,
       QItem,
       QItemMain,
-      QItemSide
+      QItemSide,
+      QTooltip
     },
     mounted () {
       const
@@ -212,6 +252,7 @@
       this.divideInBlocks(this.annotations)
       this.filterAnnotations(0, this.numberRandomAnnotations)
     },
+    props: ['data'],
     methods: {
       filterAnnotations (valFrom, valTo) {
         this.filteredAnnotations = this.annotations.filter(annotation => annotation.created > valFrom && annotation.created <= valTo)
@@ -224,7 +265,7 @@
       },
       appendRandomAnnotations () {
         let i = 0
-        let arrAnnotations = this.annotations
+        let arrAnnotations = this.annotations = []
         for (i = 0; i < this.numberRandomAnnotations; i++) {
           arrAnnotations.push({referencetime: Math.floor(Math.random() * this.svgHeight), created: i, text: 'Hier steht der Text. (' + i + ')'})
         }
@@ -276,6 +317,15 @@
           rangeend: 30
         }, {
           rangebegin: 31,
+          rangeend: 60
+        }, {
+          rangebegin: 61,
+          rangeend: 70
+        }, {
+          rangebegin: 71,
+          rangeend: 100
+        }, {
+          rangebegin: 101,
           rangeend: 120
         }, {
           rangebegin: 121,
@@ -284,151 +334,21 @@
           rangebegin: 151,
           rangeend: 200
         }],
-        arrTimelineDataDummy: [{ // dev only
-          year: 2018,
-          months: [{
-            month: 'January',
-            days: [{
-              date: '4',
-              entries: [{
-                time: '12',
-                title: 'Titel abc'
-              }]
-            }]
-          }, {
-            month: 'March',
-            days: [{
-              date: '15',
-              entries: [{
-                time: '8:24',
-                title: 'aaaa'
-              }]
-            }]
-          }, {
-            month: 'October',
-            days: [{
-              date: '18',
-              entries: [{
-                time: '7',
-                title: 'Titel abc'
-              }]
-            }, {
-              date: '21',
-              entries: [{
-                time: '7.30',
-                title: 'Titel abc'
-              }, {
-                time: '14.45',
-                title: 'Titel abc'
-              }]
-            }, {
-              date: '26',
-              entries: [{
-                time: '5',
-                title: 'Titel abc'
-              }]
-            }]
-          }, {
-            month: 'November',
-            days: [{
-              date: '2',
-              entries: [{
-                time: '8:50',
-                title: 'vdvdscdscd Titel abc'
-              }]
-            }, {
-              date: '4',
-              entries: [{
-                time: '8:43',
-                title: 'kgnvadvdscvads'
-              }]
-            }]
-          }]
-        }, {
-          year: '2016',
-          months: [{
-            month: 'June',
-            days: [{
-              date: '9',
-              entries: [{
-                time: '19.12',
-                title: 'hallo'
-              }]
-            }]
-          }, {
-            month: 'July',
-            days: [{
-              date: '14',
-              entries: [{
-                time: '11:00',
-                title: 'vormittags'
-              }, {
-                time: '18:19',
-                title: 'blablabla'
-              }]
-            }]
-          }]
-        }, {
-          year: '2015',
-          months: [{
-            month: 'June',
-            days: [{
-              date: '9',
-              entries: [{
-                time: '19.12',
-                title: 'hallo'
-              }]
-            }]
-          }, {
-            month: 'July',
-            days: [{
-              date: '14',
-              entries: [{
-                time: '11:00',
-                title: 'vormittags'
-              }, {
-                time: '18:19',
-                title: 'blablabla'
-              }]
-            }]
-          }, {
-            month: 'September',
-            days: [{
-              date: '9',
-              entries: [{
-                time: '19.12',
-                title: 'hallo'
-              }]
-            }]
-          }, {
-            month: 'December',
-            days: [{
-              date: '14',
-              entries: [{
-                time: '11:00',
-                title: 'vormittags'
-              }, {
-                time: '18:19',
-                title: 'blablabla'
-              }, {
-                time: '11:00',
-                title: 'vormittags'
-              }, {
-                time: '18:19',
-                title: 'blablabla'
-              }]
-            }]
-          }]
-        }],
         byReferencetime: [],
         filteredAnnotations: [],
         hoverVal: '',
         numberRandomAnnotations: 200, // dev only
         prevCreated: '100',
-        previewLine: {
-          visibility: false,
-          positionY: ''
+        previewDot: {
+          positionY: '',
+          referencetime: '',
+          visibility: false
         },
+        previewLine: {
+          positionY: '',
+          visibility: false
+        },
+        selectedAnnotationSessions: [],
         svgHeight: '100',
         columns: [
           {
@@ -492,6 +412,11 @@
 </script>
 
 <style>
+
+  .mobafill {
+    fill: rgba( 255, 0, 0, 1 );
+  }
+
   .moba-swimlane {
     fill: rgba( 255, 255, 255, .1 );
     transition: fill ease 200ms;
