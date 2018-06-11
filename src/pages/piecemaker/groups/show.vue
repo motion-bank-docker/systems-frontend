@@ -34,6 +34,7 @@
                 q-item-side {{ h.time }}h
                 q-item-main.q-pl-md
                   a(@click="showModal = true") {{ h.title }}
+                  .bg-red(style="position: absolute; left: 0;") test
                 q-item-side
                   q-btn.no-margin(size="sm", flat) jump
 
@@ -62,7 +63,7 @@
         .row.q-mb-sm.text-grey-5
 
           //
-          // titel
+          // title
           // calender
           //
           .col-6
