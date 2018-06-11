@@ -1,7 +1,16 @@
 <template lang="pug">
+
   card-full
+
     q-modal(v-model="showModal")
-      | bla
+      .q-pa-xl.bg-dark(style="min-width: 66vw;")
+        //
+          q-modal-layout()
+            div(slot="header")
+              | Header
+            div(slot="footer")
+              | Footer
+        SessionDiagram()
 
     span(slot="form-logo")
     span(slot="form-title") {{ $t('routes.piecemaker.groups.show.title') }}
@@ -28,215 +37,50 @@
             .col-2
               .q-py-xs.moba-border-top
                 div {{ d.date }}
+                  q-tooltip.bg-black.q-caption {{ y.year }} {{ m.month }} {{ d.date }}
                   span(style="font-size: .66rem; vertical-align: top;") th
             q-list.col-10.no-border.no-padding
-              q-item.q-py-xs.q-pb-md.moba-border-top.cursor-pointer(v-for="(h, ih) in d.entries", style="font-size: inherit; min-height: 10px; padding-left: 0; padding-top: 0; margin-top: 0;")
-                q-item-side {{ h.time }}h
-                q-item-main.q-pl-md
-                  a(@click="showModal = true") {{ h.title }}
-                  .bg-red(style="position: absolute; left: 0;") test
-                q-item-side
-                  q-btn.no-margin(size="sm", flat) jump
-
-    //
-    // timeline test
-    //
-    div
-
-      //
-      // info window – dev only
-      //
-      .fixed(
-      v-model="previewLine",
-      v-if="previewLine.visibility",
-      style="top: 50px; left: 0;"
-      ) {{ previewLine.positionY }}
-
-      //
-      // sessions – wrap
-      //
-      div
-
-        //
-        // top area
-        //
-        .row.q-mb-sm.text-grey-5
-
-          //
-          // title
-          // calender
-          //
-          .col-6
-            div.q-mb-sm Titel: Session von dann und dann
-            div
-              q-btn(
-              icon="arrow_left"
-              size="sm",
-              flat, round
+              q-item.q-py-xs.q-pb-md.moba-border-top.cursor-pointer(
+              v-for="(h, ih) in d.entries",
+              style="font-size: inherit; min-height: 10px; padding-left: 0; padding-top: 0; margin-top: 0;",
+              multiline
               )
-              q-btn.q-mx-xs(
-              label="27.7.2016",
-              size="sm"
-              )
-              q-btn(
-              icon="arrow_right"
-              size="sm",
-              flat, round
-              )
+                q-item-side.q-pt-xs
+                  a(@click="showModal = true") {{ h.start }}
+                q-item-side.q-pt-xs
+                  a(@click="showModal = true") {{ h.end }}
+                q-item-main
+                  q-btn.q-mr-sm.q-mt-xs(@click="activeDiagram = h.id", size="sm", no-caps) show diagram
+                  q-btn.no-margin.q-mt-xs(size="sm", no-caps) jump
+                  div(v-if="h.id == activeDiagram")
+                    div(style="height: 40vh; overflow: hidden;")
+                      SessionDiagram(:data="annotations")
+                //
+                  q-item-side
+                    q-btn.no-margin(@click="showModal = true", size="sm", flat) show diagram
+                    q-btn.no-margin(size="sm", flat) jump
 
-          //
-          // information – dev only
-          //
-          .col-6.text-right
-            span(v-model="numberRandomAnnotations") randomly added annotations: {{ numberRandomAnnotations }}
-            // br
-              span(v-model="annotations") inlcuding hard coded annotations: {{ annotations.length }}
+    // SessionDiagram(:data="annotations")
 
-        //
-        // diagramm wrap
-        //
-        .row.col-12(
-        style="border-top: 1px solid #333; border-bottom: 1px solid #333;"
-        )
-
-          //
-          // svg wrap
-          //
-          svg.col-6(
-          v-model="svgHeight",
-          :height="svgHeight"
-          )
-            //
-            // swimlanes – wrap
-            //
-            svg
-              //
-              // vertical lines
-              //
-              svg(
-              x="15"
-              )
-                rect.moba-swimlane(
-                v-for="(video, i) in videos",
-                width="30",
-                :height="video.duration",
-                :x="(30 + 10) * i",
-                :y="video.referencetime"
-                )
-              //
-              // horizontal lines
-              //
-              g
-                rect.moba-svg-entry(
-                v-for="annotation in filteredAnnotations",
-                width="180",
-                height="1",
-                :y="annotation.referencetime"
-                style="fill: rgba(255,255,255, .4)!important;"
-                )
-                rect(
-                v-if="previewLine.visibility",
-                width="180",
-                height="1",
-                :y="previewLine.positionY"
-                style="fill: rgba(255,0,0, 1)!important;"
-                )
-
-            //
-            // dots – ALL
-            //
-            svg(
-            x="200"
-            )
-              line(
-              x1="3",
-              y1="0",
-              x2="3",
-              y2="100%",
-              style="stroke: rgba(255,255,255,.1); stroke-width: 1;"
-              )
-              g
-                circle.moba-svg-entry.moba-hover-test(
-                v-for="annotation in annotations",
-                @mouseenter="hoverVal = annotation.referencetime, previewLine.positionY = annotation.referencetime, previewLine.visibility = true",
-                @mouseleave="hoverVal = '', previewLine.visibility = false",
-                r="3",
-                cx="3",
-                :cy="annotation.referencetime",
-                style="fill: rgb(255,255,255);"
-                )
-
-            //
-            // dots – FILTERED
-            //
-            svg(
-            v-for="(n, i) in arrFilter",
-            :x="250 + ((30 + 10) * i)"
-            )
-              rect(
-              width="30",
-              height="100%",
-              fill="rgba(255, 255, 255, .025)"
-              )
-              line(
-              x1="15",
-              y1="0",
-              x2="15",
-              y2="100%",
-              style="stroke: rgba(255,255,255,.1); stroke-width: 1;"
-              )
-              g
-                circle.moba-svg-entry.moba-hover-test(
-                v-for="annotation in annotationsBlocks[i]",
-                @mouseenter="hoverVal = annotation.referencetime, previewLine.positionY = annotation.referencetime, previewLine.visibility = true",
-                @mouseleave="hoverVal = '', previewLine.visibility = false",
-                r="3",
-                cx="15",
-                :cy="annotation.referencetime"
-                style="fill: rgb(255,255,255);"
-                )
-
-          //
-          // auswahl – wrap
-          //
-          q-list.col-6.no-border.no-padding(
-          style="width: 20vw; min-height: 10vh; display: inline-block;"
-          )
-            .q-item.text-grey-6
-              | Annotation sessions
-            //
-            // select – ALL
-            //
-            .q-item
-              q-btn.q-mx-sm.q-mb-md(
-              @click="filterAnnotations(0, 100000000)",
-              label="all",
-              no-ripple, no-caps
-              )
-            //
-            // select – FILTERED
-            //
-            .q-item.text-grey-6(
-            v-for="(n, i) in arrFilter"
-            )
-              q-btn.q-mx-sm.q-mb-md(
-              @click="filterAnnotations(arrFilter[i].rangebegin, arrFilter[i].rangeend)",
-              no-ripple, no-caps
-              ) {{ arrFilter[i].rangebegin }} – {{ arrFilter[i].rangeend }}
 </template>
 
 <script>
   import CardFull from '../../../components/shared/layouts/CardFull'
-  import { QList, QItem, QItemMain, QItemSide, QModal } from 'quasar'
+  import SessionDiagram from '../../../components/piecemaker/partials/SessionDiagram'
+  import { QList, QItem, QItemMain, QItemSide, QItemTile, QModal, QTooltip, QModalLayout } from 'quasar'
 
   export default {
     components: {
       CardFull,
+      SessionDiagram,
       QList,
       QItem,
       QItemMain,
       QItemSide,
-      QModal
+      QItemTile,
+      QModal,
+      QTooltip,
+      QModalLayout
     },
     mounted () {
       const
@@ -313,7 +157,9 @@
       const _this = this
       return {
         showModal: false,
+        hallo: 'abc',
         map: undefined,
+        activeDiagram: '',
         annotations: [],
         annotationsBlocks: [],
         arrFilter: [{ // dev only
@@ -336,7 +182,9 @@
             days: [{
               date: '4',
               entries: [{
-                time: '12',
+                end: '22.12',
+                id: '1',
+                start: '12',
                 title: 'Titel abc'
               }]
             }]
@@ -345,7 +193,9 @@
             days: [{
               date: '15',
               entries: [{
-                time: '8:24',
+                end: '22.12',
+                id: '2',
+                start: '8:24',
                 title: 'aaaa'
               }]
             }]
@@ -354,22 +204,30 @@
             days: [{
               date: '18',
               entries: [{
-                time: '7',
+                end: '22.12',
+                id: '3',
+                start: '7',
                 title: 'Titel abc'
               }]
             }, {
               date: '21',
               entries: [{
-                time: '7.30',
+                end: '22.12',
+                id: '4',
+                start: '7.30',
                 title: 'Titel abc'
               }, {
-                time: '14.45',
+                end: '22.12',
+                id: '5',
+                start: '14.45',
                 title: 'Titel abc'
               }]
             }, {
               date: '26',
               entries: [{
-                time: '5',
+                end: '22.12',
+                id: '6',
+                start: '5',
                 title: 'Titel abc'
               }]
             }]
@@ -378,13 +236,17 @@
             days: [{
               date: '2',
               entries: [{
-                time: '8:50',
+                end: '22.12',
+                id: '7',
+                start: '8:50',
                 title: 'vdvdscdscd Titel abc'
               }]
             }, {
               date: '4',
               entries: [{
-                time: '8:43',
+                end: '22.12',
+                id: '8',
+                start: '8:43',
                 title: 'kgnvadvdscvads'
               }]
             }]
@@ -396,7 +258,9 @@
             days: [{
               date: '9',
               entries: [{
-                time: '19.12',
+                end: '23.00',
+                id: '9',
+                start: '19.12',
                 title: 'hallo'
               }]
             }]
@@ -405,10 +269,14 @@
             days: [{
               date: '14',
               entries: [{
-                time: '11:00',
+                end: '23.00',
+                id: '10',
+                start: '11:00',
                 title: 'vormittags'
               }, {
-                time: '18:19',
+                end: '12.00',
+                id: '11',
+                start: '9:00',
                 title: 'blablabla'
               }]
             }]
@@ -420,7 +288,9 @@
             days: [{
               date: '9',
               entries: [{
-                time: '19.12',
+                end: '23.00',
+                id: '12',
+                start: '19.12',
                 title: 'hallo'
               }]
             }]
@@ -429,10 +299,14 @@
             days: [{
               date: '14',
               entries: [{
-                time: '11:00',
+                end: '23.00',
+                id: '13',
+                start: '11:00',
                 title: 'vormittags'
               }, {
-                time: '18:19',
+                end: '23.00',
+                id: '14',
+                start: '18:19',
                 title: 'blablabla'
               }]
             }]
@@ -441,7 +315,9 @@
             days: [{
               date: '9',
               entries: [{
-                time: '19.12',
+                end: '23.00',
+                id: '15',
+                start: '19.12',
                 title: 'hallo'
               }]
             }]
@@ -450,16 +326,24 @@
             days: [{
               date: '14',
               entries: [{
-                time: '11:00',
+                end: '23.00',
+                id: '16',
+                start: '11:00',
                 title: 'vormittags'
               }, {
-                time: '18:19',
+                end: '23.00',
+                id: '17',
+                start: '18:19',
                 title: 'blablabla'
               }, {
-                time: '11:00',
+                end: '23.00',
+                id: '18',
+                start: '11:00',
                 title: 'vormittags'
               }, {
-                time: '18:19',
+                end: '23.00',
+                id: '19',
+                start: '18:19',
                 title: 'blablabla'
               }]
             }]
@@ -532,92 +416,6 @@
           referencetime: '12',
           title: 'video 1'
         }]
-        /* annotations: [{ // dev only
-          created: '1',
-          id: '',
-          referencetime: '110',
-          text: 'blablabla'
-        }, {
-          created: '2',
-          id: '',
-          referencetime: '111',
-          text: 'blablabla'
-        }, {
-          created: '24',
-          id: '',
-          referencetime: '321',
-          text: 'blablabla'
-        }, {
-          created: '10',
-          id: '',
-          referencetime: '130',
-          text: 'lnkjlfvsdvdsa'
-        }, {
-          created: '18',
-          id: '',
-          referencetime: '30',
-          text: 'fgbd'
-        }, {
-          created: '22',
-          id: '',
-          referencetime: '150',
-          text: 'öoij adfdsv bfdsvdf'
-        }, {
-          created: '34',
-          id: '',
-          referencetime: '1000',
-          text: 'qwekbö vfbsöfdbjdföb jvfödjsölvsfn vdsfv'
-        }, {
-          created: '200',
-          id: '',
-          referencetime: '203',
-          text: 'öoij adfdsv bfdsvdf'
-        }, {
-          created: '201',
-          id: '',
-          referencetime: '500',
-          text: 'öoij adfdsv bfdsvdf'
-        }, {
-          created: '207',
-          id: '',
-          referencetime: '130',
-          text: 'öoij adfdsv bfdsvdf'
-        }, {
-          created: '210',
-          id: '',
-          referencetime: '111',
-          text: 'öoij adfdsv bfdsvdf'
-        }, {
-          created: '410',
-          id: '',
-          referencetime: '110',
-          text: 'öoij adfdsv bfdsvdf'
-        }, {
-          created: '440',
-          id: '',
-          referencetime: '220',
-          text: 'öoij adfdsv bfdsvdf'
-        }, {
-          created: '450',
-          id: '',
-          referencetime: '182',
-          text: 'öoij adfdsv bfdsvdf'
-        }, {
-          created: '458',
-          id: '',
-          referencetime: '120',
-          text: 'öoij adfdsv bfdsvdf'
-        }, {
-          created: '460',
-          id: '',
-          referencetime: '191',
-          text: 'öoij adfdsv bfdsvdf'
-        }, {
-          created: '800',
-          id: '',
-          referencetime: '500',
-          text: 'öoij adfdsv bfdsvdf'
-        }] */
       }
     }
   }
@@ -644,14 +442,5 @@
   .moba-svg-entry:hover {
     fill: red!important;
     opacity: 1;
-  }
-
-  text {
-    opacity: 0;
-    transition: opacity ease 50ms;
-  }
-
-  circle:hover + text {
-    opacity: 1!important;
   }
 </style>
