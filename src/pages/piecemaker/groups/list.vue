@@ -16,7 +16,7 @@
         h5.q-mt-xl.q-mb-none.caption
           // q-icon(name="add")
           | Inviting list
-          q-icon.q-ml-sm(name="help")
+          q-icon.q-ml-md(name="help")
             q-tooltip.q-caption.bg-black.text-white
               | Every mail in this list will receive an invitation to this timeline.
               | After creating a new timeline you can manage the users in this timline, too.
@@ -265,7 +265,7 @@
 
     // group-list
     // data-table(:entries="maps", :columns="columns", :actions="actions", @action="onAction")
-    q-table(
+    q-table.no-shadow(
     @rowclick="onRowClick($event)",
     :dark="true",
     :data="maps",
