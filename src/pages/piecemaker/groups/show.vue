@@ -1,7 +1,6 @@
 <template lang="pug">
 
   card-full
-
     q-modal(v-model="showModal")
       .q-pa-xl.bg-dark(style="min-width: 66vw;")
         //
@@ -12,39 +11,53 @@
               | Footer
         SessionDiagram()
 
+    .row
+      .col-6(slot="form-title") {{ $t('routes.piecemaker.groups.show.title') }}
+      // span(slot="form-caption") {{ $t('routes.piecemaker.groups.show.caption') }}
+      .col-6.text-right
+        q-btn(
+        @click="$router.push({ name: 'piecemaker.groups.annotate' })",
+        ) Live Annotate
     span(slot="form-logo")
-    span(slot="form-title") {{ $t('routes.piecemaker.groups.show.title') }}
-    // span(slot="form-caption") {{ $t('routes.piecemaker.groups.show.caption') }}
 
     q-btn(slot="backButton", @click="$router.push({ name: 'piecemaker.groups.list' })", icon="keyboard_backspace", round, small)
 
-    span(slot="form-logo")
-    // span(slot="form-title") {{ $t('routes.piecemaker.videos.list.title') }}
-    // span(slot="form-title")
-      .text-grey-6 Session
-
-    .text-right
-      q-btn(
-      @click="$router.push({ name: 'piecemaker.groups.annotate' })",
-      ) Live Annotate
-
     div.q-mt-md
       .q-mt-xl(v-for="(y, iy) in arrTimelineDataDummy")
-        .q-mt-sm(v-for="(m, im) in y.months")
+        h5.text-weight-light {{ y.year }}
+        div(v-for="(m, im) in y.months")
           div(v-for="(d, id) in m.days")
-            .row(v-for="(e, ie) in d.entries")
-              .col-1.q-pt-xs.moba-border-top(:class="{invisible: im > 0}") {{ y.year }}
-              .col-1.q-pt-xs.moba-border-top.text-grey-9(:class="[{invisible: id > 0}, {invisible: ie > 0}]") {{ m.month }}
-              .col-1.q-pt-xs.moba-border-top.text-grey-9(:class="{invisible: ie > 0}") {{ d.date }}
-              .col-9.q-pt-xs.moba-border-top.row
-                .col-1 {{ e.start }}
-                .col-1 {{ e.end }}
-                .col-6
-                .col-4.text-right
-                  q-btn.q-mr-sm.q-mt-xs(@click="activeDiagram = e.id", size="sm", no-caps) show diagram
-                  q-btn.no-margin.q-mt-xs(size="sm", no-caps) jump
-              div.full-width.q-pa-md(v-if="e.id == activeDiagram", style="height: 66vh; overflow: hidden;")
-                SessionDiagram(:data="annotations")
+            div.moba-border-top(v-for="(e, ie) in d.entries")
+
+              template(v-if="e.id != activeDiagram")
+                .row.q-pt-xs
+                  .col-1(:class="{'text-grey-9': im > 0}") {{ y.year }}
+                  .col-1(:class="[{'text-grey-9': id > 0}, {'text-grey-9': ie > 0}]") {{ m.month }}
+                  .col-1(:class="{'text-grey-9': ie > 0}") {{ d.date }}
+                  .col-9.row
+                    .col-8.row.cursor-pointer(@click="activeDiagram = e.id")
+                      .col-1 {{ e.start }}
+                      .col-1 {{ e.end }}
+                      .col-10
+                    .col-4.text-right
+                      // q-btn.q-mr-sm(@click="activeDiagram = e.id", size="sm", no-caps) show details
+                      q-btn.no-margin(size="sm", no-caps) jump
+
+              template(v-if="e.id == activeDiagram")
+                .full-width.q-px-xl.q-py-lg.q-my-lg.moba-active
+
+                  .row.q-mb-lg.q-pb-sm(style="border-bottom: 1px solid #333;")
+                    .col-8
+                      | {{ y.year }} {{ m.month }} {{ d.date }}
+                      //
+                        q-btn(size="sm", no-caps) prev
+                        q-btn(size="sm", no-caps) next
+                    .col-4.text-right
+                      q-btn.q-mr-sm.cursor-pointer(size="sm", round) ?
+                        q-tooltip.q-caption.bg-black This is a recording session, it's part of a timeline.
+                      q-btn(@click="activeDiagram = ''", icon='clear', size="sm", no-caps, round)
+
+                  SessionDiagram(:data="annotations", :meta="e")
 
     //
       div(v-for="(y, iy) in arrTimelineDataDummy")
@@ -442,6 +455,9 @@
 </script>
 
 <style>
+  .moba-active {
+    background-color: rgba( 0, 0, 0, .1 );
+  }
   .moba-border-top {
   border-top: 1px solid rgba( 255, 255, 255, .2 );
   }
