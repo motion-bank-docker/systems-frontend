@@ -23,38 +23,58 @@
     // span(slot="form-title")
       .text-grey-6 Session
 
-    q-btn.float-right(
-    @click="$router.push({ name: 'piecemaker.groups.annotate' })",
-    ) Live Annotate
+    .text-right
+      q-btn(
+      @click="$router.push({ name: 'piecemaker.groups.annotate' })",
+      ) Live Annotate
 
-    div(v-for="(y, iy) in arrTimelineDataDummy")
-      h5.no-padding.q-mb-xs {{ y.year }}
-      .row.q-mb-md(v-for="(m, im) in y.months")
-        .col-2.q-py-xs.moba-border-top
-          div {{ m.month }}
-        .col-10
-          .row(v-for="(d, id) in m.days")
-            .col-2
-              .q-py-xs.moba-border-top
-                div {{ d.date }}
-                  q-tooltip.bg-black.q-caption {{ y.year }} {{ m.month }} {{ d.date }}
-                  span(style="font-size: .66rem; vertical-align: top;") th
-            q-list.col-10.no-border.no-padding
-              q-item.q-py-xs.q-pb-md.moba-border-top.cursor-pointer(
-              v-for="(h, ih) in d.entries",
-              style="font-size: inherit; min-height: 10px; padding-left: 0; padding-top: 0; margin-top: 0;",
-              multiline
-              )
-                q-item-side.q-pt-xs
-                  a(@click="showModal = true") {{ h.start }}
-                q-item-side.q-pt-xs
-                  a(@click="showModal = true") {{ h.end }}
-                q-item-main
-                  q-btn.q-mr-sm.q-mt-xs(@click="activeDiagram = h.id", size="sm", no-caps) show diagram
+    div.q-mt-md
+      .q-mt-xl(v-for="(y, iy) in arrTimelineDataDummy")
+        .q-mt-sm(v-for="(m, im) in y.months")
+          div(v-for="(d, id) in m.days")
+            .row(v-for="(e, ie) in d.entries")
+              .col-1.q-pt-xs.moba-border-top(:class="{invisible: im > 0}") {{ y.year }}
+              .col-1.q-pt-xs.moba-border-top.text-grey-9(:class="[{invisible: id > 0}, {invisible: ie > 0}]") {{ m.month }}
+              .col-1.q-pt-xs.moba-border-top.text-grey-9(:class="{invisible: ie > 0}") {{ d.date }}
+              .col-9.q-pt-xs.moba-border-top.row
+                .col-1 {{ e.start }}
+                .col-1 {{ e.end }}
+                .col-6
+                .col-4.text-right
+                  q-btn.q-mr-sm.q-mt-xs(@click="activeDiagram = e.id", size="sm", no-caps) show diagram
                   q-btn.no-margin.q-mt-xs(size="sm", no-caps) jump
-                  div(v-if="h.id == activeDiagram")
-                    div(style="height: 40vh; overflow: hidden;")
-                      SessionDiagram(:data="annotations")
+              div.full-width.q-pa-md(v-if="e.id == activeDiagram", style="height: 66vh; overflow: hidden;")
+                SessionDiagram(:data="annotations")
+
+    //
+      div(v-for="(y, iy) in arrTimelineDataDummy")
+        h5.no-padding.q-mb-xs {{ y.year }}
+        .row.q-mb-md(v-for="(m, im) in y.months")
+          .col-1.q-py-xs.moba-border-top
+            div {{ m.month }}
+          .col-11
+            .row(v-for="(d, id) in m.days")
+              .col-1
+                .q-py-xs.moba-border-top
+                  div {{ d.date }}
+                    q-tooltip.bg-black.q-caption {{ y.year }} {{ m.month }} {{ d.date }}
+                    span(style="font-size: .66rem; vertical-align: top;") th
+              q-list.col-11.no-border.no-padding
+                q-item.q-py-xs.q-pb-md.moba-border-top.cursor-pointer(
+                v-for="(h, ih) in d.entries",
+                style="font-size: inherit; min-height: 10px; padding-left: 0; padding-top: 0; margin-top: 0;",
+                multiline
+                )
+                  q-item-side.q-pt-xs
+                    a(@click="showModal = true") {{ h.start }}
+                  q-item-side.q-pt-xs
+                    a(@click="showModal = true") {{ h.end }}
+                  q-item-main
+                    q-btn.q-mr-sm.q-mt-xs(@click="activeDiagram = h.id", size="sm", no-caps) show diagram
+                    q-btn.no-margin.q-mt-xs(size="sm", no-caps) jump
+                    template(v-if="h.id == activeDiagram")
+                      div(style="height: 66vh; overflow: hidden;")
+                        SessionDiagram(:data="annotations")
                 //
                   q-item-side
                     q-btn.no-margin(@click="showModal = true", size="sm", flat) show diagram
