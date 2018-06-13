@@ -22,9 +22,15 @@
 
             // Filter
             //
-            .col-12.q-mb-md
-              div [Platzhalter Filter]
-              div Zeitraum festlegen
+            .col-12.q-mb-md.row
+              .col-9
+                div [Platzhalter Filter] (unter Diagramm?)
+                div bspw. Zeitraum festlegen, Annotations von User xxx
+              .col-3.text-right
+                q-btn(@click="annotationSessionWidth = annotationSessionWidth - 10")
+                  q-icon.rotate-90(name="unfold_less")
+                q-btn.q-ml-sm(@click="annotationSessionWidth = annotationSessionWidth + 10")
+                  q-icon.rotate-90(name="unfold_more")
 
             // auswahl – wrap
             //
@@ -52,7 +58,8 @@
 
             // svg wrap
             //
-            .col-8
+            // .col-8
+            .col-12(style="overflow-x: scroll;")
               svg(
               v-model="svgHeight",
               :width="computedSvgWidth",
@@ -187,7 +194,7 @@
         }
       },
       getAnnotationSessionWidth () {
-        this.annotationSessionWidth = 80
+        this.annotationSessionWidth = 50
       },
       getSvgHeight (arr) {
         let newArr = []
@@ -252,6 +259,24 @@
         }, {
           rangebegin: 151,
           rangeend: 200
+        }, {
+          rangebegin: 61,
+          rangeend: 70
+        }, {
+          rangebegin: 71,
+          rangeend: 100
+        }, {
+          rangebegin: 101,
+          rangeend: 120
+        }, {
+          rangebegin: 0,
+          rangeend: 20
+        }, {
+          rangebegin: 71,
+          rangeend: 100
+        }, {
+          rangebegin: 101,
+          rangeend: 120
         }],
         byReferencetime: [],
         filteredAnnotations: [],
