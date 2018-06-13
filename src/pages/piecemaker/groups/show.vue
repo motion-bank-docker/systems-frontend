@@ -1,6 +1,7 @@
 <template lang="pug">
 
-  card-full
+  // card-full
+  full-screen
     q-modal(v-model="showModal")
       .q-pa-xl.bg-dark(style="min-width: 66vw;")
         //
@@ -12,6 +13,8 @@
         SessionDiagram()
 
     .row
+      // div(v-for="(v, vi) in videos")
+        | {{ Object.keys(v)[vi - 1] }}
       .col-6(slot="form-title") {{ $t('routes.piecemaker.groups.show.title') }}
       // span(slot="form-caption") {{ $t('routes.piecemaker.groups.show.caption') }}
       .col-6.text-right
@@ -24,87 +27,65 @@
 
     div.q-mt-md
       .q-mt-xl(v-for="(y, iy) in arrTimelineDataDummy")
-        h5.text-weight-light {{ y.year }}
+        h5.text-weight-light
+          | {{ y.year }}
+          span.text-grey-8.q-ml-md Recordingsessions
         div(v-for="(m, im) in y.months")
           div(v-for="(d, id) in m.days")
             div.moba-border-top(v-for="(e, ie) in d.entries")
 
-              template(v-if="e.id != activeDiagram")
-                .row.q-pt-xs
-                  .col-1(:class="{'text-grey-9': im > 0}") {{ y.year }}
-                  .col-1(:class="[{'text-grey-9': id > 0}, {'text-grey-9': ie > 0}]") {{ m.month }}
-                  .col-1(:class="{'text-grey-9': ie > 0}") {{ d.date }}
-                  .col-9.row
-                    .col-8.row.cursor-pointer(@click="activeDiagram = e.id")
-                      .col-1 {{ e.start }}
-                      .col-1 {{ e.end }}
-                      .col-10
-                    .col-4.text-right
-                      // q-btn.q-mr-sm(@click="activeDiagram = e.id", size="sm", no-caps) show details
+              .row.q-py-sm
+                .col-1.q-pl-sm(:class="[{'text-grey-8': id > 0}, {'text-grey-8': ie > 0}]") {{ m.month }}
+                .col-1(:class="{'text-grey-8': ie > 0}") {{ d.date }}
+                .col-10.row
+                  .col-8.row.cursor-pointer(@click="activeDiagram = e.id")
+                    .col-2 {{ e.start }} – {{ e.end }}
+                    .col-2
+                      // q-btn.no-margin(size="sm", no-caps) jump
+                    .col-8
+                  .col-4.text-right
+                    // q-btn.q-mr-sm(@click="activeDiagram = e.id", size="sm", no-caps) show details
+
+                    // div(v-if="e.id !== activeDiagram")
                       q-btn.no-margin(size="sm", no-caps) jump
 
-              template(v-if="e.id == activeDiagram")
-                .full-width.q-px-xl.q-py-lg.q-my-lg.moba-active
+                    div(v-if="e.id == activeDiagram")
+                      q-btn.q-mr-sm.cursor-pointer(size="sm", round) ?
+                        q-tooltip.q-caption.bg-black This is a recording session, it's part of a timeline.
+                      q-btn(@click="activeDiagram = ''", icon='clear', size="sm", no-caps, round)
 
-                  .row.q-mb-lg.q-pb-sm(style="border-bottom: 1px solid #333;")
-                    .col-8
+              template(v-if="e.id == activeDiagram")
+                .full-width.q-px-xl.q-py-lg.q-pt-none.q-mb-lg
+                  //.moba-active
+
+                  .row.q-mb-lg.q-pb-sm
+                    // .col-8
                       | {{ y.year }} {{ m.month }} {{ d.date }}
                       //
                         q-btn(size="sm", no-caps) prev
                         q-btn(size="sm", no-caps) next
-                    .col-4.text-right
+                    // .col-4.text-right
+                  //
+                    .col-12.text-right
                       q-btn.q-mr-sm.cursor-pointer(size="sm", round) ?
                         q-tooltip.q-caption.bg-black This is a recording session, it's part of a timeline.
                       q-btn(@click="activeDiagram = ''", icon='clear', size="sm", no-caps, round)
 
                   SessionDiagram(:data="annotations", :meta="e")
-
-    //
-      div(v-for="(y, iy) in arrTimelineDataDummy")
-        h5.no-padding.q-mb-xs {{ y.year }}
-        .row.q-mb-md(v-for="(m, im) in y.months")
-          .col-1.q-py-xs.moba-border-top
-            div {{ m.month }}
-          .col-11
-            .row(v-for="(d, id) in m.days")
-              .col-1
-                .q-py-xs.moba-border-top
-                  div {{ d.date }}
-                    q-tooltip.bg-black.q-caption {{ y.year }} {{ m.month }} {{ d.date }}
-                    span(style="font-size: .66rem; vertical-align: top;") th
-              q-list.col-11.no-border.no-padding
-                q-item.q-py-xs.q-pb-md.moba-border-top.cursor-pointer(
-                v-for="(h, ih) in d.entries",
-                style="font-size: inherit; min-height: 10px; padding-left: 0; padding-top: 0; margin-top: 0;",
-                multiline
-                )
-                  q-item-side.q-pt-xs
-                    a(@click="showModal = true") {{ h.start }}
-                  q-item-side.q-pt-xs
-                    a(@click="showModal = true") {{ h.end }}
-                  q-item-main
-                    q-btn.q-mr-sm.q-mt-xs(@click="activeDiagram = h.id", size="sm", no-caps) show diagram
-                    q-btn.no-margin.q-mt-xs(size="sm", no-caps) jump
-                    template(v-if="h.id == activeDiagram")
-                      div(style="height: 66vh; overflow: hidden;")
-                        SessionDiagram(:data="annotations")
-                //
-                  q-item-side
-                    q-btn.no-margin(@click="showModal = true", size="sm", flat) show diagram
-                    q-btn.no-margin(size="sm", flat) jump
-
-    // SessionDiagram(:data="annotations")
+            // .moba-border-top(v-if="ei <= d.entries.length")
 
 </template>
 
 <script>
-  import CardFull from '../../../components/shared/layouts/CardFull'
+  // import CardFull from '../../../components/shared/layouts/CardFull'
+  import FullScreen from '../../../components/shared/layouts/FullScreen'
   import SessionDiagram from '../../../components/piecemaker/partials/SessionDiagram'
-  import { QList, QItem, QItemMain, QItemSide, QItemTile, QModal, QTooltip, QModalLayout } from 'quasar'
+  import { QList, QItem, QItemMain, QItemSide, QItemTile, QModal, QTooltip, QPopover, QModalLayout } from 'quasar'
 
   export default {
     components: {
-      CardFull,
+      // CardFull,
+      FullScreen,
       SessionDiagram,
       QList,
       QItem,
@@ -113,6 +94,7 @@
       QItemTile,
       QModal,
       QTooltip,
+      QPopover,
       QModalLayout
     },
     mounted () {
@@ -145,9 +127,8 @@
       },
       appendRandomAnnotations () {
         let i = 0
-        let arrAnnotations = this.annotations
         for (i = 0; i < this.numberRandomAnnotations; i++) {
-          arrAnnotations.push({referencetime: Math.floor(Math.random() * this.svgHeight), created: i, text: 'Hier steht der Text. (' + i + ')'})
+          this.annotations.push({referencetime: Math.floor(Math.random() * this.svgHeight), created: i, text: 'Hier steht der Text. (' + i + ')'})
         }
       },
       getSvgHeight (arr) {

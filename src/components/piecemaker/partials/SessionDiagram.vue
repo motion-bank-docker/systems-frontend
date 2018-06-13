@@ -2,27 +2,17 @@
 
     div
 
-      //
       // info window – dev only
       //
       .fixed(
       v-model="previewLine",
-      v-if="previewLine.visibility",
-      style="top: 50px; left: 0;"
+      v-if="previewLine.visibility"
       ) {{ previewLine.positionY }} {{ previewDot.referencetime }}
 
-      //
-        .fixed(
-        v-model="previewDot",
-        style="top: 50px; left: 0;"
-        ) xxx {{ previewDot.referencetime }} xxx
-
-      //
       // sessions – wrap
       //
       div
 
-        //
         // diagramm wrap
         //
         div.q-mb-lg(style="height: 66vh; overflow: hidden;")
@@ -30,12 +20,16 @@
           style="border-top: 0px solid #333; border-bottom: 0px solid #333;"
           )
 
+            // Filter
             //
+            .col-12.q-mb-md
+              div [Platzhalter Filter]
+              div Zeitraum festlegen
+
             // auswahl – wrap
             //
-            .col-4
+            .col-4.hidden
 
-              //
               // select – FILTERED
               //
               div.text-grey-6.q-pb-xs.q-caption(
@@ -51,36 +45,25 @@
                 color="white"
                 )
                   span.q-ml-sm {{ arrFilter[i].rangebegin }} – {{ arrFilter[i].rangeend }}
-                //
-                  q-item-side
-                    q-icon(name="remove_red_eye")
-                  q-checkbox(v-model="selectedAnnotationSessions", :val="n")
-                  q-btn.q-mx-sm.q-mb-md(
-                  @click="filterAnnotations(arrFilter[i].rangebegin, arrFilter[i].rangeend)",
-                  no-ripple, no-caps
-                  ) {{ arrFilter[i].rangebegin }} – {{ arrFilter[i].rangeend }}
+                  q-btn go
 
               div
                 q-btn(@click="", no-caps) Detailview
-                // q-btn(:disable="selectedAnnotationSessions") go
-                // div {{ selectedAnnotationSessions }}
 
-            //
             // svg wrap
             //
-            .col-8.bg-dark.text-center
+            .col-8
               svg(
               v-model="svgHeight",
               :width="computedSvgWidth",
               :height="svgHeight"
               )
 
-                //
                 // swimlanes – wrap
                 //
                 svg
-                  //
-                  // vertical lines
+
+                  // vertical lines – VIDEOS
                   //
                   svg(
                   x="15"
@@ -92,8 +75,8 @@
                     :x="(30 + 10) * i",
                     :y="video.referencetime"
                     )
-                  //
-                  // horizontal lines
+
+                  // annotations - ALL
                   //
                   g
                     rect.moba-svg-entry(
@@ -113,69 +96,34 @@
                     style="fill: rgba(255,0,0, 1)!important;"
                     )
 
-                //
-                // dots – ALL
+                // annotations
+                // FILTERED
                 //
                   svg(
-                  x="200"
+                  v-for="(n, i) in selectedAnnotationSessions",
+                  // :x="180 + ((20 + 10) * i)"
                   )
-                    line(
-                    x1="3",
-                    y1="0",
-                    x2="3",
-                    y2="100%",
-                    style="stroke: rgba(255,255,255,.1); stroke-width: 1;"
-                    )
-                    g
-                      circle.moba-svg-entry.moba-hover-test(
-                      v-for="annotation in annotations",
-                      @mouseenter="hoverVal = annotation.referencetime, previewLine.positionY = annotation.referencetime, previewLine.visibility = true",
-                      @mouseleave="hoverVal = '', previewLine.visibility = false",
-                      r="3",
-                      cx="3",
-                      // :cy="annotation.referencetime",
-                      style="fill: rgb(255,255,255);"
-                      )
-
-                //
-                // dots – FILTERED
-                //
                 svg(
-                v-for="(n, i) in selectedAnnotationSessions",
-                :x="250 + ((30 + 10) * i)"
+                v-for="(n, i) in arrFilter",
+                :x="180 + (annotationSessionWidth * i)"
                 )
-                  //
-                    rect(
-                    width="30",
-                    height="100%",
-                    fill="rgba(255, 255, 255, .025)"
-                    )
                   line(
-                  x1="15",
+                  x1="0",
                   y1="0",
-                  x2="15",
+                  x2="0",
                   y2="100%",
                   style="stroke: rgba(255,255,255,.1); stroke-width: 1;"
                   )
                   g
-                    circle.moba-svg-entry.moba-hover-test(
+                    rect.moba-svg-entry(
                     v-for="annotation in annotationsBlocks[i]",
-                    @mouseenter="hoverVal = annotation.referencetime, previewLine.positionY = annotation.referencetime, previewLine.visibility = true",
-                    @mouseleave="hoverVal = '', previewLine.visibility = false",
-                    r="3",
-                    cx="15",
-                    :cy="annotation.referencetime"
-                    style="fill: rgb(255,255,255);"
+                    @mouseenter="previewDot.visibility = true, previewDot.referencetime = annotation.referencetime, previewDot.positionY = annotation.referencetime",
+                    @mouseleave="previewDot.visibility = false",
+                    :width="annotationSessionWidth",
+                    :height="annotation.duration",
+                    :y="annotation.referencetime"
+                    style="fill: rgba(255,255,255, .4)!important;"
                     )
-                    // :class="[ annotation.referencetime = previewDot.referencetime ? mobafill : '' ]",
-                    //
-                      circle(
-                      v-if="previewDot.visibility",
-                      r="3",
-                      cx="15",
-                      // :cy="previewDot.positionY",
-                      style="fill: rgb(255,0,0);"
-                      )
 
 </template>
 
@@ -208,31 +156,38 @@
       this.appendRandomAnnotations()
       this.divideInBlocks(this.annotations)
       this.filterAnnotations(0, this.numberRandomAnnotations)
+      this.getAnnotationSessionWidth()
     },
     props: ['data', 'meta'],
     computed: {
       computedSvgWidth: function () {
-        // this.getSvgWidth(this.videos, this.selectedAnnotationSessions)
-        // return this.svgWidth === 20
-        return (30 + 10) * this.videos.length + 20 + (this.selectedAnnotationSessions.length * 50)
+        // return (30 + 10) * this.videos.length + 20 + (this.selectedAnnotationSessions.length * 40)
+        return (30 + 10) * this.videos.length + 20 + (this.arrFilter.length * this.annotationSessionWidth)
       }
     },
     methods: {
       filterAnnotations (valFrom, valTo) {
         this.filteredAnnotations = this.annotations.filter(annotation => annotation.created > valFrom && annotation.created <= valTo)
-        // console.log(this.filteredAnnotations)
-        // console.log(this.arrFilter)
         let i = 0
         for (i = 0; i < this.arrFilter.length; i++) {
           this.annotationsBlocks.push(this.annotations.filter(annotation => annotation.created > this.arrFilter[i]['rangebegin'] && annotation.created <= this.arrFilter[i]['rangeend']))
         }
       },
-      appendRandomAnnotations () {
+      appendRandomAnnotations () { // dev only
         let i = 0
-        let arrAnnotations = this.annotations = []
+        let dur = ''
         for (i = 0; i < this.numberRandomAnnotations; i++) {
-          arrAnnotations.push({referencetime: Math.floor(Math.random() * this.svgHeight), created: i, text: 'Hier steht der Text. (' + i + ')'})
+          if (i >= 0 && i <= 10) {
+            dur = 40
+          }
+          else {
+            dur = 1
+          }
+          this.annotations.push({referencetime: Math.floor(Math.random() * this.svgHeight), duration: dur, created: i, text: 'Hier steht der Text. (' + i + ')'})
         }
+      },
+      getAnnotationSessionWidth () {
+        this.annotationSessionWidth = 80
       },
       getSvgHeight (arr) {
         let newArr = []
@@ -244,25 +199,19 @@
         newArr.sort(function (a, b) {
           return a - b
         })
-        // console.log(newArr)
         this.svgHeight = newArr[arrLength - 1]
       },
       getSvgWidth (arrVideos, arrSelected) {
         console.log(arrSelected)
         this.svgWidth = (30 + 10) * arrVideos.length + 20
       },
-      divideInBlocks (arr) {
-        // let ab = this.annotationsBlocks
-        // console.log(ab)
+      divideInBlocks (arr) { // in development
         var byReferencetime = arr.slice(0)
         byReferencetime.sort(function (a, b) {
           return a.byReferencetime - b.byReferencetime
         })
-        // console.log(byReferencetime)
-        // console.log(arr)
       },
       setPrevCreated (val, valPrev) {
-        // console.log(val)
         console.log(valPrev)
         this.prevCreated = parseInt(val) + parseInt(50)
       },
@@ -278,8 +227,10 @@
       const _this = this
       return {
         map: undefined,
+        allAnnotationSessions: [],
         annotations: [],
         annotationsBlocks: [],
+        annotationSessionWidth: '',
         arrFilter: [{ // dev only
           rangebegin: 0,
           rangeend: 30

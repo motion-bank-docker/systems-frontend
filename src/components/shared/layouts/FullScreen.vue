@@ -15,7 +15,7 @@
 
           slot(name="form-caption")
 
-        slot(name="form-logo")
+        // slot(name="form-logo")
           a.gt-md.logo(@click="openURL('http://www.motionbank.org')")
             img.responsive(src="~assets/motionbank-logo.png")
 
