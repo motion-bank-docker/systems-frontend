@@ -2,6 +2,8 @@
 
     div
 
+      q-window-resize-observable(@resize="onResize")
+
       // info window – dev only
       //
       .fixed(
@@ -15,10 +17,23 @@
 
         // diagramm wrap
         //
-        div.q-mb-lg(style="height: 66vh; overflow: hidden;")
-          .row.col-12(
-          style="border-top: 0px solid #333; border-bottom: 0px solid #333;"
-          )
+        div.q-mb-lg(style="height: 80vh; overflow: hidden;")
+
+          .row.col-12(style="height: 100%;")
+
+            // dev test
+              div.bg-blue(style="height: 90%;")
+                svg.bg-red(
+                // :width="100",
+                height="50%"
+                )
+                  rect(
+                  width="30",
+                  height="100",
+                  x="0",
+                  y="0",
+                  style="fill: rgba(255,255,255, .4)!important;"
+                  )
 
             // Filter
             //
@@ -59,11 +74,12 @@
             // svg wrap
             //
             // .col-8
-            .col-12(style="overflow-x: scroll;")
+            .col-12(style="overflow-x: scroll; overflow-y: hidden;")
+
               svg(
               v-model="svgHeight",
               :width="computedSvgWidth",
-              :height="svgHeight"
+              :height="viewportHeight / 100 * 80"
               )
 
                 // swimlanes – wrap
@@ -78,9 +94,9 @@
                     rect.moba-swimlane(
                     v-for="(video, i) in videos",
                     width="30",
-                    :height="video.duration",
+                    :height="video.duration * ((viewportHeight / 100 * 80) / svgHeight)",
                     :x="(30 + 10) * i",
-                    :y="video.referencetime"
+                    :y="video.referencetime * ((viewportHeight / 100 * 80) / svgHeight)"
                     )
 
                   // annotations - ALL
@@ -92,7 +108,7 @@
                     @mouseleave="previewDot.visibility = false",
                     width="180",
                     height="1",
-                    :y="annotation.referencetime"
+                    :y="annotation.referencetime * ((viewportHeight / 100 * 80) / svgHeight)"
                     style="fill: rgba(255,255,255, .4)!important;"
                     )
                     rect(
@@ -127,18 +143,19 @@
                     @mouseenter="previewDot.visibility = true, previewDot.referencetime = annotation.referencetime, previewDot.positionY = annotation.referencetime",
                     @mouseleave="previewDot.visibility = false",
                     :width="annotationSessionWidth",
-                    :height="annotation.duration",
-                    :y="annotation.referencetime"
+                    :height="annotation.duration * ((viewportHeight / 100 * 80) / svgHeight)",
+                    :y="annotation.referencetime * ((viewportHeight / 100 * 80) / svgHeight)"
                     style="fill: rgba(255,255,255, .4)!important;"
                     )
 
 </template>
 
 <script>
-  import { QList, QItem, QItemMain, QItemSide, QTooltip, QCard } from 'quasar'
+  import { QWindowResizeObservable, QList, QItem, QItemMain, QItemSide, QTooltip, QCard } from 'quasar'
 
   export default {
     components: {
+      QWindowResizeObservable,
       QList,
       QItem,
       QItemMain,
@@ -207,6 +224,8 @@
           return a - b
         })
         this.svgHeight = newArr[arrLength - 1]
+        this.scaleFactor = (this.viewportHeight / 100 * 80) / this.svgHeight
+        console.log('xxx: ' + this.scaleFactor)
       },
       getSvgWidth (arrVideos, arrSelected) {
         console.log(arrSelected)
@@ -228,6 +247,10 @@
         case 'annotate':
           return _this.$router.push(`/piecemaker/videos/${data.row.uuid}/annotate`)
         }
+      },
+      onResize (size) {
+        this.viewportHeight = size.height
+        console.log(this.viewportHeight / 100 * 80)
       }
     },
     data () {
@@ -292,9 +315,11 @@
           positionY: '',
           visibility: false
         },
+        scaleFactor: '',
         selectedAnnotationSessions: [],
         svgHeight: '100',
         svgWidth: '',
+        viewportHeight: '',
         columns: [
           {
             label: _this.$t('labels.video_title'),
@@ -346,7 +371,7 @@
           title: 'video 1'
         }, {
           created: '300',
-          duration: '1282',
+          duration: '200',
           id: '',
           referencetime: '12',
           title: 'video 1'
