@@ -86,6 +86,14 @@
                 //
                 svg
 
+                  line(
+                  x1="0",
+                  y1="0",
+                  x2="0",
+                  :y2="viewportHeight / 100 * 80",
+                  style="stroke: rgba(255,255,255,.1); stroke-width: 1;"
+                  )
+
                   // vertical lines – VIDEOS
                   //
                   svg(
@@ -98,6 +106,16 @@
                     :x="(30 + 10) * i",
                     :y="video.referencetime * ((viewportHeight / 100 * 80) / svgHeight)"
                     )
+
+                  // Trenner: gesamt < > annotation sessions
+                  //
+                  line(
+                  :x1="180",
+                  y1="0",
+                  :x2="180",
+                  y2="100%",
+                  style="stroke: rgba(255,255,255,.5); stroke-width: 1;"
+                  )
 
                   // annotations - ALL
                   //
@@ -131,9 +149,9 @@
                 :x="180 + (annotationSessionWidth * i)"
                 )
                   line(
-                  x1="0",
+                  :x1="annotationSessionWidth",
                   y1="0",
-                  x2="0",
+                  :x2="annotationSessionWidth",
                   y2="100%",
                   style="stroke: rgba(255,255,255,.1); stroke-width: 1;"
                   )
@@ -143,7 +161,7 @@
                     @mouseenter="previewDot.visibility = true, previewDot.referencetime = annotation.referencetime, previewDot.positionY = annotation.referencetime",
                     @mouseleave="previewDot.visibility = false",
                     :width="annotationSessionWidth",
-                    :height="annotation.duration * ((viewportHeight / 100 * 80) / svgHeight)",
+                    :height="annotation.duration * ((viewportHeight / 100 * 80) / svgHeight) + 0.5",
                     :y="annotation.referencetime * ((viewportHeight / 100 * 80) / svgHeight)"
                     style="fill: rgba(255,255,255, .4)!important;"
                     )
