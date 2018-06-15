@@ -1,28 +1,19 @@
 <template lang="pug">
 
-  .bg-dark
-
-    .absolute
+  div
+    .absolute(style="top: 70px; left: 20px;")
       slot(name="backButton")
 
-    div.q-pa-xl
-      slot(name="nav-button")
-
-      .row.justify-between.content-stretch
-        .column.width-3of4
-          h5.caption.light-paragraph
-            slot(name="form-title")
-
-          slot(name="form-caption")
-
-        // slot(name="form-logo")
-          a.gt-md.logo(@click="openURL('http://www.motionbank.org')")
-            img.responsive(src="~assets/motionbank-logo.png")
-
-      q-card-main.no-margin
+    .q-px-xl
+      // slot(name="nav-button")
+      .q-pt-xl
+        h5.caption.light-paragraph.q-mt-none
+          slot(name="form-title")
+        slot(name="form-caption")
         slot
 
-    site-footer
+      .q-mt-xl
+        site-footer
 
 </template>
 
