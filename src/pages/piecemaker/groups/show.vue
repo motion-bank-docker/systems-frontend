@@ -2,7 +2,10 @@
 
   // card-full
   full-screen
-    q-modal(v-model="showModal")
+
+    q-window-resize-observable(@resize="onResize")
+
+    // q-modal(v-model="showModal")
       .q-pa-xl.bg-dark(style="min-width: 66vw;")
         //
           q-modal-layout()
@@ -13,10 +16,8 @@
         SessionDiagram()
 
     .row
-      // div(v-for="(v, vi) in videos")
-        | {{ Object.keys(v)[vi - 1] }}
-      .col-6(slot="form-title") {{ $t('routes.piecemaker.groups.show.title') }}
-      // span(slot="form-caption") {{ $t('routes.piecemaker.groups.show.caption') }}
+      .col-6(slot="form-title")
+        // | {{ $t('routes.piecemaker.groups.show.title') }}
       .col-6.text-right
         q-btn(
         @click="$router.push({ name: 'piecemaker.groups.annotate' })",
@@ -25,54 +26,96 @@
 
     q-btn(slot="backButton", @click="$router.push({ name: 'piecemaker.groups.list' })", icon="keyboard_backspace", round, small)
 
-    div.q-mt-md
-      .q-mt-xl(v-for="(y, iy) in arrTimelineDataDummy")
-        h5.text-weight-light
-          | {{ y.year }}
-          span.text-grey-8.q-ml-md Recordingsessions
-        div(v-for="(m, im) in y.months")
-          div(v-for="(d, id) in m.days")
-            div.moba-border-top(v-for="(e, ie) in d.entries")
+    .row.q-mt-md
 
-              .row.q-py-sm
-                .col-1.q-pl-sm(:class="[{'text-grey-8': id > 0}, {'text-grey-8': ie > 0}]") {{ m.month }}
-                .col-1(:class="{'text-grey-8': ie > 0}") {{ d.date }}
-                .col-10.row
-                  .col-8.row.cursor-pointer(@click="activeDiagram = e.id")
-                    .col-2 {{ e.start }} – {{ e.end }}
-                    .col-2
-                      // q-btn.no-margin(size="sm", no-caps) jump
-                    .col-8
-                  .col-4.text-right
-                    // q-btn.q-mr-sm(@click="activeDiagram = e.id", size="sm", no-caps) show details
+      // SVG timeline preview
+      //
+      // .col-1.fixed(style="left: 50px; top: 80px; height: calc(100% - 50px - 100px)")
+        svg(
+        width="100%",
+        height="100%"
+        )
+          line(
+          x1="0", x2="20",
+          y1="0", y2="0",
+          style="stroke:rgb(255,255,255,.1);stroke-width:1;"
+          )
 
-                    // div(v-if="e.id !== activeDiagram")
-                      q-btn.no-margin(size="sm", no-caps) jump
+          // years
+          //
+          line(
+          v-for="(n, i) in 3",
+          x1="0", x2="30",
+          // :y1="(viewportHeight - 150) / 3 * n", :y2="(viewportHeight - 150) / 3 * n",
+          style="stroke:rgb(255,255,255,.1);stroke-width:1;"
+          )
 
-                    div(v-if="e.id == activeDiagram")
-                      q-btn.q-mr-sm.cursor-pointer(size="sm", round) ?
-                        q-tooltip.q-caption.bg-black This is a recording session, it's part of a timeline.
-                      q-btn(@click="activeDiagram = ''", icon='clear', size="sm", no-caps, round)
+          // months
+          //
+          line(
+          v-for="(n, i) in (3 * 12)",
+          x1="0", x2="10",
+          // :y1="(viewportHeight - 150) / 3 / 12 * n", :y2="(viewportHeight - 150) / 3 / 12 * n",
+          style="stroke:rgb(255,255,255,.1);stroke-width:1;"
+          )
 
-              template(v-if="e.id == activeDiagram")
-                .full-width.q-px-xl.q-py-lg.q-pt-none.q-mb-lg
-                  //.moba-active
+          line(
+          x1="0", x2="0",
+          y1="0", y2="100%",
+          style="stroke:rgb(255,255,255,.1);stroke-width:1;"
+          )
 
-                  .row.q-mb-lg.q-pb-sm
-                    // .col-8
-                      | {{ y.year }} {{ m.month }} {{ d.date }}
-                      //
-                        q-btn(size="sm", no-caps) prev
-                        q-btn(size="sm", no-caps) next
-                    // .col-4.text-right
-                  //
-                    .col-12.text-right
-                      q-btn.q-mr-sm.cursor-pointer(size="sm", round) ?
-                        q-tooltip.q-caption.bg-black This is a recording session, it's part of a timeline.
-                      q-btn(@click="activeDiagram = ''", icon='clear', size="sm", no-caps, round)
+      // warp - recording sessions
+      //
+      // .col-11.offset-1
+      .col-12
+        .q-mb-xl.row(v-for="(y, iy) in arrTimelineDataDummy")
+          h5.text-weight-light.q-mt-none.offset-2
+            | {{ y.year }}
+            // span.text-grey-8.q-ml-md Recordingsessions
+          .col-12(v-for="(m, im) in y.months")
+            div(v-for="(d, id) in m.days")
+              div.row(v-for="(e, ie) in d.entries")
 
-                  SessionDiagram(:data="annotations", :meta="e")
-            // .moba-border-top(v-if="ei <= d.entries.length")
+                .row.q-py-sm.col-8.offset-2.moba-border-top
+                  .col-2.q-pl-sm(:class="[{'text-grey-8': id > 0}, {'text-grey-8': ie > 0}]") {{ m.month }}
+                  .col-2(:class="{'text-grey-8': ie > 0}") {{ d.date }}
+                  .col-8.row
+                    .col-8.row.cursor-pointer(@click="activeDiagram = e.id")
+                      .col-4 {{ e.start }} – {{ e.end }}
+                      .col-4
+                        // q-btn.no-margin(size="sm", no-caps) jump
+                      .col-4
+                    .col-4.text-right
+                      // q-btn.q-mr-sm(@click="activeDiagram = e.id", size="sm", no-caps) show details
+
+                      // div(v-if="e.id !== activeDiagram")
+                        q-btn.no-margin(size="sm", no-caps) jump
+
+                      div(v-if="e.id == activeDiagram")
+                        q-btn.q-mr-sm.cursor-pointer(size="sm", round) ?
+                          q-tooltip.q-caption.bg-black This is a recording session, it's part of a timeline.
+                        q-btn(@click="activeDiagram = ''", icon='clear', size="sm", no-caps, round)
+
+                template(v-if="e.id == activeDiagram")
+                  .full-width.q-px-xl.q-py-lg.q-pt-none.q-mb-lg
+                    //.moba-active
+
+                    .row.q-mb-lg.q-pb-sm
+                      // .col-8
+                        | {{ y.year }} {{ m.month }} {{ d.date }}
+                        //
+                          q-btn(size="sm", no-caps) prev
+                          q-btn(size="sm", no-caps) next
+                      // .col-4.text-right
+                    //
+                      .col-12.text-right
+                        q-btn.q-mr-sm.cursor-pointer(size="sm", round) ?
+                          q-tooltip.q-caption.bg-black This is a recording session, it's part of a timeline.
+                        q-btn(@click="activeDiagram = ''", icon='clear', size="sm", no-caps, round)
+
+                    SessionDiagram(:data="annotations", :meta="e")
+              // .moba-border-top(v-if="ei <= d.entries.length")
 
 </template>
 
@@ -80,11 +123,12 @@
   // import CardFull from '../../../components/shared/layouts/CardFull'
   import FullScreen from '../../../components/shared/layouts/FullScreen'
   import SessionDiagram from '../../../components/piecemaker/partials/SessionDiagram'
-  import { QList, QItem, QItemMain, QItemSide, QItemTile, QModal, QTooltip, QPopover, QModalLayout } from 'quasar'
+  import { QWindowResizeObservable, QList, QItem, QItemMain, QItemSide, QItemTile, QModal, QTooltip, QPopover, QModalLayout } from 'quasar'
 
   export default {
     components: {
       // CardFull,
+      QWindowResizeObservable,
       FullScreen,
       SessionDiagram,
       QList,
@@ -165,6 +209,9 @@
         case 'annotate':
           return _this.$router.push(`/piecemaker/videos/${data.row.uuid}/annotate`)
         }
+      },
+      onResize (size) {
+        this.viewportHeight = size.height
       }
     },
     data () {
@@ -374,6 +421,7 @@
           positionY: ''
         },
         svgHeight: '100',
+        viewportHeight: '',
         columns: [
           {
             label: _this.$t('labels.video_title'),
