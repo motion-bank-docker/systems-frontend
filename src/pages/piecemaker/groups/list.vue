@@ -1,8 +1,8 @@
 <template lang="pug">
 
-  card-full
+  // card-full
+  full-screen
 
-    //
     // modal: create timeline
     //
     q-modal(v-model="showModalAdd")
@@ -125,74 +125,17 @@
             no-caps
             )
 
-        // user list
-        //
-          div.q-mt-xl
-            .row
-              h5.col-6.caption.no-margin Users: {{ maps[0].users.length + 1 }}
-              .col-6.no-margin.text-right
-                q-btn-dropdown.no-padding.no-margin(
-                // :label="'Order by ' + orderBy",
-                style="min-height: auto;",
-                flat, dark, no-caps
-                )
-                  div.q-px-md.q-py-sm.text-white.cursor-pointer.bg-dark Mail
-                  div.q-px-md.q-py-sm.text-white.cursor-pointer.bg-dark Status
-                  div.q-px-md.q-py-sm.text-white.cursor-pointer.bg-dark Managing rights
+        .text-center
+          q-btn.q-mx-xs.q-mt-xl.bg-green.text-white(
+          @click="showModalEditInformation=false",
+          label="Done",
+          no-caps
+          )
 
-            q-list(no-border)
-              q-item.q-my-sm.q-pa-md(
-              style="border: 1px solid #333;"
-              )
-                | {{ user.name }} (Owner)
-
-              q-item.q-my-sm.q-pa-sm(
-                v-for="(n, i) in maps[0].users",
-                style="border: 1px solid #333;"
-                )
-                q-item-side.text-center
-                  q-tooltip.bg-black.text-white.q-caption Allow managing rights?
-                  q-checkbox(v-model="n.managingrights", color="grey-9", dark)
-                q-item-main
-                  div.q-mb-xs()
-                    span(v-if="i > 1")
-                      q-icon.q-mr-sm.text-red(name="error")
-                        q-tooltip.bg-black.q-caption Pending confirmation.
-                    | {{ n.mail }}
-                q-item-side
-                  q-btn(
-                  icon="clear",
-                  round, no-caps
-                  )
-                    q-tooltip.bg-red.q-caption Remove from this timeline?
-
-              q-item.q-mt-sm.q-px-lg.q-py-md(
-              style="border: 1px solid #333;"
-              )
-                q-item-main
-                  q-input.q-mb-md(
-                  v-model="newUser.mail",
-                  float-label="Enter mail",
-                  color="white",
-                  dark
-                  )
-                q-item-side
-                  q-btn(
-                  @click="onAction('add-user')",
-                  label="Add",
-                  color="primary",
-                  no-caps
-                  )
-
-    //
     // modal: manage users
     //
     q-modal(v-model="showModalUsers")
       .q-pa-xl.bg-dark(style="min-width: 50vw;")
-        //
-          h5.caption.no-margin
-            // q-icon(name="edit")
-            | Manage users
 
         // user list
         .row
@@ -251,82 +194,91 @@
               no-caps
               )
 
+        .text-center
+          q-btn.q-mx-xs.q-mt-xl.bg-green.text-white(
+          @click="showModalUsers=false",
+          label="Done",
+          no-caps
+          )
+
     span(slot="form-logo")
     div(slot="form-title") {{ $t('routes.piecemaker.groups.list.title') }} you have access to, {{ user.name }}.
     // p.caption(slot="form-caption") {{ $t('routes.piecemaker.groups.list.caption') }}
 
-    p
-      q-btn(
-      @click="onAction('add')",
-      no-caps
-      )
-        q-icon(name="add").q-mr-sm
-        | {{ $t('buttons.create_group') }}
+    .row
+      .col-10.offset-1
+        p
+          q-btn(
+          @click="onAction('add')",
+          no-caps
+          )
+            q-icon(name="add").q-mr-sm
+            | {{ $t('buttons.create_group') }}
 
-    // group-list
-    // data-table(:entries="maps", :columns="columns", :actions="actions", @action="onAction")
-    q-table.no-shadow(
-    @rowclick="onRowClick($event)",
-    :dark="true",
-    :data="maps",
-    :config="conf",
-    :columns="columns",
-    :actions="actions",
-    row-key="title"
-    )
-
-      //
-      // cell "title"
-      //
-      q-td.text-left(
-      slot="body-cell-title",
-      slot-scope="props",
-      :props="props"
-      )
-        q-btn(
-        @click="$router.push('groups/show')",
-        no-caps, flat
-        ) {{ props.row.title }}
-
-      //
-      // cell "users"
-      //
-      q-td(
-        slot="body-cell-users",
-        slot-scope="props",
-        :props="props"
+        // group-list
+        // data-table(:entries="maps", :columns="columns", :actions="actions", @action="onAction")
+        q-table.no-shadow(
+        @rowclick="onRowClick($event)",
+        :dark="true",
+        :data="maps",
+        :config="conf",
+        :columns="columns",
+        :actions="actions",
+        row-key="title"
         )
-        q-btn(@click="showModalUsers = true")
-          | {{ props.row.users.length }}
 
-      //
-      // cell "actions"
-      //
-      q-td(
-      slot="body-cell-actions",
-      slot-scope="props",
-      :props="props"
-      )
-        q-btn(
-        @click="onAction(a.type)",
-        v-for="a in actions",
-        :color="a.color || 'neutral'",
-        :key="a.type",
-        flat, no-caps
-        )
-          q-icon.q-mr-sm(:name="a.icon")
-          | {{ $t(a.title) }}
+          // cell "title"
+          //
+          q-td.text-left(
+          slot="body-cell-title",
+          slot-scope="props",
+          :props="props"
+          )
+            q-btn(
+            @click="$router.push('groups/show')",
+            no-caps, flat
+            ) {{ props.row.title }}
+
+          // cell "users"
+          //
+          q-td(
+            slot="body-cell-users",
+            slot-scope="props",
+            :props="props"
+            )
+            q-btn(@click="showModalUsers = true")
+              | {{ props.row.users.length }}
+
+          // cell "actions"
+          //
+          q-td(
+          slot="body-cell-actions",
+          slot-scope="props",
+          :props="props"
+          )
+            q-btn(
+            @click="onAction(a.type)",
+            v-for="a in actions",
+            :color="a.color || 'neutral'",
+            :key="a.type",
+            flat, no-caps
+            )
+              q-icon.q-mr-sm(:name="a.icon")
+              | {{ $t(a.title) }}
 
 </template>
 
 <script>
-  import CardFull from '../../../components/shared/layouts/CardFull'
+  // import CardFull from '../../../components/shared/layouts/CardFull'
+  import Vuex from 'vuex'
+  import FullScreen from '../../../components/shared/layouts/FullScreen'
   import GroupList from '../../../components/piecemaker/partials/GroupsList'
   import DataTable from '../../../components/shared/partials/DataTable'
   import { QModal, QTr, QTd, QList, QItem, QItemMain, QItemSide, QItemTile, QBtnDropdown, QTooltip } from 'quasar'
   export default {
     components: {
-      CardFull,
+      // CardFull,
+      FullScreen,
       GroupList,
       DataTable,
       QModal,
@@ -340,12 +292,18 @@
       QBtnDropdown,
       QTooltip
     },
+    computed: {
+      /* vuexTest: function () {
+        return this.$store.state += 10
+      } */
+    },
     methods: {
       onAction (type) {
         // alert(type)
         // const _this = this
         switch (type) {
         case 'add':
+          // alert(this.store.state.count)
           this.showModalAdd = true
           return
         case 'delete':
@@ -367,7 +325,6 @@
             mail: '',
             name: ''
           }
-          // console.log('bla')
         /* case 'live-annotate':
           return _this.$router.push({ name: 'piecemaker.groups.annotate', params: { id: data.row.uuid } })
         case 'videos':
@@ -395,7 +352,13 @@
     },
     data () {
       const _this = this
+      const store = new Vuex.Store({
+        state: {
+          count: 300
+        }
+      })
       return {
+        store: store,
         createTimelineUsers: [],
         disableBtn: true,
         newUser: [{
