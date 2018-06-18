@@ -38,14 +38,21 @@
             // Filter
             //
             .col-12.q-mb-md.row
-              .col-9
-                div [Platzhalter Filter] (unter Diagramm?)
-                div bspw. Zeitraum festlegen, Annotations von User xxx
-              .col-3.text-right
-                q-btn(@click="annotationSessionWidth = annotationSessionWidth - 10")
-                  q-icon.rotate-90(name="unfold_less")
-                q-btn.q-ml-sm(@click="annotationSessionWidth = annotationSessionWidth + 10")
-                  q-icon.rotate-90(name="unfold_more")
+              .col-12.row.q-mb-sm
+                .col-9
+                  div [Platzhalter Filter] (unter Diagramm?)
+                  div bspw. Zeitraum festlegen, Annotations von User xxx
+                .col-3.text-right
+              .col-12.row.q-pt-xs.moba-border-top
+                .col-6(v-model="hoverVal")
+                  | {{ hoverVal }}
+                .col-2.text-right
+                  q-btn(@click="annotationSessionWidth = annotationSessionWidth - 10", size="sm")
+                    q-icon.rotate-90(name="unfold_less")
+                  q-btn.q-ml-sm(@click="annotationSessionWidth = annotationSessionWidth + 10", size="sm")
+                    q-icon.rotate-90(name="unfold_more")
+                .col-4.text-right
+                  q-btn(size="sm") hide
 
             // auswahl – wrap
             //
@@ -73,8 +80,7 @@
 
             // svg wrap
             //
-            // .col-8
-            .col-12(style="overflow-x: scroll; overflow-y: hidden;")
+            .col-8(style="overflow-x: scroll; overflow-y: hidden;")
 
               svg(
               v-model="svgHeight",
@@ -107,7 +113,7 @@
                     :y="video.referencetime * ((viewportHeight / 100 * 80) / svgHeight)"
                     )
 
-                  // Trenner: gesamt < > annotation sessions
+                  // Trennlinie zwischen gesamt / annotation sessions
                   //
                   line(
                   :x1="180",
@@ -148,6 +154,12 @@
                 v-for="(n, i) in arrFilter",
                 :x="180 + (annotationSessionWidth * i)"
                 )
+                  rect(
+                  @mouseenter="hoverVal = n.rangebegin + ' - ' + n.rangeend",
+                  :width="annotationSessionWidth",
+                  height="100%",
+                  fill="rgba(0, 0, 0, 0)"
+                  )
                   line(
                   :x1="annotationSessionWidth",
                   y1="0",
@@ -165,6 +177,9 @@
                     :y="annotation.referencetime * ((viewportHeight / 100 * 80) / svgHeight)"
                     style="fill: rgba(255,255,255, .4)!important;"
                     )
+
+            q-list.col-4.no-border(style="height: 100%; overflow-y: scroll;")
+              q-item.q-caption(v-for="(n, i) in 20", :class="{'moba-border-top': i > 0}") bgcsdcd
 
 </template>
 
@@ -229,7 +244,7 @@
         }
       },
       getAnnotationSessionWidth () {
-        this.annotationSessionWidth = 50
+        this.annotationSessionWidth = 100
       },
       getSvgHeight (arr) {
         let newArr = []
@@ -401,8 +416,8 @@
 
 <style>
 
-  .mobafill {
-    fill: rgba( 255, 0, 0, 1 );
+  .moba-border-top {
+  border-top: 1px solid rgba( 255, 255, 255, .1 );
   }
 
   .moba-swimlane {
