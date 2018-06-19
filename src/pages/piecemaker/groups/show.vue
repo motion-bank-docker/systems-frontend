@@ -30,42 +30,44 @@
 
       // SVG timeline preview
       //
-      // .col-1.fixed(style="left: 50px; top: 80px; height: calc(100% - 50px - 100px)")
+      .col-1.fixed(style="left: 50px; top: 80px; height: calc(100vh - 50px - 100px)")
         svg(
         width="100%",
         height="100%"
         )
-          line(
-          x1="0", x2="20",
-          y1="0", y2="0",
-          style="stroke:rgb(255,255,255,.1);stroke-width:1;"
-          )
+            line(
+            x1="0", x2="20",
+            y1="0", y2="0",
+            style="stroke:rgb(255,255,255,.1);stroke-width:1;"
+            )
 
-          // years
-          //
-          line(
-          v-for="(n, i) in 3",
-          x1="0", x2="30",
-          // :y1="(viewportHeight - 150) / 3 * n", :y2="(viewportHeight - 150) / 3 * n",
-          style="stroke:rgb(255,255,255,.1);stroke-width:1;"
-          )
+            // years
+            //
+            line(
+            v-for="(n, i) in 3",
+            x1="2", x2="30",
+            :y1="(viewportHeight - 150) / 3 * n", :y2="(viewportHeight - 150) / 3 * n",
+            style="stroke:rgb(255,255,255,.1);stroke-width:1;"
+            )
 
-          // months
-          //
-          line(
-          v-for="(n, i) in (3 * 12)",
-          x1="0", x2="10",
-          // :y1="(viewportHeight - 150) / 3 / 12 * n", :y2="(viewportHeight - 150) / 3 / 12 * n",
-          style="stroke:rgb(255,255,255,.1);stroke-width:1;"
-          )
+            // months
+            //
+            line(
+            v-for="(n, i) in (3 * 12)",
+            x1="0", x2="2",
+            :y1="(viewportHeight - 150) / 3 / 12 * n", :y2="(viewportHeight - 150) / 3 / 12 * n",
+            style="stroke:rgb(255,255,255,.1);stroke-width:1;"
+            )
 
-          line(
-          x1="0", x2="0",
-          y1="0", y2="100%",
-          style="stroke:rgb(255,255,255,.1);stroke-width:1;"
-          )
+            // line left
+            //
+            line(
+            x1="0", x2="0",
+            y1="0", y2="100%",
+            style="stroke:rgb(255,255,255,.1);stroke-width:1;"
+            )
 
-      // warp - recording sessions
+      // wrap - recording sessions
       //
       // .col-11.offset-1
       .col-12
@@ -98,7 +100,7 @@
                         q-btn(@click="activeDiagram = ''", icon='clear', size="sm", no-caps, round)
 
                 template(v-if="e.id == activeDiagram")
-                  .full-width.q-px-xl.q-py-lg.q-pt-none.q-mb-lg
+                  .full-width.q-pt-none.q-mb-lg
                     //.moba-active
 
                     .row.q-mb-lg.q-pb-sm
@@ -108,13 +110,13 @@
                           q-btn(size="sm", no-caps) prev
                           q-btn(size="sm", no-caps) next
                       // .col-4.text-right
-                    //
-                      .col-12.text-right
-                        q-btn.q-mr-sm.cursor-pointer(size="sm", round) ?
-                          q-tooltip.q-caption.bg-black This is a recording session, it's part of a timeline.
-                        q-btn(@click="activeDiagram = ''", icon='clear', size="sm", no-caps, round)
-
-                    SessionDiagram(:data="annotations", :meta="e")
+                      //
+                        .col-12.text-right
+                          q-btn.q-mr-sm.cursor-pointer(size="sm", round) ?
+                            q-tooltip.q-caption.bg-black This is a recording session, it's part of a timeline.
+                          q-btn(@click="activeDiagram = ''", icon='clear', size="sm", no-caps, round)
+                      .col-9.offset-2
+                        SessionDiagram(:data="annotations", :meta="e")
               // .moba-border-top(v-if="ei <= d.entries.length")
 
 </template>
@@ -239,7 +241,7 @@
         arrTimelineDataDummy: [{ // dev only
           year: 2018,
           months: [{
-            month: 'January',
+            month: '1',
             days: [{
               date: '4',
               entries: [{
@@ -250,7 +252,7 @@
               }]
             }]
           }, {
-            month: 'March',
+            month: '3',
             days: [{
               date: '15',
               entries: [{
@@ -261,7 +263,7 @@
               }]
             }]
           }, {
-            month: 'October',
+            month: '10',
             days: [{
               date: '18',
               entries: [{
@@ -293,7 +295,7 @@
               }]
             }]
           }, {
-            month: 'November',
+            month: '11',
             days: [{
               date: '2',
               entries: [{
@@ -315,7 +317,7 @@
         }, {
           year: '2016',
           months: [{
-            month: 'June',
+            month: '6',
             days: [{
               date: '9',
               entries: [{
@@ -326,7 +328,7 @@
               }]
             }]
           }, {
-            month: 'July',
+            month: '7',
             days: [{
               date: '14',
               entries: [{
@@ -345,7 +347,7 @@
         }, {
           year: '2015',
           months: [{
-            month: 'June',
+            month: '6',
             days: [{
               date: '9',
               entries: [{
@@ -356,7 +358,7 @@
               }]
             }]
           }, {
-            month: 'July',
+            month: '7',
             days: [{
               date: '14',
               entries: [{
@@ -372,7 +374,7 @@
               }]
             }]
           }, {
-            month: 'September',
+            month: '9',
             days: [{
               date: '9',
               entries: [{
@@ -383,7 +385,7 @@
               }]
             }]
           }, {
-            month: 'December',
+            month: '12',
             days: [{
               date: '14',
               entries: [{
