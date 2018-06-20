@@ -174,23 +174,31 @@
                       style="fill: rgba(255,255,255, .4)!important;"
                       )
 
-            div.col-8.moba-border-top(style="height: 80vh; overflow-y: scroll;")
-              div.q-pa-md.q-caption(
+            div.col-8(style="height: 80vh; overflow-y: scroll;")
+              // div.q-pa-md.q-caption(
                 v-for="(annotation, i) in byReferencetime",
-                :class="{'moba-border-top': i > 0}",
+                //:class="{'moba-border-top': i > 0}",
                 @mouseenter="previewLine.positionY = annotation.referencetime, previewLine.visiibility = true",
                 style="border-right: 1px solid rgba( 255, 255, 255, .1 );"
                 )
-                .row
-                  .col-3.text-grey-8 Reference: {{ annotation.referencetime }}
-                  .col-3.text-grey-8 Created: {{ annotation.created }}
-                  .col-3.text-grey-8 Type: {{ annotation.type }}
-                  .col-3.text-grey-8.text-right Author: {{ annotation.author }}
-                .row.q-mt-sm
-                  // .col-12 Hier steht der Annotationsinhalt. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
-                  .col-12(v-if="annotation.type == 'video'")
+              div.q-pa-md(
+              v-for="(annotation, i) in byReferencetime",
+              @mouseenter="previewLine.positionY = annotation.referencetime, previewLine.visiibility = true"
+              )
+                .row(
+                :class="{'moba-border-top': handlerPrevItem(i) != annotation.author}"
+                )
+                  .col-2.text-grey-8.q-caption
+                    div(v-if="handlerPrevItem(i) != annotation.author")
+                      | {{ annotation.author }}
+                    | {{ annotation.referencetime }}
+                  //
+                    .col-3.text-grey-8 Created: {{ annotation.created }}
+                    .col-3.text-grey-8 Type: {{ annotation.type }}
+                    .col-3.text-grey-8.text-right Author: {{ annotation.author }}
+                  .col-10(v-if="annotation.type == 'video'")
                     iframe(width="100%", height="315", :src="annotation.text", frameborder="0", allow="autoplay; encrypted-media", allowfullscreen)
-                  .col-12(v-else) {{ annotation.text }}
+                  .col-10(v-else) {{ annotation.text }}
 
 </template>
 
@@ -235,6 +243,12 @@
       }
     },
     methods: {
+      handlerPrevItem (valIndex) {
+        if (valIndex > 0) {
+          let newIndex = valIndex - 1
+          return this.byReferencetime[newIndex].author
+        }
+      },
       filterAnnotations (valFrom, valTo) {
         this.filteredAnnotations = this.annotations.filter(annotation => annotation.created > valFrom && annotation.created <= valTo)
         let i = 0
@@ -262,6 +276,16 @@
           else if (i >= 30 && i <= 80) {
             type = 'system'
             text = 'sss'
+          }
+          else if (i >= 10 && i <= 20) {
+            type = 'text'
+            text = 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.   \n' +
+              '\n' +
+              'Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.   \n' +
+              '\n' +
+              'Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.   \n' +
+              '\n' +
+              'Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer'
           }
           else {
             type = 'text'
@@ -326,6 +350,7 @@
     data () {
       const _this = this
       return {
+        prevItem: '',
         map: undefined,
         allAnnotationSessions: [],
         annotations: [],
