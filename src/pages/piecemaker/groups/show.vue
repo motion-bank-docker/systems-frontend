@@ -3,6 +3,10 @@
   // card-full
   full-screen
 
+    q-modal.bg-transparent(v-model="calender.show", position="right")
+      .bg-dark.text-white.q-pa-xl
+        | Calender
+
     q-window-resize-observable(@resize="onResize")
 
     // q-modal(v-model="showModal")
@@ -26,60 +30,139 @@
 
     q-btn(slot="backButton", @click="$router.push({ name: 'piecemaker.groups.list' })", icon="keyboard_backspace", round, small)
 
-    .row.q-mt-md
-
-      // SVG timeline preview
-      //
-      .col-1.fixed(style="left: 50px; top: 80px; height: calc(100vh - 50px - 100px)")
-        svg(
-        width="100%",
-        height="100%"
+    // timeline diagramm
+    // vertical
+    //
+      svg.fixed(
+      width="100px",
+      // :height="viewportHeight - 150",
+      style="top: 80px; right: 30px;"
+      )
+        // path(d="M0 0 C 100 0, 10 200, 0 80", stroke="white", fill="transparent")
+        path(d="M0,0 C10,100 40,10 40,25 S40,40 25,25", stroke="white", fill="transparent")
+        // top line
+        //
+        line(
+        x1="0", x2="100",
+        y1="0", y2="0",
+        style="stroke:rgb(255,255,255,.1);stroke-width:1;"
         )
-            line(
-            x1="0", x2="20",
-            y1="0", y2="0",
-            style="stroke:rgb(255,255,255,.1);stroke-width:1;"
+
+        // years
+        //
+        svg(
+          v-for="(y, iy) in arrTimelineDataDummy",
+          // :height="(viewportHeight - 150) / arrTimelineDataDummy.length",
+          // :y="((viewportHeight - 150) / arrTimelineDataDummy.length) * iy"
+          )
+
+          // years separator
+          //
+          line(
+          x1="2", x2="30",
+          // :y1="(viewportHeight - 150) / 3", :y2="(viewportHeight - 150) / 3",
+          style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;"
+          )
+
+          // months
+          //
+          svg(
+          v-for="(m, im) in y.months",
+          // :y="((viewportHeight - 150) / arrTimelineDataDummy.length / 12) * (m.month - 1)",
+          // :height="(viewportHeight - 150) / arrTimelineDataDummy.length / 12",
+          width="100"
+          )
+            rect(
+            // :width="10 * m.days.length",
+            height="100%",
+            style="fill: rgba(255, 255, 255, .1)!important;"
             )
 
-            // years
-            //
-            line(
-            v-for="(n, i) in 3",
-            x1="2", x2="30",
-            :y1="(viewportHeight - 150) / 3 * n", :y2="(viewportHeight - 150) / 3 * n",
-            style="stroke:rgb(255,255,255,.1);stroke-width:1;"
+        // line left
+        //
+        line(
+        x1="0", x2="0",
+        y1="0", y2="100%",
+        style="stroke:rgb(255,255,255,.1);stroke-width:1;"
+        )
+
+    // timeline diagramm
+    // horizontal
+    //
+    .row
+      svg(
+      width="100%",
+      :height="viewportHeight / 3",
+      style="top: 80px; right: 30px;"
+      )
+        // path(d="M0 0 C 100 0, 10 200, 0 80", stroke="white", fill="transparent")
+        // path(d="M0,0 C10,100 40,10 40,25 S40,40 25,25", stroke="white", fill="transparent")
+        // top line
+        //
+          line(
+          x1="0", x2="100",
+          y1="0", y2="0",
+          style="stroke:rgb(255,255,255,.1);stroke-width:1;"
+          )
+
+        // line bottom
+        //
+        line(
+        x1="0", y1="100%",
+        x2="100%", y2="100%",
+        style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;"
+        )
+
+        // years
+        //
+        // svg(
+          v-for="(y, iy) in arrTimelineDataDummy",
+          // :width="(viewportHeight - 150) / arrTimelineDataDummy.length",
+          // :y="((viewportHeight - 150) / arrTimelineDataDummy.length) * iy"
+          )
+        svg(
+        v-for="(y, iy) in arrTimelineDataDummy",
+        :width="(viewportWidth - 96) / arrTimelineDataDummy.length",
+        :x="((viewportWidth - 96) / arrTimelineDataDummy.length) * iy"
+        )
+
+          // years separator
+          //
+          line(
+          :x1="(viewportWidth - 96) / 3", y1="80%",
+          :x2="(viewportWidth - 96) / 3", y2="100%",
+          style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;"
+          )
+
+          // months
+          //
+          svg(
+          v-for="(m, im) in y.months",
+          :x="((viewportWidth - 96) / arrTimelineDataDummy.length / 12) * (m.month - 1)",
+          :width="(viewportWidth - 96) / arrTimelineDataDummy.length / 12",
+          height="100%"
+          )
+            rect(
+            :height="10 * m.days.length",
+            :y="(viewportHeight / 3) - (10 * m.days.length)",
+            width="100%",
+            style="fill: rgba(255, 255, 255, .1)!important;"
             )
 
-            // months
-            //
-            line(
-            v-for="(n, i) in (3 * 12)",
-            x1="0", x2="2",
-            :y1="(viewportHeight - 150) / 3 / 12 * n", :y2="(viewportHeight - 150) / 3 / 12 * n",
-            style="stroke:rgb(255,255,255,.1);stroke-width:1;"
-            )
-
-            // line left
-            //
-            line(
-            x1="0", x2="0",
-            y1="0", y2="100%",
-            style="stroke:rgb(255,255,255,.1);stroke-width:1;"
-            )
+    .row.q-mt-md
 
       // wrap - recording sessions
       //
-      // .col-11.offset-1
       .col-12
         .q-mb-xl.row(v-for="(y, iy) in arrTimelineDataDummy")
-          h5.text-weight-light.q-mt-none.offset-2
+          h5.text-weight-light.q-mt-none.offset-1
             | {{ y.year }}
             // span.text-grey-8.q-ml-md Recordingsessions
           .col-12(v-for="(m, im) in y.months")
             div(v-for="(d, id) in m.days")
               div.row(v-for="(e, ie) in d.entries")
 
-                .row.q-py-sm.col-8.offset-2.moba-border-top
+                .row.q-py-sm.col-9.offset-1.moba-border-top
                   .col-2.q-pl-sm(:class="[{'text-grey-8': id > 0}, {'text-grey-8': ie > 0}]") {{ m.month }}
                   .col-2(:class="{'text-grey-8': ie > 0}") {{ d.date }}
                   .col-8.row
@@ -115,7 +198,7 @@
                           q-btn.q-mr-sm.cursor-pointer(size="sm", round) ?
                             q-tooltip.q-caption.bg-black This is a recording session, it's part of a timeline.
                           q-btn(@click="activeDiagram = ''", icon='clear', size="sm", no-caps, round)
-                      .col-9.offset-2
+                      .col-9.offset-1
                         SessionDiagram(:data="annotations", :meta="e")
               // .moba-border-top(v-if="ei <= d.entries.length")
 
@@ -214,11 +297,15 @@
       },
       onResize (size) {
         this.viewportHeight = size.height
+        this.viewportWidth = size.width
       }
     },
     data () {
       const _this = this
       return {
+        calender: {
+          show: false
+        },
         showModal: false,
         hallo: 'abc',
         map: undefined,
@@ -319,10 +406,34 @@
           months: [{
             month: '6',
             days: [{
+              date: '2',
+              entries: [{
+                end: '23.00',
+                id: 'dedasca',
+                start: '19.12',
+                title: 'hallo'
+              }]
+            }, {
               date: '9',
               entries: [{
                 end: '23.00',
                 id: '9',
+                start: '19.12',
+                title: 'hallo'
+              }]
+            }, {
+              date: '10',
+              entries: [{
+                end: '23.00',
+                id: '9vvdscasdc',
+                start: '19.12',
+                title: 'hallo'
+              }]
+            }, {
+              date: '15',
+              entries: [{
+                end: '23.00',
+                id: 'lvdsvsdc',
                 start: '19.12',
                 title: 'hallo'
               }]
@@ -389,22 +500,22 @@
             days: [{
               date: '14',
               entries: [{
-                end: '23.00',
+                end: '11.00',
                 id: '16',
                 start: '11:00',
                 title: 'vormittags'
               }, {
-                end: '23.00',
+                end: '12.00',
                 id: '17',
                 start: '18:19',
                 title: 'blablabla'
               }, {
-                end: '23.00',
+                end: '13.00',
                 id: '18',
                 start: '11:00',
                 title: 'vormittags'
               }, {
-                end: '23.00',
+                end: '14.00',
                 id: '19',
                 start: '18:19',
                 title: 'blablabla'
