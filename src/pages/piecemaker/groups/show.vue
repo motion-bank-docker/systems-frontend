@@ -3,7 +3,7 @@
   full-screen
 
     // detect window dimensions
-    // (necessary)
+    // (necessary, do not delete)
     //
     q-window-resize-observable(@resize="onResize")
 
@@ -28,6 +28,7 @@
       )
         // path(d="M0 0 C 100 0, 10 200, 0 80", stroke="white", fill="transparent")
         // path(d="M0,0 C10,100 40,10 40,25 S40,40 25,25", stroke="white", fill="transparent")
+        path(d="M10 80 Q 52.5 10, 95 80 T 180 80, 100 Q 120 10", stroke="white", fill="transparent")
 
         // line bottom
         // (x-axis)
