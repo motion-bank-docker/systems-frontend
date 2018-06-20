@@ -19,7 +19,7 @@
         //
         div.q-mb-lg
 
-          .row.col-12
+          .row.col-12.q-pt-xl
 
             // dev test
               div.bg-blue(style="height: 90%;")
@@ -37,7 +37,7 @@
 
             // Filter
             //
-            .col-12.q-mb-md.row
+            .hidden.col-12.q-mb-md.row
 
               .col-12.row.q-mb-sm
                 .col-12.q-mt-md
@@ -94,20 +94,16 @@
                   // Linie links
                   //
                   line(
-                  x1="0",
-                  y1="0",
-                  x2="0",
-                  :y2="viewportHeight / 100 * 80",
+                  x1="0", y1="0",
+                  x2="0", :y2="viewportHeight / 100 * 80",
                   style="stroke: rgba(255,255,255,.1); stroke-width: 1;"
                   )
 
                   // Trennlinie zwischen gesamt / annotation sessions
                   //
                   line(
-                  x1="100%",
-                  y1="0",
-                  x2="100%",
-                  y2="100%",
+                  x1="100%", y1="0",
+                  x2="100%", y2="100%",
                   style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;"
                   )
 
@@ -148,7 +144,7 @@
 
                 // annotations
                 // FILTERED
-                // Nicht löschen!
+                // Erstmal nicht löschen!
                 //
                   svg(
                   v-for="(n, i) in arrFilter",
@@ -178,19 +174,28 @@
                       style="fill: rgba(255,255,255, .4)!important;"
                       )
 
-            q-list.col-8.no-border(style="height: 80vh; overflow-y: scroll;")
-              q-item.q-caption(
+            div.col-8.moba-border-top(style="height: 80vh; overflow-y: scroll;")
+              div.q-pa-md.q-caption(
                 v-for="(annotation, i) in byReferencetime",
                 :class="{'moba-border-top': i > 0}",
+                @mouseenter="previewLine.positionY = annotation.referencetime, previewLine.visiibility = true",
+                style="border-right: 1px solid rgba( 255, 255, 255, .1 );"
                 )
-                div(
-                @mouseenter="previewLine.positionY = annotation.referencetime, previewLine.visiibility = true"
-                ) Referencetime: {{ annotation.referencetime }}
+                .row
+                  .col-3.text-grey-8 Reference: {{ annotation.referencetime }}
+                  .col-3.text-grey-8 Created: {{ annotation.created }}
+                  .col-3.text-grey-8 Type: {{ annotation.type }}
+                  .col-3.text-grey-8.text-right Author: {{ annotation.author }}
+                .row.q-mt-sm
+                  // .col-12 Hier steht der Annotationsinhalt. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
+                  .col-12(v-if="annotation.type == 'video'")
+                    iframe(width="100%", height="315", :src="annotation.text", frameborder="0", allow="autoplay; encrypted-media", allowfullscreen)
+                  .col-12(v-else) {{ annotation.text }}
 
 </template>
 
 <script>
-  import { QWindowResizeObservable, QList, QItem, QItemMain, QItemSide, QTooltip, QCard } from 'quasar'
+  import { QWindowResizeObservable, QList, QItem, QItemMain, QItemSide, QItemTile, QTooltip, QCard } from 'quasar'
 
   export default {
     components: {
@@ -199,6 +204,7 @@
       QItem,
       QItemMain,
       QItemSide,
+      QItemTile,
       QTooltip,
       QCard
     },
@@ -238,7 +244,10 @@
       },
       appendRandomAnnotations () { // dev only
         let i = 0
+        let author = ''
         let dur = ''
+        let text = 'Hier steht ein Text.'
+        let type = ''
         for (i = 0; i < this.numberRandomAnnotations; i++) {
           if (i >= 0 && i <= 10) {
             dur = 40
@@ -246,7 +255,31 @@
           else {
             dur = 1
           }
-          this.annotations.push({referencetime: Math.floor(Math.random() * this.svgHeight), duration: dur, created: i, text: 'Hier steht der Text. (' + i + ')'})
+          if (i >= 1 && i <= 5) {
+            type = 'video'
+            text = 'https://www.youtube.com/embed/lDJFMvU2ZqY'
+          }
+          else if (i >= 30 && i <= 80) {
+            type = 'system'
+            text = 'sss'
+          }
+          else {
+            type = 'text'
+            text = 'aaaaaa'
+          }
+          if (i >= 1 && i <= 20) {
+            author = 'A. Z.'
+          }
+          else if (i >= 30 && i <= 80) {
+            author = 'system'
+          }
+          else if (i >= 100 && i <= 130) {
+            author = 'B. Y.'
+          }
+          else {
+            author = 'C. X.'
+          }
+          this.annotations.push({referencetime: Math.floor(Math.random() * this.svgHeight), duration: dur, created: i, text: text, type: type, author: author})
         }
       },
       getAnnotationSessionWidth () {
@@ -271,22 +304,8 @@
         this.svgWidth = (30 + 10) * arrVideos.length + 20
       },
       sortAnnotations (arr) {
-        // console.log(arr)
-        /* arr.sort(function (a, b) {
-          let keyA = a.referencetime
-          let keyB = b.referencetime
-          // Compare the 2 dates
-          if (keyA < keyB) return -1
-          if (keyA > keyB) return 1
-          return 0
-        }) */
-        /* let byReferencetime = arr.slice(0)
-        byReferencetime.sort(function (a, b) {
-          return a.byReferencetime - b.byReferencetime
-        }) */
         arr.sort(function (a, b) { return a.referencetime - b.referencetime })
         this.byReferencetime = arr
-        console.log('aaaa ' + this.byReferencetime)
       },
       setPrevCreated (val, valPrev) {
         console.log(valPrev)
@@ -435,7 +454,7 @@
 <style>
 
   .moba-border-top {
-  border-top: 1px solid rgba( 255, 255, 255, .1 );
+  border-top: 1px solid rgba( 255, 255, 255, .05 );
   }
 
   .moba-swimlane {
