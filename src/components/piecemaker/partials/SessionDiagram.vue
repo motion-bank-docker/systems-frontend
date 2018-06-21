@@ -93,25 +93,23 @@
 
                   // Linie links
                   //
-                  line(
-                  x1="0", y1="0",
-                  x2="0", :y2="viewportHeight / 100 * 80",
-                  style="stroke: rgba(255,255,255,.1); stroke-width: 1;"
-                  )
+                    line(
+                    x1="0", y1="0",
+                    x2="0", :y2="viewportHeight / 100 * 80",
+                    style="stroke: rgba(255,255,255,.1); stroke-width: 1;"
+                    )
 
-                  // Trennlinie zwischen gesamt / annotation sessions
+                  // Linie rechts
                   //
-                  line(
-                  x1="100%", y1="0",
-                  x2="100%", y2="100%",
-                  style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;"
-                  )
+                    line(
+                    x1="100%", y1="0",
+                    x2="100%", y2="100%",
+                    style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;"
+                    )
 
                   // vertical lines – VIDEOS
                   //
-                  svg(
-                  x="15"
-                  )
+                  svg(x="15")
                     rect.moba-swimlane(
                     v-for="(video, i) in videos",
                     width="30",
@@ -127,10 +125,10 @@
                     v-for="annotation in filteredAnnotations",
                     @mouseenter="previewDot.visibility = true, previewDot.referencetime = annotation.referencetime, previewDot.positionY = annotation.referencetime",
                     @mouseleave="previewDot.visibility = false",
-                    width="100%",
                     height="1",
-                    :y="annotation.referencetime * ((viewportHeight / 100 * 80) / svgHeight)"
-                    style="fill: rgba(255,255,255, .4)!important;"
+                    :y="annotation.referencetime * ((viewportHeight / 100 * 80) / svgHeight)",
+                    :style="{fill: 'rgba(255,255,255, .4)', width: '90%'}",
+                    :class="{'full-width': annotation.type === 'separator', 'moba-separator': annotation.type === 'separator'}"
                     )
 
                     // previewLine
@@ -180,18 +178,18 @@
 
               div.q-pl-sm(
               v-for="(annotation, i) in byReferencetime",
-              @mouseenter="previewLine.positionY = annotation.referencetime, previewLine.visiibility = true"
+              @mouseenter="previewLine.positionY = annotation.referencetime, previewLine.visiibility = true",
+              :class="{'q-my-xl': annotation.type === 'separator'}"
               )
                 // .row(:class="{'q-mb-lg, moba-border-top': handlerPrevItem(i, 'author') != annotation.author}")
                 .row.q-pb-sm
                   // .col-10.offset-2.text-grey-8(v-if="handlerPrevItem(i, 'author') != annotation.author") {{ annotation.author }}
 
                   .col-2.text-grey-8.text-right.q-pr-lg.text-bold
-                    // div(v-if="handlerPrevItem(i, 'referencetime') != annotation.referencetime && handlerPrevItem(i, 'author') == annotation.author") {{ annotation.referencetime }}
-                    div(v-if="handlerPrevItem(i, 'referencetime') != annotation.referencetime") {{ annotation.referencetime }}
+                    // div(v-if="handlerPrevItem(i, 'referencetime') != annotation.referencetime") {{ annotation.referencetime }}
 
                   .col-10
-                    .text-grey-8(v-if="handlerPrevItem(i, 'author') != annotation.author") {{ annotation.author }}
+                    .text-grey-9(v-if="handlerPrevItem(i, 'author') != annotation.author && annotation.type != 'separator'") {{ annotation.author }}
                     iframe(v-if="annotation.type == 'video'", width="100%", height="315", :src="annotation.text", frameborder="0", allow="autoplay; encrypted-media", allowfullscreen)
                     span(v-else-if="annotation.type == 'system'") [{{ annotation.text }}]
                     span.text-deep-purple-4(v-else-if="annotation.type == 'tag'") {{ annotation.text }}
@@ -295,6 +293,10 @@
               '\n' +
               'Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer'
           }
+          else if (i === 81 || i === 121) {
+            type = 'separator'
+            text = '––––– SEPARATOR –––––'
+          }
           else {
             type = 'text'
             text = 'Consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo du.'
@@ -303,7 +305,7 @@
             author = 'A. Z.'
           }
           else if (i >= 30 && i <= 80) {
-            author = 'system'
+            author = 'System'
           }
           else if (i >= 100 && i <= 130) {
             author = 'B. Y.'
@@ -487,7 +489,11 @@
 <style>
 
   .moba-border-top {
-  border-top: 1px solid rgba( 255, 255, 255, .05 );
+    border-top: 1px solid rgba( 255, 255, 255, .05 );
+  }
+
+  .moba-separator {
+    fill: rgba( 255, 255, 255, 1 )!important;
   }
 
   .moba-swimlane {
