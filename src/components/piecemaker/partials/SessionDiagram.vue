@@ -15,7 +15,7 @@
       //
       div
 
-        // diagramm wrap
+        // annotations: diagram
         //
         div.q-mb-lg
 
@@ -174,31 +174,30 @@
                       style="fill: rgba(255,255,255, .4)!important;"
                       )
 
+            // annotations: text
+            //
             div.col-8(style="height: 80vh; overflow-y: scroll;")
-              // div.q-pa-md.q-caption(
-                v-for="(annotation, i) in byReferencetime",
-                //:class="{'moba-border-top': i > 0}",
-                @mouseenter="previewLine.positionY = annotation.referencetime, previewLine.visiibility = true",
-                style="border-right: 1px solid rgba( 255, 255, 255, .1 );"
-                )
-              div.q-pa-md(
+
+              div.q-pl-sm(
               v-for="(annotation, i) in byReferencetime",
               @mouseenter="previewLine.positionY = annotation.referencetime, previewLine.visiibility = true"
               )
-                .row(
-                :class="{'moba-border-top': handlerPrevItem(i) != annotation.author}"
-                )
-                  .col-2.text-grey-8.q-caption
-                    div(v-if="handlerPrevItem(i) != annotation.author")
-                      | {{ annotation.author }}
-                    | {{ annotation.referencetime }}
-                  //
-                    .col-3.text-grey-8 Created: {{ annotation.created }}
-                    .col-3.text-grey-8 Type: {{ annotation.type }}
-                    .col-3.text-grey-8.text-right Author: {{ annotation.author }}
-                  .col-10(v-if="annotation.type == 'video'")
-                    iframe(width="100%", height="315", :src="annotation.text", frameborder="0", allow="autoplay; encrypted-media", allowfullscreen)
-                  .col-10(v-else) {{ annotation.text }}
+                // .row(:class="{'q-mb-lg, moba-border-top': handlerPrevItem(i, 'author') != annotation.author}")
+                .row.q-pb-sm
+                  // .col-10.offset-2.text-grey-8(v-if="handlerPrevItem(i, 'author') != annotation.author") {{ annotation.author }}
+
+                  .col-2.text-grey-8.text-right.q-pr-lg.text-bold
+                    // div(v-if="handlerPrevItem(i, 'referencetime') != annotation.referencetime && handlerPrevItem(i, 'author') == annotation.author") {{ annotation.referencetime }}
+                    div(v-if="handlerPrevItem(i, 'referencetime') != annotation.referencetime") {{ annotation.referencetime }}
+
+                  .col-10
+                    .text-grey-8(v-if="handlerPrevItem(i, 'author') != annotation.author") {{ annotation.author }}
+                    iframe(v-if="annotation.type == 'video'", width="100%", height="315", :src="annotation.text", frameborder="0", allow="autoplay; encrypted-media", allowfullscreen)
+                    span(v-else-if="annotation.type == 'system'") [{{ annotation.text }}]
+                    span.text-deep-purple-4(v-else-if="annotation.type == 'tag'") {{ annotation.text }}
+                    span(v-else) {{ annotation.text }}
+                    // span
+                      q-btn(size="xs") show
 
 </template>
 
@@ -243,10 +242,15 @@
       }
     },
     methods: {
-      handlerPrevItem (valIndex) {
+      handlerPrevItem (valIndex, valProp) {
         if (valIndex > 0) {
           let newIndex = valIndex - 1
-          return this.byReferencetime[newIndex].author
+          if (valProp === 'author') {
+            return this.byReferencetime[newIndex].author
+          }
+          else if (valProp === 'referencetime') {
+            return this.byReferencetime[newIndex].referencetime
+          }
         }
       },
       filterAnnotations (valFrom, valTo) {
@@ -275,7 +279,11 @@
           }
           else if (i >= 30 && i <= 80) {
             type = 'system'
-            text = 'sss'
+            text = 'Log entry'
+          }
+          else if (i >= 85 && i <= 120) {
+            type = 'tag'
+            text = '#tag1'
           }
           else if (i >= 10 && i <= 20) {
             type = 'text'
@@ -289,7 +297,7 @@
           }
           else {
             type = 'text'
-            text = 'aaaaaa'
+            text = 'Consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo du.'
           }
           if (i >= 1 && i <= 20) {
             author = 'A. Z.'
