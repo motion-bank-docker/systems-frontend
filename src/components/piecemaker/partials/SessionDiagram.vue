@@ -4,198 +4,174 @@
 
       q-window-resize-observable(@resize="onResize")
 
-      // info window – dev only
+      // annotations: diagram
       //
-        .fixed(
-        v-model="previewLine",
-        style="top: 50px; left: 30px;"
-        ) bla {{ previewLine.positionY }} {{ previewDot.referencetime }}
+      div.q-mb-lg
 
-      // sessions – wrap
-      //
-      div
+        .row.col-12.q-pt-xl
 
-        // annotations: diagram
-        //
-        div.q-mb-lg
+          // Filter
+          //
+          .hidden.col-12.q-mb-md.row
 
-          .row.col-12.q-pt-xl
+            .col-12.row.q-mb-sm
+              .col-12.q-mt-md
+                //
+                  div [Platzhalter Filter] (unter Diagramm?)
+                  div bspw. Zeitraum festlegen, Annotations von User xxx
+                // select – FILTERED
+                //
+                div.text-grey-6.q-pb-xs.q-caption.float-left.q-pr-lg(
+                v-for="(n, i) in arrFilter",
+                @mouseenter="filterAnnotations(arrFilter[i].rangebegin, arrFilter[i].rangeend)",
+                @mouseleave="filterAnnotations(0, 200)"
+                )
+                  q-checkbox(
+                  v-model="selectedAnnotationSessions",
+                  :val="n",
+                  checked-icon="check",
+                  unchecked-icon="check",
+                  color="white"
+                  )
+                    span.q-ml-sm {{ arrFilter[i].rangebegin }} – {{ arrFilter[i].rangeend }}
+                    // q-btn go
 
-            // dev test
-              div.bg-blue(style="height: 90%;")
-                svg.bg-red(
-                // :width="100",
-                height="50%"
+            // .col-12.row.q-pt-xs.moba-border-top
+              .col-6(v-model="hoverVal")
+                | Annotation Session von {{ hoverVal }}
+              .col-2.text-right
+                q-btn(@click="annotationSessionWidth = annotationSessionWidth - 10", size="sm")
+                  q-icon.rotate-90(name="unfold_less")
+                q-btn.q-ml-sm(@click="annotationSessionWidth = annotationSessionWidth + 10", size="sm")
+                  q-icon.rotate-90(name="unfold_more")
+              .col-4.text-right
+                q-btn(size="sm") hide
+
+          // svg wrap
+          //
+          .col-4(style="height: 80vh; overflow-x: scroll; overflow-y: hidden;")
+
+            svg(
+            v-model="svgHeight",
+            width="100%",
+            :height="viewportHeight / 100 * 80"
+            )
+
+              // swimlanes – wrap
+              //
+              svg
+
+                // Linie links
+                //
+                  line(
+                  x1="0", y1="0",
+                  x2="0", :y2="viewportHeight / 100 * 80",
+                  style="stroke: rgba(255,255,255,.1); stroke-width: 1;"
+                  )
+
+                // Linie rechts
+                //
+                  line(
+                  x1="100%", y1="0",
+                  x2="100%", y2="100%",
+                  style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;"
+                  )
+
+                // vertical lines – VIDEOS
+                //
+                svg(x="15")
+                  rect.moba-swimlane(
+                  v-for="(video, i) in videos",
+                  width="30",
+                  :height="video.duration * ((viewportHeight / 100 * 80) / svgHeight)",
+                  :x="(30 + 10) * i",
+                  :y="video.referencetime * ((viewportHeight / 100 * 80) / svgHeight)"
+                  )
+
+                // horizontal lines - ANNOTATIONS (all)
+                //
+                g
+                  rect.moba-svg-entry(
+                  v-for="annotation in filteredAnnotations",
+                  @mouseenter="previewDot.visibility = true, previewDot.referencetime = annotation.referencetime, previewDot.positionY = annotation.referencetime",
+                  @mouseleave="previewDot.visibility = false",
+                  @click="jumpToAnchor(annotation.id)",
+                  height="1",
+                  x="60%",
+                  :y="annotation.referencetime * ((viewportHeight / 100 * 80) / svgHeight)",
+                  :style="{fill: 'rgba(255,255,255, .4)', width: '30%'}",
+                  :class="{'full-width': annotation.type === 'separator', 'moba-separator': annotation.type === 'separator'}"
+                  )
+
+                // previewLine
+                //
+                rect(
+                width="100%",
+                height="1",
+                :y="previewLine.positionY * ((viewportHeight / 100 * 80) / svgHeight)"
+                style="fill: rgba(255, 255, 255, 1)!important;"
+                )
+
+              // annotations
+              // FILTERED
+              // Erstmal nicht löschen!
+              //
+                svg(
+                v-for="(n, i) in arrFilter",
+                // :x="180 + (annotationSessionWidth * i)"
                 )
                   rect(
-                  width="30",
-                  height="100",
-                  x="0",
-                  y="0",
-                  style="fill: rgba(255,255,255, .4)!important;"
+                  @mouseenter="hoverVal = n.rangebegin + ' - ' + n.rangeend",
+                  // :width="annotationSessionWidth",
+                  height="100%",
+                  fill="rgba(0, 0, 0, 0)"
                   )
-
-            // Filter
-            //
-            .hidden.col-12.q-mb-md.row
-
-              .col-12.row.q-mb-sm
-                .col-12.q-mt-md
-                  //
-                    div [Platzhalter Filter] (unter Diagramm?)
-                    div bspw. Zeitraum festlegen, Annotations von User xxx
-                  // select – FILTERED
-                  //
-                  div.text-grey-6.q-pb-xs.q-caption.float-left.q-pr-lg(
-                  v-for="(n, i) in arrFilter",
-                  @mouseenter="filterAnnotations(arrFilter[i].rangebegin, arrFilter[i].rangeend)",
-                  @mouseleave="filterAnnotations(0, 200)"
+                  line(
+                  // :x1="annotationSessionWidth",
+                  y1="0",
+                  // :x2="annotationSessionWidth",
+                  y2="100%",
+                  style="stroke: rgba(255,255,255,.1); stroke-width: 1;"
                   )
-                    q-checkbox(
-                    v-model="selectedAnnotationSessions",
-                    :val="n",
-                    checked-icon="check",
-                    unchecked-icon="check",
-                    color="white"
-                    )
-                      span.q-ml-sm {{ arrFilter[i].rangebegin }} – {{ arrFilter[i].rangeend }}
-                      // q-btn go
-
-              // .col-12.row.q-pt-xs.moba-border-top
-                .col-6(v-model="hoverVal")
-                  | Annotation Session von {{ hoverVal }}
-                .col-2.text-right
-                  q-btn(@click="annotationSessionWidth = annotationSessionWidth - 10", size="sm")
-                    q-icon.rotate-90(name="unfold_less")
-                  q-btn.q-ml-sm(@click="annotationSessionWidth = annotationSessionWidth + 10", size="sm")
-                    q-icon.rotate-90(name="unfold_more")
-                .col-4.text-right
-                  q-btn(size="sm") hide
-
-            // svg wrap
-            //
-            .col-4(style="height: 80vh; overflow-x: scroll; overflow-y: hidden;")
-
-              // svg(
-                v-model="svgHeight",
-                // :width="computedSvgWidth",
-                // :height="viewportHeight / 100 * 80"
-                )
-              svg(
-              v-model="svgHeight",
-              width="100%",
-              :height="viewportHeight / 100 * 80"
-              )
-
-                // swimlanes – wrap
-                //
-                svg
-
-                  // Linie links
-                  //
-                    line(
-                    x1="0", y1="0",
-                    x2="0", :y2="viewportHeight / 100 * 80",
-                    style="stroke: rgba(255,255,255,.1); stroke-width: 1;"
-                    )
-
-                  // Linie rechts
-                  //
-                    line(
-                    x1="100%", y1="0",
-                    x2="100%", y2="100%",
-                    style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;"
-                    )
-
-                  // vertical lines – VIDEOS
-                  //
-                  svg(x="15")
-                    rect.moba-swimlane(
-                    v-for="(video, i) in videos",
-                    width="30",
-                    :height="video.duration * ((viewportHeight / 100 * 80) / svgHeight)",
-                    :x="(30 + 10) * i",
-                    :y="video.referencetime * ((viewportHeight / 100 * 80) / svgHeight)"
-                    )
-
-                  // annotations - ALL
-                  //
                   g
                     rect.moba-svg-entry(
-                    v-for="annotation in filteredAnnotations",
+                    v-for="annotation in annotationsBlocks[i]",
                     @mouseenter="previewDot.visibility = true, previewDot.referencetime = annotation.referencetime, previewDot.positionY = annotation.referencetime",
                     @mouseleave="previewDot.visibility = false",
-                    height="1",
-                    :y="annotation.referencetime * ((viewportHeight / 100 * 80) / svgHeight)",
-                    :style="{fill: 'rgba(255,255,255, .4)', width: '90%'}",
-                    :class="{'full-width': annotation.type === 'separator', 'moba-separator': annotation.type === 'separator'}"
-                    )
-
-                    // previewLine
-                    //
-                    rect(
-                    width="100%",
-                    height="1",
-                    :y="previewLine.positionY * ((viewportHeight / 100 * 80) / svgHeight)"
-                    style="fill: rgba(255, 255, 255, 1)!important;"
-                    )
-
-                // annotations
-                // FILTERED
-                // Erstmal nicht löschen!
-                //
-                  svg(
-                  v-for="(n, i) in arrFilter",
-                  // :x="180 + (annotationSessionWidth * i)"
-                  )
-                    rect(
-                    @mouseenter="hoverVal = n.rangebegin + ' - ' + n.rangeend",
                     // :width="annotationSessionWidth",
-                    height="100%",
-                    fill="rgba(0, 0, 0, 0)"
+                    // :height="annotation.duration * ((viewportHeight / 100 * 80) / svgHeight) + 0.5",
+                    // :y="annotation.referencetime * ((viewportHeight / 100 * 80) / svgHeight)"
+                    style="fill: rgba(255,255,255, .4)!important;"
                     )
-                    line(
-                    // :x1="annotationSessionWidth",
-                    y1="0",
-                    // :x2="annotationSessionWidth",
-                    y2="100%",
-                    style="stroke: rgba(255,255,255,.1); stroke-width: 1;"
-                    )
-                    g
-                      rect.moba-svg-entry(
-                      v-for="annotation in annotationsBlocks[i]",
-                      @mouseenter="previewDot.visibility = true, previewDot.referencetime = annotation.referencetime, previewDot.positionY = annotation.referencetime",
-                      @mouseleave="previewDot.visibility = false",
-                      // :width="annotationSessionWidth",
-                      // :height="annotation.duration * ((viewportHeight / 100 * 80) / svgHeight) + 0.5",
-                      // :y="annotation.referencetime * ((viewportHeight / 100 * 80) / svgHeight)"
-                      style="fill: rgba(255,255,255, .4)!important;"
-                      )
 
-            // annotations: text
-            //
-            div.col-8(style="height: 80vh; overflow-y: scroll;")
+          // annotations: text
+          //
+          div.col-8(style="height: 80vh; overflow-y: scroll;")
 
-              div.q-pl-sm(
-              v-for="(annotation, i) in byReferencetime",
-              @mouseenter="previewLine.positionY = annotation.referencetime, previewLine.visiibility = true",
-              :class="{'q-my-xl': annotation.type === 'separator'}"
-              )
-                // .row(:class="{'q-mb-lg, moba-border-top': handlerPrevItem(i, 'author') != annotation.author}")
-                .row.q-pb-sm
-                  // .col-10.offset-2.text-grey-8(v-if="handlerPrevItem(i, 'author') != annotation.author") {{ annotation.author }}
+            div.q-pl-sm(
+            v-for="(annotation, i) in byReferencetime",
+            @mouseenter="previewLine.positionY = annotation.referencetime, previewLine.visiibility = true",
+            :class="{'q-my-xl': annotation.type === 'separator'}",
+            :id="annotation.id"
+            )
+              // .row(:class="{'q-mb-lg, moba-border-top': handlerPrevItem(i, 'author') != annotation.author}")
+              .row.q-py-xs.moba-list-entry
+                // .col-10.offset-2.text-grey-8(v-if="handlerPrevItem(i, 'author') != annotation.author") {{ annotation.author }}
 
-                  .col-2.text-grey-8.text-right.q-pr-lg.text-bold
-                    // div(v-if="handlerPrevItem(i, 'referencetime') != annotation.referencetime") {{ annotation.referencetime }}
+                // .col-2.text-grey-8.text-right.q-pr-lg.text-bold
+                .col-1.text-grey-8.text-right.q-pr-md
+                  // div(v-if="handlerPrevItem(i, 'referencetime') != annotation.referencetime") {{ annotation.referencetime }}
+                  div(v-if="annotation.type == 'separator'") ###
 
-                  .col-10
-                    .text-grey-9(v-if="handlerPrevItem(i, 'author') != annotation.author && annotation.type != 'separator'") {{ annotation.author }}
+                .col-11.row
+                  .col-12.text-grey-9(v-if="handlerPrevItem(i, 'author') != annotation.author && annotation.type != 'separator'") {{ annotation.author }}
+                  .col-11
                     iframe(v-if="annotation.type == 'video'", width="100%", height="315", :src="annotation.text", frameborder="0", allow="autoplay; encrypted-media", allowfullscreen)
                     span(v-else-if="annotation.type == 'system'") [{{ annotation.text }}]
                     span.text-deep-purple-4(v-else-if="annotation.type == 'tag'") {{ annotation.text }}
                     span(v-else) {{ annotation.text }}
-                    // span
-                      q-btn(size="xs") show
+                  .col-1.text-right.moba-list-hidden
+                    q-btn(v-if="annotation.type != 'system'", size="xs", icon="edit", round, flat)
 
 </template>
 
@@ -240,6 +216,15 @@
       }
     },
     methods: {
+      jumpToAnchor (target) {
+        /* let url = location.href
+        location.href = '#' + target
+        history.replaceState(null, null, url) */
+        console.log(target)
+        var element = this.$refs[target]
+        var top = element.offsetTop
+        window.scrollTo(0, top)
+      },
       handlerPrevItem (valIndex, valProp) {
         if (valIndex > 0) {
           let newIndex = valIndex - 1
@@ -295,7 +280,7 @@
           }
           else if (i === 81 || i === 121) {
             type = 'separator'
-            text = '––––– SEPARATOR –––––'
+            text = 'New Section: Lorem ipsum'
           }
           else {
             type = 'text'
@@ -313,7 +298,7 @@
           else {
             author = 'C. X.'
           }
-          this.annotations.push({referencetime: Math.floor(Math.random() * this.svgHeight), duration: dur, created: i, text: text, type: type, author: author})
+          this.annotations.push({id: i, referencetime: Math.floor(Math.random() * this.svgHeight), duration: dur, created: i, text: text, type: type, author: author})
         }
       },
       getAnnotationSessionWidth () {
@@ -492,6 +477,20 @@
     border-top: 1px solid rgba( 255, 255, 255, .05 );
   }
 
+  .moba-list-entry:hover {
+    transition: background-color ease 250ms;
+    /* background-color: rgba(255, 255, 255, .05); */
+  }
+
+  .moba-list-entry .moba-list-hidden {
+    transition: opacity ease 250ms;
+    opacity: 0;
+  }
+
+    .moba-list-entry:hover .moba-list-hidden {
+      opacity: 1;
+    }
+
   .moba-separator {
     fill: rgba( 255, 255, 255, 1 )!important;
   }
@@ -510,7 +509,7 @@
   }
 
   .moba-svg-entry:hover {
-    fill: red!important;
+    fill: rgba(255, 255, 255, 1)!important;
     opacity: 1;
   }
 </style>
