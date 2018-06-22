@@ -2,82 +2,132 @@
 
   full-screen
 
+    // filter
+    //
+    q-layout-drawer(v-model="openFilter", side="right")
+      .bg-dark.full-height.q-pa-md.q-caption
+        .row.q-mb-md
+          .col-10
+            q-radio.q-mb-md(v-model="radioFilter", val="allsessions", label="Apply on all sessions in this timeline.")
+            q-radio.q-mb-md(v-model="radioFilter", val="thissession", label="Apply on selected session only.")
+            q-radio(v-model="radioFilter", val="none", label="Do not apply.")
+          .col-2.text-right
+            q-btn.rotate-180(@click="openFilter = false", icon="keyboard_backspace", size="sm", round, flat)
+
+        .q-py-sm.moba-border-top
+          p select authors:
+          q-list.no-border
+            q-item.no-padding(v-for="author in authors")
+              q-checkbox.q-caption(v-model="filterAuthors", :val="author", :label="author")
+        .q-py-sm.moba-border-top
+          p select date of creation:
+        .q-py-sm.moba-border-top
+          p select types:
+          q-list.no-border
+            q-item.no-padding(v-for="type in annotationTypes")
+              q-checkbox.q-caption(v-model="filterTypes", :val="type", :label="type")
+
     // detect window dimensions
     // (necessary, do not delete)
     //
     q-window-resize-observable(@resize="onResize")
 
-    .row
-      .col-8(slot="form-title")
-        | {{ $t('routes.piecemaker.groups.show.title') }}
-      .col-4.text-right
-        q-btn(
-        @click="$router.push({ name: 'piecemaker.groups.annotate' })",
-        ) Live Annotate
+    .row.q-mb-lg
+      .col-12.text-center(slot="form-title")
+        div {{ $t('routes.piecemaker.groups.show.title') }}: Titel der Timeline
     span(slot="form-logo")
 
     q-btn(slot="backButton", @click="$router.push({ name: 'piecemaker.groups.list' })", icon="keyboard_backspace", round, small)
 
+    q-btn.fixed(@click="openFilter = true", :class="{ 'bg-red': radioFilter == 'allsessions' || radioFilter == 'thissession' }", style="top: 66px; right: 16px;") filter
+
     // timeline diagramm
     //
     .row
-      svg(
-      width="100%",
-      :height="viewportHeight / 3",
-      style="top: 80px; right: 30px;"
-      )
-        // path(d="M0 0 C 100 0, 10 200, 0 80", stroke="white", fill="transparent")
-        // path(d="M0,0 C10,100 40,10 40,25 S40,40 25,25", stroke="white", fill="transparent")
-        path(d="M10 80 Q 52.5 10, 95 80 T 180 80, 100 Q 120 10", stroke="white", fill="transparent")
-
-        // line bottom
-        // (x-axis)
-        //
-        line(
-        x1="0", y1="100%",
-        x2="100%", y2="100%",
-        style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;"
-        )
-
-        // years
-        //
+      div(style="width: calc(100% + (96px * 2)); overflow-x: scroll;")
         svg(
-        v-for="(y, iy) in arrTimelineDataDummy",
-        :width="(viewportWidth - 96) / arrTimelineDataDummy.length",
-        :x="((viewportWidth - 96) / arrTimelineDataDummy.length) * iy"
+        width="150%",
+        :height="viewportHeight / 3",
+        style="top: 80px; right: 30px;"
         )
+          // path(d="M0 0 C 100 0, 10 200, 0 80", stroke="white", fill="transparent")
+          // path(d="M0,0 C10,100 40,10 40,25 S40,40 25,25", stroke="white", fill="transparent")
+          // path(d="M10 80 Q 52.5 10, 95 80 T 180 80, 100 Q 120 10", stroke="white", fill="transparent")
 
-          // years:
-          // separators
+          // line bottom
+          // (x-axis)
           //
           line(
-          :x1="(viewportWidth - 96) / 3", y1="80%",
-          :x2="(viewportWidth - 96) / 3", y2="100%",
+          x1="0", y1="100%",
+          x2="100%", y2="100%",
           style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;"
           )
 
-          // months
+          // years
           //
           svg(
-          v-for="(m, im) in y.months",
-          :x="((viewportWidth - 96) / arrTimelineDataDummy.length / 12) * (m.month - 1)",
-          :width="(viewportWidth - 96) / arrTimelineDataDummy.length / 12",
-          height="100%"
+          v-for="(y, iy) in arrTimelineDataDummy",
+          :width="(viewportWidth - 96) / arrTimelineDataDummy.length",
+          :x="((viewportWidth - 96) / arrTimelineDataDummy.length) * iy"
           )
-            rect(
-            :height="10 * m.days.length",
-            :y="(viewportHeight / 3) - (10 * m.days.length)",
-            width="100%",
-            style="fill: rgba(255, 255, 255, .1)!important;"
+
+            // years:
+            // separator lines
+            //
+            line(
+            :x1="(viewportWidth - 96) / arrTimelineDataDummy.length", y1="0%",
+            :x2="(viewportWidth - 96) / arrTimelineDataDummy.length", y2="100%",
+            style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;"
             )
+
+            // months
+            //
+            svg(
+            v-for="(m, im) in y.months",
+            :x="((viewportWidth - 96) / arrTimelineDataDummy.length / 12) * (m.month - 1)",
+            :width="(viewportWidth - 96) / arrTimelineDataDummy.length / 12",
+            height="100%"
+            )
+
+              // single session
+              //
+              rect.cursor-pointer(
+              v-for="(d, id) in m.days",
+              :height="1000",
+              :x="id * 6",
+              :y="(viewportHeight / 3) - randomNumber(10, 100)",
+              width="2px",
+              style="fill: rgba(255, 255, 255, .1)!important;",
+              @click="showSession = true"
+              )
+
+              // dev: bottom line month to show month width
+              //
+              line(
+              x1="0", y1="100%",
+              x2="90%", y2="100%",
+              style="stroke: rgba(255, 255, 255, 1)!important; stroke-width: 1;"
+              )
 
     // wrap - recording sessions
     //
-    .row.q-mt-xl
-      .col-10.offset-1
-        div Recording Session
+    .row.q-mt-xl(v-if="showSession")
+      .col-8.offset-1
+        div
+          q-btn(icon="keyboard_arrow_left")
+          span.q-mx-sm Recording Session
+          q-btn(icon="keyboard_arrow_right")
+      .col-2.text-right
+        q-btn(@click="showSession = false", icon="clear")
       .col-10.offset-1
         SessionDiagram(:data="annotations", :meta="e")
+    .row.q-my-xl(v-else)
+      .col-12
+        .text-center Dashboard
+      .col-12.q-my-xl.text-center
+        q-btn.q-px-xl.q-py-lg(
+        @click="$router.push({ name: 'piecemaker.groups.annotate' })",
+        ) Live Annotate
 
 </template>
 
@@ -85,7 +135,7 @@
   // import CardFull from '../../../components/shared/layouts/CardFull'
   import FullScreen from '../../../components/shared/layouts/FullScreen'
   import SessionDiagram from '../../../components/piecemaker/partials/SessionDiagram'
-  import { QWindowResizeObservable, QList, QItem, QItemMain, QItemSide, QItemTile, QModal, QTooltip, QPopover, QModalLayout } from 'quasar'
+  import { QWindowResizeObservable, QList, QItem, QItemMain, QItemSide, QItemTile, QModal, QTooltip, QPopover, QModalLayout, QLayoutDrawer, QPageSticky, QRadio, QCheckbox } from 'quasar'
 
   export default {
     components: {
@@ -101,7 +151,11 @@
       QModal,
       QTooltip,
       QPopover,
-      QModalLayout
+      QModalLayout,
+      QLayoutDrawer,
+      QPageSticky,
+      QRadio,
+      QCheckbox
     },
     mounted () {
       const
@@ -122,6 +176,9 @@
       this.filterAnnotations(0, this.numberRandomAnnotations)
     },
     methods: {
+      randomNumber (fromRandom, toRandom) {
+        return Math.floor(Math.random() * toRandom) + fromRandom
+      },
       filterAnnotations (valFrom, valTo) {
         this.filteredAnnotations = this.annotations.filter(annotation => annotation.created > valFrom && annotation.created <= valTo)
         // console.log(this.filteredAnnotations)
@@ -132,9 +189,62 @@
         }
       },
       appendRandomAnnotations () {
+        console.log('GEHT !')
         let i = 0
+        let author = ''
+        let dur = ''
+        let text = 'Hier steht ein Text.'
+        let type = ''
         for (i = 0; i < this.numberRandomAnnotations; i++) {
-          this.annotations.push({referencetime: Math.floor(Math.random() * this.svgHeight), created: i, text: 'Hier steht der Text. (' + i + ')'})
+          if (i >= 0 && i <= 10) {
+            dur = 40
+          }
+          else {
+            dur = 1
+          }
+          if (i >= 1 && i <= 5) {
+            type = this.annotationTypes[2]
+            text = 'https://www.youtube.com/embed/lDJFMvU2ZqY'
+          }
+          else if (i >= 30 && i <= 80) {
+            type = this.annotationTypes[1]
+            text = 'Log entry'
+          }
+          else if (i >= 85 && i <= 120) {
+            type = this.annotationTypes[4]
+            text = '#tag1'
+          }
+          else if (i >= 10 && i <= 20) {
+            type = this.annotationTypes[0]
+            text = 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.   \n' +
+              '\n' +
+              'Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.   \n' +
+              '\n' +
+              'Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.   \n' +
+              '\n' +
+              'Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer'
+          }
+          else if (i === 81 || i === 121) {
+            type = this.annotationTypes[3]
+            text = 'New Section: Lorem ipsum'
+          }
+          else {
+            type = this.annotationTypes[0]
+            text = 'Consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo du.'
+          }
+          if (i >= 1 && i <= 20) {
+            author = 'A. Z.'
+          }
+          else if (i >= 30 && i <= 80) {
+            author = 'System'
+          }
+          else if (i >= 100 && i <= 130) {
+            author = 'B. Y.'
+          }
+          else {
+            author = 'C. X.'
+          }
+          this.annotations.push({id: i, referencetime: Math.floor(Math.random() * this.svgHeight), duration: dur, created: i, text: text, type: type, author: author})
         }
       },
       getSvgHeight (arr) {
@@ -180,10 +290,16 @@
     data () {
       const _this = this
       return {
+        filterAuthors: [],
+        filterTypes: [],
+        radioFilter: 'none',
+        openFilter: false,
         map: undefined,
         activeDiagram: '',
         annotations: [],
         annotationsBlocks: [],
+        annotationTypes: ['text', 'system', 'video', 'separator', 'tag'],
+        authors: ['A.Z.', 'B.Y.', 'C.X.'],
         arrFilter: [{ // dev only
           rangebegin: 0,
           rangeend: 30
@@ -311,7 +427,7 @@
               }]
             }]
           }, {
-            month: '7',
+            month: '12',
             days: [{
               date: '14',
               entries: [{
@@ -405,6 +521,7 @@
           visibility: false,
           positionY: ''
         },
+        showSession: false,
         svgHeight: '100',
         viewportHeight: '',
         columns: [
@@ -490,7 +607,7 @@
   }
 
   .moba-svg-entry:hover {
-    fill: red!important;
-    opacity: 1;
+    /* fill: red!important;
+    opacity: 1; */
   }
 </style>
