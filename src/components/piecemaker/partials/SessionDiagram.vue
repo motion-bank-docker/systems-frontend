@@ -6,7 +6,7 @@
 
       // annotations: diagram
       //
-      div.q-mb-lg
+      div
 
         .row.col-12.q-pt-xl
 
@@ -80,13 +80,35 @@
                 // vertical lines – VIDEOS
                 //
                 svg(x="15")
-                  rect.moba-swimlane(
+                  svg(
                   v-for="(video, i) in videos",
                   width="30",
                   :height="video.duration * ((viewportHeight / 100 * 80) / svgHeight)",
                   :x="(30 + 10) * i",
                   :y="video.referencetime * ((viewportHeight / 100 * 80) / svgHeight)"
                   )
+                    rect.moba-swimlane(
+                    width="100%",
+                    height="100%"
+                    )
+                    rect.moba-svg-entry(
+                    v-for="n in 30",
+                    width="100%",
+                    height="20",
+                    :y="(n - 1) * 20"
+                    )
+                    line(
+                    v-for="n in 30"
+                    x1="30%", :y1="n * 20",
+                    x2="70%", :y2="n * 20",
+                    style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;"
+                    )
+                    line(
+                    v-for="n in 10"
+                    x1="0%", :y1="n * 100",
+                    x2="100%", :y2="n * 100",
+                    style="stroke: rgba(255, 255, 255, .25); stroke-width: 1;"
+                    )
 
                 // horizontal lines - ANNOTATIONS (all)
                 //
@@ -97,9 +119,9 @@
                   @mouseleave="previewDot.visibility = false",
                   @click="jumpToAnchor(annotation.id)",
                   height="1",
-                  x="60%",
+                  x="70%",
                   :y="annotation.referencetime * ((viewportHeight / 100 * 80) / svgHeight)",
-                  :style="{fill: 'rgba(255,255,255, .4)', width: '30%'}",
+                  :style="{fill: 'rgba(255,255,255, .4)', width: '20%'}",
                   :class="{'full-width': annotation.type === 'separator', 'moba-separator': annotation.type === 'separator'}"
                   )
 
@@ -164,13 +186,16 @@
                   div(v-if="annotation.type == 'separator'") ###
 
                 .col-11.row
-                  .col-12.text-grey-9(v-if="handlerPrevItem(i, 'author') != annotation.author && annotation.type != 'separator'") {{ annotation.author }}
-                  .col-11
+                  .col-12.text-grey-9(v-if="handlerPrevItem(i, 'author') != annotation.author && annotation.type != 'separator' && annotation.type != 'tag'") {{ annotation.author }}
+                  .col-10
                     iframe(v-if="annotation.type == 'video'", width="100%", height="315", :src="annotation.text", frameborder="0", allow="autoplay; encrypted-media", allowfullscreen)
                     span(v-else-if="annotation.type == 'system'") [{{ annotation.text }}]
-                    span.text-deep-purple-4(v-else-if="annotation.type == 'tag'") {{ annotation.text }}
-                    span(v-else) {{ annotation.text }}
-                  .col-1.text-right.moba-list-hidden
+                    // span.text-deep-purple-4(v-else-if="annotation.type == 'tag'") {{ annotation.text }}
+                    span(v-else-if="annotation.type != 'tag'") {{ annotation.text }}
+                  .col-2.text-right
+                    .text-grey-9(v-if="handlerPrevItem(i, 'author') != annotation.author && annotation.type != 'separator' && annotation.type == 'tag'") {{ annotation.author }}
+                    span(v-if="annotation.type == 'tag'") {{ annotation.text }}
+                  // .col-1.text-right.moba-list-hidden
                     q-btn(v-if="annotation.type != 'system'", size="xs", icon="edit", round, flat)
 
 </template>
