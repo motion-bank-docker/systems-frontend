@@ -22,9 +22,6 @@
 <script>
   import { Events } from 'quasar'
 
-  import 'quasar-extras/animate/fadeIn.css'
-  import 'quasar-extras/animate/fadeOut.css'
-
   import Vue from 'vue'
   import VueParticles from 'vue-particles'
   import Chance from 'chance'
