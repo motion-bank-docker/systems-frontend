@@ -47,7 +47,7 @@
 </template>
 
 <script>
-  import assignDeep from 'assign-deep'
+  import { ObjectUtil } from 'mbjs-utils'
   import CardFull from '../../../components/shared/layouts/CardFull'
   import constants from '../../../lib/constants'
   import TimelineSelector from '../../../lib/annotations/selectors/timeline'
@@ -127,7 +127,7 @@
           selector = TimelineSelector.fromISOString(video.target.selector.value)
         selector.add(diff)
         const update = {
-          target: assignDeep({}, video.target, {
+          target: ObjectUtil.merge({}, video.target, {
             selector: {
               type: 'Fragment',
               value: selector.toString()
