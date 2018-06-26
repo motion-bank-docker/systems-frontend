@@ -1,7 +1,6 @@
 <template lang="pug">
 
   full-screen
-
     // filter
     //
     q-layout-drawer(v-model="openFilter", side="right", overlay)
@@ -44,6 +43,8 @@
     //
     q-window-resize-observable(@resize="onResize")
 
+    // headline
+    //
     .row.q-mb-xl
       .col-10.offset-1(slot="form-title")
         // div {{ $t('routes.piecemaker.groups.show.title') }}: Titel der Timeline
@@ -55,6 +56,8 @@
 
     q-btn(slot="backButton", @click="$router.push({ name: 'piecemaker.groups.list' })", icon="keyboard_backspace", round, small)
 
+    // btn: filter
+    //
     q-btn.fixed.text-white(@click="openFilter = true", :class="{ 'bg-green': radioFilter == 'allsessions' || radioFilter == 'thissession' }", style="top: 66px; right: 16px;")
       q-icon(v-if="radioFilter == 'allsessions' || radioFilter == 'thissession'", name="visibility")
       q-icon(v-else, name="visibility_off")
@@ -62,71 +65,206 @@
 
     // timeline diagramm
     //
-    .row
-      div(style="width: calc(100% + (96px * 2)); overflow-x: scroll;")
-        svg(
-        width="150%",
-        :height="viewportHeight / 3",
-        style="top: 80px; right: 30px;"
-        )
-          // path(d="M0 0 C 100 0, 10 200, 0 80", stroke="white", fill="transparent")
-          // path(d="M0,0 C10,100 40,10 40,25 S40,40 25,25", stroke="white", fill="transparent")
-          // path(d="M10 80 Q 52.5 10, 95 80 T 180 80, 100 Q 120 10", stroke="white", fill="transparent")
-
-          // line bottom
-          // (x-axis)
-          //
-          line(
-          x1="0", y1="100%",
-          x2="100%", y2="100%",
-          style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;"
-          )
-
-          // years
-          //
+    //.row
+        div(style="width: calc(100% + (96px * 2)); overflow-x: scroll;")
           svg(
-          v-for="(y, iy) in arrTimelineDataDummy",
-          :width="(viewportWidth - 96) / arrTimelineDataDummy.length",
-          :x="((viewportWidth - 96) / arrTimelineDataDummy.length) * iy"
+          width="100%",
+          // :height="viewportHeight / 3",
+          style="top: 80px; right: 30px;"
           )
+            // path(d="M0 0 C 100 0, 10 200, 0 80", stroke="white", fill="transparent")
+            // path(d="M0,0 C10,100 40,10 40,25 S40,40 25,25", stroke="white", fill="transparent")
+            // path(d="M10 80 Q 52.5 10, 95 80 T 180 80, 100 Q 120 10", stroke="white", fill="transparent")
 
-            // years:
-            // separator lines
+            // line top
+            // (x-axis)
             //
             line(
-            :x1="(viewportWidth - 96) / arrTimelineDataDummy.length", y1="0%",
-            :x2="(viewportWidth - 96) / arrTimelineDataDummy.length", y2="100%",
+            x1="0", y1="0",
+            x2="100%", y2="0",
             style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;"
             )
 
-            // months
+            // line bottom
+            // (x-axis)
             //
-            svg(
-            v-for="(m, im) in y.months",
-            :x="((viewportWidth - 96) / arrTimelineDataDummy.length / 12) * (m.month - 1)",
-            :width="(viewportWidth - 96) / arrTimelineDataDummy.length / 12",
-            height="100%"
+            line(
+            x1="0", y1="100%",
+            x2="100%", y2="100%",
+            style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;"
             )
 
-              // single session
-              //
-              rect.cursor-pointer(
-              v-for="(d, id) in m.days",
-              :height="1000",
-              :x="id * 6",
-              :y="(viewportHeight / 3) - randomNumber(10, 100)",
-              width="2px",
-              style="fill: rgba(255, 255, 255, .1)!important;",
-              @click="showSession = true"
+            // line bottom for min-height
+            // (x-axis)
+            //
+              line(
+              x1="0", y1="95%",
+              x2="100%", y2="95%",
+              style="stroke: rgba(255, 255, 255, .05); stroke-width: 1;"
               )
 
-              // dev: bottom line month to show month width
+            // line left
+            //
+            line(
+            x1="0", y1="0",
+            x2="0", y2="100%",
+            style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;"
+            )
+
+            // years
+            //
+            svg(
+            v-for="(y, iy) in arrTimelineDataDummy",
+            // :width="(viewportWidth - 96) / arrTimelineDataDummy.length",
+            // :x="((viewportWidth - 96) / arrTimelineDataDummy.length) * iy"
+            )
+
+              // years:
+              // separator lines
               //
-                line(
-                x1="0", y1="100%",
-                x2="90%", y2="100%",
-                style="stroke: rgba(255, 255, 255, 1)!important; stroke-width: 1;"
+              line(
+              // :x1="(viewportWidth - 96) / arrTimelineDataDummy.length", y1="0%",
+              // :x2="(viewportWidth - 96) / arrTimelineDataDummy.length", y2="100%",
+              style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;"
+              )
+
+              // months
+              //
+              svg(
+              v-for="(m, im) in y.months",
+              / :x="((viewportWidth - 96) / arrTimelineDataDummy.length / 12) * (m.month - 1)",
+              / :width="(viewportWidth - 96) / arrTimelineDataDummy.length / 12",
+              height="100%",
+              style="background-color: red;"
+              )
+
+                // single session
+                //
+                rect.cursor-pointer(
+                v-for="(d, id) in m.days",
+                // :height="1000",
+                // :x="id * 6",
+                // :y="(viewportHeight / 3) - randomNumber(10, 100)",
+                width="2px",
+                style="fill: rgba(255, 255, 255, .1)!important;",
+                @click="showSession = true"
                 )
+
+                // dev: bottom line month to show month width
+                //
+                  line(
+                  x1="0", y1="100%",
+                  x2="90%", y2="100%",
+                  style="stroke: rgba(255, 255, 255, 1)!important; stroke-width: 1;"
+                  )
+    .row.bg-grey-10.shadow-10
+      // div.col-12.q-mb-md(v-for="y in arrTimelineDataDummy")
+        | {{ handlerTest() }}
+        div(v-for="m in y.months")
+          div months length: {{ y.months.length }}
+            div(v-for="d in m.month") days length: {{ m.days.length }}
+              div(v-for="x in d") date length: {{ d.length }}
+      // wrap all
+      //
+        svg(
+        // :width="(countAllSessions * diagramDimensions.barWidth) + (countAllSessions * diagramDimensions.barSpace) - diagramDimensions.barSpace",
+        height="200"
+        )
+      svg.bg-dark.q-mb-sm(
+      width="200%",
+      height="200"
+      )
+        svg(
+          v-for="(y, iy) in arrTimelineDataDummy",
+          :width="400",
+          height="100%",
+          :x="iy * 400 + iy * 50"
+          )
+          rect(width="100%", height="100%", fill="rgba(255, 0, 0, .1)")
+
+          svg(
+            v-for="(m, im) in y.months",
+            :width="50",
+            height="80%",
+            :x="52 * im"
+            )
+            rect(width="100%", height="100%", fill="rgba(255, 255, 0, .1)")
+
+            svg(
+              v-for="(d, id) in m.days",
+              :width="10",
+              height="80%",
+              :x="11 * id"
+              )
+              rect(width="100%", height="100%", fill="rgba(255, 0, 255, .1)")
+
+              svg(
+                v-for="(e, ie) in d.entries",
+                :width="1",
+                height="100%",
+                :x="2 * ie"
+                )
+                rect(width="100%", :height="e.duration / 10", fill="rgba(255, 255, 255, .5)")
+
+      svg.bg-red(
+      :width="(newArrTimelineDataDummy.length * diagramDimensions.barWidth) + (newArrTimelineDataDummy.length * diagramDimensions.barSpace) - diagramDimensions.barSpace",
+      height="200"
+      )
+        svg(
+          v-for="(data, idata) in newArrTimelineDataDummy",
+          :width="diagramDimensions.barWidth",
+          height="100%",
+          :x="diagramDimensions.barWidth * idata + diagramDimensions.barSpace * idata"
+          )
+          rect(width="100%", :height="data.duration / 10", :y="200 - (data.duration / 10)", fill="rgba(255, 255, 255, .1)")
+
+        // svg(
+          v-for="(n, indexN) in countAllSessions",
+          // :width="diagramDimensions.barWidth",
+          height="100%",
+          // :x="(diagramDimensions.barWidth + diagramDimensions.barSpace) * indexN"
+          )
+            rect(
+            width="100%",
+            height="60%",
+            fill="rgba(255, 255, 0, .1)"
+            )
+
+        // years
+        //
+          svg(
+          v-for="(y, iy) in arrTimelineDataDummy"
+          )
+            // text(:y="100 + (iy * 15)") {{ arrTimelineDataDummy.length }}
+            // svg(
+              v-for="(m, im) in y.months",
+              // :width="viewportWidth / arrTimelineDataDummy.length / 12 * (iy + 1)",
+              // :x="viewportWidth / arrTimelineDataDummy.length * iy / 12 * (iy + 1)"
+              )
+            svg(
+            v-for="(m, im) in y.months",
+            // :x="42 * im"
+            )
+              rect(
+              width="35",
+              height="100%",
+              fill="rgba(255, 255, 255, .1)",
+              // :x="40 * iy"
+              )
+
+              // rect(width="10px", height="80%", :x="11 * im", fill="rgba( 255, 255, 255, .1 )")
+              // text(x="0", :y="20 * (iy + 1)") {{ m }}
+              // line(x1="100%", x2="100%", y1="0", y2="100%", style="stroke: rgba(255, 255, 255, 1)!important; stroke-width: 1;")
+            // months
+            //
+              svg(
+                v-for="(m, im) in y.months",
+                // :width="10",
+                // :x="10 * im"
+                )
+
+                // text(y="30") {{ im }}
+                // rect(width="20", height="20", style="fill: rgba( 255, 255, 255, .1 );")
 
     // wrap - recording sessions
     //
@@ -199,8 +337,32 @@
       this.appendRandomAnnotations()
       this.divideInBlocks(this.annotations)
       this.filterAnnotations(0, this.numberRandomAnnotations)
+      this.handlerCountAllSessions()
     },
     methods: {
+      handlerTest () {
+        alert('hallo')
+      },
+      handlerCountAllSessions () {
+        let i = 0
+        let j = 0
+        let k = 0
+        let l = 0
+        for (i = 0; i < this.arrTimelineDataDummy.length; i++) {
+          for (j = 0; j < this.arrTimelineDataDummy[i].months.length; j++) {
+            // this.countAllSessions++
+            for (k = 0; k < this.arrTimelineDataDummy[i].months[j].days.length; k++) {
+              // this.countAllSessions++
+              for (l = 0; l < this.arrTimelineDataDummy[i].months[j].days[k].entries.length; l++) {
+                this.countAllSessions++
+                this.newArrTimelineDataDummy.push({id: this.countAllSessions, year: this.arrTimelineDataDummy[i].year, month: this.arrTimelineDataDummy[i].months[j].month, day: this.arrTimelineDataDummy[i].months[j].days[k].date, begin: this.arrTimelineDataDummy[i].months[j].days[k].entries[l].start, duration: this.arrTimelineDataDummy[i].months[j].days[k].entries[l].duration})
+              }
+            }
+          }
+        }
+        console.log('all sessions: ' + this.countAllSessions)
+        console.log(this.newArrTimelineDataDummy[2].duration)
+      },
       randomNumber (fromRandom, toRandom) {
         return Math.floor(Math.random() * toRandom) + fromRandom
       },
@@ -214,7 +376,7 @@
         }
       },
       appendRandomAnnotations () {
-        console.log('GEHT !')
+        // console.log('GEHT !')
         let i = 0
         let author = ''
         let dur = ''
@@ -309,12 +471,17 @@
       },
       onResize (size) {
         this.viewportHeight = size.height
-        this.viewportWidth = size.width
+        this.viewportWidth = size.width - 96
       }
     },
     data () {
       const _this = this
       return {
+        diagramDimensions: {
+          barWidth: 20,
+          barSpace: 5
+        },
+        countAllSessions: null,
         filterAuthors: [],
         filterTypes: [],
         radioFilter: 'none',
@@ -338,6 +505,7 @@
           rangebegin: 151,
           rangeend: 200
         }],
+        newArrTimelineDataDummy: [],
         arrTimelineDataDummy: [{ // dev only
           year: 2018,
           months: [{
@@ -345,10 +513,11 @@
             days: [{
               date: '4',
               entries: [{
+                duration: 1000,
                 end: '22.12',
                 id: '1',
                 start: '12',
-                title: 'Titel abc'
+                title: 'Titel bc'
               }]
             }]
           }, {
@@ -356,6 +525,7 @@
             days: [{
               date: '15',
               entries: [{
+                duration: 1000,
                 end: '22.12',
                 id: '2',
                 start: '8:24',
@@ -367,19 +537,22 @@
             days: [{
               date: '18',
               entries: [{
+                duration: 1000,
                 end: '22.12',
                 id: '3',
                 start: '7',
-                title: 'Titel abc'
+                title: 'Titel bc'
               }]
             }, {
               date: '21',
               entries: [{
+                duration: 1000,
                 end: '22.12',
                 id: '4',
                 start: '7.30',
-                title: 'Titel abc'
+                title: 'Titel bc'
               }, {
+                duration: 400,
                 end: '22.12',
                 id: '5',
                 start: '14.45',
@@ -388,6 +561,7 @@
             }, {
               date: '26',
               entries: [{
+                duration: 400,
                 end: '22.12',
                 id: '6',
                 start: '5',
@@ -399,6 +573,7 @@
             days: [{
               date: '2',
               entries: [{
+                duration: 400,
                 end: '22.12',
                 id: '7',
                 start: '8:50',
@@ -407,6 +582,7 @@
             }, {
               date: '4',
               entries: [{
+                duration: 400,
                 end: '22.12',
                 id: '8',
                 start: '8:43',
@@ -421,6 +597,7 @@
             days: [{
               date: '2',
               entries: [{
+                duration: 800,
                 end: '23.00',
                 id: 'dedasca',
                 start: '19.12',
@@ -429,6 +606,7 @@
             }, {
               date: '9',
               entries: [{
+                duration: 800,
                 end: '23.00',
                 id: '9',
                 start: '19.12',
@@ -437,6 +615,7 @@
             }, {
               date: '10',
               entries: [{
+                duration: 800,
                 end: '23.00',
                 id: '9vvdscasdc',
                 start: '19.12',
@@ -445,6 +624,7 @@
             }, {
               date: '15',
               entries: [{
+                duration: 800,
                 end: '23.00',
                 id: 'lvdsvsdc',
                 start: '19.12',
@@ -456,11 +636,13 @@
             days: [{
               date: '14',
               entries: [{
+                duration: 800,
                 end: '23.00',
                 id: '10',
                 start: '11:00',
                 title: 'vormittags'
               }, {
+                duration: 800,
                 end: '12.00',
                 id: '11',
                 start: '9:00',
@@ -475,6 +657,7 @@
             days: [{
               date: '9',
               entries: [{
+                duration: 1200,
                 end: '23.00',
                 id: '12',
                 start: '19.12',
@@ -486,11 +669,13 @@
             days: [{
               date: '14',
               entries: [{
+                duration: 1200,
                 end: '23.00',
                 id: '13',
                 start: '11:00',
                 title: 'vormittags'
               }, {
+                duration: 1200,
                 end: '23.00',
                 id: '14',
                 start: '18:19',
@@ -502,6 +687,7 @@
             days: [{
               date: '9',
               entries: [{
+                duration: 1200,
                 end: '23.00',
                 id: '15',
                 start: '19.12',
@@ -513,21 +699,25 @@
             days: [{
               date: '14',
               entries: [{
+                duration: 950,
                 end: '11.00',
                 id: '16',
                 start: '11:00',
                 title: 'vormittags'
               }, {
+                duration: 950,
                 end: '12.00',
                 id: '17',
                 start: '18:19',
                 title: 'blablabla'
               }, {
+                duration: 950,
                 end: '13.00',
                 id: '18',
                 start: '11:00',
                 title: 'vormittags'
               }, {
+                duration: 950,
                 end: '14.00',
                 id: '19',
                 start: '18:19',
@@ -616,6 +806,9 @@
   }
   .moba-border-top {
   border-top: 1px solid rgba( 255, 255, 255, .2 );
+  }
+
+  .moba-empty {
   }
 
   .moba-swimlane {
