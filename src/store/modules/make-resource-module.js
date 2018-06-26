@@ -54,7 +54,7 @@ const makeResourceModule = function (client, resourceName, resourceNamePluralise
         }
         else throw new Error(`Update ${name} failed: not found`)
       },
-      setPending: (state, action, status) => {
+      setPending: (state, action, status = true) => {
         Assert.isType(status, 'boolean', 'setPending: status must be boolean')
         state.isPending[action] = status
       }
