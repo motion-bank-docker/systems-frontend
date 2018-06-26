@@ -67,6 +67,7 @@ module.exports = function (ctx) {
         'QPage',
         'QToolbar',
         'QToolbarTitle',
+        'QTooltip',
         'QBtn',
         'QIcon',
         'QList',
@@ -79,6 +80,10 @@ module.exports = function (ctx) {
         'QContextMenu',
         'QScrollArea',
         //
+        //
+        // Buttons
+        'QBtnDropdown',
+        //
         // Grouping
         'QCard',
         'QCardMain',
@@ -87,6 +92,8 @@ module.exports = function (ctx) {
         'QTabPane',
         'QRouteTab',
         'QTable',
+        'QTr',
+        'QTd',
         'QModal',
         //
         // Loading
