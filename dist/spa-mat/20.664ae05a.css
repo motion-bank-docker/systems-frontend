@@ -1,0 +1,1 @@
+.moba-swimlane{fill:hsla(0,0%,100%,.1);transition:fill .2s ease}.moba-swimlane:hover{fill:#000}.moba-svg-entry{opacity:.2}.moba-svg-entry:hover{fill:red!important;opacity:1}text{opacity:0;transition:opacity 50ms ease}circle:hover+text{opacity:1!important}
