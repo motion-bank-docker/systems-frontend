@@ -20,9 +20,7 @@
 </template>
 
 <script>
-  import {
-    Events
-  } from 'quasar'
+  import { Events } from 'quasar'
 
   import 'quasar-extras/animate/fadeIn.css'
   import 'quasar-extras/animate/fadeOut.css'

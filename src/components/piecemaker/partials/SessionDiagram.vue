@@ -203,19 +203,7 @@
 </template>
 
 <script>
-  import { QWindowResizeObservable, QList, QItem, QItemMain, QItemSide, QItemTile, QTooltip, QCard } from 'quasar'
-
   export default {
-    components: {
-      QWindowResizeObservable,
-      QList,
-      QItem,
-      QItemMain,
-      QItemSide,
-      QItemTile,
-      QTooltip,
-      QCard
-    },
     mounted () {
       const
         _this = this,

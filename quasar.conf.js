@@ -66,6 +66,7 @@ module.exports = function (ctx) {
         'QLayoutDrawer',
         'QPageContainer',
         'QPage',
+        'QWindowResizeObservable',
         //
         // Buttons
         //
@@ -98,6 +99,7 @@ module.exports = function (ctx) {
         //
         'QCard',
         'QCardMain',
+        'QCollapsible',
         'QTable',
         'QTr',
         'QTd',
@@ -112,7 +114,9 @@ module.exports = function (ctx) {
         // Popups
         //
         'QModal',
+        'QModalLayout',
         'QTooltip',
+        'QPopover',
         //
         // Progress
         //

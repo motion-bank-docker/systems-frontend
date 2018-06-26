@@ -9,13 +9,11 @@
 </template>
 
 <script>
-  // import CenterCardThreeQuarter from '../../../components/shared/layouts/CenterCardThreeQuarter'
   import CardFull from '../../../components/shared/layouts/CardFull'
   import { FormMain } from '../../../components/shared/forms'
   import { required, sameAs, minLength, email } from 'vuelidate/lib/validators'
   export default {
     components: {
-      // CenterCardThreeQuarter,
       CardFull,
       FormMain
     },

@@ -82,26 +82,13 @@
 </template>
 
 <script>
-  // import CardFull from '../../../components/shared/layouts/CardFull'
   import FullScreen from '../../../components/shared/layouts/FullScreen'
   import SessionDiagram from '../../../components/piecemaker/partials/SessionDiagram'
-  import { QWindowResizeObservable, QList, QItem, QItemMain, QItemSide, QItemTile, QModal, QTooltip, QPopover, QModalLayout } from 'quasar'
 
   export default {
     components: {
-      // CardFull,
-      QWindowResizeObservable,
       FullScreen,
-      SessionDiagram,
-      QList,
-      QItem,
-      QItemMain,
-      QItemSide,
-      QItemTile,
-      QModal,
-      QTooltip,
-      QPopover,
-      QModalLayout
+      SessionDiagram
     },
     mounted () {
       const

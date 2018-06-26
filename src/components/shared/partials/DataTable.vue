@@ -64,12 +64,9 @@
   import Username from './Username'
   import { DateTime } from 'luxon'
   import { ObjectUtil } from 'mbjs-utils'
-  import { QTr, QTd } from 'quasar'
   export default {
     components: {
-      Username,
-      QTr,
-      QTd
+      Username
     },
     props: ['entries', 'config', 'columns', 'actions'],
     data () {
