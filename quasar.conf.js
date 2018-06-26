@@ -4,11 +4,11 @@ module.exports = function (ctx) {
   return {
     // app plugins (/src/plugins)
     plugins: [
-      'i18n',
-      'auth',
       'api',
+      'auth',
       'axios',
-      'mb-notifications'
+      'i18n',
+      'notifications'
     ],
     css: [
       'app.styl'
@@ -58,48 +58,32 @@ module.exports = function (ctx) {
     // framework: 'all' --- includes everything; for dev only!
     framework: {
       components: [
+        //
+        // Layout
+        //
         'QLayout',
         'QLayoutHeader',
         'QLayoutDrawer',
         'QPageContainer',
         'QPage',
-        'QToolbar',
-        'QToolbarTitle',
-        'QTooltip',
-        'QBtn',
-        'QIcon',
-        'QList',
-        'QListHeader',
-        'QItem',
-        'QItemMain',
-        'QItemSide',
-        'QItemTile',
-        'QItemSeparator',
-        'QContextMenu',
-        'QScrollArea',
-        //
         //
         // Buttons
+        //
+        'QBtn',
         'QBtnDropdown',
         //
-        // Grouping
-        'QCard',
-        'QCardMain',
+        // Navigation
+        //
+        'QToolbar',
+        'QToolbarTitle',
+        'QContextMenu',
         'QTabs',
         'QTab',
         'QTabPane',
         'QRouteTab',
-        'QTable',
-        'QTr',
-        'QTd',
-        'QModal',
         //
-        // Loading
-        'QSpinner',
-        'QSpinnerTail',
-        'QSpinnerPuff',
+        // Form Components
         //
-        // Forms
         'QSelect',
         'QInput',
         'QField',
@@ -108,8 +92,42 @@ module.exports = function (ctx) {
         'QSlider',
         'QToggle',
         'QChipsInput',
-        'QChip',
-        'QSearch'
+        'QSearch',
+        //
+        // Grouping
+        //
+        'QCard',
+        'QCardMain',
+        'QTable',
+        'QTr',
+        'QTd',
+        'QList',
+        'QListHeader',
+        'QItem',
+        'QItemMain',
+        'QItemSide',
+        'QItemTile',
+        'QItemSeparator',
+        //
+        // Popups
+        //
+        'QModal',
+        'QTooltip',
+        //
+        // Progress
+        //
+        'QSpinner',
+        'QSpinnerTail',
+        'QSpinnerPuff',
+        //
+        // Scrolling
+        //
+        'QScrollArea',
+        //
+        // Other Components
+        //
+        'QIcon',
+        'QChip'
       ],
       directives: [
         'Ripple'
