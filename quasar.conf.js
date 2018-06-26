@@ -8,7 +8,6 @@ module.exports = function (ctx) {
       'auth',
       'api',
       'axios',
-      'mb-conf',
       'mb-notifications'
     ],
     css: [
