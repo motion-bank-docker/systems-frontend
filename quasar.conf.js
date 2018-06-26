@@ -16,9 +16,6 @@ module.exports = function (ctx) {
     extras: [
       ctx.theme.mat ? 'roboto-font' : null,
       'material-icons'
-      // 'ionicons',
-      // 'mdi',
-      // 'fontawesome'
     ],
     supportIE: true,
     build: {
@@ -41,18 +38,19 @@ module.exports = function (ctx) {
       },
       // Runtime globals
       env: {
-        API_HOST: JSON.stringify(process.env.API_HOST || 'https://motionbank-api.herokuapp.com'),
-        UI_HOST: JSON.stringify(process.env.UI_HOST || 'http://localhost:8080'),
+        API_HOST: JSON.stringify(process.env.API_HOST || 'https://api.motionbank.org'),
+        UI_HOST: JSON.stringify(process.env.UI_HOST || 'https://app.motionbank.org'),
         ID_FIELD: JSON.stringify(process.env.ID_FIELD || 'uuid'),
         AUTH0_DOMAIN: JSON.stringify(process.env.AUTH0_DOMAIN || 'motionbank.eu.auth0.com'),
         AUTH0_CLIENT_ID: JSON.stringify(process.env.AUTH0_CLIENT_ID || 'lyVRrHYxUCOosFip40Ws5BRJyfHWSWTi'),
-        AUTH0_REDIRECT_URL: JSON.stringify(process.env.AUTH0_REDIRECT_URL || 'http://localhost:8080/users/callback'),
-        AUTH0_AUDIENCE: JSON.stringify(process.env.AUTH0_AUDIENCE || 'https://motionbank-api.herokuapp.com')
+        AUTH0_REDIRECT_URL: JSON.stringify(process.env.AUTH0_REDIRECT_URL || 'https://app.motionbank.org/users/callback'),
+        AUTH0_AUDIENCE: JSON.stringify(process.env.AUTH0_AUDIENCE || 'https://api.motionbank.org')
       }
     },
     devServer: {
       // https: true,
       // port: 8080,
+      host: '0.0.0.0',
       open: true // opens browser window automatically
     },
     // framework: 'all' --- includes everything; for dev only!
