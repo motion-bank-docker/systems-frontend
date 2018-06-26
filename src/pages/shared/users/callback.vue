@@ -10,6 +10,7 @@
       const _this = this
       this.$auth.handleAuthentication().then(user => {
         console.log('Auth0 authenticated user', user)
+        _this.$store.commit('auth/setUser', user)
         _this.$store.commit('notifications/addMessage', {
           body: _this.$t('messages.login_success'),
           type: 'success'
