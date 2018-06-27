@@ -4,6 +4,9 @@
 
       q-window-resize-observable(@resize="onResize")
 
+      .fixed.bg-dark.shadow-6.q-pa-md(v-if="previewWindow.visibility", style="top: 66px; left: 10px;")
+        iframe(width="560", height="315", src="", frameborder="0", allow="autoplay; encrypted-media", allowfullscreen)
+
       // annotations: diagram
       //
       div
@@ -61,23 +64,8 @@
               //
               svg
 
-                // Linie links
-                //
-                  line(
-                  x1="0", y1="0",
-                  x2="0", :y2="viewportHeight / 100 * 80",
-                  style="stroke: rgba(255,255,255,.1); stroke-width: 1;"
-                  )
-
-                // Linie rechts
-                //
-                  line(
-                  x1="100%", y1="0",
-                  x2="100%", y2="100%",
-                  style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;"
-                  )
-
-                // vertical lines – VIDEOS
+                // vertical lines
+                // VIDEOS + TIME RANGES
                 //
                 svg(x="15")
                   svg(
@@ -87,28 +75,58 @@
                   :x="(20 + 10) * i",
                   :y="video.referencetime * ((viewportHeight / 100 * 80) / svgHeight)"
                   )
-                    rect.moba-swimlane(
-                    width="100%",
-                    height="100%"
-                    )
-                    rect.moba-svg-entry(
-                    v-for="n in 30",
-                    width="100%",
-                    height="20",
-                    :y="(n - 1) * 20"
-                    )
-                    line(
-                    v-for="n in 30"
-                    x1="30%", :y1="n * 20",
-                    x2="70%", :y2="n * 20",
-                    style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;"
-                    )
-                    line(
-                    v-for="n in 10"
-                    x1="0%", :y1="n * 120",
-                    x2="100%", :y2="n * 120",
-                    style="stroke: rgba(255, 255, 255, .25); stroke-width: 1;"
-                    )
+                    g(v-if="video.type == 'video'")
+                      rect.moba-swimlane(
+                      width="100%",
+                      height="100%"
+                      )
+                      rect.moba-svg-entry(
+                      v-for="n in 30",
+                      width="100%",
+                      height="20",
+                      :y="(n - 1) * 20"
+                      )
+                      line(
+                      v-for="n in 30"
+                      x1="30%", :y1="n * 20",
+                      x2="70%", :y2="n * 20",
+                      style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;"
+                      )
+                      line(
+                      v-for="n in 10"
+                      x1="0%", :y1="n * 120",
+                      x2="100%", :y2="n * 120",
+                      style="stroke: rgba(255, 255, 255, .25); stroke-width: 1;"
+                      )
+                    g(v-else-if="video.type == 'timerange'")
+                      // rect.moba-swimlane(
+                        width="100%",
+                        height="100%"
+                        )
+                      rect.moba-svg-entry(
+                      v-for="n in 30",
+                      width="100%",
+                      height="20",
+                      :y="(n - 1) * 20",
+                      fill="transparent"
+                      )
+                      line(
+                      x1="50%", y1="0",
+                      x2="50%", y2="100%",
+                      style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;"
+                      )
+                      line(
+                      v-for="n in 30"
+                      x1="40%", :y1="n * 20",
+                      x2="60%", :y2="n * 20",
+                      style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;"
+                      )
+                      line(
+                      v-for="n in 10"
+                      x1="20%", :y1="n * 120",
+                      x2="80%", :y2="n * 120",
+                      style="stroke: rgba(255, 255, 255, .25); stroke-width: 1;"
+                      )
 
                 // horizontal lines - ANNOTATIONS (all)
                 //
@@ -370,6 +388,9 @@
     data () {
       const _this = this
       return {
+        previewWindow: {
+          visibility: false
+        },
         prevItem: '',
         map: undefined,
         allAnnotationSessions: [],
@@ -471,6 +492,7 @@
           duration: '1000',
           id: '',
           referencetime: '0',
+          src: 'https://www.youtube.com/embed/zS8hEj37CrA',
           title: 'video 1',
           type: 'video'
         }, {
@@ -478,6 +500,7 @@
           duration: '1100',
           id: '',
           referencetime: '20',
+          src: 'https://www.youtube.com/embed/zS8hEj37CrA',
           title: 'video 1',
           type: 'video'
         }, {
@@ -485,11 +508,12 @@
           duration: '500',
           id: '',
           referencetime: '270',
+          src: 'https://www.youtube.com/embed/0VqaGkKQRCU',
           title: 'video 1',
           type: 'video'
         }, {
           created: '50',
-          duration: '230',
+          duration: '830',
           id: '',
           referencetime: '120',
           title: 'timerange',
@@ -499,6 +523,7 @@
           duration: '200',
           id: '',
           referencetime: '12',
+          src: 'https://www.youtube.com/embed/zS8hEj37CrA',
           title: 'video 1',
           type: 'video'
         }]
@@ -542,6 +567,7 @@
 
   .moba-svg-entry {
     opacity: .2;
+    cursor: pointer;
   }
 
   .moba-svg-entry:hover {
