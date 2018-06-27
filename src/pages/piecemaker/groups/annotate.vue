@@ -5,7 +5,7 @@
     span(slot="form-logo")
     span(slot="form-title")
 
-    q-input#input(v-model="currentBody.value", @keyup="keyMonitor", type="textarea", autofocus)
+    q-input#input.bg-grey-10.text-white.q-pa-md(v-model="currentBody.value", @keyup="keyMonitor", type="textarea", autofocus, dark)
     q-list(no-border)#list
       q-item.annotation(v-for="(annotation, i) in annotations", :key="annotation.uuid", :id="annotation.uuid")
         q-item-side(v-if="annotation.target.selector") {{ formatSelectorForList(annotation.target.selector.value) }}
@@ -124,20 +124,17 @@
     padding-left: 5rem;
   }
   #input {
-    background-color: #fff;
     position: fixed;
     top: calc(52px + 2em);
     width: calc(100vw - 25rem);
     margin-left: 7.5rem;
     overflow: scroll;
     margin-bottom: 0;
-    padding: 1em .5em;
     z-index: 1111;
-    box-shadow: 0 0 10px 0px rgba( 0, 0, 0, .1 );
-    opacity: 1;
+    border: 1px solid rgba(255, 255, 255, .1);
   }
   #list {
-    background-color: #eee;
+    /* background-color: #eee; */
     width: calc(100vw - 20rem);
     min-height: calc(100vh - 52px - 2rem);
     margin-left: 5rem;
