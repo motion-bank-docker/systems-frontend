@@ -186,13 +186,13 @@
 
           // annotations: text
           //
-          div.col-8(style="height: 80vh; overflow-y: scroll;")
+          div#annotations-text.col-8(style="height: 80vh; overflow-y: scroll;")
 
             div.q-pl-sm(
             v-for="(annotation, i) in byReferencetime",
             @mouseenter="previewLine.positionY = annotation.referencetime, previewLine.visiibility = true",
             :class="{'q-my-xl': annotation.type === 'separator'}",
-            :id="annotation.id"
+            :ref="annotation.id"
             )
               // .row(:class="{'q-mb-lg, moba-border-top': handlerPrevItem(i, 'author') != annotation.author}")
               .row.q-py-xs.moba-list-entry
@@ -205,14 +205,19 @@
 
                 .col-11.row(style="line-height: 1.35rem;")
                   .col-12.text-grey-9(v-if="handlerPrevItem(i, 'author') != annotation.author && annotation.type != 'separator' && annotation.type != 'tag'") {{ annotation.author }}
-                  .col-10
-                    iframe(v-if="annotation.type == 'video'", width="100%", height="315", :src="annotation.text", frameborder="0", allow="autoplay; encrypted-media", allowfullscreen)
-                    span(v-else-if="annotation.type == 'system'") [{{ annotation.text }}]
-                    // span.bg-white.text-black.q-pa-xs.q-ml-lg.q-caption(v-else-if="annotation.type == 'tag'") {{ annotation.text }}
-                    span(v-else-if="annotation.type != 'tag'") {{ annotation.text }}
-                  .col-2.text-right
+                  .col-12.row
+                    // .col-8
+                    div(:class="[annotation.tags.length > 0 ? 'col-8' : 'col-10']")
+                      iframe(v-if="annotation.type == 'video'", width="100%", height="315", :src="annotation.text", frameborder="0", allow="autoplay; encrypted-media", allowfullscreen)
+                      span(v-else-if="annotation.type == 'system'") [{{ annotation.text }}]
+                      span(v-else-if="annotation.type == 'tag'") {{ annotation.text }}
+                      span(v-else-if="annotation.type != 'tag'") {{ annotation.text }}
+                      // span.q-ml-lg.q-caption() {{ annotation.tags }}
+                    .col-3.q-ml-sm.q-pa-sm.shadow-6(v-if="annotation.tags.length > 0", style="border-left: 0px solid rgba(255, 255, 255, .5); min-height: 100%;")
+                      div(v-for="(at, ati) in annotation.tags", :class="{'q-mb-sm': ati - 2 < annotation.tags.length}") # {{ at }}
+                  // .col-2.text-right
                     .text-grey-9(v-if="handlerPrevItem(i, 'author') != annotation.author && annotation.type != 'separator' && annotation.type == 'tag'") {{ annotation.author }}
-                    span.bg-white.text-black.q-pa-xs.q-ml-lg.q-caption(v-if="annotation.type == 'tag'") {{ annotation.text }}
+                    span.q-ml-lg.q-caption(v-if="annotation.type == 'tag'") {{ annotation.text }}
                   // .col-1.text-right.moba-list-hidden
                     q-btn(v-if="annotation.type != 'system'", size="xs", icon="edit", round, flat)
 
@@ -260,13 +265,21 @@
     },
     methods: {
       jumpToAnchor (target) {
-        /* let url = location.href
-        location.href = '#' + target
-        history.replaceState(null, null, url) */
-        console.log(target)
+        console.log('target: ' + target)
         var element = this.$refs[target]
-        var top = element.offsetTop
-        window.scrollTo(0, top)
+        console.log(element)
+        // var top = element.offsetTop
+        var elementTest = element[0]
+        console.log(elementTest)
+        var top = elementTest.offsetTop
+        console.log('vvvvv')
+        console.log(top)
+        console.log('AAAAA')
+        var annotationsText = document.getElementById('annotations-text')
+        annotationsText.scrollTo(0, top)
+        // console.log('jumpToAnchor: ' + target)
+        // console.log(annotationsText)
+        // window.scrollTo(0, top)
       },
       handlerPrevItem (valIndex, valProp) {
         if (valIndex > 0) {
@@ -292,6 +305,7 @@
         let dur = ''
         let text = 'Hier steht ein Text.'
         let type = ''
+        let tags = []
         for (i = 0; i < this.numberRandomAnnotations; i++) {
           if (i >= 0 && i <= 10) {
             dur = 40
@@ -328,6 +342,9 @@
           else {
             type = 'text'
             text = 'Consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo du.'
+            if (i >= 160 && i <= 200) {
+              tags = ['tag aaa', 'tag bbbbbbbbbbddddddddddd', 'tag cc']
+            }
           }
           if (i >= 1 && i <= 20) {
             author = 'A. Z.'
@@ -341,7 +358,7 @@
           else {
             author = 'C. X.'
           }
-          this.annotations.push({id: i, referencetime: Math.floor(Math.random() * this.svgHeight), duration: dur, created: i, text: text, type: type, author: author})
+          this.annotations.push({id: i, referencetime: Math.floor(Math.random() * this.svgHeight), duration: dur, created: i, text: text, type: type, author: author, tags: tags})
         }
       },
       getAnnotationSessionWidth () {
