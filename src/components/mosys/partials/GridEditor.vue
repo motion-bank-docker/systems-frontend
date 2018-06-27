@@ -60,7 +60,7 @@
 <script>
   // import Vue from 'vue'
   // import constants from '../../../lib/constants'
-  import assignDeep from 'assign-deep'
+  import { ObjectUtil } from 'mbjs-utils'
   import Cell from './Cell'
 
   const nullImage = new Image()
@@ -135,7 +135,7 @@
       },
       gridUuid () {
         console.log('Grid UUID changed, fetch metadata again??')
-        // this.gridMetadata = assignDeep({}, this.grid)
+        // this.gridMetadata = ObjectUtil.merge({}, this.grid)
       },
       gridMetadata () {
         this.updateGridDimensions()
@@ -309,7 +309,7 @@
           return cell
         })
 
-        this.gridMetadata = assignDeep({}, this.gridMetadata, {columns: this.gridMetadata.columns + 1})
+        this.gridMetadata = ObjectUtil.merge({}, this.gridMetadata, {columns: this.gridMetadata.columns + 1})
 
         this.updateGridMetadataStore()
       },
@@ -331,7 +331,7 @@
           }
           return cell
         })
-        this.gridMetadata = assignDeep({}, this.gridMetadata, {rows: this.gridMetadata.rows + 1})
+        this.gridMetadata = ObjectUtil.merge({}, this.gridMetadata, {rows: this.gridMetadata.rows + 1})
 
         this.updateGridMetadataStore()
       },

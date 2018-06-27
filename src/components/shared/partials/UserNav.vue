@@ -27,39 +27,37 @@
 
     q-btn(color="primary", flat, icon="help",
     @click="currentApp = 'site.help'; $router.push({ name: 'site.help' })",
-    v-if="user")
+    v-if="userState")
 
     q-btn(color="primary", flat, icon="settings",
-    v-if="user", @click="$router.push({ name: 'users.manage', params: { id: 'me' } })") {{ user.name }}
+    v-if="userState", @click="$router.push({ name: 'users.manage', params: { id: 'me' } })") {{ userState.name }}
 
     q-btn(color="primary", flat, icon="eject",
-      v-if="user", @click="logout") {{ $t('navigation.logout') }}
+      v-if="userState", @click="logout") {{ $t('navigation.logout') }}
 
     q-btn(color="primary", flat, icon="arrow_forward",
-      v-if="!user", @click="login") {{ $t('navigation.login') }}
+      v-if="!userState", @click="login") {{ $t('navigation.login') }}
 </template>
 
 <script>
+  import { mapGetters } from 'vuex'
   export default {
     data () {
       return {
-        currentApp: null,
-        user: undefined
+        currentApp: null
       }
     },
-    mounted () {
-      const _this = this
-      this.$auth.on('auth-state', user => {
-        _this.user = user
-        console.debug('Auth0 state change', _this.$auth.hasScope('openid'))
+    computed: {
+      ...mapGetters({
+        userState: 'auth/getUserState'
       })
-      this.$auth.checkSession()
     },
     methods: {
       login () {
         this.$auth.authenticate()
       },
       logout () {
+        this.$store.commit('auth/setUser', undefined)
         this.$auth.logout()
       }
     }

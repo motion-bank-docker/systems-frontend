@@ -17,7 +17,7 @@
   import url from 'url'
   import path from 'path'
   import he from 'he'
-  import assignDeep from 'assign-deep'
+  import { ObjectUtil } from 'mbjs-utils'
 
   export default {
     components: {
@@ -44,7 +44,7 @@
         return this.$store.dispatch('annotations/find', { query: { 'body.purpose': 'linking', 'target.id': this.$route.params.groupId } })
           .then(entries => {
             return Promise.map(entries, entry => {
-              const newEntry = assignDeep({}, entry)
+              const newEntry = ObjectUtil.merge({}, entry)
               newEntry.title = entry.body.source
               return Promise.resolve()
                 .then(() => {

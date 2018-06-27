@@ -19,8 +19,7 @@
 
 <script>
   import Full from '../../../components/shared/layouts/Full'
-  import assert from 'assert'
-  import assignDeep from 'assign-deep'
+  import { ObjectUtil, Assert } from 'mbjs-utils'
   import uuidValidate from 'uuid-validate'
   import constants from '../../../lib/constants'
   import annotations from '../../../lib/annotations'
@@ -70,11 +69,11 @@
         const _this = this
         const annotation = {
           author: _this.$store.state.auth.payload.userId,
-          body: assignDeep({}, _this.currentBody),
+          body: ObjectUtil.merge({}, _this.currentBody),
           target: {
             id: _this.$route.params.id,
             type: constants.MAP_TYPE_TIMELINE,
-            selector: assignDeep({}, _this.currentSelector)
+            selector: ObjectUtil.merge({}, _this.currentSelector)
           }
         }
         this.currentBody.value = undefined
@@ -88,8 +87,8 @@
           })
       },
       deleteAnnotation (uuid, index) {
-        assert(uuidValidate(uuid))
-        assert.equal(typeof index, 'number')
+        Assert.ok(uuidValidate(uuid))
+        Assert.isType(index, 'number')
         return this.$store.dispatch('annotations/remove', uuid)
           .then(() => {
             this.annotations.splice(index, 1)

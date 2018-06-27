@@ -211,20 +211,11 @@
 <script>
   import DataTable from '../../../components/shared/partials/DataTable'
   import CardFull from '../../../components/shared/layouts/CardFull'
-  import { QCollapsible, QList, QItem, QItemSide, QItemMain, QTooltip, QBtn, QCheckbox } from 'quasar'
 
   export default {
     components: {
       DataTable,
-      CardFull,
-      QCollapsible,
-      QList,
-      QItem,
-      QItemSide,
-      QItemMain,
-      QTooltip,
-      QBtn,
-      QCheckbox
+      CardFull
     },
     mounted () {
       this.getSvgHeight(this.videos)

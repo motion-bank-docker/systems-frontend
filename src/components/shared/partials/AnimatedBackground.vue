@@ -20,12 +20,7 @@
 </template>
 
 <script>
-  import {
-    Events
-  } from 'quasar'
-
-  import 'quasar-extras/animate/fadeIn.css'
-  import 'quasar-extras/animate/fadeOut.css'
+  import { Events } from 'quasar'
 
   import Vue from 'vue'
   import VueParticles from 'vue-particles'

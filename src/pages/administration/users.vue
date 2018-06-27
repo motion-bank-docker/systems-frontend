@@ -58,11 +58,7 @@
 </template>
 
 <script>
-import { QDataTable, QCheckbox, QList, QListHeader, QItem, QItemSide, QItemMain, QItemTile, QBtn, QInput } from 'quasar-framework'
 export default {
-  components: {
-    QDataTable, QCheckbox, QList, QListHeader, QItem, QItemSide, QItemMain, QItemTile, QBtn, QInput
-  },
   data () {
     return {
       users: [{

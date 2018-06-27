@@ -12,16 +12,8 @@
 </template>
 
 <script>
-  import {
-    QLayout,
-    QBtn,
-    openURL
-  } from 'quasar-framework'
+  import { openURL } from 'quasar-framework'
   export default {
-    components: {
-      QLayout,
-      QBtn
-    },
     data: function () {
       return {
         openURL

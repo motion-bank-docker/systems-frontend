@@ -5,7 +5,7 @@
 </template>
 
 <script>
-  import CenterCardThreeQuarter from '../../../shared/layouts/CenterCardThreeQuarter'
+  import CenterCardThreeQuarter from '../../../components/shared/layouts/CenterCardThreeQuarter'
   export default {
     components: {
       CenterCardThreeQuarter: CenterCardThreeQuarter

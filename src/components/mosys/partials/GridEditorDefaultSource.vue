@@ -26,10 +26,6 @@
 </template>
 
 <script>
-  // import url from 'url'
-  // import superagent from 'superagent'
-  // import buildVars from '../../../lib/build-vars'
-
   const typeToIconName = {
     'image': 'photo',
     'iframe': 'picture in picture',

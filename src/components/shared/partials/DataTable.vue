@@ -59,13 +59,10 @@
 <script>
   import Username from './Username'
   import { DateTime } from 'luxon'
-  import assignDeep from 'assign-deep'
-  import { QTr, QTd } from 'quasar'
+  import { ObjectUtil } from 'mbjs-utils'
   export default {
     components: {
-      Username,
-      QTr,
-      QTd
+      Username
     },
     props: ['entries', 'config', 'columns', 'actions'],
     data () {
@@ -105,7 +102,7 @@
         */
       }
       const cols = this.columns.map(column => {
-        return assignDeep({
+        return ObjectUtil.merge({
           filter: false,
           sort: false
           // classes: 'bg-dark'
@@ -122,7 +119,7 @@
       })
       return {
         rows: [],
-        conf: assignDeep(defaultConfig, _this.config),
+        conf: ObjectUtil.merge(defaultConfig, _this.config),
         cols: cols,
         actns: _this.actions
       }

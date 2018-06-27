@@ -45,7 +45,7 @@
 
 <script>
   import url from 'url'
-  import assignDeep from 'assign-deep'
+  import { ObjectUtil } from 'mbjs-utils'
 
   const hostToTypeMap = {
     'vimeo.com': 'Video',
@@ -212,7 +212,7 @@
           else {
             res.body.type = 'title'
             results.push(res)
-            let body = assignDeep({}, res.body)
+            let body = ObjectUtil.merge({}, res.body)
             body.type = 'text'
             results.push({body})
           }

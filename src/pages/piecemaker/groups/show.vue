@@ -7,136 +7,85 @@
     //
     q-window-resize-observable(@resize="onResize")
 
-    // filter
-    //
-    q-layout-drawer(v-model="openFilter", side="right", overlay)
-      // div.bg-dark.q-pa-md.q-caption(:class="{ 'text-grey-8': radioFilter == 'allsessions' || radioFilter == 'thissession' }")
-      div.bg-dark.q-pa-md.q-caption
-        .row.q-mb-md
-          .col-10.bg-grey-10.q-pa-sm
-            // q-radio.q-mb-md(v-model="radioFilter", val="allsessions", label="Apply on all sessions in this timeline.", color="white")
-            q-radio.q-mb-md(v-model="radioFilter", val="thissession", label="Apply filter.", color="white")
-            br
-            q-radio(v-model="radioFilter", val="none", label="Do not apply.", color="white")
-          .col-2.text-right
-            q-btn.rotate-180(@click="openFilter = false", icon="keyboard_backspace", size="sm", round, flat)
-
-        div(:class="{ 'text-grey-8': radioFilter == 'none' }")
-          .q-py-sm
-            div select authors:
-            q-list.no-border
-              q-item.no-padding
-                q-btn(size="sm") select all
-                q-btn(size="sm") select none
-              q-item.no-padding(v-for="author in authors")
-                q-checkbox.q-caption(v-model="filterAuthors", :val="author", :label="author", color="white")
-          .q-py-sm.moba-border-top
-            div select types:
-            q-list.no-border
-              q-item.no-padding
-                q-btn(size="sm") select all
-                q-btn(size="sm") select none
-              q-item.no-padding(v-for="type in annotationTypes")
-                q-checkbox.q-caption(v-model="filterTypes", :val="type", :label="type", color="white")
-          .q-py-sm.moba-border-top
-            div select date of creation:
-          .q-py-sm.moba-border-top
-            div.q-mb-sm search for term/tag:
-            q-search.bg-transparent.text-white(color="white", dark)
-
-    // headline
-    //
-    .row.q-mb-xl
-      .col-10.offset-1(slot="form-title")
-        // div {{ $t('routes.piecemaker.groups.show.title') }}: Titel der Timeline
-        h5.no-margin.text-center
-          div Meine Timeline seit Studienbeginn (Titel)
-          .text-grey-8 by Christian Hansen (Inhaber)
-
+    .row
+      .col-8(slot="form-title")
+        | {{ $t('routes.piecemaker.groups.show.title') }}
+      .col-4.text-right
+        q-btn(
+        @click="$router.push({ name: 'piecemaker.groups.annotate' })",
+        ) Live Annotate
     span(slot="form-logo")
 
     q-btn(slot="backButton", @click="$router.push({ name: 'piecemaker.groups.list' })", icon="keyboard_backspace", round, small)
 
-    // btn: filter
+    // timeline diagramm
     //
-    q-btn.fixed.text-white(@click="openFilter = true", :class="{ 'bg-green': radioFilter == 'allsessions' || radioFilter == 'thissession' }", style="top: 66px; right: 16px;")
-      q-icon(v-if="radioFilter == 'allsessions' || radioFilter == 'thissession'", name="visibility")
-      q-icon(v-else, name="visibility_off")
-      span.q-ml-md Filter
-
-    // diagram
-    //
-    .text-center
+    .row
       svg(
-      :width="(newArrTimelineDataDummy.length * diagramDimensions.barWidth) + (newArrTimelineDataDummy.length * diagramDimensions.barSpace) - diagramDimensions.barSpace",
-      height="250"
+      width="100%",
+      :height="viewportHeight / 3",
+      style="top: 80px; right: 30px;"
       )
-        rect(
-        width="1px",
-        height="100%",
-        :x="(newArrTimelineDataDummy.length * diagramDimensions.barWidth) + (newArrTimelineDataDummy.length * diagramDimensions.barSpace) - diagramDimensions.barSpace - 1",
-        fill="rgba(255, 255, 255, .1)"
+        // path(d="M0 0 C 100 0, 10 200, 0 80", stroke="white", fill="transparent")
+        // path(d="M0,0 C10,100 40,10 40,25 S40,40 25,25", stroke="white", fill="transparent")
+        path(d="M10 80 Q 52.5 10, 95 80 T 180 80, 100 Q 120 10", stroke="white", fill="transparent")
+
+        // line bottom
+        // (x-axis)
+        //
+        line(
+        x1="0", y1="100%",
+        x2="100%", y2="100%",
+        style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;"
         )
 
+        // years
+        //
         svg(
-          v-for="(data, idata) in newArrTimelineDataDummy",
-          :width="diagramDimensions.barWidth",
-          height="100%",
-          :x="diagramDimensions.barWidth * idata + diagramDimensions.barSpace * idata"
+        v-for="(y, iy) in arrTimelineDataDummy",
+        :width="(viewportWidth - 96) / arrTimelineDataDummy.length",
+        :x="((viewportWidth - 96) / arrTimelineDataDummy.length) * iy"
+        )
+
+          // years:
+          // separators
+          //
+          line(
+          :x1="(viewportWidth - 96) / 3", y1="80%",
+          :x2="(viewportWidth - 96) / 3", y2="100%",
+          style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;"
           )
-          rect.cursor-pointer.moba-diagram-bar(
-          @click="showSession = true, diagramDimensions.activeId = data.id",
-          :class="{'moba-active-bar': diagramDimensions.activeId == data.id }",
-          width="100%", :height="data.duration / 10", :y="200 - (data.duration / 10) - 20"
+
+          // months
+          //
+          svg(
+          v-for="(m, im) in y.months",
+          :x="((viewportWidth - 96) / arrTimelineDataDummy.length / 12) * (m.month - 1)",
+          :width="(viewportWidth - 96) / arrTimelineDataDummy.length / 12",
+          height="100%"
           )
-          //
-          // separator – YEARS
-          //
-          g(v-if="handlerPrevItem(idata, 'year') != data.year")
             rect(
-            width="1px",
-            height="100%",
-            fill="rgba(255, 255, 255, .1)"
+            :height="10 * m.days.length",
+            :y="(viewportHeight / 3) - (10 * m.days.length)",
+            width="100%",
+            style="fill: rgba(255, 255, 255, .1)!important;"
             )
-            text.rotate-90.q-caption(y="-5", fill="rgba( 255, 255, 255, .2)") {{ data.year }}
-          //
-          // separator – MONTHS
-          //
-          g(v-if="handlerPrevItem(idata, 'month') != data.month && handlerPrevItem(idata, 'year') == data.year")
-            rect(
-            width="1px",
-            height="50px",
-            y="calc(100% - 70px)",
-            fill="rgba(255, 255, 255, .1)"
-            )
-            // text.q-caption(x="10", y="10", fill="rgba( 255, 255, 255, .2)") {{ data.month }}
 
     // wrap - recording sessions
     //
-    .row.q-mt-xl(v-if="showSession")
+    .row.q-mt-xl
       .col-10.offset-1
-        h5.text-center
-          q-btn(@click='diagramDimensions.activeId -= 1', icon="keyboard_arrow_left", flat)
-          span.q-px-md (Recording Session Titel)
-          q-btn(@click='diagramDimensions.activeId += 1', icon="keyboard_arrow_right", flat)
-          .text-center.q-mt-sm
-            q-btn.shadow-6(@click="showSession = false, diagramDimensions.activeId = null", icon="clear", label="close", size="small", flat)
-      .col-12
+        div Recording Session
+      .col-10.offset-1
         SessionDiagram(:data="annotations", :meta="e")
-    .row.q-my-xl(v-else)
-      .col-12.row
-        .col-10.offset-1
-          q-btn.full-width.q-py-xl.bg-transparent.shadow-6(
-          @click="$router.push({ name: 'piecemaker.groups.annotate' })",
-          style="border: 1px solid rgba( 255, 255, 255, .1 ); border-radius: .75rem; letter-spacing: .005rem;"
-          ) Live Annotate this timeline
+
 </template>
 
 <script>
   // import CardFull from '../../../components/shared/layouts/CardFull'
   import FullScreen from '../../../components/shared/layouts/FullScreen'
   import SessionDiagram from '../../../components/piecemaker/partials/SessionDiagram'
-  import { QWindowResizeObservable, QList, QItem, QItemMain, QItemSide, QItemTile, QModal, QTooltip, QPopover, QModalLayout, QLayoutDrawer, QPageSticky, QRadio, QCheckbox, QSearch } from 'quasar'
+  import { QWindowResizeObservable, QList, QItem, QItemMain, QItemSide, QItemTile, QModal, QTooltip, QPopover, QModalLayout } from 'quasar'
 
   export default {
     components: {
@@ -152,12 +101,7 @@
       QModal,
       QTooltip,
       QPopover,
-      QModalLayout,
-      QLayoutDrawer,
-      QPageSticky,
-      QRadio,
-      QCheckbox,
-      QSearch
+      QModalLayout
     },
     mounted () {
       const
@@ -176,46 +120,8 @@
       this.appendRandomAnnotations()
       this.divideInBlocks(this.annotations)
       this.filterAnnotations(0, this.numberRandomAnnotations)
-      this.handlerCountAllSessions()
     },
     methods: {
-      handlerPrevItem (valIndex, valProp) {
-        if (valIndex > 0) {
-          let newIndex = valIndex - 1
-          if (valProp === 'year') {
-            return this.newArrTimelineDataDummy[newIndex].year
-          }
-          else if (valProp === 'month') {
-            return this.newArrTimelineDataDummy[newIndex].month
-          }
-          /* else if (valProp === 'referencetime') {
-            return this.byReferencetime[newIndex].referencetime
-          } */
-        }
-      },
-      handlerCountAllSessions () {
-        let i = 0
-        let j = 0
-        let k = 0
-        let l = 0
-        for (i = 0; i < this.arrTimelineDataDummy.length; i++) {
-          for (j = 0; j < this.arrTimelineDataDummy[i].months.length; j++) {
-            // this.countAllSessions++
-            for (k = 0; k < this.arrTimelineDataDummy[i].months[j].days.length; k++) {
-              // this.countAllSessions++
-              for (l = 0; l < this.arrTimelineDataDummy[i].months[j].days[k].entries.length; l++) {
-                this.countAllSessions++
-                this.newArrTimelineDataDummy.push({id: this.countAllSessions, year: this.arrTimelineDataDummy[i].year, month: this.arrTimelineDataDummy[i].months[j].month, day: this.arrTimelineDataDummy[i].months[j].days[k].date, begin: this.arrTimelineDataDummy[i].months[j].days[k].entries[l].start, duration: this.arrTimelineDataDummy[i].months[j].days[k].entries[l].duration})
-              }
-            }
-          }
-        }
-        console.log('all sessions: ' + this.countAllSessions)
-        console.log(this.newArrTimelineDataDummy[2].duration)
-      },
-      randomNumber (fromRandom, toRandom) {
-        return Math.floor(Math.random() * toRandom) + fromRandom
-      },
       filterAnnotations (valFrom, valTo) {
         this.filteredAnnotations = this.annotations.filter(annotation => annotation.created > valFrom && annotation.created <= valTo)
         // console.log(this.filteredAnnotations)
@@ -226,62 +132,9 @@
         }
       },
       appendRandomAnnotations () {
-        // console.log('GEHT !')
         let i = 0
-        let author = ''
-        let dur = ''
-        let text = 'Hier steht ein Text.'
-        let type = ''
         for (i = 0; i < this.numberRandomAnnotations; i++) {
-          if (i >= 0 && i <= 10) {
-            dur = 40
-          }
-          else {
-            dur = 1
-          }
-          if (i >= 1 && i <= 5) {
-            type = this.annotationTypes[2]
-            text = 'https://www.youtube.com/embed/lDJFMvU2ZqY'
-          }
-          else if (i >= 30 && i <= 80) {
-            type = this.annotationTypes[1]
-            text = 'Log entry'
-          }
-          else if (i >= 85 && i <= 120) {
-            type = this.annotationTypes[4]
-            text = '#tag1'
-          }
-          else if (i >= 10 && i <= 20) {
-            type = this.annotationTypes[0]
-            text = 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.   \n' +
-              '\n' +
-              'Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.   \n' +
-              '\n' +
-              'Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.   \n' +
-              '\n' +
-              'Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer'
-          }
-          else if (i === 81 || i === 121) {
-            type = this.annotationTypes[3]
-            text = 'New Section: Lorem ipsum'
-          }
-          else {
-            type = this.annotationTypes[0]
-            text = 'Consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo du.'
-          }
-          if (i >= 1 && i <= 20) {
-            author = 'A. Z.'
-          }
-          else if (i >= 30 && i <= 80) {
-            author = 'System'
-          }
-          else if (i >= 100 && i <= 130) {
-            author = 'B. Y.'
-          }
-          else {
-            author = 'C. X.'
-          }
-          this.annotations.push({id: i, referencetime: Math.floor(Math.random() * this.svgHeight), duration: dur, created: i, text: text, type: type, author: author})
+          this.annotations.push({referencetime: Math.floor(Math.random() * this.svgHeight), created: i, text: 'Hier steht der Text. (' + i + ')'})
         }
       },
       getSvgHeight (arr) {
@@ -321,28 +174,16 @@
       },
       onResize (size) {
         this.viewportHeight = size.height
-        this.viewportWidth = size.width - 96
+        this.viewportWidth = size.width
       }
     },
     data () {
       const _this = this
       return {
-        diagramDimensions: {
-          barWidth: 15,
-          barSpace: 1,
-          activeId: null
-        },
-        countAllSessions: null,
-        filterAuthors: [],
-        filterTypes: [],
-        radioFilter: 'none',
-        openFilter: false,
         map: undefined,
         activeDiagram: '',
         annotations: [],
         annotationsBlocks: [],
-        annotationTypes: ['text', 'system', 'video', 'separator', 'tag'],
-        authors: ['A.Z.', 'B.Y.', 'C.X.'],
         arrFilter: [{ // dev only
           rangebegin: 0,
           rangeend: 30
@@ -356,7 +197,6 @@
           rangebegin: 151,
           rangeend: 200
         }],
-        newArrTimelineDataDummy: [],
         arrTimelineDataDummy: [{ // dev only
           year: 2018,
           months: [{
@@ -364,11 +204,10 @@
             days: [{
               date: '4',
               entries: [{
-                duration: 300,
                 end: '22.12',
                 id: '1',
                 start: '12',
-                title: 'Titel bc'
+                title: 'Titel abc'
               }]
             }]
           }, {
@@ -376,7 +215,6 @@
             days: [{
               date: '15',
               entries: [{
-                duration: 1000,
                 end: '22.12',
                 id: '2',
                 start: '8:24',
@@ -388,22 +226,19 @@
             days: [{
               date: '18',
               entries: [{
-                duration: 1000,
                 end: '22.12',
                 id: '3',
                 start: '7',
-                title: 'Titel bc'
+                title: 'Titel abc'
               }]
             }, {
               date: '21',
               entries: [{
-                duration: 1000,
                 end: '22.12',
                 id: '4',
                 start: '7.30',
-                title: 'Titel bc'
+                title: 'Titel abc'
               }, {
-                duration: 400,
                 end: '22.12',
                 id: '5',
                 start: '14.45',
@@ -412,7 +247,6 @@
             }, {
               date: '26',
               entries: [{
-                duration: 400,
                 end: '22.12',
                 id: '6',
                 start: '5',
@@ -424,7 +258,6 @@
             days: [{
               date: '2',
               entries: [{
-                duration: 934,
                 end: '22.12',
                 id: '7',
                 start: '8:50',
@@ -433,7 +266,6 @@
             }, {
               date: '4',
               entries: [{
-                duration: 400,
                 end: '22.12',
                 id: '8',
                 start: '8:43',
@@ -448,7 +280,6 @@
             days: [{
               date: '2',
               entries: [{
-                duration: 320,
                 end: '23.00',
                 id: 'dedasca',
                 start: '19.12',
@@ -457,7 +288,6 @@
             }, {
               date: '9',
               entries: [{
-                duration: 1200,
                 end: '23.00',
                 id: '9',
                 start: '19.12',
@@ -466,7 +296,6 @@
             }, {
               date: '10',
               entries: [{
-                duration: 410,
                 end: '23.00',
                 id: '9vvdscasdc',
                 start: '19.12',
@@ -475,7 +304,6 @@
             }, {
               date: '15',
               entries: [{
-                duration: 80,
                 end: '23.00',
                 id: 'lvdsvsdc',
                 start: '19.12',
@@ -483,17 +311,15 @@
               }]
             }]
           }, {
-            month: '12',
+            month: '7',
             days: [{
               date: '14',
               entries: [{
-                duration: 561,
                 end: '23.00',
                 id: '10',
                 start: '11:00',
                 title: 'vormittags'
               }, {
-                duration: 912,
                 end: '12.00',
                 id: '11',
                 start: '9:00',
@@ -508,7 +334,6 @@
             days: [{
               date: '9',
               entries: [{
-                duration: 1287,
                 end: '23.00',
                 id: '12',
                 start: '19.12',
@@ -520,13 +345,11 @@
             days: [{
               date: '14',
               entries: [{
-                duration: 1058,
                 end: '23.00',
                 id: '13',
                 start: '11:00',
                 title: 'vormittags'
               }, {
-                duration: 1701,
                 end: '23.00',
                 id: '14',
                 start: '18:19',
@@ -538,7 +361,6 @@
             days: [{
               date: '9',
               entries: [{
-                duration: 461,
                 end: '23.00',
                 id: '15',
                 start: '19.12',
@@ -550,25 +372,21 @@
             days: [{
               date: '14',
               entries: [{
-                duration: 950,
                 end: '11.00',
                 id: '16',
                 start: '11:00',
                 title: 'vormittags'
               }, {
-                duration: 317,
                 end: '12.00',
                 id: '17',
                 start: '18:19',
                 title: 'blablabla'
               }, {
-                duration: 873,
                 end: '13.00',
                 id: '18',
                 start: '11:00',
                 title: 'vormittags'
               }, {
-                duration: 900,
                 end: '14.00',
                 id: '19',
                 start: '18:19',
@@ -587,7 +405,6 @@
           visibility: false,
           positionY: ''
         },
-        showSession: false,
         svgHeight: '100',
         viewportHeight: '',
         columns: [
@@ -626,36 +443,25 @@
           duration: '1000',
           id: '',
           referencetime: '0',
-          title: 'video 1',
-          type: 'video'
+          title: 'video 1'
         }, {
           created: '20',
           duration: '1100',
           id: '',
           referencetime: '20',
-          title: 'video 1',
-          type: 'video'
+          title: 'video 1'
         }, {
           created: '25',
           duration: '500',
           id: '',
           referencetime: '270',
-          title: 'video 1',
-          type: 'video'
-        }, {
-          created: '59',
-          duration: '821',
-          id: '',
-          referencetime: '200',
-          title: 'Zeitraum 1',
-          type: 'timerange'
+          title: 'video 1'
         }, {
           created: '300',
           duration: '1282',
           id: '',
           referencetime: '12',
-          title: 'video vfvdfcasd',
-          type: 'video'
+          title: 'video 1'
         }]
       }
     }
@@ -668,20 +474,6 @@
   }
   .moba-border-top {
   border-top: 1px solid rgba( 255, 255, 255, .2 );
-  }
-
-  .moba-diagram-bar {
-    fill: rgba(255, 255, 255, .05);
-  }
-
-  .moba-diagram-bar:hover {
-    fill: rgba(255, 255, 255, .2);
-  }
-
-    .moba-active-bar {
-      fill: white!important;
-    }
-  .moba-empty {
   }
 
   .moba-swimlane {
@@ -698,7 +490,7 @@
   }
 
   .moba-svg-entry:hover {
-    /* fill: red!important;
-    opacity: 1; */
+    fill: red!important;
+    opacity: 1;
   }
 </style>

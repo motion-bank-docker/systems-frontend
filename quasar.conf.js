@@ -4,13 +4,11 @@ module.exports = function (ctx) {
   return {
     // app plugins (/src/plugins)
     plugins: [
-      'i18n',
-      'auth',
       'api',
+      'auth',
       'axios',
-      'feathers',
-      'mb-conf',
-      'mb-notifications'
+      'i18n',
+      'notifications'
     ],
     css: [
       'app.styl'
@@ -18,9 +16,6 @@ module.exports = function (ctx) {
     extras: [
       ctx.theme.mat ? 'roboto-font' : null,
       'material-icons'
-      // 'ionicons',
-      // 'mdi',
-      // 'fontawesome'
     ],
     supportIE: true,
     build: {
@@ -43,58 +38,51 @@ module.exports = function (ctx) {
       },
       // Runtime globals
       env: {
-        API_HOST: JSON.stringify(process.env.API_HOST || 'https://motionbank-api.herokuapp.com'),
-        UI_HOST: JSON.stringify(process.env.UI_HOST || 'http://localhost:8080'),
+        API_HOST: JSON.stringify(process.env.API_HOST || 'https://api.motionbank.org'),
+        UI_HOST: JSON.stringify(process.env.UI_HOST || 'https://app.motionbank.org'),
         ID_FIELD: JSON.stringify(process.env.ID_FIELD || 'uuid'),
         AUTH0_DOMAIN: JSON.stringify(process.env.AUTH0_DOMAIN || 'motionbank.eu.auth0.com'),
         AUTH0_CLIENT_ID: JSON.stringify(process.env.AUTH0_CLIENT_ID || 'lyVRrHYxUCOosFip40Ws5BRJyfHWSWTi'),
-        AUTH0_REDIRECT_URL: JSON.stringify(process.env.AUTH0_REDIRECT_URL || 'http://localhost:8080/users/callback'),
-        AUTH0_AUDIENCE: JSON.stringify(process.env.AUTH0_AUDIENCE || 'https://motionbank-api.herokuapp.com')
+        AUTH0_REDIRECT_URL: JSON.stringify(process.env.AUTH0_REDIRECT_URL || 'https://app.motionbank.org/users/callback'),
+        AUTH0_AUDIENCE: JSON.stringify(process.env.AUTH0_AUDIENCE || 'https://api.motionbank.org')
       }
     },
     devServer: {
       // https: true,
       // port: 8080,
+      host: '0.0.0.0',
       open: true // opens browser window automatically
     },
     // framework: 'all' --- includes everything; for dev only!
     framework: {
       components: [
+        //
+        // Layout
+        //
         'QLayout',
         'QLayoutHeader',
         'QLayoutDrawer',
         'QPageContainer',
         'QPage',
+        'QWindowResizeObservable',
+        //
+        // Buttons
+        //
+        'QBtn',
+        'QBtnDropdown',
+        //
+        // Navigation
+        //
         'QToolbar',
         'QToolbarTitle',
-        'QBtn',
-        'QIcon',
-        'QList',
-        'QListHeader',
-        'QItem',
-        'QItemMain',
-        'QItemSide',
-        'QItemTile',
-        'QItemSeparator',
         'QContextMenu',
-        'QScrollArea',
-        //
-        // Grouping
-        'QCard',
-        'QCardMain',
         'QTabs',
         'QTab',
         'QTabPane',
         'QRouteTab',
-        'QTable',
-        'QModal',
         //
-        // Loading
-        'QSpinner',
-        'QSpinnerTail',
-        'QSpinnerPuff',
+        // Form Components
         //
-        // Forms
         'QSelect',
         'QInput',
         'QField',
@@ -103,8 +91,45 @@ module.exports = function (ctx) {
         'QSlider',
         'QToggle',
         'QChipsInput',
-        'QChip',
-        'QSearch'
+        'QSearch',
+        //
+        // Grouping
+        //
+        'QCard',
+        'QCardMain',
+        'QCollapsible',
+        'QTable',
+        'QTr',
+        'QTd',
+        'QList',
+        'QListHeader',
+        'QItem',
+        'QItemMain',
+        'QItemSide',
+        'QItemTile',
+        'QItemSeparator',
+        //
+        // Popups
+        //
+        'QModal',
+        'QModalLayout',
+        'QTooltip',
+        'QPopover',
+        //
+        // Progress
+        //
+        'QSpinner',
+        'QSpinnerTail',
+        'QSpinnerPuff',
+        //
+        // Scrolling
+        //
+        'QScrollArea',
+        //
+        // Other Components
+        //
+        'QIcon',
+        'QChip'
       ],
       directives: [
         'Ripple'
@@ -117,9 +142,7 @@ module.exports = function (ctx) {
         'ActionSheet'
       ]
     },
-    // animations: 'all' --- includes all animations
-    animations: [
-    ],
+    animations: 'all',
     pwa: {
       cacheExt: 'js,html,css,ttf,eot,otf,woff,woff2,json,svg,gif,jpg,jpeg,png,wav,ogg,webm,flac,aac,mp4,mp3',
       manifest: {

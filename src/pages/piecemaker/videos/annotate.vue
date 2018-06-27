@@ -44,8 +44,7 @@
 
 <script>
   import { AppFullscreen } from 'quasar'
-  import assert from 'assert'
-  import assignDeep from 'assign-deep'
+  import { ObjectUtil, Assert } from 'mbjs-utils'
   import uuidValidate from 'uuid-validate'
   import VideoPlayer from '../../../components/shared/media/VideoPlayer'
   import annotations from '../../../lib/annotations'
@@ -164,11 +163,11 @@
         const _this = this
         const annotation = {
           author: _this.$store.state.auth.payload.userId,
-          body: assignDeep({}, _this.currentBody),
+          body: ObjectUtil.merge({}, _this.currentBody),
           target: {
             id: _this.groupId,
             type: constants.MAP_TYPE_TIMELINE,
-            selector: assignDeep({}, _this.currentSelector)
+            selector: ObjectUtil.merge({}, _this.currentSelector)
           }
         }
         return this.$store.dispatch('annotations/create', annotation)
@@ -183,14 +182,14 @@
         window.location.href = '#' + uuid
       },
       updateAnnotation (annotation) {
-        assert.equal(typeof annotation, 'object')
-        assert(uuidValidate(annotation.uuid))
-        assert.equal(typeof annotation.body.value, 'string')
+        Assert.isType(annotation, 'object')
+        Assert.ok(uuidValidate(annotation.uuid))
+        Assert.isType(annotation.body.value, 'string')
         return this.$store.dispatch('annotations/patch', [annotation.uuid, annotation])
           .then(() => this.getAnnotations())
       },
       deleteAnnotation (uuid) {
-        assert(uuidValidate(uuid))
+        Assert.ok(uuidValidate(uuid))
         return this.$store.dispatch('annotations/remove', uuid)
           .then(() => this.getAnnotations())
       },
