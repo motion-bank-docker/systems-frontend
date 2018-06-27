@@ -213,7 +213,7 @@
                       span(v-else-if="annotation.type == 'tag'") {{ annotation.text }}
                       span(v-else-if="annotation.type != 'tag'") {{ annotation.text }}
                       // span.q-ml-lg.q-caption() {{ annotation.tags }}
-                    .col-3.q-ml-sm.q-pa-sm.shadow-6(v-if="annotation.tags.length > 0", style="border-left: 0px solid rgba(255, 255, 255, .5); min-height: 100%;")
+                    .col-3.q-ml-sm.q-pa-sm.bg-grey-10.shadow-6(v-if="annotation.tags.length > 0", style="border-left: 0px solid rgba(255, 255, 255, .5); min-height: 100%;")
                       div(v-for="(at, ati) in annotation.tags", :class="{'q-mb-sm': ati - 2 < annotation.tags.length}") # {{ at }}
                   // .col-2.text-right
                     .text-grey-9(v-if="handlerPrevItem(i, 'author') != annotation.author && annotation.type != 'separator' && annotation.type == 'tag'") {{ annotation.author }}
@@ -224,7 +224,19 @@
 </template>
 
 <script>
+  import { QWindowResizeObservable, QList, QItem, QItemMain, QItemSide, QItemTile, QTooltip, QCard } from 'quasar'
+
   export default {
+    components: {
+      QWindowResizeObservable,
+      QList,
+      QItem,
+      QItemMain,
+      QItemSide,
+      QItemTile,
+      QTooltip,
+      QCard
+    },
     mounted () {
       const
         _this = this,
