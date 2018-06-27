@@ -82,9 +82,9 @@
                 svg(x="15")
                   svg(
                   v-for="(video, i) in videos",
-                  width="30",
+                  width="20",
                   :height="video.duration * ((viewportHeight / 100 * 80) / svgHeight)",
-                  :x="(30 + 10) * i",
+                  :x="(20 + 10) * i",
                   :y="video.referencetime * ((viewportHeight / 100 * 80) / svgHeight)"
                   )
                     rect.moba-swimlane(
@@ -105,8 +105,8 @@
                     )
                     line(
                     v-for="n in 10"
-                    x1="0%", :y1="n * 100",
-                    x2="100%", :y2="n * 100",
+                    x1="0%", :y1="n * 120",
+                    x2="100%", :y2="n * 120",
                     style="stroke: rgba(255, 255, 255, .25); stroke-width: 1;"
                     )
 
@@ -185,16 +185,16 @@
                   // div(v-if="handlerPrevItem(i, 'referencetime') != annotation.referencetime") {{ annotation.referencetime }}
                   div(v-if="annotation.type == 'separator'") ###
 
-                .col-11.row
+                .col-11.row(style="line-height: 1.35rem;")
                   .col-12.text-grey-9(v-if="handlerPrevItem(i, 'author') != annotation.author && annotation.type != 'separator' && annotation.type != 'tag'") {{ annotation.author }}
                   .col-10
                     iframe(v-if="annotation.type == 'video'", width="100%", height="315", :src="annotation.text", frameborder="0", allow="autoplay; encrypted-media", allowfullscreen)
                     span(v-else-if="annotation.type == 'system'") [{{ annotation.text }}]
-                    // span.text-deep-purple-4(v-else-if="annotation.type == 'tag'") {{ annotation.text }}
+                    // span.bg-white.text-black.q-pa-xs.q-ml-lg.q-caption(v-else-if="annotation.type == 'tag'") {{ annotation.text }}
                     span(v-else-if="annotation.type != 'tag'") {{ annotation.text }}
                   .col-2.text-right
                     .text-grey-9(v-if="handlerPrevItem(i, 'author') != annotation.author && annotation.type != 'separator' && annotation.type == 'tag'") {{ annotation.author }}
-                    span(v-if="annotation.type == 'tag'") {{ annotation.text }}
+                    span.bg-white.text-black.q-pa-xs.q-ml-lg.q-caption(v-if="annotation.type == 'tag'") {{ annotation.text }}
                   // .col-1.text-right.moba-list-hidden
                     q-btn(v-if="annotation.type != 'system'", size="xs", icon="edit", round, flat)
 
@@ -471,25 +471,36 @@
           duration: '1000',
           id: '',
           referencetime: '0',
-          title: 'video 1'
+          title: 'video 1',
+          type: 'video'
         }, {
           created: '20',
           duration: '1100',
           id: '',
           referencetime: '20',
-          title: 'video 1'
+          title: 'video 1',
+          type: 'video'
         }, {
           created: '25',
           duration: '500',
           id: '',
           referencetime: '270',
-          title: 'video 1'
+          title: 'video 1',
+          type: 'video'
+        }, {
+          created: '50',
+          duration: '230',
+          id: '',
+          referencetime: '120',
+          title: 'timerange',
+          type: 'timerange'
         }, {
           created: '300',
           duration: '200',
           id: '',
           referencetime: '12',
-          title: 'video 1'
+          title: 'video 1',
+          type: 'video'
         }]
       }
     }

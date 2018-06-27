@@ -157,7 +157,7 @@
                   x2="90%", y2="100%",
                   style="stroke: rgba(255, 255, 255, 1)!important; stroke-width: 1;"
                   )
-    .row.bg-grey-10.shadow-10
+    .row.bg-grey-10.shadow-2
       // div.col-12.q-mb-md(v-for="y in arrTimelineDataDummy")
         | {{ handlerTest() }}
         div(v-for="m in y.months")
@@ -170,43 +170,43 @@
         // :width="(countAllSessions * diagramDimensions.barWidth) + (countAllSessions * diagramDimensions.barSpace) - diagramDimensions.barSpace",
         height="200"
         )
-      svg.bg-dark.q-mb-sm(
-      width="200%",
-      height="200"
-      )
-        svg(
-          v-for="(y, iy) in arrTimelineDataDummy",
-          :width="400",
-          height="100%",
-          :x="iy * 400 + iy * 50"
-          )
-          rect(width="100%", height="100%", fill="rgba(255, 0, 0, .1)")
-
+      // svg.bg-dark.q-mb-sm(
+        width="200%",
+        height="200"
+        )
           svg(
-            v-for="(m, im) in y.months",
-            :width="50",
-            height="80%",
-            :x="52 * im"
+            v-for="(y, iy) in arrTimelineDataDummy",
+            // :width="400",
+            height="100%",
+            // :x="iy * 400 + iy * 50"
             )
-            rect(width="100%", height="100%", fill="rgba(255, 255, 0, .1)")
+            rect(width="100%", height="100%", fill="rgba(255, 0, 0, .1)")
 
             svg(
-              v-for="(d, id) in m.days",
-              :width="10",
+              v-for="(m, im) in y.months",
+              // :width="50",
               height="80%",
-              :x="11 * id"
+              // :x="52 * im"
               )
-              rect(width="100%", height="100%", fill="rgba(255, 0, 255, .1)")
+              rect(width="100%", height="100%", fill="rgba(255, 255, 0, .1)")
 
               svg(
-                v-for="(e, ie) in d.entries",
-                :width="1",
-                height="100%",
-                :x="2 * ie"
+                v-for="(d, id) in m.days",
+                // :width="10",
+                height="80%",
+                // :x="11 * id"
                 )
-                rect(width="100%", :height="e.duration / 10", fill="rgba(255, 255, 255, .5)")
+                rect(width="100%", height="100%", fill="rgba(255, 0, 255, .1)")
 
-      svg.bg-red(
+                svg(
+                  v-for="(e, ie) in d.entries",
+                  // :width="1",
+                  height="100%",
+                  // :x="2 * ie"
+                  )
+                  rect(width="100%", :height="e.duration / 10", fill="rgba(255, 255, 255, .5)")
+
+      svg(
       :width="(newArrTimelineDataDummy.length * diagramDimensions.barWidth) + (newArrTimelineDataDummy.length * diagramDimensions.barSpace) - diagramDimensions.barSpace",
       height="200"
       )
@@ -216,8 +216,16 @@
           height="100%",
           :x="diagramDimensions.barWidth * idata + diagramDimensions.barSpace * idata"
           )
-          rect(width="100%", :height="data.duration / 10", :y="200 - (data.duration / 10)", fill="rgba(255, 255, 255, .1)")
-
+          rect.cursor-pointer(
+          @click="showSession = true",
+          width="100%", :height="data.duration / 10", :y="200 - (data.duration / 10)", fill="rgba(255, 255, 255, .05)"
+          )
+          rect(
+          v-if="handlerPrevItem(idata, 'year') != data.year",
+          width="1px",
+          height="100%",
+          fill="rgba(255, 255, 255, .1)"
+          )
         // svg(
           v-for="(n, indexN) in countAllSessions",
           // :width="diagramDimensions.barWidth",
@@ -278,19 +286,12 @@
       .col-12
         SessionDiagram(:data="annotations", :meta="e")
     .row.q-my-xl(v-else)
-      // .col-12
-        .text-center Dashboard
       .col-12.row
-        // .col-3.offset-1
         .col-10.offset-1
           q-btn.full-width.q-py-xl.bg-transparent.shadow-6(
           @click="$router.push({ name: 'piecemaker.groups.annotate' })",
           style="border: 1px solid rgba( 255, 255, 255, .1 ); border-radius: .75rem; letter-spacing: .005rem;"
           ) Live Annotate this timeline
-        // .col-8.q-pl-md
-          q-list.no-border
-            q-item bla
-            q-item bla
 </template>
 
 <script>
@@ -340,8 +341,16 @@
       this.handlerCountAllSessions()
     },
     methods: {
-      handlerTest () {
-        alert('hallo')
+      handlerPrevItem (valIndex, valProp) {
+        if (valIndex > 0) {
+          let newIndex = valIndex - 1
+          if (valProp === 'year') {
+            return this.newArrTimelineDataDummy[newIndex].year
+          }
+          /* else if (valProp === 'referencetime') {
+            return this.byReferencetime[newIndex].referencetime
+          } */
+        }
       },
       handlerCountAllSessions () {
         let i = 0
@@ -478,8 +487,8 @@
       const _this = this
       return {
         diagramDimensions: {
-          barWidth: 20,
-          barSpace: 5
+          barWidth: 15,
+          barSpace: 1
         },
         countAllSessions: null,
         filterAuthors: [],
@@ -513,7 +522,7 @@
             days: [{
               date: '4',
               entries: [{
-                duration: 1000,
+                duration: 300,
                 end: '22.12',
                 id: '1',
                 start: '12',
@@ -573,7 +582,7 @@
             days: [{
               date: '2',
               entries: [{
-                duration: 400,
+                duration: 934,
                 end: '22.12',
                 id: '7',
                 start: '8:50',
@@ -736,7 +745,7 @@
           visibility: false,
           positionY: ''
         },
-        showSession: true,
+        showSession: false,
         svgHeight: '100',
         viewportHeight: '',
         columns: [
@@ -775,25 +784,36 @@
           duration: '1000',
           id: '',
           referencetime: '0',
-          title: 'video 1'
+          title: 'video 1',
+          type: 'video'
         }, {
           created: '20',
           duration: '1100',
           id: '',
           referencetime: '20',
-          title: 'video 1'
+          title: 'video 1',
+          type: 'video'
         }, {
           created: '25',
           duration: '500',
           id: '',
           referencetime: '270',
-          title: 'video 1'
+          title: 'video 1',
+          type: 'video'
+        }, {
+          created: '59',
+          duration: '329',
+          id: '',
+          referencetime: '200',
+          title: 'Zeitraum 1',
+          type: 'timerange'
         }, {
           created: '300',
           duration: '1282',
           id: '',
           referencetime: '12',
-          title: 'video 1'
+          title: 'video vfvdfcasd',
+          type: 'video'
         }]
       }
     }
