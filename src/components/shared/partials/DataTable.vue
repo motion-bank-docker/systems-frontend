@@ -1,20 +1,21 @@
 <template lang="pug">
 
   q-table(
-    @rowclick="onRowClick($event)",
-    :dark="true",
-    :data="rows",
-    :config="conf",
-    :columns="cols",
-    :actions="actns",
-    row-key="title"
-    )
+  @rowclick="onRowClick($event)",
+  :dark="true",
+  :data="rows",
+  :config="conf",
+  :columns="cols",
+  :actions="actns",
+  row-key="title"
+  )
 
     //
       template(slot="col-actions", slot-scope="cell")
         q-btn(flat, small, v-for="a in actions", :color="a.color || 'neutral'", :key="a.type",
         @click="action(a.type, cell)") {{ $t(a.title) }}
 
+    //
       template(slot="col-created", slot-scope="cell")
         span(v-if="cell.data") {{ formatDateTime(cell.data) }}
 
@@ -24,39 +25,34 @@
       template(slot="col-author", slot-scope="cell")
         username(:uuid="cell.data")
 
-    //
     // cell "title"
     //
-    q-td(
-      slot="body-cell-title",
-      slot-scope="props",
-      :props="props"
-      )
-      q-btn(
-        flat, small
-        ) {{ props.row.title }}
+    template(slot="body-cell-title", slot-scope="props", :props="props")
+      q-td(v-if="props.row.title")
+        q-btn(flat, no-caps) {{ props.row.title }}
 
+    // cell "created"
     //
+    template(slot="body-cell-created", slot-scope="props", :props="props")
+      q-td(v-if="props.row.created") {{ props.row.created }}
+
+    // cell "updated"
+    //
+    template(slot="body-cell-updated", slot-scope="props", :props="props")
+      q-td(v-if="props.row.updated") {{ props.row.updated }}
+
+    // cell "author"
+    //
+    template(slot="body-cell-author", slot-scope="props", :props="props")
+      q-td(v-if="props.row.author") {{ props.row.author }}
+
     // cell "actions"
     //
-    q-td(
-      slot="body-cell-actions",
-      slot-scope="props",
-      :props="props"
-      )
-      // q-btn(
-        v-for="a in actions",
-        // :key="a.type",
-        flat, small
-        ) {{ $t(a.title) }} {{ $t(a.type) }}
-
-      q-btn(
-        @click="action(a.action)",
-        v-for="a in actions",
-        :color="a.color || 'neutral'",
-        :key="a.type",
-        flat, small
-        ) {{ $t(a.title) }}
+    template(slot="body-cell-actions", slot-scope="props", :props="props")
+      q-td(v-if="actions")
+        // q-btn(v-for="a in actions", :key="a.type", flat, small) {{ $t(a.title) }} {{ $t(a.type) }}
+        q-btn(v-for="a in actions", @click="action(a.action)", :key="a.type", flat, size="sm")
+          | {{ $t(a.title) }}
 
 </template>
 
