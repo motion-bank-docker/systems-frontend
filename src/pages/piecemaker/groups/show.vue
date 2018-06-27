@@ -49,7 +49,7 @@
     .row.q-mb-xl
       .col-10.offset-1(slot="form-title")
         // div {{ $t('routes.piecemaker.groups.show.title') }}: Titel der Timeline
-        h5.no-margin
+        h5.no-margin.text-center
           div Meine Timeline seit Studienbeginn (Titel)
           .text-grey-8 by Christian Hansen (Inhaber)
 
@@ -69,18 +69,27 @@
     .text-center
       svg(
       :width="(newArrTimelineDataDummy.length * diagramDimensions.barWidth) + (newArrTimelineDataDummy.length * diagramDimensions.barSpace) - diagramDimensions.barSpace",
-      height="200"
+      height="250"
       )
+        rect(
+        width="1px",
+        height="100%",
+        :x="(newArrTimelineDataDummy.length * diagramDimensions.barWidth) + (newArrTimelineDataDummy.length * diagramDimensions.barSpace) - diagramDimensions.barSpace - 1",
+        fill="rgba(255, 255, 255, .1)"
+        )
+
         svg(
           v-for="(data, idata) in newArrTimelineDataDummy",
           :width="diagramDimensions.barWidth",
           height="100%",
           :x="diagramDimensions.barWidth * idata + diagramDimensions.barSpace * idata"
           )
-          rect.cursor-pointer(
-          @click="showSession = true, diagramDimensions.active = '1'",
-          width="100%", :height="data.duration / 10", :y="200 - (data.duration / 10) - 20", fill="rgba(255, 255, 255, .05)"
+          rect.cursor-pointer.moba-diagram-bar(
+          @click="showSession = true, diagramDimensions.activeId = data.id",
+          :class="{'moba-active-bar': diagramDimensions.activeId == data.id }",
+          width="100%", :height="data.duration / 10", :y="200 - (data.duration / 10) - 20"
           )
+          //
           // separator – YEARS
           //
           g(v-if="handlerPrevItem(idata, 'year') != data.year")
@@ -89,17 +98,28 @@
             height="100%",
             fill="rgba(255, 255, 255, .1)"
             )
-            text.rotate-90.q-caption(x="5", y="-5", fill="rgba( 255, 255, 255, .2)") {{ data.year }}
+            text.rotate-90.q-caption(y="-5", fill="rgba( 255, 255, 255, .2)") {{ data.year }}
+          //
+          // separator – MONTHS
+          //
+          g(v-if="handlerPrevItem(idata, 'month') != data.month && handlerPrevItem(idata, 'year') == data.year")
+            rect(
+            width="1px",
+            height="50px",
+            y="calc(100% - 70px)",
+            fill="rgba(255, 255, 255, .1)"
+            )
+            // text.q-caption(x="10", y="10", fill="rgba( 255, 255, 255, .2)") {{ data.month }}
 
     // wrap - recording sessions
     //
-    .row.q-pt-lg(v-if="showSession")
+    .row.q-mt-xl(v-if="showSession")
       .col-10.offset-1
-        h5
-          q-btn(icon="keyboard_arrow_left")
+        h5.text-center
+          q-btn(@click='diagramDimensions.activeId -= 1', icon="keyboard_arrow_left")
           span.q-px-md (Recording Session Titel)
-          q-btn(icon="keyboard_arrow_right")
-          q-btn.float-right(@click="showSession = false", icon="clear", flat, round)
+          q-btn(@click='diagramDimensions.activeId += 1', icon="keyboard_arrow_right")
+          q-btn.absolute.q-mr-lg(@click="showSession = false, diagramDimensions.activeId = null", icon="clear", flat, round, style="right: 0;")
       .col-12
         SessionDiagram(:data="annotations", :meta="e")
     .row.q-my-xl(v-else)
@@ -163,6 +183,9 @@
           let newIndex = valIndex - 1
           if (valProp === 'year') {
             return this.newArrTimelineDataDummy[newIndex].year
+          }
+          else if (valProp === 'month') {
+            return this.newArrTimelineDataDummy[newIndex].month
           }
           /* else if (valProp === 'referencetime') {
             return this.byReferencetime[newIndex].referencetime
@@ -306,7 +329,7 @@
         diagramDimensions: {
           barWidth: 15,
           barSpace: 1,
-          active: null
+          activeId: null
         },
         countAllSessions: null,
         filterAuthors: [],
@@ -646,6 +669,17 @@
   border-top: 1px solid rgba( 255, 255, 255, .2 );
   }
 
+  .moba-diagram-bar {
+    fill: rgba(255, 255, 255, .05);
+  }
+
+  .moba-diagram-bar:hover {
+    fill: rgba(255, 255, 255, .2);
+  }
+
+    .moba-active-bar {
+      fill: white!important;
+    }
   .moba-empty {
   }
 
