@@ -1,6 +1,12 @@
 <template lang="pug">
 
   full-screen
+
+    // detect window dimensions
+    // (necessary, do not delete)
+    //
+    q-window-resize-observable(@resize="onResize")
+
     // filter
     //
     q-layout-drawer(v-model="openFilter", side="right", overlay)
@@ -38,11 +44,6 @@
             div.q-mb-sm search for term/tag:
             q-search.bg-transparent.text-white(color="white", dark)
 
-    // detect window dimensions
-    // (necessary, do not delete)
-    //
-    q-window-resize-observable(@resize="onResize")
-
     // headline
     //
     .row.q-mb-xl
@@ -63,149 +64,9 @@
       q-icon(v-else, name="visibility_off")
       span.q-ml-md Filter
 
-    // timeline diagramm
+    // diagram
     //
-    //.row
-        div(style="width: calc(100% + (96px * 2)); overflow-x: scroll;")
-          svg(
-          width="100%",
-          // :height="viewportHeight / 3",
-          style="top: 80px; right: 30px;"
-          )
-            // path(d="M0 0 C 100 0, 10 200, 0 80", stroke="white", fill="transparent")
-            // path(d="M0,0 C10,100 40,10 40,25 S40,40 25,25", stroke="white", fill="transparent")
-            // path(d="M10 80 Q 52.5 10, 95 80 T 180 80, 100 Q 120 10", stroke="white", fill="transparent")
-
-            // line top
-            // (x-axis)
-            //
-            line(
-            x1="0", y1="0",
-            x2="100%", y2="0",
-            style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;"
-            )
-
-            // line bottom
-            // (x-axis)
-            //
-            line(
-            x1="0", y1="100%",
-            x2="100%", y2="100%",
-            style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;"
-            )
-
-            // line bottom for min-height
-            // (x-axis)
-            //
-              line(
-              x1="0", y1="95%",
-              x2="100%", y2="95%",
-              style="stroke: rgba(255, 255, 255, .05); stroke-width: 1;"
-              )
-
-            // line left
-            //
-            line(
-            x1="0", y1="0",
-            x2="0", y2="100%",
-            style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;"
-            )
-
-            // years
-            //
-            svg(
-            v-for="(y, iy) in arrTimelineDataDummy",
-            // :width="(viewportWidth - 96) / arrTimelineDataDummy.length",
-            // :x="((viewportWidth - 96) / arrTimelineDataDummy.length) * iy"
-            )
-
-              // years:
-              // separator lines
-              //
-              line(
-              // :x1="(viewportWidth - 96) / arrTimelineDataDummy.length", y1="0%",
-              // :x2="(viewportWidth - 96) / arrTimelineDataDummy.length", y2="100%",
-              style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;"
-              )
-
-              // months
-              //
-              svg(
-              v-for="(m, im) in y.months",
-              / :x="((viewportWidth - 96) / arrTimelineDataDummy.length / 12) * (m.month - 1)",
-              / :width="(viewportWidth - 96) / arrTimelineDataDummy.length / 12",
-              height="100%",
-              style="background-color: red;"
-              )
-
-                // single session
-                //
-                rect.cursor-pointer(
-                v-for="(d, id) in m.days",
-                // :height="1000",
-                // :x="id * 6",
-                // :y="(viewportHeight / 3) - randomNumber(10, 100)",
-                width="2px",
-                style="fill: rgba(255, 255, 255, .1)!important;",
-                @click="showSession = true"
-                )
-
-                // dev: bottom line month to show month width
-                //
-                  line(
-                  x1="0", y1="100%",
-                  x2="90%", y2="100%",
-                  style="stroke: rgba(255, 255, 255, 1)!important; stroke-width: 1;"
-                  )
-    .row.bg-grey-10.shadow-2
-      // div.col-12.q-mb-md(v-for="y in arrTimelineDataDummy")
-        | {{ handlerTest() }}
-        div(v-for="m in y.months")
-          div months length: {{ y.months.length }}
-            div(v-for="d in m.month") days length: {{ m.days.length }}
-              div(v-for="x in d") date length: {{ d.length }}
-      // wrap all
-      //
-        svg(
-        // :width="(countAllSessions * diagramDimensions.barWidth) + (countAllSessions * diagramDimensions.barSpace) - diagramDimensions.barSpace",
-        height="200"
-        )
-      // svg.bg-dark.q-mb-sm(
-        width="200%",
-        height="200"
-        )
-          svg(
-            v-for="(y, iy) in arrTimelineDataDummy",
-            // :width="400",
-            height="100%",
-            // :x="iy * 400 + iy * 50"
-            )
-            rect(width="100%", height="100%", fill="rgba(255, 0, 0, .1)")
-
-            svg(
-              v-for="(m, im) in y.months",
-              // :width="50",
-              height="80%",
-              // :x="52 * im"
-              )
-              rect(width="100%", height="100%", fill="rgba(255, 255, 0, .1)")
-
-              svg(
-                v-for="(d, id) in m.days",
-                // :width="10",
-                height="80%",
-                // :x="11 * id"
-                )
-                rect(width="100%", height="100%", fill="rgba(255, 0, 255, .1)")
-
-                svg(
-                  v-for="(e, ie) in d.entries",
-                  // :width="1",
-                  height="100%",
-                  // :x="2 * ie"
-                  )
-                  rect(width="100%", :height="e.duration / 10", fill="rgba(255, 255, 255, .5)")
-
+    .text-center
       svg(
       :width="(newArrTimelineDataDummy.length * diagramDimensions.barWidth) + (newArrTimelineDataDummy.length * diagramDimensions.barSpace) - diagramDimensions.barSpace",
       height="200"
@@ -217,70 +78,26 @@
           :x="diagramDimensions.barWidth * idata + diagramDimensions.barSpace * idata"
           )
           rect.cursor-pointer(
-          @click="showSession = true",
-          width="100%", :height="data.duration / 10", :y="200 - (data.duration / 10)", fill="rgba(255, 255, 255, .05)"
+          @click="showSession = true, diagramDimensions.active = '1'",
+          width="100%", :height="data.duration / 10", :y="200 - (data.duration / 10) - 20", fill="rgba(255, 255, 255, .05)"
           )
-          rect(
-          v-if="handlerPrevItem(idata, 'year') != data.year",
-          width="1px",
-          height="100%",
-          fill="rgba(255, 255, 255, .1)"
-          )
-        // svg(
-          v-for="(n, indexN) in countAllSessions",
-          // :width="diagramDimensions.barWidth",
-          height="100%",
-          // :x="(diagramDimensions.barWidth + diagramDimensions.barSpace) * indexN"
-          )
+          // separator – YEARS
+          //
+          g(v-if="handlerPrevItem(idata, 'year') != data.year")
             rect(
-            width="100%",
-            height="60%",
-            fill="rgba(255, 255, 0, .1)"
+            width="1px",
+            height="100%",
+            fill="rgba(255, 255, 255, .1)"
             )
-
-        // years
-        //
-          svg(
-          v-for="(y, iy) in arrTimelineDataDummy"
-          )
-            // text(:y="100 + (iy * 15)") {{ arrTimelineDataDummy.length }}
-            // svg(
-              v-for="(m, im) in y.months",
-              // :width="viewportWidth / arrTimelineDataDummy.length / 12 * (iy + 1)",
-              // :x="viewportWidth / arrTimelineDataDummy.length * iy / 12 * (iy + 1)"
-              )
-            svg(
-            v-for="(m, im) in y.months",
-            // :x="42 * im"
-            )
-              rect(
-              width="35",
-              height="100%",
-              fill="rgba(255, 255, 255, .1)",
-              // :x="40 * iy"
-              )
-
-              // rect(width="10px", height="80%", :x="11 * im", fill="rgba( 255, 255, 255, .1 )")
-              // text(x="0", :y="20 * (iy + 1)") {{ m }}
-              // line(x1="100%", x2="100%", y1="0", y2="100%", style="stroke: rgba(255, 255, 255, 1)!important; stroke-width: 1;")
-            // months
-            //
-              svg(
-                v-for="(m, im) in y.months",
-                // :width="10",
-                // :x="10 * im"
-                )
-
-                // text(y="30") {{ im }}
-                // rect(width="20", height="20", style="fill: rgba( 255, 255, 255, .1 );")
+            text.rotate-90.q-caption(x="5", y="-5", fill="rgba( 255, 255, 255, .2)") {{ data.year }}
 
     // wrap - recording sessions
     //
-    .row.q-mt-xl.q-pt-xl(v-if="showSession")
-      .col-12.text-center
-        div
+    .row.q-pt-lg(v-if="showSession")
+      .col-10.offset-1
+        h5
           q-btn(icon="keyboard_arrow_left")
-          span.q-mx-sm (Recording Session Titel)
+          span.q-px-md (Recording Session Titel)
           q-btn(icon="keyboard_arrow_right")
           q-btn.float-right(@click="showSession = false", icon="clear", flat, round)
       .col-12
@@ -488,7 +305,8 @@
       return {
         diagramDimensions: {
           barWidth: 15,
-          barSpace: 1
+          barSpace: 1,
+          active: null
         },
         countAllSessions: null,
         filterAuthors: [],
@@ -606,7 +424,7 @@
             days: [{
               date: '2',
               entries: [{
-                duration: 800,
+                duration: 320,
                 end: '23.00',
                 id: 'dedasca',
                 start: '19.12',
@@ -615,7 +433,7 @@
             }, {
               date: '9',
               entries: [{
-                duration: 800,
+                duration: 1200,
                 end: '23.00',
                 id: '9',
                 start: '19.12',
@@ -624,7 +442,7 @@
             }, {
               date: '10',
               entries: [{
-                duration: 800,
+                duration: 410,
                 end: '23.00',
                 id: '9vvdscasdc',
                 start: '19.12',
@@ -633,7 +451,7 @@
             }, {
               date: '15',
               entries: [{
-                duration: 800,
+                duration: 80,
                 end: '23.00',
                 id: 'lvdsvsdc',
                 start: '19.12',
@@ -645,13 +463,13 @@
             days: [{
               date: '14',
               entries: [{
-                duration: 800,
+                duration: 561,
                 end: '23.00',
                 id: '10',
                 start: '11:00',
                 title: 'vormittags'
               }, {
-                duration: 800,
+                duration: 912,
                 end: '12.00',
                 id: '11',
                 start: '9:00',
@@ -666,7 +484,7 @@
             days: [{
               date: '9',
               entries: [{
-                duration: 1200,
+                duration: 1287,
                 end: '23.00',
                 id: '12',
                 start: '19.12',
@@ -678,13 +496,13 @@
             days: [{
               date: '14',
               entries: [{
-                duration: 1200,
+                duration: 1058,
                 end: '23.00',
                 id: '13',
                 start: '11:00',
                 title: 'vormittags'
               }, {
-                duration: 1200,
+                duration: 1701,
                 end: '23.00',
                 id: '14',
                 start: '18:19',
@@ -696,7 +514,7 @@
             days: [{
               date: '9',
               entries: [{
-                duration: 1200,
+                duration: 461,
                 end: '23.00',
                 id: '15',
                 start: '19.12',
@@ -714,19 +532,19 @@
                 start: '11:00',
                 title: 'vormittags'
               }, {
-                duration: 950,
+                duration: 317,
                 end: '12.00',
                 id: '17',
                 start: '18:19',
                 title: 'blablabla'
               }, {
-                duration: 950,
+                duration: 873,
                 end: '13.00',
                 id: '18',
                 start: '11:00',
                 title: 'vormittags'
               }, {
-                duration: 950,
+                duration: 900,
                 end: '14.00',
                 id: '19',
                 start: '18:19',
@@ -802,7 +620,7 @@
           type: 'video'
         }, {
           created: '59',
-          duration: '329',
+          duration: '821',
           id: '',
           referencetime: '200',
           title: 'Zeitraum 1',
