@@ -34,15 +34,10 @@
             q-item-main
               div.q-mb-xs() {{ n.mail }}
             q-item-side
-              q-btn(
-              icon="clear",
-              round, no-caps
-              )
+              q-btn(icon="clear", round, no-caps)
                 q-tooltip.bg-red.q-caption Remove from inviting list?
 
-          q-item.q-mt-sm.q-px-lg.q-py-md(
-          style="border: 1px solid #333;"
-          )
+          q-item.q-mt-sm.q-px-lg.q-py-md(style="border: 1px solid #333;")
             q-item-main
               q-input.q-mb-md(
               v-model="newUser.mail",
@@ -77,13 +72,11 @@
         .text-center.q-mt-lg
           q-btn.q-mx-sm(
           @click="showModalDelete=false",
-          label="Yes",
-          no-caps
+          label="Yes", no-caps
           )
           q-btn.q-mx-sm(
           @click="showModalDelete=false",
-          label="No",
-          no-caps
+          label="No", no-caps
           )
 
     //
@@ -176,9 +169,7 @@
               )
                 q-tooltip.bg-red.q-caption Remove from this timeline?
 
-          q-item.q-mt-sm.q-px-lg.q-py-md(
-          style="border: 1px solid #333;"
-          )
+          q-item.q-mt-sm.q-px-lg.q-py-md(style="border: 1px solid #333;")
             q-item-main
               q-input.q-mb-md(
               v-model="newUser.mail",
@@ -217,6 +208,7 @@
 
         // group-list
         // data-table(:entries="maps", :columns="columns", :actions="actions", @action="onAction")
+
         q-table.no-shadow(
         @rowclick="onRowClick($event)",
         :dark="true",

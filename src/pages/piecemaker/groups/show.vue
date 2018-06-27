@@ -116,10 +116,11 @@
     .row.q-mt-xl(v-if="showSession")
       .col-10.offset-1
         h5.text-center
-          q-btn(@click='diagramDimensions.activeId -= 1', icon="keyboard_arrow_left")
+          q-btn(@click='diagramDimensions.activeId -= 1', icon="keyboard_arrow_left", flat)
           span.q-px-md (Recording Session Titel)
-          q-btn(@click='diagramDimensions.activeId += 1', icon="keyboard_arrow_right")
-          q-btn.absolute.q-mr-lg(@click="showSession = false, diagramDimensions.activeId = null", icon="clear", flat, round, style="right: 0;")
+          q-btn(@click='diagramDimensions.activeId += 1', icon="keyboard_arrow_right", flat)
+          .text-center.q-mt-sm
+            q-btn.shadow-6(@click="showSession = false, diagramDimensions.activeId = null", icon="clear", label="close", size="small", flat)
       .col-12
         SessionDiagram(:data="annotations", :meta="e")
     .row.q-my-xl(v-else)
