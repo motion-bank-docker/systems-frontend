@@ -210,16 +210,20 @@
                     div(:class="[annotation.tags.length > 0 ? 'col-10' : 'col-10']")
                       iframe(v-if="annotation.type == 'video'", width="100%", height="315", :src="annotation.text", frameborder="0", allow="autoplay; encrypted-media", allowfullscreen)
                       span(v-else-if="annotation.type == 'system'") [{{ annotation.text }}]
-                      span(v-else-if="annotation.type == 'tag'") {{ annotation.text }}
+                      q-chip.bg-black.text-white(v-else-if="annotation.type == 'tag'") {{ annotation.text }}
                       span(v-else-if="annotation.type != 'tag'") {{ annotation.text }}
                       // span.q-ml-lg.q-caption() {{ annotation.tags }}
-                    .col-1
+                    .col-1.offset-1
                       div(v-if="annotation.tags.length > 0")
-                        q-icon(name="keyboard_arrow_left")
-                        q-tooltip.bg-black.q-py-none(anchor="top left", self="top right")
+                        div
+                          q-icon.q-mr-sm(name="keyboard_arrow_left")
+                          | #
+                        q-tooltip.bg-dark.q-py-none.shadow-8.moba-border(anchor="top left", self="top right")
                           q-list.no-border
-                            q-item(v-for="(at, ati) in annotation.tags", :class="{'q-pa-xs': ati - 2 < annotation.tags.length}") # {{ at }}
-                      // q-btn-dropdown.bg-grey-10.shadow-6(v-if="annotation.tags.length > 0", label="#", flat, outline, style="border-left: 0px solid rgba(255, 255, 255, .5);")
+                            q-item (annotation tags)
+                            q-item(v-for="(at, ati) in annotation.tags", :class="{'q-pa-xs': ati - 2 < annotation.tags.length}")
+                              q-chip.bg-black.text-white {{ at }}
+                      // q-btn-dropdown.bg-grey-10.shadow-6.q-pa-none(v-if="annotation.tags.length > 0", flat, outline, style="border-left: 0px solid rgba(255, 255, 255, .5);")
                         q-list.no-border.q-px-sm.bg-grey-8
                           q-item(v-for="(at, ati) in annotation.tags", :class="{'q-pa-xs': ati - 2 < annotation.tags.length}") # {{ at }}
                   // .col-2.text-right
@@ -331,7 +335,7 @@
           }
           else if (i >= 85 && i <= 120) {
             type = 'tag'
-            text = '#tag1'
+            text = 'timeline tag'
           }
           else if (i >= 10 && i <= 20) {
             type = 'text'
@@ -558,6 +562,10 @@
 </script>
 
 <style>
+
+  .moba-border {
+    border: 1px solid rgba( 255, 255, 255, .075 );
+  }
 
   .moba-border-top {
     border-top: 1px solid rgba( 255, 255, 255, .05 );
