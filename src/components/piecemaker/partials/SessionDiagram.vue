@@ -52,7 +52,7 @@
 
           // svg wrap
           //
-          .col-4(style="height: 80vh; overflow-x: scroll; overflow-y: hidden;")
+          .col-4(style="height: 120vh; overflow-x: scroll; overflow-y: hidden;")
 
             svg(
             v-model="svgHeight",
@@ -195,7 +195,7 @@
             :ref="annotation.id"
             )
               // .row(:class="{'q-mb-lg, moba-border-top': handlerPrevItem(i, 'author') != annotation.author}")
-              .row.q-py-xs.moba-list-entry
+              .row.moba-list-entry
                 // .col-10.offset-2.text-grey-8(v-if="handlerPrevItem(i, 'author') != annotation.author") {{ annotation.author }}
 
                 // .col-2.text-grey-8.text-right.q-pr-lg.text-bold
@@ -203,34 +203,28 @@
                   // div(v-if="handlerPrevItem(i, 'referencetime') != annotation.referencetime") {{ annotation.referencetime }}
                   div(v-if="annotation.type == 'separator'") ###
 
-                .col-11.row(style="line-height: 1.35rem;")
-                  .col-12.text-grey-9(v-if="handlerPrevItem(i, 'author') != annotation.author && annotation.type != 'separator' && annotation.type != 'tag'") {{ annotation.author }}
-                  .col-12.row
+                .row(:class="[annotation.tags.length > 0 ? 'col-11' : 'col-9']", style="line-height: 1.35rem;")
+                  .col-12.text-grey-9.q-pa-sm(v-if="handlerPrevItem(i, 'author') != annotation.author && annotation.type != 'separator' && annotation.type != 'tag'")
+                    h6.q-mt-sm.q-mb-none.text-center {{ annotation.author }}
+                  .col-12.row.q-pa-sm.moba-hover
                     // .col-8
-                    div(:class="[annotation.tags.length > 0 ? 'col-10' : 'col-10']")
+                    div(:class="[annotation.tags.length > 0 ? 'col-10' : 'col-12']")
                       iframe(v-if="annotation.type == 'video'", width="100%", height="315", :src="annotation.text", frameborder="0", allow="autoplay; encrypted-media", allowfullscreen)
-                      span(v-else-if="annotation.type == 'system'") [{{ annotation.text }}]
-                      q-chip.bg-black.text-white(v-else-if="annotation.type == 'tag'") {{ annotation.text }}
+                      span.text-grey-9.q-caption(v-else-if="annotation.type == 'system'") [{{ annotation.text }}]
+                      q-chip.bg-transparent.text-grey-4.moba-border(v-else-if="annotation.type == 'tag'") {{ annotation.text }}
                       span(v-else-if="annotation.type != 'tag'") {{ annotation.text }}
+                      q-context-menu
+                        .q-pa-sm edit
                       // span.q-ml-lg.q-caption() {{ annotation.tags }}
                     .col-1.offset-1
                       div(v-if="annotation.tags.length > 0")
-                        div
-                          q-icon.q-mr-sm(name="keyboard_arrow_left")
-                          | #
-                        q-tooltip.bg-dark.q-py-none.shadow-8.moba-border(anchor="top left", self="top right")
+                        div.text-right
+                          q-chip.bg-dark.text-white
+                            | #
+                        q-tooltip.bg-dark.q-py-none.shadow-8.moba-border(anchor="top left", self="top right", :offset="[-20, 0]")
                           q-list.no-border
-                            q-item (annotation tags)
                             q-item(v-for="(at, ati) in annotation.tags", :class="{'q-pa-xs': ati - 2 < annotation.tags.length}")
-                              q-chip.bg-black.text-white {{ at }}
-                      // q-btn-dropdown.bg-grey-10.shadow-6.q-pa-none(v-if="annotation.tags.length > 0", flat, outline, style="border-left: 0px solid rgba(255, 255, 255, .5);")
-                        q-list.no-border.q-px-sm.bg-grey-8
-                          q-item(v-for="(at, ati) in annotation.tags", :class="{'q-pa-xs': ati - 2 < annotation.tags.length}") # {{ at }}
-                  // .col-2.text-right
-                    .text-grey-9(v-if="handlerPrevItem(i, 'author') != annotation.author && annotation.type != 'separator' && annotation.type == 'tag'") {{ annotation.author }}
-                    span.q-ml-lg.q-caption(v-if="annotation.type == 'tag'") {{ annotation.text }}
-                  // .col-1.text-right.moba-list-hidden
-                    q-btn(v-if="annotation.type != 'system'", size="xs", icon="edit", round, flat)
+                              q-chip.bg-transparent.text-grey-4.moba-border {{ at }}
 
 </template>
 
@@ -355,7 +349,7 @@
             type = 'text'
             text = 'Consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo du.'
             if (i >= 160 && i <= 200) {
-              tags = ['tag aaa', 'tag bbbbbbbbbbddddddddddd', 'tag cc']
+              tags = ['annotation tag 1', 'annotation tag 2', 'annotation tag 3']
             }
           }
           if (i >= 1 && i <= 20) {
@@ -570,6 +564,14 @@
   .moba-border-top {
     border-top: 1px solid rgba( 255, 255, 255, .05 );
   }
+
+  .moba-hover {
+    transition: background-color ease 50ms;
+  }
+
+    .moba-hover:hover {
+      background-color: rgba(0, 0, 0, .15);
+    }
 
   .moba-list-entry:hover {
     transition: background-color ease 250ms;
