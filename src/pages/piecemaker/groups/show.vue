@@ -180,7 +180,8 @@
     },
     methods: {
       toggleShowSession () {
-        this.showSession = !this.showSession
+        // this.showSession = !this.showSession
+        this.showSession = true
       },
       handlerPrevItem (valIndex, valProp) {
         if (valIndex > 0) {
