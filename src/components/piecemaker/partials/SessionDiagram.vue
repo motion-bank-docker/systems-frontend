@@ -207,14 +207,21 @@
                   .col-12.text-grey-9(v-if="handlerPrevItem(i, 'author') != annotation.author && annotation.type != 'separator' && annotation.type != 'tag'") {{ annotation.author }}
                   .col-12.row
                     // .col-8
-                    div(:class="[annotation.tags.length > 0 ? 'col-8' : 'col-10']")
+                    div(:class="[annotation.tags.length > 0 ? 'col-10' : 'col-10']")
                       iframe(v-if="annotation.type == 'video'", width="100%", height="315", :src="annotation.text", frameborder="0", allow="autoplay; encrypted-media", allowfullscreen)
                       span(v-else-if="annotation.type == 'system'") [{{ annotation.text }}]
                       span(v-else-if="annotation.type == 'tag'") {{ annotation.text }}
                       span(v-else-if="annotation.type != 'tag'") {{ annotation.text }}
                       // span.q-ml-lg.q-caption() {{ annotation.tags }}
-                    .col-3.q-ml-sm.q-pa-sm.bg-grey-10.shadow-6(v-if="annotation.tags.length > 0", style="border-left: 0px solid rgba(255, 255, 255, .5); min-height: 100%;")
-                      div(v-for="(at, ati) in annotation.tags", :class="{'q-mb-sm': ati - 2 < annotation.tags.length}") # {{ at }}
+                    .col-1
+                      div(v-if="annotation.tags.length > 0")
+                        q-icon(name="keyboard_arrow_left")
+                        q-tooltip.bg-black.q-py-none(anchor="top left", self="top right")
+                          q-list.no-border
+                            q-item(v-for="(at, ati) in annotation.tags", :class="{'q-pa-xs': ati - 2 < annotation.tags.length}") # {{ at }}
+                      // q-btn-dropdown.bg-grey-10.shadow-6(v-if="annotation.tags.length > 0", label="#", flat, outline, style="border-left: 0px solid rgba(255, 255, 255, .5);")
+                        q-list.no-border.q-px-sm.bg-grey-8
+                          q-item(v-for="(at, ati) in annotation.tags", :class="{'q-pa-xs': ati - 2 < annotation.tags.length}") # {{ at }}
                   // .col-2.text-right
                     .text-grey-9(v-if="handlerPrevItem(i, 'author') != annotation.author && annotation.type != 'separator' && annotation.type == 'tag'") {{ annotation.author }}
                     span.q-ml-lg.q-caption(v-if="annotation.type == 'tag'") {{ annotation.text }}
@@ -224,11 +231,12 @@
 </template>
 
 <script>
-  import { QWindowResizeObservable, QList, QItem, QItemMain, QItemSide, QItemTile, QTooltip, QCard } from 'quasar'
+  import { QWindowResizeObservable, QFab, QList, QItem, QItemMain, QItemSide, QItemTile, QTooltip, QCard } from 'quasar'
 
   export default {
     components: {
       QWindowResizeObservable,
+      QFab,
       QList,
       QItem,
       QItemMain,
@@ -271,7 +279,7 @@
         // var top = element.offsetTop
         var elementTest = element[0]
         console.log(elementTest)
-        var top = elementTest.offsetTop
+        var top = elementTest.offsetTop - window.pageYOffset
         console.log('vvvvv')
         console.log(top)
         console.log('AAAAA')
