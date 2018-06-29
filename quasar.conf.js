@@ -132,7 +132,8 @@ module.exports = function (ctx) {
         'QChip'
       ],
       directives: [
-        'Ripple'
+        'Ripple',
+        'Scroll'
       ],
       // Quasar plugins
       plugins: [
