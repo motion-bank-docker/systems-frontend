@@ -203,12 +203,20 @@
                   // div(v-if="handlerPrevItem(i, 'referencetime') != annotation.referencetime") {{ annotation.referencetime }}
                   div(v-if="annotation.type == 'separator'") ###
 
-                .row(:class="[annotation.tags.length > 0 ? 'col-11' : 'col-9']", style="line-height: 1.35rem;")
-                  .col-12.text-grey-9.q-pa-sm(v-if="handlerPrevItem(i, 'author') != annotation.author && annotation.type != 'separator' && annotation.type != 'tag'")
+                // .row(:class="[annotation.tags.length > 0 ? 'col-11' : 'col-9']", style="line-height: 1.35rem;")
+                .row.col-12(style="line-height: 1.35rem;")
+
+                  // author
+                  //
+                  .col-10.text-grey-9.q-pa-sm(v-if="handlerPrevItem(i, 'author') != annotation.author && annotation.type != 'separator' && annotation.type != 'tag'")
                     h6.q-mt-sm.q-mb-none.text-center {{ annotation.author }}
-                  .col-12.row.q-pa-sm.moba-hover
+
+                  // annotation
+                  //
+                  .col-12.row.q-pa-md.moba-round-borders(:class="[annotation.type != 'system' ? 'moba-hover' : '']")
                     // .col-8
-                    div(:class="[annotation.tags.length > 0 ? 'col-10' : 'col-12']")
+                    // div(:class="[annotation.tags.length > 0 ? 'col-10' : 'col-12']")
+                    div.col-10
                       iframe(v-if="annotation.type == 'video'", width="100%", height="315", :src="annotation.text", frameborder="0", allow="autoplay; encrypted-media", allowfullscreen)
                       span.text-grey-9.q-caption(v-else-if="annotation.type == 'system'") [{{ annotation.text }}]
                       q-chip.bg-transparent.text-grey-4.moba-border(v-else-if="annotation.type == 'tag'") {{ annotation.text }}
@@ -216,15 +224,18 @@
                       q-context-menu
                         .q-pa-sm edit
                       // span.q-ml-lg.q-caption() {{ annotation.tags }}
-                    .col-1.offset-1
+                    .col-1
                       div(v-if="annotation.tags.length > 0")
                         div.text-right
-                          q-chip.bg-dark.text-white
-                            | #
-                        q-tooltip.bg-dark.q-py-none.shadow-8.moba-border(anchor="top left", self="top right", :offset="[-20, 0]")
-                          q-list.no-border
-                            q-item(v-for="(at, ati) in annotation.tags", :class="{'q-pa-xs': ati - 2 < annotation.tags.length}")
-                              q-chip.bg-transparent.text-grey-4.moba-border {{ at }}
+                          span
+                            q-chip.bg-dark.text-white.moba-border
+                              | #
+                            q-tooltip.bg-dark.q-py-none.shadow-8.moba-border(anchor="top left", self="top right", :offset="[10, 0]")
+                              q-list.no-border
+                                q-item(v-for="(at, ati) in annotation.tags", :class="{'q-pa-xs': ati - 2 < annotation.tags.length}")
+                                  q-chip.bg-transparent.text-grey-4.moba-border {{ at }}
+                    .col-1.text-right.moba-edit
+                      q-btn.bg-dark.text-white.moba-border(:class="[annotation.type != 'system' ? '' : 'hidden']", icon="edit", size="sm", round, flat)
 
 </template>
 
@@ -560,17 +571,31 @@
   .moba-border {
     border: 1px solid rgba( 255, 255, 255, .075 );
   }
-
+  .q-chip.moba-border:hover {
+    background-color: white!important;
+    color: #000!important;
+  }
   .moba-border-top {
     border-top: 1px solid rgba( 255, 255, 255, .05 );
   }
 
   .moba-hover {
-    transition: background-color ease 50ms;
+    transition: all ease 50ms;
+    border: 1px solid transparent;
   }
 
     .moba-hover:hover {
       background-color: rgba(0, 0, 0, .15);
+      border: 1px solid rgba( 255, 255, 255, .1 );
+    }
+
+    .moba-hover .moba-edit{
+      opacity: 0;
+      transition: all ease 120ms;
+    }
+
+    .moba-hover:hover .moba-edit{
+      opacity: 1;
     }
 
   .moba-list-entry:hover {
@@ -586,6 +611,10 @@
     .moba-list-entry:hover .moba-list-hidden {
       opacity: 1;
     }
+
+  .moba-round-borders {
+    border-radius: .75rem;
+  }
 
   .moba-separator {
     fill: rgba( 255, 255, 255, 1 )!important;
