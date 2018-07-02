@@ -210,7 +210,7 @@
 
                   // annotation
                   //
-                  .col-12.row.q-px-md.q-py-sm.moba-round-borders(:class="[annotation.type != 'system' ? 'moba-hover' : '', annotation.type == 'separator' ? 'bg-white text-black text-center' : '']")
+                  .col-12.row.q-px-md.q-py-sm.moba-round-borders(:class="[annotation.type != 'system' ? 'moba-hover' : '', annotation.type == 'separator' ? 'bg-grey-9 text-black text-center' : '']")
                     div.col-10
 
                       // video
@@ -222,7 +222,7 @@
                       // tag
                       q-chip.bg-transparent.text-grey-4.moba-border(v-else-if="annotation.type == 'tag'") {{ annotation.text }}
 
-                      // tag
+                      // separator
                       q-chip.bg-transparent(v-else-if="annotation.type == 'separator'") {{ annotation.text }}
 
                       // text
@@ -669,7 +669,7 @@
     }
 
   .moba-round-borders {
-    border-radius: .75rem;
+    border-radius: .5rem;
   }
 
   .moba-separator {

@@ -64,25 +64,32 @@
           div Meine Timeline seit Studienbeginn (Titel)
           .text-grey-8 by Christian Hansen (Inhaber)
 
+    // no logo
+    //
     span(slot="form-logo")
 
+    // btn: back
+    //
     q-btn(slot="backButton", @click="$router.push({ name: 'piecemaker.groups.list' })", icon="keyboard_backspace", round, small)
 
     // btn: filter
     //
-    q-btn.fixed.text-white(@click="openFilter = true", :class="{ 'bg-green': radioFilter == 'allsessions' || radioFilter == 'thissession' }", style="top: 66px; right: 16px;")
-      q-icon(v-if="radioFilter == 'allsessions' || radioFilter == 'thissession'", name="visibility")
-      q-icon(v-else, name="visibility_off")
-      span.q-ml-md Filter
-      q-popover(v-model="openFilter", anchor="top left", self="top right")
-        div.bg-dark.q-pa-md.q-caption(style="min-height: 100%;")
+    q-btn.fixed.text-white(@click="openFilter = true", :class="{ 'bg-green': radioFilter == 'allsessions' || radioFilter == 'thissession' }", style="top: 66px; right: 16px; z-index: 1000;")
+      //
+        q-icon(v-if="radioFilter == 'allsessions' || radioFilter == 'thissession'", name="visibility")
+        q-icon(v-else, name="visibility_off")
+        span.q-ml-md Filter
+      | Filter
+
+      // filter
+      //
+      q-popover.bg-transparent.moba-round-borders-filter(v-model="openFilter", anchor="top left", self="top right")
+        div.bg-dark.q-pa-md.q-caption(style="min-height: 100%; opacity: .95;")
           .row.q-mb-md
-            .col-10.bg-grey-10.q-pa-sm
-              // q-radio.q-mb-md(v-model="radioFilter", val="allsessions", label="Apply on all sessions in this timeline.", color="white")
-              q-radio.q-mb-md(v-model="radioFilter", val="thissession", label="Apply filter.", color="white")
-              br
+            .col-10.q-pa-sm
+              q-radio.q-mr-lg(v-model="radioFilter", val="thissession", label="Apply filter.", color="white")
               q-radio(v-model="radioFilter", val="none", label="Do not apply.", color="white")
-            .col-2.text-right
+            // .col-2.text-right
               q-btn.rotate-180(@click="openFilter = false", icon="keyboard_backspace", size="sm", round, flat)
 
           div(:class="{ 'text-grey-8': radioFilter == 'none' }")
@@ -93,26 +100,34 @@
               q-tab(slot="title", name="search") search
 
               q-tab-pane(name="authors")
+                q-btn-group.row.full-width
+                  q-btn.col-6 select all
+                  q-btn.col-6 select none
                 q-list.no-border
-                  q-item.no-padding
-                    q-btn(size="sm") select all
-                    q-btn(size="sm") select none
                   q-item.no-padding(v-for="author in authors")
                     q-checkbox.q-caption(v-model="filterAuthors", :val="author", :label="author", color="white")
 
               q-tab-pane(name="types")
+                q-btn-group.row.full-width
+                  q-btn.col-6 select all
+                  q-btn.col-6 select none
                 q-list.no-border
-                  q-item.no-padding
-                    q-btn(size="sm") select all
-                    q-btn(size="sm") select none
                   q-item.no-padding(v-for="type in annotationTypes")
                     q-checkbox.q-caption(v-model="filterTypes", :val="type", :label="type", color="white")
 
               q-tab-pane(name="date")
-                div creation
+                q-range.q-mt-lg(
+                  v-model="rangeValues",
+                  :min="0",
+                  :max="10",
+                  :step="1",
+                  color="white",
+                  label, dark
+                  )
 
               q-tab-pane(name="search")
                 q-search.bg-transparent.text-white(color="white", dark)
+                q-btn.q-mt-sm.full-width search
 
     // diagram
     //
@@ -186,12 +201,13 @@
   // import CardFull from '../../../components/shared/layouts/CardFull'
   import FullScreen from '../../../components/shared/layouts/FullScreen'
   import SessionDiagram from '../../../components/piecemaker/partials/SessionDiagram'
-  import { QWindowResizeObservable, QList, QItem, QItemMain, QItemSide, QItemTile, QModal, QTooltip, QPopover, QModalLayout, QLayoutDrawer, QPageSticky, QRadio, QCheckbox, QSearch } from 'quasar'
+  import { QWindowResizeObservable, QRange, QList, QItem, QItemMain, QItemSide, QItemTile, QModal, QTooltip, QPopover, QModalLayout, QLayoutDrawer, QPageSticky, QRadio, QCheckbox, QSearch } from 'quasar'
 
   export default {
     components: {
       // CardFull,
       QWindowResizeObservable,
+      QRange,
       FullScreen,
       SessionDiagram,
       QList,
@@ -381,6 +397,10 @@
     data () {
       const _this = this
       return {
+        rangeValues: {
+          min: 2,
+          max: 4
+        },
         diagramDimensions: {
           barWidth: 15,
           barSpace: 1,
@@ -736,6 +756,10 @@
       fill: white!important;
     }
   .moba-empty {
+  }
+
+  .moba-round-borders-filter {
+    border-radius: .5rem;
   }
 
   .moba-swimlane {
