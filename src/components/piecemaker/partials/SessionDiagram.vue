@@ -9,7 +9,7 @@
 
       // annotations: diagram
       //
-      div#diagram(:class=[fixDiagram ? 'moba-fixed' : ''])
+      div#diagram
 
         .row.col-12.q-pt-xl
 
@@ -52,11 +52,11 @@
 
           // svg wrap
           //
-          .col-4.row(style="height: 120vh; overflow-x: scroll; overflow-y: hidden;") {{ fixDiagram }}
+          .col-4(:class="{'row': fixDiagram}", style="height: 40vh; overflow-x: scroll; overflow-y: scroll;")
 
             //svg.moba-fixed(
-            svg(
-            :class=[fixDiagram ? 'moba-fixed' : ''],
+            svg.col-4(
+            :class="{'moba-fixed': fixDiagram}",
             v-model="svgHeight",
             width="100%",
             :height="viewportHeight / 100 * 80"
@@ -189,8 +189,8 @@
 
           // annotations: text
           //
-          div#annotations-text.col-8(v-scroll="scrollPos()", style="height: 40vh; overflow: scroll;")
-
+          // div#annotations-text.col-8(v-scroll="scrollPos()", style="height: 40vh; overflow: scroll;")
+          div#annotations-text.col-8
             div.q-pl-sm(
             v-for="(annotation, i) in byReferencetime",
             @mouseenter="previewLine.positionY = annotation.referencetime, previewLine.visiibility = true",
@@ -280,6 +280,7 @@
       this.sortAnnotations(this.annotations)
       this.filterAnnotations(0, this.numberRandomAnnotations)
       this.getAnnotationSessionWidth()
+      // this.scrollPos()
     },
     props: ['data', 'meta'],
     computed: {
@@ -288,20 +289,21 @@
         return (30 + 10) * this.videos.length + 20 + (this.arrFilter.length * this.annotationSessionWidth)
       }
     },
+    created: function () {
+      window.addEventListener('scroll', this.scrollPos)
+    },
+    destroyed: function () {
+      window.removeEventListener('scroll', this.scrollPos)
+    },
     methods: {
       scrollPos () {
         var diagr = document.getElementById('diagram')
-        document.addEventListener('scroll', function () {
-          // console.log(window.pageYOffset)
-          // console.log(diagr.getBoundingClientRect().top)
-          if (diagr.getBoundingClientRect().top < '100') {
-            this.fixDiagram = true
-          }
-          else {
-            this.fixDiagram = false
-          }
-          console.log('fixDiagram: ' + this.fixDiagram)
-        })
+        if (diagr.getBoundingClientRect().top < '100') {
+          this.fixDiagram = true
+        }
+        else {
+          this.fixDiagram = false
+        }
       },
       jumpToAnchor (target) {
         console.log('target: ' + target)
@@ -444,7 +446,7 @@
     data () {
       const _this = this
       return {
-        fixDiagram: null,
+        fixDiagram: '',
         previewWindow: {
           visibility: false
         },
@@ -643,7 +645,7 @@
 
   .moba-fixed {
     position: fixed;
-    top: 100px;
+    top: 90px;
     left: 30px;
   }
 
