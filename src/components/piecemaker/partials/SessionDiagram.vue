@@ -52,140 +52,139 @@
 
           // svg wrap
           //
-          .col-4(:class="{'row': fixDiagram}", style="height: 40vh; overflow-x: scroll; overflow-y: scroll;")
+          .col-4(:class="{'row': fixDiagram, 'shadow-6': !fixDiagram}", style="height: 80vh; overflow: scroll;")
 
-            //svg.moba-fixed(
-            svg.col-4(
-            :class="{'moba-fixed': fixDiagram}",
-            v-model="svgHeight",
-            width="100%",
-            :height="viewportHeight / 100 * 80"
-            )
+            .col-4.shadow-6(:class="{'moba-fixed': fixDiagram, 'full-width': fixDiagram}", style="height: 80vh; overflow: scroll;")
+              svg(
+              v-model="svgHeight",
+              width="100%",
+              height="120vh"
+              )
 
-              // swimlanes – wrap
-              //
-              svg
-
-                // vertical lines
-                // VIDEOS + TIME RANGES
+                // swimlanes – wrap
                 //
-                svg(x="15")
-                  svg(
-                  v-for="(video, i) in videos",
-                  width="20",
-                  :height="video.duration * ((viewportHeight / 100 * 80) / svgHeight)",
-                  :x="(20 + 10) * i",
-                  :y="video.referencetime * ((viewportHeight / 100 * 80) / svgHeight)"
-                  )
-                    g(v-if="video.type == 'video'")
-                      rect.moba-swimlane(
-                      width="100%",
-                      height="100%"
-                      )
-                      rect.moba-svg-entry(
-                      v-for="n in 30",
-                      width="100%",
-                      height="20",
-                      :y="(n - 1) * 20"
-                      )
-                      line(
-                      v-for="n in 30"
-                      x1="30%", :y1="n * 20",
-                      x2="70%", :y2="n * 20",
-                      style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;"
-                      )
-                      line(
-                      v-for="n in 10"
-                      x1="0%", :y1="n * 120",
-                      x2="100%", :y2="n * 120",
-                      style="stroke: rgba(255, 255, 255, .25); stroke-width: 1;"
-                      )
-                    g(v-else-if="video.type == 'timerange'")
-                      // rect.moba-swimlane(
+                svg
+
+                  // vertical lines
+                  // VIDEOS + TIME RANGES
+                  //
+                  svg(x="15")
+                    svg(
+                    v-for="(video, i) in videos",
+                    width="20",
+                    :height="video.duration * ((viewportHeight / 100 * 80) / svgHeight)",
+                    :x="(20 + 10) * i",
+                    :y="video.referencetime * ((viewportHeight / 100 * 80) / svgHeight)"
+                    )
+                      g(v-if="video.type == 'video'")
+                        rect.moba-swimlane(
                         width="100%",
                         height="100%"
                         )
-                      rect.moba-svg-entry(
-                      v-for="n in 30",
-                      width="100%",
-                      height="20",
-                      :y="(n - 1) * 20",
-                      fill="transparent"
-                      )
-                      line(
-                      x1="50%", y1="0",
-                      x2="50%", y2="100%",
-                      style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;"
-                      )
-                      line(
-                      v-for="n in 30"
-                      x1="40%", :y1="n * 20",
-                      x2="60%", :y2="n * 20",
-                      style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;"
-                      )
-                      line(
-                      v-for="n in 10"
-                      x1="20%", :y1="n * 120",
-                      x2="80%", :y2="n * 120",
-                      style="stroke: rgba(255, 255, 255, .25); stroke-width: 1;"
-                      )
+                        rect.moba-svg-entry(
+                        v-for="n in 30",
+                        width="100%",
+                        height="20",
+                        :y="(n - 1) * 20"
+                        )
+                        line(
+                        v-for="n in 30"
+                        x1="30%", :y1="n * 20",
+                        x2="70%", :y2="n * 20",
+                        style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;"
+                        )
+                        line(
+                        v-for="n in 10"
+                        x1="0%", :y1="n * 120",
+                        x2="100%", :y2="n * 120",
+                        style="stroke: rgba(255, 255, 255, .25); stroke-width: 1;"
+                        )
+                      g(v-else-if="video.type == 'timerange'")
+                        // rect.moba-swimlane(
+                          width="100%",
+                          height="100%"
+                          )
+                        rect.moba-svg-entry(
+                        v-for="n in 30",
+                        width="100%",
+                        height="20",
+                        :y="(n - 1) * 20",
+                        fill="transparent"
+                        )
+                        line(
+                        x1="50%", y1="0",
+                        x2="50%", y2="100%",
+                        style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;"
+                        )
+                        line(
+                        v-for="n in 30"
+                        x1="40%", :y1="n * 20",
+                        x2="60%", :y2="n * 20",
+                        style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;"
+                        )
+                        line(
+                        v-for="n in 10"
+                        x1="20%", :y1="n * 120",
+                        x2="80%", :y2="n * 120",
+                        style="stroke: rgba(255, 255, 255, .25); stroke-width: 1;"
+                        )
 
-                // horizontal lines - ANNOTATIONS (all)
-                //
-                svg(width="20%", x="80%")
-                  rect(width="100%", height="100%", fill="rgba(255, 0, 0, 0)") // dev
-                  rect.moba-svg-entry(
-                  v-for="annotation in filteredAnnotations",
-                  @mouseenter="previewDot.visibility = true, previewDot.referencetime = annotation.referencetime, previewDot.positionY = annotation.referencetime",
-                  @mouseleave="previewDot.visibility = false",
-                  @click="jumpToAnchor(annotation.id)",
-                  height="1",
-                  x="20%",
-                  :y="annotation.referencetime * ((viewportHeight / 100 * 80) / svgHeight)",
-                  :style="{fill: 'rgba(255,255,255, .4)', width: '60%'}",
-                  :class="{'full-width': annotation.type === 'separator', 'moba-separator': annotation.type === 'separator'}"
-                  )
-
-                // previewLine
-                //
-                rect(
-                width="100%",
-                height="1",
-                :y="previewLine.positionY * ((viewportHeight / 100 * 80) / svgHeight)"
-                style="fill: rgba(255, 255, 255, 1)!important;"
-                )
-
-              // annotations
-              // FILTERED
-              // Erstmal nicht löschen!
-              //
-                svg(
-                v-for="(n, i) in arrFilter",
-                // :x="180 + (annotationSessionWidth * i)"
-                )
-                  rect(
-                  @mouseenter="hoverVal = n.rangebegin + ' - ' + n.rangeend",
-                  // :width="annotationSessionWidth",
-                  height="100%",
-                  fill="rgba(0, 0, 0, 0)"
-                  )
-                  line(
-                  // :x1="annotationSessionWidth",
-                  y1="0",
-                  // :x2="annotationSessionWidth",
-                  y2="100%",
-                  style="stroke: rgba(255,255,255,.1); stroke-width: 1;"
-                  )
-                  g
+                  // horizontal lines - ANNOTATIONS (all)
+                  //
+                  svg(width="20%", x="80%")
+                    rect(width="100%", height="100%", fill="rgba(255, 0, 0, 0)") // dev
                     rect.moba-svg-entry(
-                    v-for="annotation in annotationsBlocks[i]",
+                    v-for="annotation in filteredAnnotations",
                     @mouseenter="previewDot.visibility = true, previewDot.referencetime = annotation.referencetime, previewDot.positionY = annotation.referencetime",
                     @mouseleave="previewDot.visibility = false",
-                    // :width="annotationSessionWidth",
-                    // :height="annotation.duration * ((viewportHeight / 100 * 80) / svgHeight) + 0.5",
-                    // :y="annotation.referencetime * ((viewportHeight / 100 * 80) / svgHeight)"
-                    style="fill: rgba(255,255,255, .4)!important;"
+                    @click="jumpToAnchor(annotation.id)",
+                    height="1",
+                    x="20%",
+                    :y="annotation.referencetime * ((viewportHeight / 100 * 80) / svgHeight)",
+                    :style="{fill: 'rgba(255,255,255, .4)', width: '60%'}",
+                    :class="{'full-width': annotation.type === 'separator', 'moba-separator': annotation.type === 'separator'}"
                     )
+
+                  // previewLine
+                  //
+                  rect(
+                  width="100%",
+                  height="1",
+                  :y="previewLine.positionY * ((viewportHeight / 100 * 80) / svgHeight)"
+                  style="fill: rgba(255, 255, 255, 1)!important;"
+                  )
+
+                // annotations
+                // FILTERED
+                // Erstmal nicht löschen!
+                //
+                  svg(
+                  v-for="(n, i) in arrFilter",
+                  // :x="180 + (annotationSessionWidth * i)"
+                  )
+                    rect(
+                    @mouseenter="hoverVal = n.rangebegin + ' - ' + n.rangeend",
+                    // :width="annotationSessionWidth",
+                    height="100%",
+                    fill="rgba(0, 0, 0, 0)"
+                    )
+                    line(
+                    // :x1="annotationSessionWidth",
+                    y1="0",
+                    // :x2="annotationSessionWidth",
+                    y2="100%",
+                    style="stroke: rgba(255,255,255,.1); stroke-width: 1;"
+                    )
+                    g
+                      rect.moba-svg-entry(
+                      v-for="annotation in annotationsBlocks[i]",
+                      @mouseenter="previewDot.visibility = true, previewDot.referencetime = annotation.referencetime, previewDot.positionY = annotation.referencetime",
+                      @mouseleave="previewDot.visibility = false",
+                      // :width="annotationSessionWidth",
+                      // :height="annotation.duration * ((viewportHeight / 100 * 80) / svgHeight) + 0.5",
+                      // :y="annotation.referencetime * ((viewportHeight / 100 * 80) / svgHeight)"
+                      style="fill: rgba(255,255,255, .4)!important;"
+                      )
 
           // annotations: text
           //
@@ -306,21 +305,10 @@
         }
       },
       jumpToAnchor (target) {
-        console.log('target: ' + target)
         var element = this.$refs[target]
-        console.log(element)
-        // var top = element.offsetTop
         var elementTest = element[0]
-        console.log(elementTest)
-        var top = elementTest.offsetTop - window.pageYOffset
-        console.log('vvvvv')
-        console.log(top)
-        console.log('AAAAA')
-        var annotationsText = document.getElementById('annotations-text')
-        annotationsText.scrollTo(0, top)
-        // console.log('jumpToAnchor: ' + target)
-        // console.log(annotationsText)
-        // window.scrollTo(0, top)
+        var top = elementTest.offsetTop - 120
+        window.scrollTo(0, top)
       },
       handlerPrevItem (valIndex, valProp) {
         if (valIndex > 0) {
@@ -645,8 +633,8 @@
 
   .moba-fixed {
     position: fixed;
-    top: 90px;
-    left: 30px;
+    top: 99px;
+    left: 20px;
   }
 
   .moba-hover {
