@@ -9,6 +9,11 @@
 
     // filter
     //
+      q-layout-drawer(v-model="openDiagram", side="right", overlay)
+        div diagram
+
+    // filter
+    //
     q-layout-drawer(v-model="openFilter", side="right", overlay)
       // div.bg-dark.q-pa-md.q-caption(:class="{ 'text-grey-8': radioFilter == 'allsessions' || radioFilter == 'thissession' }")
       div.bg-dark.q-pa-md.q-caption

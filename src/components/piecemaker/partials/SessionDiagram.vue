@@ -9,7 +9,7 @@
 
       // annotations: diagram
       //
-      div
+      div#diagram(:class=[fixDiagram ? 'moba-fixed' : ''])
 
         .row.col-12.q-pt-xl
 
@@ -52,9 +52,11 @@
 
           // svg wrap
           //
-          .col-4(style="height: 120vh; overflow-x: scroll; overflow-y: hidden;")
+          .col-4.row(style="height: 120vh; overflow-x: scroll; overflow-y: hidden;") {{ fixDiagram }}
 
+            //svg.moba-fixed(
             svg(
+            :class=[fixDiagram ? 'moba-fixed' : ''],
             v-model="svgHeight",
             width="100%",
             :height="viewportHeight / 100 * 80"
@@ -130,16 +132,17 @@
 
                 // horizontal lines - ANNOTATIONS (all)
                 //
-                g
+                svg(width="20%", x="80%")
+                  rect(width="100%", height="100%", fill="rgba(255, 0, 0, 0)") // dev
                   rect.moba-svg-entry(
                   v-for="annotation in filteredAnnotations",
                   @mouseenter="previewDot.visibility = true, previewDot.referencetime = annotation.referencetime, previewDot.positionY = annotation.referencetime",
                   @mouseleave="previewDot.visibility = false",
                   @click="jumpToAnchor(annotation.id)",
                   height="1",
-                  x="70%",
+                  x="20%",
                   :y="annotation.referencetime * ((viewportHeight / 100 * 80) / svgHeight)",
-                  :style="{fill: 'rgba(255,255,255, .4)', width: '20%'}",
+                  :style="{fill: 'rgba(255,255,255, .4)', width: '60%'}",
                   :class="{'full-width': annotation.type === 'separator', 'moba-separator': annotation.type === 'separator'}"
                   )
 
@@ -186,7 +189,7 @@
 
           // annotations: text
           //
-          div#annotations-text.col-8(style="height: 80vh; overflow-y: scroll;")
+          div#annotations-text.col-8(v-scroll="scrollPos()", style="height: 40vh; overflow: scroll;")
 
             div.q-pl-sm(
             v-for="(annotation, i) in byReferencetime",
@@ -198,11 +201,6 @@
               .row.moba-list-entry
                 // .col-10.offset-2.text-grey-8(v-if="handlerPrevItem(i, 'author') != annotation.author") {{ annotation.author }}
 
-                // .col-2.text-grey-8.text-right.q-pr-lg.text-bold
-                .col-1.text-grey-8.text-right.q-pr-md
-                  // div(v-if="handlerPrevItem(i, 'referencetime') != annotation.referencetime") {{ annotation.referencetime }}
-                  div(v-if="annotation.type == 'separator'") ###
-
                 // .row(:class="[annotation.tags.length > 0 ? 'col-11' : 'col-9']", style="line-height: 1.35rem;")
                 .row.col-12(style="line-height: 1.35rem;")
 
@@ -213,14 +211,24 @@
 
                   // annotation
                   //
-                  .col-12.row.q-pa-md.moba-round-borders(:class="[annotation.type != 'system' ? 'moba-hover' : '']")
-                    // .col-8
-                    // div(:class="[annotation.tags.length > 0 ? 'col-10' : 'col-12']")
+                  .col-12.row.q-px-md.q-py-sm.moba-round-borders(:class="[annotation.type != 'system' ? 'moba-hover' : '', annotation.type == 'separator' ? 'bg-white text-black text-center' : '']")
                     div.col-10
+
+                      // video
                       iframe(v-if="annotation.type == 'video'", width="100%", height="315", :src="annotation.text", frameborder="0", allow="autoplay; encrypted-media", allowfullscreen)
+
+                      //system
                       span.text-grey-9.q-caption(v-else-if="annotation.type == 'system'") [{{ annotation.text }}]
+
+                      // tag
                       q-chip.bg-transparent.text-grey-4.moba-border(v-else-if="annotation.type == 'tag'") {{ annotation.text }}
+
+                      // tag
+                      q-chip.bg-transparent(v-else-if="annotation.type == 'separator'") {{ annotation.text }}
+
+                      // text
                       span(v-else-if="annotation.type != 'tag'") {{ annotation.text }}
+
                       q-context-menu
                         .q-pa-sm edit
                       // span.q-ml-lg.q-caption() {{ annotation.tags }}
@@ -281,6 +289,20 @@
       }
     },
     methods: {
+      scrollPos () {
+        var diagr = document.getElementById('diagram')
+        document.addEventListener('scroll', function () {
+          // console.log(window.pageYOffset)
+          // console.log(diagr.getBoundingClientRect().top)
+          if (diagr.getBoundingClientRect().top < '100') {
+            this.fixDiagram = true
+          }
+          else {
+            this.fixDiagram = false
+          }
+          console.log('fixDiagram: ' + this.fixDiagram)
+        })
+      },
       jumpToAnchor (target) {
         console.log('target: ' + target)
         var element = this.$refs[target]
@@ -422,6 +444,7 @@
     data () {
       const _this = this
       return {
+        fixDiagram: null,
         previewWindow: {
           visibility: false
         },
@@ -560,6 +583,45 @@
           src: 'https://www.youtube.com/embed/zS8hEj37CrA',
           title: 'video 1',
           type: 'video'
+        }, {
+          created: '1',
+          duration: '1000',
+          id: '',
+          referencetime: '0',
+          src: 'https://www.youtube.com/embed/zS8hEj37CrA',
+          title: 'video 1',
+          type: 'timerange'
+        }, {
+          created: '20',
+          duration: '1100',
+          id: '',
+          referencetime: '20',
+          src: 'https://www.youtube.com/embed/zS8hEj37CrA',
+          title: 'video 1',
+          type: 'video'
+        }, {
+          created: '25',
+          duration: '500',
+          id: '',
+          referencetime: '270',
+          src: 'https://www.youtube.com/embed/0VqaGkKQRCU',
+          title: 'video 1',
+          type: 'video'
+        }, {
+          created: '50',
+          duration: '830',
+          id: '',
+          referencetime: '120',
+          title: 'timerange',
+          type: 'video'
+        }, {
+          created: '300',
+          duration: '200',
+          id: '',
+          referencetime: '12',
+          src: 'https://www.youtube.com/embed/zS8hEj37CrA',
+          title: 'video 1',
+          type: 'video'
         }]
       }
     }
@@ -579,8 +641,13 @@
     border-top: 1px solid rgba( 255, 255, 255, .05 );
   }
 
+  .moba-fixed {
+    position: fixed;
+    top: 100px;
+    left: 30px;
+  }
+
   .moba-hover {
-    transition: all ease 50ms;
     border: 1px solid transparent;
   }
 
@@ -591,7 +658,6 @@
 
     .moba-hover .moba-edit{
       opacity: 0;
-      transition: all ease 120ms;
     }
 
     .moba-hover:hover .moba-edit{
@@ -618,6 +684,7 @@
 
   .moba-separator {
     fill: rgba( 255, 255, 255, 1 )!important;
+    x: 0;
   }
 
   .moba-swimlane {
