@@ -14,9 +14,9 @@
 
     // filter
     //
-    q-layout-drawer(v-model="openFilter", side="right", overlay)
+    // q-layout-drawer(v-model="openFilter", side="right", overlay)
       // div.bg-dark.q-pa-md.q-caption(:class="{ 'text-grey-8': radioFilter == 'allsessions' || radioFilter == 'thissession' }")
-      div.bg-dark.q-pa-md.q-caption
+      div.bg-dark.q-pa-md.q-caption(style="min-height: 100%;")
         .row.q-mb-md
           .col-10.bg-grey-10.q-pa-sm
             // q-radio.q-mb-md(v-model="radioFilter", val="allsessions", label="Apply on all sessions in this timeline.", color="white")
@@ -27,27 +27,33 @@
             q-btn.rotate-180(@click="openFilter = false", icon="keyboard_backspace", size="sm", round, flat)
 
         div(:class="{ 'text-grey-8': radioFilter == 'none' }")
-          .q-py-sm
-            div select authors:
-            q-list.no-border
-              q-item.no-padding
-                q-btn(size="sm") select all
-                q-btn(size="sm") select none
-              q-item.no-padding(v-for="author in authors")
-                q-checkbox.q-caption(v-model="filterAuthors", :val="author", :label="author", color="white")
-          .q-py-sm.moba-border-top
-            div select types:
-            q-list.no-border
-              q-item.no-padding
-                q-btn(size="sm") select all
-                q-btn(size="sm") select none
-              q-item.no-padding(v-for="type in annotationTypes")
-                q-checkbox.q-caption(v-model="filterTypes", :val="type", :label="type", color="white")
-          .q-py-sm.moba-border-top
-            div select date of creation:
-          .q-py-sm.moba-border-top
-            div.q-mb-sm search for term/tag:
-            q-search.bg-transparent.text-white(color="white", dark)
+          q-tabs(color="dark")
+            q-tab(slot="title", name="authors") authors
+            q-tab(slot="title", name="types") types
+            q-tab(slot="title", name="date") date
+            q-tab(slot="title", name="search") search
+
+            q-tab-pane(name="authors")
+              q-list.no-border
+                q-item.no-padding
+                  q-btn(size="sm") select all
+                  q-btn(size="sm") select none
+                q-item.no-padding(v-for="author in authors")
+                  q-checkbox.q-caption(v-model="filterAuthors", :val="author", :label="author", color="white")
+
+            q-tab-pane(name="types")
+              q-list.no-border
+                q-item.no-padding
+                  q-btn(size="sm") select all
+                  q-btn(size="sm") select none
+                q-item.no-padding(v-for="type in annotationTypes")
+                  q-checkbox.q-caption(v-model="filterTypes", :val="type", :label="type", color="white")
+
+            q-tab-pane(name="date")
+              div creation
+
+            q-tab-pane(name="search")
+              q-search.bg-transparent.text-white(color="white", dark)
 
     // headline
     //
@@ -68,6 +74,45 @@
       q-icon(v-if="radioFilter == 'allsessions' || radioFilter == 'thissession'", name="visibility")
       q-icon(v-else, name="visibility_off")
       span.q-ml-md Filter
+      q-popover(v-model="openFilter", anchor="top left", self="top right")
+        div.bg-dark.q-pa-md.q-caption(style="min-height: 100%;")
+          .row.q-mb-md
+            .col-10.bg-grey-10.q-pa-sm
+              // q-radio.q-mb-md(v-model="radioFilter", val="allsessions", label="Apply on all sessions in this timeline.", color="white")
+              q-radio.q-mb-md(v-model="radioFilter", val="thissession", label="Apply filter.", color="white")
+              br
+              q-radio(v-model="radioFilter", val="none", label="Do not apply.", color="white")
+            .col-2.text-right
+              q-btn.rotate-180(@click="openFilter = false", icon="keyboard_backspace", size="sm", round, flat)
+
+          div(:class="{ 'text-grey-8': radioFilter == 'none' }")
+            q-tabs(color="dark")
+              q-tab(slot="title", name="authors") authors
+              q-tab(slot="title", name="types") types
+              q-tab(slot="title", name="date") date
+              q-tab(slot="title", name="search") search
+
+              q-tab-pane(name="authors")
+                q-list.no-border
+                  q-item.no-padding
+                    q-btn(size="sm") select all
+                    q-btn(size="sm") select none
+                  q-item.no-padding(v-for="author in authors")
+                    q-checkbox.q-caption(v-model="filterAuthors", :val="author", :label="author", color="white")
+
+              q-tab-pane(name="types")
+                q-list.no-border
+                  q-item.no-padding
+                    q-btn(size="sm") select all
+                    q-btn(size="sm") select none
+                  q-item.no-padding(v-for="type in annotationTypes")
+                    q-checkbox.q-caption(v-model="filterTypes", :val="type", :label="type", color="white")
+
+              q-tab-pane(name="date")
+                div creation
+
+              q-tab-pane(name="search")
+                q-search.bg-transparent.text-white(color="white", dark)
 
     // diagram
     //
