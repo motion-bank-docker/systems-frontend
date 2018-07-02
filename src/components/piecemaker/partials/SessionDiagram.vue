@@ -52,9 +52,9 @@
 
           // svg wrap
           //
-          .col-4(:class="{'row': fixDiagram, 'shadow-6': !fixDiagram}", style="height: 80vh; overflow: scroll;")
+          .col-4(:class="{'row': fixDiagram, 'shadow-6': !fixDiagram}", style="height: calc(100vh - 50px); overflow: scroll;")
 
-            .col-4.shadow-6(:class="{'moba-fixed': fixDiagram, 'full-width': fixDiagram}", style="height: 80vh; overflow: scroll;")
+            .col-4.shadow-6(:class="{'moba-fixed': fixDiagram, 'full-width': fixDiagram}", style="height: calc(100vh - 50px); overflow: scroll;")
               svg(
               v-model="svgHeight",
               width="100%",
@@ -297,7 +297,7 @@
     methods: {
       scrollPos () {
         var diagr = document.getElementById('diagram')
-        if (diagr.getBoundingClientRect().top < '100') {
+        if (diagr.getBoundingClientRect().top < '50') {
           this.fixDiagram = true
         }
         else {
@@ -633,8 +633,8 @@
 
   .moba-fixed {
     position: fixed;
-    top: 99px;
-    left: 20px;
+    top: 50px;
+    left: 0px;
   }
 
   .moba-hover {
