@@ -4,8 +4,14 @@
 
       q-window-resize-observable(@resize="onResize")
 
-      .fixed.bg-dark.shadow-6.q-pa-md(v-if="previewWindow.visibility", style="top: 66px; left: 10px;")
-        iframe(width="560", height="315", src="", frameborder="0", allow="autoplay; encrypted-media", allowfullscreen)
+      // video preview
+      //
+      .fixed(v-if="previewWindow.visibility", :class="{'row full-width': fixDiagram, 'shadow-16': !fixDiagram}", :height="previewWindow.height", style="bottom: 0; right: 0;")
+        .col-8.offset-4.bg-dark.text-center.moba-border-top(style="position: relative;")
+          .absolute(@mousedown="handlerPreviewWindow()", @mouseup="handlerPreviewWindow()", style="top: 10px; left: 10px;") resize {{ previewWindow.height }}
+          q-btn.absolute(@click="previewWindow.visibility = false", style="top: 10px; right: 10px;", round, size="sm")
+            q-icon(name="clear")
+          iframe(width="auto", height="100%", src="https://www.youtube.com/embed/zS8hEj37CrA", frameborder="0", allow="autoplay; encrypted-media", allowfullscreen)
 
       // annotations: diagram
       //
@@ -70,6 +76,7 @@
                   //
                   svg(x="15")
                     svg(
+                    @click="previewWindow.visibility = true",
                     v-for="(video, i) in videos",
                     width="20",
                     :height="video.duration * ((viewportHeight / 100 * 80) / svgHeight)",
@@ -137,7 +144,7 @@
                     v-for="annotation in filteredAnnotations",
                     @mouseenter="previewDot.visibility = true, previewDot.referencetime = annotation.referencetime, previewDot.positionY = annotation.referencetime",
                     @mouseleave="previewDot.visibility = false",
-                    @click="jumpToAnchor(annotation.id)",
+                    @click="jumpToAnchor(annotation.id), previewLine.positionY = annotation.referencetime",
                     height="1",
                     x="20%",
                     :y="annotation.referencetime * ((viewportHeight / 100 * 80) / svgHeight)",
@@ -205,13 +212,17 @@
 
                   // author
                   //
-                  .col-10.text-grey-9.q-pa-sm(v-if="handlerPrevItem(i, 'author') != annotation.author && annotation.type != 'separator' && annotation.type != 'tag'")
-                    h6.q-mt-sm.q-mb-none.text-center {{ annotation.author }}
+                    .col-10.text-grey-9.q-pa-sm(v-if="handlerPrevItem(i, 'author') != annotation.author && annotation.type != 'separator' && annotation.type != 'tag'")
+                      h6.q-mt-sm.q-mb-none.text-center {{ annotation.author }}
 
                   // annotation
                   //
                   .col-12.row.q-px-md.q-py-sm.moba-round-borders(:class="[annotation.type != 'system' ? 'moba-hover' : '', annotation.type == 'separator' ? 'bg-grey-9 text-black text-center' : '']")
                     div.col-10
+
+                      // author
+                      span.text-grey-9 {{ annotation.author }}&nbsp;&nbsp;
+                        q-tooltip.bg-dark.shadow-8.moba-border(anchor="center left", self="center right", :offset="[10, 0]") Christian Hansen
 
                       // video
                       iframe(v-if="annotation.type == 'video'", width="100%", height="315", :src="annotation.text", frameborder="0", allow="autoplay; encrypted-media", allowfullscreen)
@@ -221,6 +232,8 @@
 
                       // tag
                       q-chip.bg-transparent.text-grey-4.moba-border(v-else-if="annotation.type == 'tag'") {{ annotation.text }}
+                        q-context-menu.bg-dark.text-white.moba-border.moba-annotation-tag
+                          .q-pa-sm add to filter
 
                       // separator
                       q-chip.bg-transparent(v-else-if="annotation.type == 'separator'") {{ annotation.text }}
@@ -228,14 +241,12 @@
                       // text
                       span(v-else-if="annotation.type != 'tag'") {{ annotation.text }}
 
-                      q-context-menu
-                        .q-pa-sm edit
                       // span.q-ml-lg.q-caption() {{ annotation.tags }}
                     .col-1
                       div(v-if="annotation.tags.length > 0")
                         div.text-right
                           span
-                            q-chip.bg-dark.text-white.moba-border
+                            q-chip.bg-dark.text-white.moba-border.moba-annotation-tag
                               | #
                             q-tooltip.bg-dark.q-py-none.shadow-8.moba-border(anchor="top left", self="top right", :offset="[10, 0]")
                               q-list.no-border
@@ -295,6 +306,10 @@
       window.removeEventListener('scroll', this.scrollPos)
     },
     methods: {
+      handlerPreviewWindow () {
+        this.previewWindow.height = event.clientY
+        console.log(this.previewWindow.height)
+      },
       scrollPos () {
         var diagr = document.getElementById('diagram')
         if (diagr.getBoundingClientRect().top < '50') {
@@ -436,7 +451,8 @@
       return {
         fixDiagram: '',
         previewWindow: {
-          visibility: false
+          visibility: false,
+          height: ''
         },
         prevItem: '',
         map: undefined,
@@ -620,12 +636,14 @@
 
 <style>
 
-  .moba-border {
-    border: 1px solid rgba( 255, 255, 255, .075 );
-  }
-  .q-chip.moba-border:hover {
+  .moba-annotation-tag:hover {
     background-color: white!important;
     color: #000!important;
+    /*transition: all ease 350ms;*/
+  }
+
+  .moba-border {
+    border: 1px solid rgba( 255, 255, 255, .075 );
   }
   .moba-border-top {
     border-top: 1px solid rgba( 255, 255, 255, .05 );

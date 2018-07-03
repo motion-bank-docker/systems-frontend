@@ -92,10 +92,11 @@
             // .col-2.text-right
               q-btn.rotate-180(@click="openFilter = false", icon="keyboard_backspace", size="sm", round, flat)
 
-          div(:class="{ 'text-grey-8': radioFilter == 'none' }")
+          div(:class="{'text-grey-8': radioFilter == 'none'}")
             q-tabs(color="dark")
-              q-tab(slot="title", name="authors") authors
-              q-tab(slot="title", name="types") types
+              q-tab(:class="{'bg-green': filterAuthors.length > 0}", slot="title", name="authors") authors
+              q-tab(:class="{'bg-green': filterAuthors.length > 0}", slot="title", name="tags") tags
+              q-tab(:class="{'bg-green': filterTypes.length > 0}", slot="title", name="types") types
               q-tab(slot="title", name="date") date
               q-tab(slot="title", name="search") search
 
@@ -105,6 +106,15 @@
                   q-btn.col-6 select none
                 q-list.no-border
                   q-item.no-padding(v-for="author in authors")
+                    q-checkbox.q-caption(v-model="filterAuthors", :val="author", :label="author", color="white")
+
+              q-tab-pane(name="tags")
+                q-btn-group.row.full-width
+                  q-btn.col-6 select all
+                  q-btn.col-6 select none
+                q-list.no-border
+                  q-checkbox.q-caption(v-model="filterTags", :val="tag", label="annotation tag", color="white")
+                  // q-item.no-padding(v-for="author in authors")
                     q-checkbox.q-caption(v-model="filterAuthors", :val="author", :label="author", color="white")
 
               q-tab-pane(name="types")
