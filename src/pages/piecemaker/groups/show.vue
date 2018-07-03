@@ -83,7 +83,7 @@
 
       // filter
       //
-      q-popover.bg-transparent.moba-round-borders-filter(v-model="openFilter", anchor="top left", self="top right")
+      q-popover.bg-transparent.moba-round-borders-filter.moba-border.shadow-8(v-model="openFilter", anchor="top left", self="top right", :offset="[10,0]")
         div.bg-dark.q-pa-md.q-caption(style="min-height: 100%; opacity: .95;")
           .row.q-mb-md
             .col-10.q-pa-sm
@@ -178,7 +178,7 @@
 
     // wrap - recording sessions
     //
-    .row.q-mt-xl(v-if="showSession")
+    .row.q-mt-xl.moba-border-top(v-if="showSession")
       .col-10.offset-1
         h5.text-center
           q-btn(@click='diagramDimensions.activeId -= 1', icon="keyboard_arrow_left", flat)

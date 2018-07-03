@@ -52,9 +52,9 @@
 
           // svg wrap
           //
-          .col-4(:class="{'row': fixDiagram, 'shadow-6': !fixDiagram}", style="height: calc(100vh - 50px); overflow: scroll;")
+          .col-4(:class="{'row': fixDiagram, 'shadow-16': !fixDiagram}", style="height: calc(100vh - 50px); overflow: scroll;")
 
-            .col-4.shadow-6(:class="{'moba-fixed': fixDiagram, 'full-width': fixDiagram}", style="height: calc(100vh - 50px); overflow: scroll;")
+            .col-4.shadow-16.moba-border(:class="{'moba-fixed': fixDiagram, 'full-width': fixDiagram}", style="height: calc(100vh - 50px); overflow: scroll;")
               svg(
               v-model="svgHeight",
               width="100%",
@@ -141,7 +141,7 @@
                     height="1",
                     x="20%",
                     :y="annotation.referencetime * ((viewportHeight / 100 * 80) / svgHeight)",
-                    :style="{fill: 'rgba(255,255,255, .4)', width: '60%'}",
+                    :style="{fill: 'rgba(255,255,255, .4)', width: '80%'}",
                     :class="{'full-width': annotation.type === 'separator', 'moba-separator': annotation.type === 'separator'}"
                     )
 
@@ -642,8 +642,10 @@
   }
 
     .moba-hover:hover {
-      background-color: rgba(0, 0, 0, .15);
-      border: 1px solid rgba( 255, 255, 255, .1 );
+      /* background-color: rgba(0, 0, 0, .15);
+      border: 1px solid rgba( 255, 255, 255, .1 );*/
+      background-color: rgba(0, 0, 0, 0);
+      border: 1px solid rgba( 255, 255, 255, 0);
     }
 
     .moba-hover .moba-edit{
