@@ -223,29 +223,11 @@
   // import CardFull from '../../../components/shared/layouts/CardFull'
   import FullScreen from '../../../components/shared/layouts/FullScreen'
   import SessionDiagram from '../../../components/piecemaker/partials/SessionDiagram'
-  import { QWindowResizeObservable, QRange, QList, QItem, QItemMain, QItemSide, QItemTile, QModal, QTooltip, QPopover, QModalLayout, QLayoutDrawer, QPageSticky, QRadio, QCheckbox, QSearch } from 'quasar'
 
   export default {
     components: {
-      // CardFull,
-      QWindowResizeObservable,
-      QRange,
       FullScreen,
-      SessionDiagram,
-      QList,
-      QItem,
-      QItemMain,
-      QItemSide,
-      QItemTile,
-      QModal,
-      QTooltip,
-      QPopover,
-      QModalLayout,
-      QLayoutDrawer,
-      QPageSticky,
-      QRadio,
-      QCheckbox,
-      QSearch
+      SessionDiagram
     },
     mounted () {
       const
@@ -255,9 +237,9 @@
         .then(map => {
           _this.map = map
         })
-      this.$store.dispatch('annotations/find', { query: { 'target.id': uuid } })
+      this.$store.dispatch('annotations/find', { 'target.id': uuid })
         .then(annotations => {
-          _this.annotations = annotations
+          _this.annotations = annotations.items
           console.log(_this.annotations)
         })
       this.getSvgHeight(this.videos)

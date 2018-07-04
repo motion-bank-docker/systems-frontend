@@ -139,7 +139,7 @@
           // cell "title"
           //
           q-td.text-left(slot="body-cell-title", slot-scope="props", :props="props")
-            q-btn(@click="$router.push('groups/show')", no-caps, flat) {{ props.row.title }}
+            q-btn(@click="$router.push(`groups/${props.row.uuid}`)", no-caps, flat) {{ props.row.title }}
 
           // cell "users"
           //
