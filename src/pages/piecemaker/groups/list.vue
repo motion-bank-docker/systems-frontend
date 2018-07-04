@@ -200,7 +200,7 @@
     },
     mounted () {
       const _this = this
-      this.$store.dispatch('maps/find', {}).then(results => {
+      this.$store.dispatch('maps/find', { type: 'Timeline' }).then(results => {
         console.log(results)
         _this.maps = results.items
       })
