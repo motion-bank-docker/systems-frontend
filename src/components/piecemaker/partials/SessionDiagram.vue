@@ -1,8 +1,12 @@
 <template lang="pug">
 
     div(@mouseup="resizeButtonUp()")
-      div
-        | {{ propData }}
+
+      // div {{ Object.keys(propGrouped) }}
+        div {{ propGrouped.sessions.length }}
+      .q-mb-xl.q-caption.bg-red(v-for="gr in propGrouped")
+        .q-mb-xl.bg-green(v-for="g in gr") {{ g }}
+
       q-window-resize-observable(@resize="onResize")
 
       // video preview
@@ -147,7 +151,7 @@
                   svg(width="20%", x="80%")
                     rect(width="100%", height="100%", fill="rgba(255, 0, 0, 0)") // dev
                     rect.moba-svg-entry(
-                    v-for="annotation in filteredAnnotations",
+                    v-for="annotation in propGrouped",
                     v-if="annotation.type != 'video'",
                     @mouseenter="previewDot.visibility = true, previewDot.referencetime = annotation.referencetime, previewDot.positionY = annotation.referencetime",
                     @mouseleave="previewDot.visibility = false",
@@ -299,7 +303,7 @@
       this.getAnnotationSessionWidth()
       // this.scrollPos()
     },
-    props: ['data', 'meta'],
+    props: ['data', 'grouped', 'meta'],
     computed: {
       computedSvgWidth: function () {
         // return (30 + 10) * this.videos.length + 20 + (this.selectedAnnotationSessions.length * 40)
@@ -462,7 +466,7 @@
     data () {
       const _this = this
       return {
-        propData: this.data,
+        propGrouped: this.grouped,
         fixDiagram: '',
         previewWindow: {
           visibility: false,

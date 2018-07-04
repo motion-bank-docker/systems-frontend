@@ -2,11 +2,12 @@
 
   full-screen
 
+    div(v-for="gr in grouped") {{ gr }}
+
     // detect window dimensions
     // (necessary, do not delete)
     //
     q-window-resize-observable(@resize="onResize")
-
     // filter
     //
       q-layout-drawer(v-model="openDiagram", side="right", overlay)
@@ -209,7 +210,7 @@
           .text-center.q-mt-sm
             q-btn.shadow-6(@click="showSession = false, diagramDimensions.activeId = null", icon="clear", label="close", size="small", flat)
       .col-12
-        SessionDiagram(:data="annotations", :meta="e")
+        SessionDiagram(:data="annotations", :grouped="grouped", :meta="e")
     .row.q-my-xl(v-else)
       .col-12.row
         .col-10.offset-1
@@ -241,7 +242,7 @@
       this.$store.dispatch('annotations/find', { 'target.id': uuid })
         .then(annotations => {
           _this.grouped = groupBySessions(annotations.items)
-          console.log(_this.grouped)
+          console.log('----------' + _this.grouped)
         })
       this.getSvgHeight(this.videos)
       this.appendRandomAnnotations()
@@ -285,8 +286,8 @@
             }
           }
         }
-        console.log('all sessions: ' + this.countAllSessions)
-        console.log(this.newArrTimelineDataDummy[2].duration)
+        // console.log('all sessions: ' + this.countAllSessions)
+        // console.log(this.newArrTimelineDataDummy[2].duration)
       },
       randomNumber (fromRandom, toRandom) {
         return Math.floor(Math.random() * toRandom) + fromRandom
