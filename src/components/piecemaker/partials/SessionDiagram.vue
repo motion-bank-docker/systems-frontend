@@ -1,14 +1,15 @@
 <template lang="pug">
 
-    div
+    div(@mouseup="resizeButtonUp()")
 
       q-window-resize-observable(@resize="onResize")
 
       // video preview
       //
-      .fixed(v-if="previewWindow.visibility", :class="{'row full-width': fixDiagram, 'shadow-16': !fixDiagram}", :height="previewWindow.height", style="bottom: 0; right: 0;")
+      .fixed(v-if="previewWindow.visibility", :class="{'row full-width': fixDiagram, 'shadow-16': !fixDiagram}", :style="{height: previewWindow.height + 'px', bottom: 0, right: 0}")
         .col-8.offset-4.bg-dark.text-center.moba-border-top(style="position: relative;")
-          .absolute(@mousedown="handlerPreviewWindow()", @mouseup="handlerPreviewWindow()", style="top: 10px; left: 10px;") resize {{ previewWindow.height }}
+          .absolute(@mousedown="resizeButtonDown()", style="top: 10px; left: 10px;")
+            q-icon.rotate-90(name="code")
           q-btn.absolute(@click="previewWindow.visibility = false", style="top: 10px; right: 10px;", round, size="sm")
             q-icon(name="clear")
           iframe(width="auto", height="100%", src="https://www.youtube.com/embed/zS8hEj37CrA", frameborder="0", allow="autoplay; encrypted-media", allowfullscreen)
@@ -142,6 +143,7 @@
                     rect(width="100%", height="100%", fill="rgba(255, 0, 0, 0)") // dev
                     rect.moba-svg-entry(
                     v-for="annotation in filteredAnnotations",
+                    v-if="annotation.type != 'video'",
                     @mouseenter="previewDot.visibility = true, previewDot.referencetime = annotation.referencetime, previewDot.positionY = annotation.referencetime",
                     @mouseleave="previewDot.visibility = false",
                     @click="jumpToAnchor(annotation.id), previewLine.positionY = annotation.referencetime",
@@ -158,7 +160,7 @@
                   width="100%",
                   height="1",
                   :y="previewLine.positionY * ((viewportHeight / 100 * 80) / svgHeight)"
-                  style="fill: rgba(255, 255, 255, 1)!important;"
+                  style="fill: rgba(255, 255, 255, .1)!important;"
                   )
 
                 // annotations
@@ -225,7 +227,7 @@
                         q-tooltip.bg-dark.shadow-8.moba-border(anchor="center left", self="center right", :offset="[10, 0]") Christian Hansen
 
                       // video
-                      iframe(v-if="annotation.type == 'video'", width="100%", height="315", :src="annotation.text", frameborder="0", allow="autoplay; encrypted-media", allowfullscreen)
+                      iframe(v-if="annotation.type == 'video'", :class="{'hidden':annotation.type == 'video'}", width="100%", height="315", :src="annotation.text", frameborder="0", allow="autoplay; encrypted-media", allowfullscreen)
 
                       //system
                       span.text-grey-9.q-caption(v-else-if="annotation.type == 'system'") [{{ annotation.text }}]
@@ -253,7 +255,7 @@
                                 q-item(v-for="(at, ati) in annotation.tags", :class="{'q-pa-xs': ati - 2 < annotation.tags.length}")
                                   q-chip.bg-transparent.text-grey-4.moba-border {{ at }}
                     .col-1.text-right.moba-edit
-                      q-btn.bg-dark.text-white.moba-border(:class="[annotation.type != 'system' ? '' : 'hidden']", icon="edit", size="sm", round, flat)
+                      q-btn.bg-dark.text-white.flip-horizontal.moba-border(:class="[annotation.type != 'system' ? '' : 'hidden']", icon="keyboard_backspace", size="sm", round, flat)
 
 </template>
 
@@ -306,8 +308,14 @@
       window.removeEventListener('scroll', this.scrollPos)
     },
     methods: {
+      resizeButtonDown () {
+        window.addEventListener('mousemove', this.handlerPreviewWindow)
+      },
+      resizeButtonUp () {
+        window.removeEventListener('mousemove', this.handlerPreviewWindow)
+      },
       handlerPreviewWindow () {
-        this.previewWindow.height = event.clientY
+        this.previewWindow.height = this.viewportHeight - event.clientY + 20
         console.log(this.previewWindow.height)
       },
       scrollPos () {
