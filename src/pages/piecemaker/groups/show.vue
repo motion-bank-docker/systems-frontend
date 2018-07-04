@@ -240,7 +240,10 @@
         })
       this.$store.dispatch('annotations/find', { 'target.id': uuid })
         .then(annotations => {
-          _this.grouped = groupBySessions(annotations.items)
+          return groupBySessions(annotations.items)
+        })
+        .then(grouped => {
+          _this.grouped = grouped
           console.log(_this.grouped)
         })
       this.getSvgHeight(this.videos)
