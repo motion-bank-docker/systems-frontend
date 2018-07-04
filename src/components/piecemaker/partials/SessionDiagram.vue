@@ -1,7 +1,8 @@
 <template lang="pug">
 
     div(@mouseup="resizeButtonUp()")
-
+      div
+        | {{ propData }}
       q-window-resize-observable(@resize="onResize")
 
       // video preview
@@ -356,7 +357,7 @@
         }
       },
       appendRandomAnnotations () { // dev only
-        let i = 0
+        /* let i = 0
         let author = ''
         let dur = ''
         let text = 'Hier steht ein Text.'
@@ -415,7 +416,7 @@
             author = 'C. X.'
           }
           this.annotations.push({id: i, referencetime: Math.floor(Math.random() * this.svgHeight), duration: dur, created: i, text: text, type: type, author: author, tags: tags})
-        }
+        } */
       },
       getAnnotationSessionWidth () {
         this.annotationSessionWidth = 100
@@ -461,6 +462,7 @@
     data () {
       const _this = this
       return {
+        propData: this.data,
         fixDiagram: '',
         previewWindow: {
           visibility: false,
