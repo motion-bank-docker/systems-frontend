@@ -33,9 +33,6 @@
 
             .col-12.row.q-mb-sm
               .col-12.q-mt-md
-                //
-                  div [Platzhalter Filter] (unter Diagramm?)
-                  div bspw. Zeitraum festlegen, Annotations von User xxx
                 // select – FILTERED
                 //
                 div.text-grey-6.q-pb-xs.q-caption.float-left.q-pr-lg(
@@ -568,7 +565,7 @@
         videos: [{ // dev only
           created: '1',
           duration: '1000',
-          id: '',
+          id: '1',
           referencetime: '0',
           src: 'https://www.youtube.com/embed/zS8hEj37CrA',
           title: 'video 1',
@@ -576,7 +573,7 @@
         }, {
           created: '20',
           duration: '1100',
-          id: '',
+          id: '2',
           referencetime: '20',
           src: 'https://www.youtube.com/embed/zS8hEj37CrA',
           title: 'video 1',
@@ -584,7 +581,7 @@
         }, {
           created: '25',
           duration: '500',
-          id: '',
+          id: '3',
           referencetime: '270',
           src: 'https://www.youtube.com/embed/0VqaGkKQRCU',
           title: 'video 1',
@@ -592,14 +589,14 @@
         }, {
           created: '50',
           duration: '830',
-          id: '',
+          id: '4',
           referencetime: '120',
           title: 'timerange',
           type: 'timerange'
         }, {
           created: '300',
           duration: '200',
-          id: '',
+          id: '5',
           referencetime: '12',
           src: 'https://www.youtube.com/embed/zS8hEj37CrA',
           title: 'video 1',
@@ -607,7 +604,7 @@
         }, {
           created: '1',
           duration: '1000',
-          id: '',
+          id: '6',
           referencetime: '0',
           src: 'https://www.youtube.com/embed/zS8hEj37CrA',
           title: 'video 1',
@@ -615,7 +612,7 @@
         }, {
           created: '20',
           duration: '1100',
-          id: '',
+          id: '7',
           referencetime: '20',
           src: 'https://www.youtube.com/embed/zS8hEj37CrA',
           title: 'video 1',
@@ -623,7 +620,7 @@
         }, {
           created: '25',
           duration: '500',
-          id: '',
+          id: '8',
           referencetime: '270',
           src: 'https://www.youtube.com/embed/0VqaGkKQRCU',
           title: 'video 1',
@@ -631,14 +628,14 @@
         }, {
           created: '50',
           duration: '830',
-          id: '',
+          id: '9',
           referencetime: '120',
           title: 'timerange',
           type: 'video'
         }, {
           created: '300',
           duration: '200',
-          id: '',
+          id: '10',
           referencetime: '12',
           src: 'https://www.youtube.com/embed/zS8hEj37CrA',
           title: 'video 1',
@@ -657,6 +654,9 @@
     /*transition: all ease 350ms;*/
   }
 
+  .moba-active-swimlane {
+    fill: rgba(255, 255, 255, 1);
+  }
   .moba-border {
     border: 1px solid rgba( 255, 255, 255, .075 );
   }
