@@ -1,5 +1,5 @@
 // const sift = require('sift')
-import { Assert } from 'mbjs-utils'
+import { Assert, ObjectUtil } from 'mbjs-utils'
 
 const makeResourceModule = function (client, resourceName, resourceNamePluralised = undefined) {
   const
@@ -14,10 +14,11 @@ const makeResourceModule = function (client, resourceName, resourceNamePluralise
        * Execute action
        */
       return client[action](namePlural, args[0], args.length > 1 ? args[1] : undefined).then(response => {
-        if (response.data) {
-          context.commit(action, response.data)
+        console.log(response)
+        if (response) {
+          context.commit(action, response)
           context.commit('setPending', action, false)
-          return response.data
+          return response
         }
         else throw new Error(`${action} ${name} failed: empty API response`)
       }).catch(err => {
@@ -32,6 +33,7 @@ const makeResourceModule = function (client, resourceName, resourceNamePluralise
     state: {
       [namePlural]: [],
       [idList]: [],
+      currentItem: undefined,
       currentQuery: undefined,
       isPending: {
         find: false,
@@ -43,14 +45,28 @@ const makeResourceModule = function (client, resourceName, resourceNamePluralise
       }
     },
     mutations: {
+      find: (state, data) => {
+        state[namePlural] = data.items
+      },
+      get: (state, data) => {
+        state.currentItem = data
+      },
       create: (state, data) => {
-        state[name].push(data)
+        state[namePlural].push(data)
       },
       update: (state, id, data) => {
         data.uuid = id
         const index = state[idList].indexOf(id)
         if (index > -1) {
           state[namePlural][index] = data
+        }
+        else throw new Error(`Update ${name} failed: not found`)
+      },
+      patch: (state, id, data) => {
+        data.uuid = id
+        const index = state[idList].indexOf(id)
+        if (index > -1) {
+          state[namePlural][index] = ObjectUtil.merge(state[namePlural][index], data)
         }
         else throw new Error(`Update ${name} failed: not found`)
       },
