@@ -95,11 +95,20 @@
           div(:class="{'text-grey-8': radioFilter == 'none'}")
             q-tabs(color="dark")
               q-tab(:class="{'bg-green': filterAuthors.length > 0}", slot="title", name="authors") authors
-                q-tooltip.bg-dark.shadow-8.moba-border(v-if="filterAuthors.length > 0", anchor="bottom middle", self="top middle", :offset="[10, 0]") {{ filterAuthors }}
+                q-tooltip.bg-dark.shadow-8.moba-border(v-if="filterAuthors.length > 0", anchor="bottom middle", self="top middle", :offset="[10, 0]")
+                  q-list.no-border.no-padding
+                    q-item.q-caption.q-pa-xs.no-margin(v-for="author in filterAuthors") {{ author }}
+
               q-tab(:class="{'bg-green': filterTags.length > 0}", slot="title", name="tags") tags
-                q-tooltip.bg-dark.shadow-8.moba-border(v-if="filterTags.length > 0", anchor="bottom middle", self="top middle", :offset="[10, 0]") {{ filterTags }}
+                q-tooltip.bg-dark.shadow-8.moba-border(v-if="filterTags.length > 0", anchor="bottom middle", self="top middle", :offset="[10, 0]")
+                  q-list.no-border.no-padding
+                    q-item.q-caption.q-pa-xs.no-margin(v-for="tag in filterTags") {{ tag }}
+
               q-tab(:class="{'bg-green': filterTypes.length > 0}", slot="title", name="types") types
-                q-tooltip.bg-dark.shadow-8.moba-border(v-if="filterTypes.length > 0", anchor="bottom middle", self="top middle", :offset="[10, 0]") {{ filterTypes }}
+                q-tooltip.bg-dark.shadow-8.moba-border(v-if="filterTypes.length > 0", anchor="bottom middle", self="top middle", :offset="[10, 0]")
+                  q-list.no-border.no-padding
+                    q-item.q-caption.q-pa-xs.no-margin(v-for="type in filterTypes") {{ type }}
+
               q-tab(slot="title", name="date") date
               q-tab(slot="title", name="search") search
 
