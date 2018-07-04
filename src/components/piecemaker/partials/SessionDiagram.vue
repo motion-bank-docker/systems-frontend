@@ -8,11 +8,18 @@
       //
       .fixed(v-if="previewWindow.visibility", :class="{'row full-width': fixDiagram, 'shadow-16': !fixDiagram}", :style="{height: previewWindow.height + 'px', bottom: 0, right: 0}")
         .col-8.offset-4.bg-dark.text-center.moba-border-top(style="position: relative;")
+          .absolute(style="bottom: 10px; left: 10px;")
+            q-icon(name="info_outlined")
+              q-tooltip.bg-dark.shadow-8.moba-border(anchor="top left", self="bottom left", :offset="[0, 10]")
+                div
+                  |Videoinfos:
+                  br
+                  | Author, Länge, ...
           .absolute(@mousedown="resizeButtonDown()", style="top: 10px; left: 10px;")
             q-icon.rotate-90(name="code")
           q-btn.absolute(@click="previewWindow.visibility = false", style="top: 10px; right: 10px;", round, size="sm")
             q-icon(name="clear")
-          iframe(width="auto", height="100%", src="https://www.youtube.com/embed/zS8hEj37CrA", frameborder="0", allow="autoplay; encrypted-media", allowfullscreen)
+          iframe(width="80%", height="100%", src="https://www.youtube.com/embed/zS8hEj37CrA", frameborder="0", allow="autoplay; encrypted-media", allowfullscreen)
 
       // annotations: diagram
       //
