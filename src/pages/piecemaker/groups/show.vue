@@ -223,6 +223,7 @@
   // import CardFull from '../../../components/shared/layouts/CardFull'
   import FullScreen from '../../../components/shared/layouts/FullScreen'
   import SessionDiagram from '../../../components/piecemaker/partials/SessionDiagram'
+  import groupBySessions from '../../../lib/annotations/sessions'
 
   export default {
     components: {
@@ -239,8 +240,8 @@
         })
       this.$store.dispatch('annotations/find', { 'target.id': uuid })
         .then(annotations => {
-          _this.annotations = annotations.items
-          console.log(_this.annotations)
+          _this.grouped = groupBySessions(annotations.items)
+          console.log(_this.grouped)
         })
       this.getSvgHeight(this.videos)
       this.appendRandomAnnotations()
@@ -419,6 +420,7 @@
         map: undefined,
         activeDiagram: '',
         annotations: [],
+        grouped: { annotations: [], videos: [] },
         annotationsBlocks: [],
         annotationTypes: ['text', 'system', 'video', 'separator', 'tag'],
         authors: ['A.Z.', 'B.Y.', 'C.X.'],
