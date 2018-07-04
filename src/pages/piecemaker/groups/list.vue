@@ -3,45 +3,9 @@
   // card-full
   full-screen
 
-    // modal: create timeline
+    // modal: create/edit timeline
     //
-    q-modal(v-model="showModalAdd")
-      .q-pa-xl.bg-dark(style="min-width: 50vw;")
-        h5.caption.no-margin
-          // q-icon(name="add")
-          | Create timeline
-        q-input.q-my-sm(float-label="Title", v-model="newTimeline.title", color="white", dark)
-        q-input.q-my-sm(float-label="Description", v-model="newTimeline.description", color="white", dark)
-
-        h5.q-mt-xl.q-mb-none.caption
-          // q-icon(name="add")
-          | Inviting list
-          q-icon.q-ml-md(name="help")
-            q-tooltip.q-caption.bg-black.text-white
-              | Every mail in this list will receive an invitation to this timeline.
-              | After creating a new timeline you can manage the users in this timline, too.
-
-        // user list
-        q-list(no-border)
-
-          q-item.q-my-sm.q-pa-sm(v-for="(n, i) in createTimelineUsers", style="border: 1px solid #333;")
-            q-item-side
-              q-tooltip.bg-white.text-dark.q-caption Allow managing rights?
-              q-checkbox(v-model="n.createTimelineUsers", color="grey-9")
-            q-item-main
-              div.q-mb-xs {{ n.mail }}
-            q-item-side
-              q-btn(icon="clear", round, no-caps)
-                q-tooltip.bg-red.q-caption Remove from inviting list?
-
-          q-item.q-mt-sm.q-px-lg.q-py-md(style="border: 1px solid #333;")
-            q-item-main
-              q-input.q-mb-md(v-model="newUser.mail", float-label="Enter mail", color="white", dark)
-            q-item-side
-              q-btn(@click="onAction('add-user-create')", label="Add", color="primary", no-caps)
-
-        .text-center
-          q-btn.q-mx-xs.q-mt-xl.bg-green.text-white(@click="showModalAdd=false", label="Create Timeline", no-caps)
+    modal-edit-timeline(:show="showMapEdit", :payload="currentMap", @modal-submit="onMapUpdated")
 
     //
     // modal: delete/leave timeline
@@ -55,28 +19,6 @@
         .text-center.q-mt-lg
           q-btn.q-mx-sm(@click="showModalDelete=false", label="Yes", no-caps)
           q-btn.q-mx-sm(@click="showModalDelete=false", label="No", no-caps)
-
-    //
-    // modal: manage timeline information
-    //
-    q-modal(v-if="currentMap", v-model="showModalEditInformation")
-      .q-pa-xl.bg-dark(style="min-width: 50vw;")
-        h5.caption.no-margin Timeline information
-
-        // title
-        .row.q-mt-md(v-model="watchTest")
-          q-input.col-10(v-model="currentMap.title", float-label="Title", color="white", dark)
-          .col-2.text-right
-            q-btn.q-mt-md(:disable="disableBtn", label="Save", no-caps)
-
-        // title
-        .row.q-mt-md(v-model="watchTest")
-          q-input.col-10(v-model="currentMap.description", float-label="Description", color="white", dark )
-          .col-2.text-right
-            q-btn.q-mt-md(:disable="disableBtn", label="Save", no-caps)
-
-        .text-center
-          q-btn.q-mx-xs.q-mt-xl.bg-green.text-white(@click="showModalEditInformation=false", label="Done", no-caps)
 
     // modal: manage users
     //
@@ -150,7 +92,7 @@
           // cell "actions"
           //
           q-td(slot="body-cell-actions", slot-scope="props", :props="props")
-            q-btn(@click="onAction(a.type)", v-for="a in actions", :color="a.color || 'neutral'",
+            q-btn(@click="onAction(a.type, props.row)", v-for="a in actions", :color="a.color || 'neutral'",
               :key="a.type", flat, no-caps)
               q-icon.q-mr-sm(:name="a.icon") {{ $t(a.title) }}
 
@@ -160,41 +102,34 @@
   import FullScreen from '../../../components/shared/layouts/FullScreen'
   import GroupList from '../../../components/piecemaker/partials/GroupsList'
   import DataTable from '../../../components/shared/partials/DataTable'
+  import ModalEditTimeline from '../../../components/piecemaker/modals/ModalEditTimeline'
   export default {
     components: {
       FullScreen,
       GroupList,
-      DataTable
+      DataTable,
+      ModalEditTimeline
     },
     methods: {
-      onAction (type) {
-        // alert(type)
-        // const _this = this
+      onMapUpdated (map) {
+        if (map.uuid) console.debug('map updated', map)
+        else console.debug('map created', map)
+        this.currentMap = undefined
+        this.showMapEdit = false
+      },
+      onAction (type, payload) {
+        this.currentMap = payload
         switch (type) {
         case 'add':
-          // alert(this.store.state.count)
-          this.showModalAdd = true
-          return
+          this.currentMap = undefined
+          this.showMapEdit = true
+          break
         case 'delete':
           this.showModalDelete = true
-          return
+          break
         case 'edit':
-          this.showModalEditInformation = true
-          return
-        case 'add-user':
-          // TODO: fix acl editing
-          // this.maps[0].users.push(this.newUser)
-          this.newUser = {
-            mail: '',
-            name: ''
-          }
-          return
-        case 'add-user-create':
-          this.createTimelineUsers.push(this.newUser)
-          this.newUser = {
-            mail: '',
-            name: ''
-          }
+          this.currentMap = payload
+          this.showMapEdit = true
         }
       }
     },
@@ -219,11 +154,10 @@
           title: undefined,
           description: undefined
         },
+        showMapEdit: false,
         currentMap: undefined,
         orderBy: 'mail',
-        showModalAdd: false,
         showModalDelete: false,
-        showModalEditInformation: false,
         showModalUsers: false,
         user: undefined,
         userType: 'admin',
