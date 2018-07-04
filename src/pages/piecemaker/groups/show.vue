@@ -84,7 +84,7 @@
       // filter
       //
       q-popover.bg-transparent.moba-round-borders-filter.moba-border.shadow-8(v-model="openFilter", anchor="top left", self="top right", :offset="[10,0]")
-        div.bg-dark.q-pa-md.q-caption(style="min-height: 100%; opacity: .95;")
+        div.bg-dark.q-pa-md.q-caption(style="min-height: 100%;")
           .row.q-mb-md
             .col-10.q-pa-sm
               q-radio.q-mr-lg(v-model="radioFilter", val="thissession", label="Apply filter.", color="white")
@@ -95,8 +95,11 @@
           div(:class="{'text-grey-8': radioFilter == 'none'}")
             q-tabs(color="dark")
               q-tab(:class="{'bg-green': filterAuthors.length > 0}", slot="title", name="authors") authors
-              q-tab(:class="{'bg-green': filterAuthors.length > 0}", slot="title", name="tags") tags
+                q-tooltip.bg-dark.shadow-8.moba-border(v-if="filterAuthors.length > 0", anchor="bottom middle", self="top middle", :offset="[10, 0]") {{ filterAuthors }}
+              q-tab(:class="{'bg-green': filterTags.length > 0}", slot="title", name="tags") tags
+                q-tooltip.bg-dark.shadow-8.moba-border(v-if="filterTags.length > 0", anchor="bottom middle", self="top middle", :offset="[10, 0]") {{ filterTags }}
               q-tab(:class="{'bg-green': filterTypes.length > 0}", slot="title", name="types") types
+                q-tooltip.bg-dark.shadow-8.moba-border(v-if="filterTypes.length > 0", anchor="bottom middle", self="top middle", :offset="[10, 0]") {{ filterTypes }}
               q-tab(slot="title", name="date") date
               q-tab(slot="title", name="search") search
 
@@ -418,6 +421,7 @@
         },
         countAllSessions: null,
         filterAuthors: [],
+        filterTags: [],
         filterTypes: [],
         radioFilter: 'none',
         openFilter: false,
