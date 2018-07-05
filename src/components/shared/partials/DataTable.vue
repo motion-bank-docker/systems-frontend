@@ -39,13 +39,13 @@
           descending: false,
           page: 1,
           rowsPerPage: 0
+          // rowsNumber: 0
         },
         hideBottom: true,
         selection: 'none',
         selected: [],
         filter: '',
         loading: false,
-        // rowsNumber: 0,
         rows: [],
         cols: []
       }
