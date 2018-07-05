@@ -22,7 +22,7 @@
   require('vue-video-player/src/custom-theme.css')
   require('videojs-youtube')
   require('videojs-vimeo/src/Vimeo')
-  require('videojs-framebyframe')
+  // require('videojs-framebyframe')
 
   import { videoPlayer } from 'vue-video-player'
 
@@ -45,7 +45,7 @@
             remainingTime: true
           },
           plugins: {
-            framebyframe: {
+            /* framebyframe: {
               fps: 23.98, // FIXME: 25.0 ?!?, make "smart"
               steps: [
                 {text: '-1s', step: -24},
@@ -53,7 +53,7 @@
                 {text: '+1f', step: 1},
                 {text: '+1s', step: 24}
               ]
-            }
+            } */
           }
         }
       }
