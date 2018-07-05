@@ -18,12 +18,13 @@
             q-icon.rotate-90(name="code")
           q-btn.absolute(@click="previewWindow.visibility = false", style="top: 10px; right: 10px;", round, size="sm")
             q-icon(name="clear")
-          iframe(width="80%", height="100%", src="https://www.youtube.com/embed/zS8hEj37CrA", frameborder="0", allow="autoplay; encrypted-media", allowfullscreen)
+          // iframe(width="80%", height="100%", src="https://www.youtube.com/embed/zS8hEj37CrA", frameborder="0", allow="autoplay; encrypted-media", allowfullscreen)
+          div(style="width: 80%; margin-left: 10%;")
+            video-player(v-if="video", :src="video", @ready="playerReady($event)", @time="onPlayerTime($event)")
 
       // annotations: diagram
       //
       div#diagram
-
         .row.col-12.q-pt-xl
 
           // Filter
@@ -32,6 +33,7 @@
 
             .col-12.row.q-mb-sm
               .col-12.q-mt-md
+
                 // select – FILTERED
                 //
                 div.text-grey-6.q-pb-xs.q-caption.float-left.q-pr-lg(
@@ -71,22 +73,35 @@
               )
 
                 // swimlanes
+                // WRAP
                 //
                 svg(width="100px")
-                  svg(v-for="(video, i) in propGrouped.videos", width="20px", height="100%", :x="(20 + 10) * i", y="0")
-                    rect(width="100%", height="100%", x="0", y="0", fill="rgba(255, 255, 255, .1)")
-                    line(v-for="n in 30", x1="0", x2="100%", y1="1 * i", y2="1*i", style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;")
+                  svg(v-for="(vid, i) in propGrouped.videos", @click="previewWindow.visibility = true, video = vid.annotation.body.source.id", width="20px", height="100%", :x="(20 + 10) * i", y="0")
+                    rect.moba-swimlane(width="100%", height="100%", x="0", y="0")
+                    line(v-for="n in 30", x1="0", x2="100%", :y1="n * 60", :y2="n * 60", style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;")
 
-                // annotations
+                // lines
+                // WRAP
                 //
                 svg(width="20%", height="100%", x="80%")
-                  rect.moby-svg-entry(
+                  rect.cursor-pointer.moby-svg-entry(
                   v-for="(annotation, i) in propGrouped.sessions[0].annotations",
+                    @click="jumpToAnchor(annotation.annotation._id), previewLine.positionY = annotation.seconds",
                   height="1",
-                  width="40",
+                  width="100%",
                   x="0",
                   :y="annotation.seconds",
-                  :style="{fill: 'rgba(255,255,255, .1)', width: '80%'}"
+                  style="fill: rgba(255,255,255, .1);"
+                  )
+
+                // preview line
+                //
+                svg(width="100%", height="100%")
+                  rect(
+                  width="100%",
+                  height="1",
+                  :y="previewLine.positionY"
+                  style="fill: rgba(255, 255, 255, .1)!important;"
                   )
 
                 // swimlanes – wrap
@@ -187,15 +202,6 @@
                       // :class="{'full-width': annotation.type === 'separator', 'moba-separator': annotation.type === 'separator'}"
                       )
 
-                  // previewLine
-                  //
-                  rect(
-                  width="100%",
-                  height="1",
-                  :y="previewLine.positionY * ((viewportHeight / 100 * 80) / svgHeight)"
-                  style="fill: rgba(255, 255, 255, .1)!important;"
-                  )
-
                 // annotations
                 // FILTERED
                 // Erstmal nicht löschen!
@@ -228,12 +234,15 @@
                       style="fill: rgba(255,255,255, .4)!important;"
                       )
 
-          // annotations: text
+          // annotations
+          // TEXT
           //
           div#annotations-text.col-8(v-for="gr in propGrouped.sessions")
-            div.q-pl-sm(v-for="annotation in gr.annotations")
-              // | {{ annotation.annotation.body.value }}
-              // | {{ annotation.annotation.author.name }}
+            div.q-pl-sm(
+            v-for="annotation in gr.annotations",
+            @mouseenter="previewLine.positionY = annotation.seconds, previewLine.visiibility = true",
+            :ref="annotation.annotation._id"
+            )
               .row.moba-list-entry
                 .row.col-12(style="line-height: 1.35rem;")
                   .col-12.row.q-px-md.q-py-sm.moba-round-borders(:class="[annotation.type != 'system' ? 'moba-hover' : '', annotation.type == 'separator' ? 'bg-grey-9 text-black text-center' : '']")
@@ -320,9 +329,11 @@
 
 <script>
   import { QWindowResizeObservable, QFab, QList, QItem, QItemMain, QItemSide, QItemTile, QTooltip, QCard } from 'quasar'
+  import VideoPlayer from '../../shared/media/VideoPlayer'
 
   export default {
     components: {
+      VideoPlayer,
       QWindowResizeObservable,
       QFab,
       QList,
@@ -366,6 +377,9 @@
       window.removeEventListener('scroll', this.scrollPos)
     },
     methods: {
+      playerReady (player) {
+        this.player = player
+      },
       shortenName (val) {
         return val.match(/\b\w/g).join('')
       },
@@ -381,7 +395,6 @@
       },
       scrollPos () {
         var diagr = document.getElementById('diagram')
-        console.log(diagr)
         if (diagr.getBoundingClientRect().top < '50') {
           this.fixDiagram = true
         }
@@ -447,6 +460,8 @@
     data () {
       const _this = this
       return {
+        // video: 'http://10.10.10.102:6262/lifelines-cam-1.mp4',
+        video: 'https://www.youtube.com/embed/zS8hEj37CrA',
         session: {
           duration: this.grouped.sessions[0].seconds
         },
@@ -552,85 +567,6 @@
           { type: 'synchronize', title: 'buttons.synchronize' },
           { type: 'delete', title: 'buttons.delete', icon: 'highlight off' }
         ]
-        /* videos: [{ // dev only
-          created: '1',
-          duration: '1000',
-          id: '1',
-          referencetime: '0',
-          src: 'https://www.youtube.com/embed/zS8hEj37CrA',
-          title: 'video 1',
-          type: 'video'
-        }, {
-          created: '20',
-          duration: '1100',
-          id: '2',
-          referencetime: '20',
-          src: 'https://www.youtube.com/embed/zS8hEj37CrA',
-          title: 'video 1',
-          type: 'video'
-        }, {
-          created: '25',
-          duration: '500',
-          id: '3',
-          referencetime: '270',
-          src: 'https://www.youtube.com/embed/0VqaGkKQRCU',
-          title: 'video 1',
-          type: 'video'
-        }, {
-          created: '50',
-          duration: '830',
-          id: '4',
-          referencetime: '120',
-          title: 'timerange',
-          type: 'timerange'
-        }, {
-          created: '300',
-          duration: '200',
-          id: '5',
-          referencetime: '12',
-          src: 'https://www.youtube.com/embed/zS8hEj37CrA',
-          title: 'video 1',
-          type: 'video'
-        }, {
-          created: '1',
-          duration: '1000',
-          id: '6',
-          referencetime: '0',
-          src: 'https://www.youtube.com/embed/zS8hEj37CrA',
-          title: 'video 1',
-          type: 'timerange'
-        }, {
-          created: '20',
-          duration: '1100',
-          id: '7',
-          referencetime: '20',
-          src: 'https://www.youtube.com/embed/zS8hEj37CrA',
-          title: 'video 1',
-          type: 'video'
-        }, {
-          created: '25',
-          duration: '500',
-          id: '8',
-          referencetime: '270',
-          src: 'https://www.youtube.com/embed/0VqaGkKQRCU',
-          title: 'video 1',
-          type: 'video'
-        }, {
-          created: '50',
-          duration: '830',
-          id: '9',
-          referencetime: '120',
-          title: 'timerange',
-          type: 'video'
-        }, {
-          created: '300',
-          duration: '200',
-          id: '10',
-          referencetime: '12',
-          src: 'https://www.youtube.com/embed/zS8hEj37CrA',
-          title: 'video 1',
-          type: 'video'
-        }] */
       }
     }
   }
@@ -708,7 +644,7 @@
   }
 
   .moba-swimlane:hover {
-    fill: rgba( 0, 0, 0, 1 );
+    fill: rgba( 0, 0, 255, .1 );
   }
 
   .moba-svg-entry {
