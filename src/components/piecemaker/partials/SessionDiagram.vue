@@ -1,7 +1,6 @@
 <template lang="pug">
 
     div(@mouseup="resizeButtonUp()")
-
       q-window-resize-observable(@resize="onResize")
 
       // video preview
@@ -74,7 +73,7 @@
                 // swimlanes
                 //
                 svg(width="100px")
-                  svg(v-for="(video, i) in propGrouped.videos", width="20px", height="50%", :x="(20 + 10) * i", y="0")
+                  svg(v-for="(video, i) in propGrouped.videos", width="20px", height="100%", :x="(20 + 10) * i", y="0")
                     rect(width="100%", height="100%", x="0", y="0", fill="rgba(255, 255, 255, .1)")
                     line(v-for="n in 30", x1="0", x2="100%", y1="1 * i", y2="1*i", style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;")
 
@@ -86,8 +85,8 @@
                   height="1",
                   width="40",
                   x="0",
-                  :y="4 * i",
-                  :style="{fill: 'rgba(255,255,255, .4)', width: '80%'}"
+                  :y="annotation.seconds",
+                  :style="{fill: 'rgba(255,255,255, .1)', width: '80%'}"
                   )
 
                 // swimlanes – wrap
@@ -233,6 +232,8 @@
           //
           div#annotations-text.col-8(v-for="gr in propGrouped.sessions")
             div.q-pl-sm(v-for="annotation in gr.annotations")
+              // | {{ annotation.annotation.body.value }}
+              // | {{ annotation.annotation.author.name }}
               .row.moba-list-entry
                 .row.col-12(style="line-height: 1.35rem;")
                   .col-12.row.q-px-md.q-py-sm.moba-round-borders(:class="[annotation.type != 'system' ? 'moba-hover' : '', annotation.type == 'separator' ? 'bg-grey-9 text-black text-center' : '']")
@@ -240,25 +241,25 @@
 
                       // author
                       //
-                      span.text-grey-9 {{ shortenName(annotation.author.name) }}&nbsp;&nbsp;
-                        q-tooltip.bg-dark.shadow-8.moba-border(anchor="center left", self="center right", :offset="[10, 0]") {{ annotation.author.name }}
+                      span.text-grey-9 {{ shortenName(annotation.annotation.author.name) }}&nbsp;&nbsp;
+                        q-tooltip.bg-dark.shadow-8.moba-border(anchor="center left", self="center right", :offset="[10, 0]") {{ annotation.annotation.author.name }}
 
                       // value
                       //
-                      span {{ annotation.body.value }}
+                      span {{ annotation.annotation.body.value }}
 
                     // annotation tags
                     //
-                      .col-1
-                        div(v-if="annotation.tags.length > 0")
-                          div.text-right
-                            span
-                              q-chip.bg-dark.text-white.moba-border.moba-annotation-tag
-                                | #
-                              q-tooltip.bg-dark.q-py-none.shadow-8.moba-border(anchor="top left", self="top right", :offset="[10, 0]")
-                                q-list.no-border
-                                  q-item(v-for="(at, ati) in annotation.tags", :class="{'q-pa-xs': ati - 2 < annotation.tags.length}")
-                                    q-chip.bg-transparent.text-grey-4.moba-border {{ at }}
+                    .col-1
+                      // div(v-if="annotation.tags.length > 0")
+                        div.text-right
+                          span
+                            q-chip.bg-dark.text-white.moba-border.moba-annotation-tag
+                              | #
+                            q-tooltip.bg-dark.q-py-none.shadow-8.moba-border(anchor="top left", self="top right", :offset="[10, 0]")
+                              q-list.no-border
+                                q-item(v-for="(at, ati) in annotation.tags", :class="{'q-pa-xs': ati - 2 < annotation.tags.length}")
+                                  q-chip.bg-transparent.text-grey-4.moba-border {{ at }}
 
                     // btn -> post annotation screen
                     //
@@ -376,10 +377,11 @@
       },
       handlerPreviewWindow () {
         this.previewWindow.height = this.viewportHeight - event.clientY + 20
-        console.log(this.previewWindow.height)
+        // console.log(this.previewWindow.height)
       },
       scrollPos () {
         var diagr = document.getElementById('diagram')
+        console.log(diagr)
         if (diagr.getBoundingClientRect().top < '50') {
           this.fixDiagram = true
         }
@@ -415,21 +417,8 @@
         this.annotationSessionWidth = 100
       },
       getSvgHeight (arr) {
-        // console.log(arr.sessions[0].seconds)
         this.svgHeight = arr.sessions[0].seconds
         console.log('dur ' + this.session.duration)
-        /* let newArr = []
-        let arrLength = arr.length
-        let i = 0
-        for (i = 0; i < arrLength; i++) {
-          newArr.push(parseInt(arr[i].referencetime) + parseInt(arr[i].duration))
-        }
-        newArr.sort(function (a, b) {
-          return a - b
-        })
-        this.svgHeight = newArr[arrLength - 1]
-        this.scaleFactor = (this.viewportHeight / 100 * 80) / this.svgHeight */
-        // console.log('xxx: ' + this.scaleFactor)
       },
       getSvgWidth (arrVideos, arrSelected) {
         console.log(arrSelected)
