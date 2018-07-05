@@ -2,11 +2,21 @@ import constants from '../constants'
 import Sorting from './sorting'
 import TimelineSelector from './selectors/timeline'
 import { ObjectUtil } from 'mbjs-utils'
+import axios from 'axios'
 
-const groupBySessions = function (annotations, secondsDist = constants.SESSION_DISTANCE_SECONDS) {
+const groupBySessions = async function (annotations, secondsDist = constants.SESSION_DISTANCE_SECONDS) {
   annotations = annotations.sort(Sorting.sortOnTarget)
   const videos = annotations.filter(anno => { return anno.body.type === 'Video' })
-    .map(annotation => { return { meta: { seconds: 1800 }, annotation } })
+    .map(annotation => { return { meta: { seconds: undefined }, annotation } })
+  for (let v of videos) {
+    const info = await axios.get(v.annotation.body.source.id.replace('.mp4', '.json'))
+    let duration
+    try {
+      duration = info.data.meta.ffprobe.format.duration
+    }
+    catch (e) { /* ignored */ }
+    if (duration) v.meta.seconds = duration
+  }
   annotations = annotations.filter(anno => { return anno.body.type === 'TextualBody' })
   const sessions = []
   const defaultSession = { start: undefined, end: undefined, seconds: undefined, annotations: [] }
