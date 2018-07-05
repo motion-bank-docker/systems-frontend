@@ -68,7 +68,7 @@
       else if (this.type === 'video/vimeo') {
         this.playerOptions.techOrder = ['vimeo']
       }
-      this.setSources([{ type: this.type, src: this.src.source }])
+      this.setSources([{ type: this.type, src: this.src }])
     },
     watch: {
       src (val) {
@@ -80,7 +80,7 @@
           else if (this.type === 'video/vimeo') {
             this.playerOptions.techOrder = ['vimeo']
           }
-          this.setSources([{type: this.type, src: val.source}])
+          this.setSources([{type: this.type, src: val}])
         }
       }
     },
@@ -91,10 +91,10 @@
     },
     methods: {
       guessType (val) {
-        if (val.source.indexOf('youtube.com') > -1 || val.source.indexOf('youtu.be') > -1) {
+        if (val.indexOf('youtube.com') > -1 || val.indexOf('youtu.be') > -1) {
           return 'video/youtube'
         }
-        else if (val.source.indexOf('vimeo.com') > -1) {
+        else if (val.indexOf('vimeo.com') > -1) {
           return 'video/vimeo'
         }
         return null

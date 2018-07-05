@@ -380,6 +380,9 @@
       playerReady (player) {
         this.player = player
       },
+      onPlayerTime (evt) {
+        console.debug('player time', evt)
+      },
       shortenName (val) {
         return val.match(/\b\w/g).join('')
       },
