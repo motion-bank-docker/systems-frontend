@@ -2,11 +2,6 @@
 
     div(@mouseup="resizeButtonUp()")
 
-      // div {{ Object.keys(propGrouped) }}
-        div {{ propGrouped.sessions.length }}
-      .q-mb-xl.q-caption.bg-red(v-for="gr in propGrouped")
-        .q-mb-xl.bg-green(v-for="g in gr") {{ g }}
-
       q-window-resize-observable(@resize="onResize")
 
       // video preview
@@ -206,25 +201,49 @@
 
           // annotations: text
           //
-          // div#annotations-text.col-8(v-scroll="scrollPos()", style="height: 40vh; overflow: scroll;")
-          div#annotations-text.col-8
+          div#annotations-text.col-8(v-for="gr in propGrouped.sessions")
+            div.q-pl-sm(v-for="annotation in gr.annotations")
+              .row.moba-list-entry
+                .row.col-12(style="line-height: 1.35rem;")
+                  .col-12.row.q-px-md.q-py-sm.moba-round-borders(:class="[annotation.type != 'system' ? 'moba-hover' : '', annotation.type == 'separator' ? 'bg-grey-9 text-black text-center' : '']")
+                    div.col-10
+
+                      // author
+                      //
+                      span.text-grey-9 {{ shortenName(annotation.author.name) }}&nbsp;&nbsp;
+                        q-tooltip.bg-dark.shadow-8.moba-border(anchor="center left", self="center right", :offset="[10, 0]") {{ annotation.author.name }}
+
+                      // value
+                      //
+                      span {{ annotation.body.value }}
+
+                    // annotation tags
+                    //
+                      .col-1
+                        div(v-if="annotation.tags.length > 0")
+                          div.text-right
+                            span
+                              q-chip.bg-dark.text-white.moba-border.moba-annotation-tag
+                                | #
+                              q-tooltip.bg-dark.q-py-none.shadow-8.moba-border(anchor="top left", self="top right", :offset="[10, 0]")
+                                q-list.no-border
+                                  q-item(v-for="(at, ati) in annotation.tags", :class="{'q-pa-xs': ati - 2 < annotation.tags.length}")
+                                    q-chip.bg-transparent.text-grey-4.moba-border {{ at }}
+
+                    // btn -> post annotation screen
+                    //
+                    .col-1.text-right.moba-edit
+                      q-btn.bg-dark.text-white.flip-horizontal.moba-border(icon="keyboard_backspace", size="sm", round, flat)
+
             div.q-pl-sm(
             v-for="(annotation, i) in byReferencetime",
             @mouseenter="previewLine.positionY = annotation.referencetime, previewLine.visiibility = true",
             :class="{'q-my-xl': annotation.type === 'separator'}",
             :ref="annotation.id"
             )
-              // .row(:class="{'q-mb-lg, moba-border-top': handlerPrevItem(i, 'author') != annotation.author}")
               .row.moba-list-entry
-                // .col-10.offset-2.text-grey-8(v-if="handlerPrevItem(i, 'author') != annotation.author") {{ annotation.author }}
 
-                // .row(:class="[annotation.tags.length > 0 ? 'col-11' : 'col-9']", style="line-height: 1.35rem;")
                 .row.col-12(style="line-height: 1.35rem;")
-
-                  // author
-                  //
-                    .col-10.text-grey-9.q-pa-sm(v-if="handlerPrevItem(i, 'author') != annotation.author && annotation.type != 'separator' && annotation.type != 'tag'")
-                      h6.q-mt-sm.q-mb-none.text-center {{ annotation.author }}
 
                   // annotation
                   //
@@ -301,7 +320,6 @@
       this.sortAnnotations(this.annotations)
       this.filterAnnotations(0, this.numberRandomAnnotations)
       this.getAnnotationSessionWidth()
-      // this.scrollPos()
     },
     props: ['data', 'grouped', 'meta'],
     computed: {
@@ -317,6 +335,9 @@
       window.removeEventListener('scroll', this.scrollPos)
     },
     methods: {
+      shortenName (val) {
+        return val.match(/\b\w/g).join('')
+      },
       resizeButtonDown () {
         window.addEventListener('mousemove', this.handlerPreviewWindow)
       },
@@ -437,7 +458,7 @@
         })
         this.svgHeight = newArr[arrLength - 1]
         this.scaleFactor = (this.viewportHeight / 100 * 80) / this.svgHeight
-        console.log('xxx: ' + this.scaleFactor)
+        // console.log('xxx: ' + this.scaleFactor)
       },
       getSvgWidth (arrVideos, arrSelected) {
         console.log(arrSelected)
