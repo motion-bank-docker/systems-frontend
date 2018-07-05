@@ -66,16 +66,20 @@
           .col-4(:class="{'row': fixDiagram, 'shadow-16': !fixDiagram}")
 
             .col-4.shadow-16.moba-border(:class="{'moba-fixed': fixDiagram, 'full-width': fixDiagram}", style="height: calc(100vh - 50px); overflow: scroll;")
-              // div(v-for="(annotation, i) in propGrouped.sessions[0].annotations") {{ i }}
-
               svg(
               width="100%",
               :height="session.duration",
               )
 
-                svg(v-for="(video, i) in propGrouped.videos", width="20px", height="50%", :x="(20 + 10) * i", y="0")
-                  rect(width="100%", height="100%", x="0", y="0", fill="rgba(255, 255, 255, .1)")
+                // swimlanes
+                //
+                svg(width="100px")
+                  svg(v-for="(video, i) in propGrouped.videos", width="20px", height="50%", :x="(20 + 10) * i", y="0")
+                    rect(width="100%", height="100%", x="0", y="0", fill="rgba(255, 255, 255, .1)")
+                    line(v-for="n in 30", x1="0", x2="100%", y1="1 * i", y2="1*i", style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;")
 
+                // annotations
+                //
                 svg(width="20%", height="100%", x="80%")
                   rect.moby-svg-entry(
                   v-for="(annotation, i) in propGrouped.sessions[0].annotations",
