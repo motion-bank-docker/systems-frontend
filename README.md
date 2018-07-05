@@ -51,5 +51,5 @@ npm run dev
 ## License
 
 :copyright: 2018 Mainz University of Applied Sciences (Motion Bank Project) – 
-Released under the [MIT](https://gitlab.rlp.net/motionbank/systems-frontend/blob/master/LICENSE) license
+Released under the [MIT](https://github.com/motionbank-js/motionbank-systems-frontend/blob/master/LICENSE) license
 

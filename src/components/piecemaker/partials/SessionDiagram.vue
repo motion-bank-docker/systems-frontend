@@ -1,7 +1,6 @@
 <template lang="pug">
 
     div(@mouseup="resizeButtonUp()")
-
       q-window-resize-observable(@resize="onResize")
 
       // video preview
@@ -19,12 +18,13 @@
             q-icon.rotate-90(name="code")
           q-btn.absolute(@click="previewWindow.visibility = false", style="top: 10px; right: 10px;", round, size="sm")
             q-icon(name="clear")
-          iframe(width="80%", height="100%", src="https://www.youtube.com/embed/zS8hEj37CrA", frameborder="0", allow="autoplay; encrypted-media", allowfullscreen)
+          // iframe(width="80%", height="100%", src="https://www.youtube.com/embed/zS8hEj37CrA", frameborder="0", allow="autoplay; encrypted-media", allowfullscreen)
+          div(style="width: 80%; margin-left: 10%;")
+            video-player(v-if="video", :src="video", @ready="playerReady($event)", @time="onPlayerTime($event)")
 
       // annotations: diagram
       //
       div#diagram
-
         .row.col-12.q-pt-xl
 
           // Filter
@@ -33,6 +33,7 @@
 
             .col-12.row.q-mb-sm
               .col-12.q-mt-md
+
                 // select – FILTERED
                 //
                 div.text-grey-6.q-pb-xs.q-caption.float-left.q-pr-lg(
@@ -63,14 +64,45 @@
 
           // svg wrap
           //
-          .col-4(:class="{'row': fixDiagram, 'shadow-16': !fixDiagram}", style="height: calc(100vh - 50px); overflow: scroll;")
+          .col-4(:class="{'row': fixDiagram, 'shadow-16': !fixDiagram}")
 
             .col-4.shadow-16.moba-border(:class="{'moba-fixed': fixDiagram, 'full-width': fixDiagram}", style="height: calc(100vh - 50px); overflow: scroll;")
               svg(
-              v-model="svgHeight",
               width="100%",
-              height="120vh"
+              :height="session.duration",
               )
+
+                // swimlanes
+                // WRAP
+                //
+                svg(width="100px")
+                  svg(v-for="(vid, i) in propGrouped.videos", @click="previewWindow.visibility = true, video = vid.annotation.body.source.id", width="20px", height="100%", :x="(20 + 10) * i", y="0")
+                    rect.moba-swimlane(width="100%", height="100%", x="0", y="0")
+                    line(v-for="n in 30", x1="0", x2="100%", :y1="n * 60", :y2="n * 60", style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;")
+
+                // lines
+                // WRAP
+                //
+                svg(width="20%", height="100%", x="80%")
+                  rect.cursor-pointer.moby-svg-entry(
+                  v-for="(annotation, i) in propGrouped.sessions[0].annotations",
+                    @click="jumpToAnchor(annotation.annotation._id), previewLine.positionY = annotation.seconds",
+                  height="1",
+                  width="100%",
+                  x="0",
+                  :y="annotation.seconds",
+                  style="fill: rgba(255,255,255, .1);"
+                  )
+
+                // preview line
+                //
+                svg(width="100%", height="100%")
+                  rect(
+                  width="100%",
+                  height="1",
+                  :y="previewLine.positionY"
+                  style="fill: rgba(255, 255, 255, .1)!important;"
+                  )
 
                 // swimlanes – wrap
                 //
@@ -82,11 +114,11 @@
                   svg(x="15")
                     svg(
                     @click="previewWindow.visibility = true",
-                    v-for="(video, i) in videos",
+                    v-for="(video, i) in propGrouped.videos",
                     width="20",
-                    :height="video.duration * ((viewportHeight / 100 * 80) / svgHeight)",
+                    :height="30",
                     :x="(20 + 10) * i",
-                    :y="video.referencetime * ((viewportHeight / 100 * 80) / svgHeight)"
+                    :y="40"
                     )
                       g(v-if="video.type == 'video'")
                         rect.moba-swimlane(
@@ -143,29 +175,32 @@
 
                   // horizontal lines - ANNOTATIONS (all)
                   //
-                  svg(width="20%", x="80%")
-                    rect(width="100%", height="100%", fill="rgba(255, 0, 0, 0)") // dev
-                    rect.moba-svg-entry(
-                    v-for="annotation in propGrouped",
-                    v-if="annotation.type != 'video'",
-                    @mouseenter="previewDot.visibility = true, previewDot.referencetime = annotation.referencetime, previewDot.positionY = annotation.referencetime",
-                    @mouseleave="previewDot.visibility = false",
-                    @click="jumpToAnchor(annotation.id), previewLine.positionY = annotation.referencetime",
-                    height="1",
-                    x="20%",
-                    :y="annotation.referencetime * ((viewportHeight / 100 * 80) / svgHeight)",
-                    :style="{fill: 'rgba(255,255,255, .4)', width: '80%'}",
-                    :class="{'full-width': annotation.type === 'separator', 'moba-separator': annotation.type === 'separator'}"
-                    )
+                    svg(width="20%", height="100%", x="80%")
+                      rect.moby-svg-entry(
+                      v-for="annotation in propGrouped.sessions[0].annotations",
+                      height="10",
+                      width="40",
+                      x="100",
+                      y="40",
+                      fill="red",
+                      // :style="{fill: 'rgba(255,255,255, .4)', width: '80%'}"
+                      )
 
-                  // previewLine
                   //
-                  rect(
-                  width="100%",
-                  height="1",
-                  :y="previewLine.positionY * ((viewportHeight / 100 * 80) / svgHeight)"
-                  style="fill: rgba(255, 255, 255, .1)!important;"
-                  )
+                    svg(width="20%", x="80%")
+                      rect(width="100%", height="100%", fill="rgba(255, 0, 0, 0)") // dev
+                      rect.moba-svg-entry(
+                      v-for="annotation in propGrouped",
+                      v-if="annotation.type != 'video'",
+                      @mouseenter="previewDot.visibility = true, previewDot.referencetime = annotation.referencetime, previewDot.positionY = annotation.referencetime",
+                      @mouseleave="previewDot.visibility = false",
+                      @click="jumpToAnchor(annotation.id), previewLine.positionY = annotation.referencetime",
+                      height="1",
+                      x="20%",
+                      // :y="annotation.referencetime * ((viewportHeight / 100 * 80) / svgHeight)",
+                      // :style="{fill: 'rgba(255,255,255, .4)', width: '80%'}",
+                      // :class="{'full-width': annotation.type === 'separator', 'moba-separator': annotation.type === 'separator'}"
+                      )
 
                 // annotations
                 // FILTERED
@@ -199,10 +234,15 @@
                       style="fill: rgba(255,255,255, .4)!important;"
                       )
 
-          // annotations: text
+          // annotations
+          // TEXT
           //
           div#annotations-text.col-8(v-for="gr in propGrouped.sessions")
-            div.q-pl-sm(v-for="annotation in gr.annotations")
+            div.q-pl-sm(
+            v-for="annotation in gr.annotations",
+            @mouseenter="previewLine.positionY = annotation.seconds, previewLine.visiibility = true",
+            :ref="annotation.annotation._id"
+            )
               .row.moba-list-entry
                 .row.col-12(style="line-height: 1.35rem;")
                   .col-12.row.q-px-md.q-py-sm.moba-round-borders(:class="[annotation.type != 'system' ? 'moba-hover' : '', annotation.type == 'separator' ? 'bg-grey-9 text-black text-center' : '']")
@@ -210,25 +250,25 @@
 
                       // author
                       //
-                      span.text-grey-9 {{ shortenName(annotation.author.name) }}&nbsp;&nbsp;
-                        q-tooltip.bg-dark.shadow-8.moba-border(anchor="center left", self="center right", :offset="[10, 0]") {{ annotation.author.name }}
+                      span.text-grey-9 {{ shortenName(annotation.annotation.author.name) }}&nbsp;&nbsp;
+                        q-tooltip.bg-dark.shadow-8.moba-border(anchor="center left", self="center right", :offset="[10, 0]") {{ annotation.annotation.author.name }}
 
                       // value
                       //
-                      span {{ annotation.body.value }}
+                      span {{ annotation.annotation.body.value }}
 
                     // annotation tags
                     //
-                      .col-1
-                        div(v-if="annotation.tags.length > 0")
-                          div.text-right
-                            span
-                              q-chip.bg-dark.text-white.moba-border.moba-annotation-tag
-                                | #
-                              q-tooltip.bg-dark.q-py-none.shadow-8.moba-border(anchor="top left", self="top right", :offset="[10, 0]")
-                                q-list.no-border
-                                  q-item(v-for="(at, ati) in annotation.tags", :class="{'q-pa-xs': ati - 2 < annotation.tags.length}")
-                                    q-chip.bg-transparent.text-grey-4.moba-border {{ at }}
+                    .col-1
+                      // div(v-if="annotation.tags.length > 0")
+                        div.text-right
+                          span
+                            q-chip.bg-dark.text-white.moba-border.moba-annotation-tag
+                              | #
+                            q-tooltip.bg-dark.q-py-none.shadow-8.moba-border(anchor="top left", self="top right", :offset="[10, 0]")
+                              q-list.no-border
+                                q-item(v-for="(at, ati) in annotation.tags", :class="{'q-pa-xs': ati - 2 < annotation.tags.length}")
+                                  q-chip.bg-transparent.text-grey-4.moba-border {{ at }}
 
                     // btn -> post annotation screen
                     //
@@ -289,9 +329,11 @@
 
 <script>
   import { QWindowResizeObservable, QFab, QList, QItem, QItemMain, QItemSide, QItemTile, QTooltip, QCard } from 'quasar'
+  import VideoPlayer from '../../shared/media/VideoPlayer'
 
   export default {
     components: {
+      VideoPlayer,
       QWindowResizeObservable,
       QFab,
       QList,
@@ -315,8 +357,8 @@
           _this.annotations = annotations
           console.log(_this.annotations)
         })
-      this.getSvgHeight(this.videos)
-      this.appendRandomAnnotations()
+      // this.getSvgHeight(this.videos)
+      this.getSvgHeight(this.propGrouped)
       this.sortAnnotations(this.annotations)
       this.filterAnnotations(0, this.numberRandomAnnotations)
       this.getAnnotationSessionWidth()
@@ -335,6 +377,9 @@
       window.removeEventListener('scroll', this.scrollPos)
     },
     methods: {
+      playerReady (player) {
+        this.player = player
+      },
       shortenName (val) {
         return val.match(/\b\w/g).join('')
       },
@@ -346,7 +391,7 @@
       },
       handlerPreviewWindow () {
         this.previewWindow.height = this.viewportHeight - event.clientY + 20
-        console.log(this.previewWindow.height)
+        // console.log(this.previewWindow.height)
       },
       scrollPos () {
         var diagr = document.getElementById('diagram')
@@ -381,84 +426,12 @@
           this.annotationsBlocks.push(this.annotations.filter(annotation => annotation.created > this.arrFilter[i]['rangebegin'] && annotation.created <= this.arrFilter[i]['rangeend']))
         }
       },
-      appendRandomAnnotations () { // dev only
-        /* let i = 0
-        let author = ''
-        let dur = ''
-        let text = 'Hier steht ein Text.'
-        let type = ''
-        let tags = []
-        for (i = 0; i < this.numberRandomAnnotations; i++) {
-          if (i >= 0 && i <= 10) {
-            dur = 40
-          }
-          else {
-            dur = 1
-          }
-          if (i >= 1 && i <= 5) {
-            type = 'video'
-            text = 'https://www.youtube.com/embed/lDJFMvU2ZqY'
-          }
-          else if (i >= 30 && i <= 80) {
-            type = 'system'
-            text = 'Log entry'
-          }
-          else if (i >= 85 && i <= 120) {
-            type = 'tag'
-            text = 'timeline tag'
-          }
-          else if (i >= 10 && i <= 20) {
-            type = 'text'
-            text = 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.   \n' +
-              '\n' +
-              'Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.   \n' +
-              '\n' +
-              'Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.   \n' +
-              '\n' +
-              'Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer'
-          }
-          else if (i === 81 || i === 121) {
-            type = 'separator'
-            text = 'New Section: Lorem ipsum'
-          }
-          else {
-            type = 'text'
-            text = 'Consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo du.'
-            if (i >= 160 && i <= 200) {
-              tags = ['annotation tag 1', 'annotation tag 2', 'annotation tag 3']
-            }
-          }
-          if (i >= 1 && i <= 20) {
-            author = 'A. Z.'
-          }
-          else if (i >= 30 && i <= 80) {
-            author = 'System'
-          }
-          else if (i >= 100 && i <= 130) {
-            author = 'B. Y.'
-          }
-          else {
-            author = 'C. X.'
-          }
-          this.annotations.push({id: i, referencetime: Math.floor(Math.random() * this.svgHeight), duration: dur, created: i, text: text, type: type, author: author, tags: tags})
-        } */
-      },
       getAnnotationSessionWidth () {
         this.annotationSessionWidth = 100
       },
       getSvgHeight (arr) {
-        let newArr = []
-        let arrLength = arr.length
-        let i = 0
-        for (i = 0; i < arrLength; i++) {
-          newArr.push(parseInt(arr[i].referencetime) + parseInt(arr[i].duration))
-        }
-        newArr.sort(function (a, b) {
-          return a - b
-        })
-        this.svgHeight = newArr[arrLength - 1]
-        this.scaleFactor = (this.viewportHeight / 100 * 80) / this.svgHeight
-        // console.log('xxx: ' + this.scaleFactor)
+        this.svgHeight = arr.sessions[0].seconds
+        console.log('dur ' + this.session.duration)
       },
       getSvgWidth (arrVideos, arrSelected) {
         console.log(arrSelected)
@@ -487,6 +460,11 @@
     data () {
       const _this = this
       return {
+        // video: 'http://10.10.10.102:6262/lifelines-cam-1.mp4',
+        video: 'https://www.youtube.com/embed/zS8hEj37CrA',
+        session: {
+          duration: this.grouped.sessions[0].seconds
+        },
         propGrouped: this.grouped,
         fixDiagram: '',
         previewWindow: {
@@ -588,86 +566,7 @@
           { type: 'edit', title: 'buttons.edit' },
           { type: 'synchronize', title: 'buttons.synchronize' },
           { type: 'delete', title: 'buttons.delete', icon: 'highlight off' }
-        ],
-        videos: [{ // dev only
-          created: '1',
-          duration: '1000',
-          id: '1',
-          referencetime: '0',
-          src: 'https://www.youtube.com/embed/zS8hEj37CrA',
-          title: 'video 1',
-          type: 'video'
-        }, {
-          created: '20',
-          duration: '1100',
-          id: '2',
-          referencetime: '20',
-          src: 'https://www.youtube.com/embed/zS8hEj37CrA',
-          title: 'video 1',
-          type: 'video'
-        }, {
-          created: '25',
-          duration: '500',
-          id: '3',
-          referencetime: '270',
-          src: 'https://www.youtube.com/embed/0VqaGkKQRCU',
-          title: 'video 1',
-          type: 'video'
-        }, {
-          created: '50',
-          duration: '830',
-          id: '4',
-          referencetime: '120',
-          title: 'timerange',
-          type: 'timerange'
-        }, {
-          created: '300',
-          duration: '200',
-          id: '5',
-          referencetime: '12',
-          src: 'https://www.youtube.com/embed/zS8hEj37CrA',
-          title: 'video 1',
-          type: 'video'
-        }, {
-          created: '1',
-          duration: '1000',
-          id: '6',
-          referencetime: '0',
-          src: 'https://www.youtube.com/embed/zS8hEj37CrA',
-          title: 'video 1',
-          type: 'timerange'
-        }, {
-          created: '20',
-          duration: '1100',
-          id: '7',
-          referencetime: '20',
-          src: 'https://www.youtube.com/embed/zS8hEj37CrA',
-          title: 'video 1',
-          type: 'video'
-        }, {
-          created: '25',
-          duration: '500',
-          id: '8',
-          referencetime: '270',
-          src: 'https://www.youtube.com/embed/0VqaGkKQRCU',
-          title: 'video 1',
-          type: 'video'
-        }, {
-          created: '50',
-          duration: '830',
-          id: '9',
-          referencetime: '120',
-          title: 'timerange',
-          type: 'video'
-        }, {
-          created: '300',
-          duration: '200',
-          id: '10',
-          referencetime: '12',
-          src: 'https://www.youtube.com/embed/zS8hEj37CrA',
-          title: 'video 1',
-          type: 'video'
-        }]
+        ]
       }
     }
   }
@@ -745,7 +644,7 @@
   }
 
   .moba-swimlane:hover {
-    fill: rgba( 0, 0, 0, 1 );
+    fill: rgba( 0, 0, 255, .1 );
   }
 
   .moba-svg-entry {

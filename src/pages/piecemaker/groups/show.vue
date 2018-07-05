@@ -115,7 +115,7 @@
               q-tab-pane(name="authors")
                 q-btn-group.row.full-width
                   q-btn.col-6 select all
-                  q-btn.col-6 select none
+                  q-btn.col-6(@click="filterAuthors = ['']") select none
                 q-list.no-border
                   q-item.no-padding(v-for="author in authors")
                     q-checkbox.q-caption(v-model="filterAuthors", :val="author", :label="author", color="white")
@@ -123,7 +123,7 @@
               q-tab-pane(name="tags")
                 q-btn-group.row.full-width
                   q-btn.col-6 select all
-                  q-btn.col-6 select none
+                  q-btn.col-6(@click="filterTags = ['']") select none
                 q-list.no-border
                   q-checkbox.q-caption(v-model="filterTags", :val="tag", label="annotation tag", color="white")
                   // q-item.no-padding(v-for="author in authors")
@@ -132,7 +132,7 @@
               q-tab-pane(name="types")
                 q-btn-group.row.full-width
                   q-btn.col-6 select all
-                  q-btn.col-6 select none
+                  q-btn.col-6(@click="filterTypes = ['']") select none
                 q-list.no-border
                   q-item.no-padding(v-for="type in annotationTypes")
                     q-checkbox.q-caption(v-model="filterTypes", :val="type", :label="type", color="white")
