@@ -85,7 +85,7 @@
                 //
                 svg(width="20%", height="100%", x="80%")
                   rect.cursor-pointer.moby-svg-entry(
-                  v-for="(annotation, i) in propGrouped.sessions[0].annotations",
+                  v-for="(annotation, i) in propGrouped.sessions[currentSession].annotations",
                     @click="jumpToAnchor(annotation.annotation._id), previewLine.positionY = annotation.seconds",
                   height="1",
                   width="100%",
@@ -433,7 +433,7 @@
         this.annotationSessionWidth = 100
       },
       getSvgHeight (arr) {
-        this.svgHeight = arr.sessions[0].seconds
+        this.svgHeight = arr.sessions[this.currentSession].seconds
         console.log('dur ' + this.session.duration)
       },
       getSvgWidth (arrVideos, arrSelected) {
@@ -463,7 +463,7 @@
     data () {
       const _this = this
       return {
-        // video: 'http://10.10.10.102:6262/lifelines-cam-1.mp4',
+        currentSession: 0,
         video: 'https://www.youtube.com/embed/zS8hEj37CrA',
         session: {
           duration: this.grouped.sessions[0].seconds
