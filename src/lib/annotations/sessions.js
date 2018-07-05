@@ -44,13 +44,12 @@ const groupBySessions = async function (annotations, secondsDist = constants.SES
       session.start = TimelineSelector.fromDateTime(a.target.selector.value)
     }
     let seconds = TimelineSelector.timeBetween(session.start, TimelineSelector.fromDateTime(a.target.selector.value))
-    seconds = seconds.values && seconds.values.milliseconds ? seconds.values.milliseconds * 0.001 : 0.0
+    seconds = seconds ? seconds.as('seconds') : 0.0
     if (lastDatetime) {
       const dist = TimelineSelector.timeBetween(lastDatetime, TimelineSelector.fromDateTime(a.target.selector.value))
-      const seconds = dist.values.milliseconds * 0.001
-      if (seconds >= secondsDist || i === annotations.length - 1) {
+      if (dist.as('seconds') >= secondsDist || i === annotations.length - 1) {
         session.end = TimelineSelector.fromDateTime(a.target.selector.value)
-        session.seconds = TimelineSelector.timeBetween(session.start, session.end).values.milliseconds * 0.001
+        session.seconds = TimelineSelector.timeBetween(session.start, session.end).as('seconds')
         session.annotations.push({ annotation: a, seconds })
         sessions.push(session)
         session = ObjectUtil.merge({}, defaultSession)
