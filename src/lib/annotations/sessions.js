@@ -44,11 +44,15 @@ const groupBySessions = async function (annotations, secondsDist = constants.SES
       })
       infoUrl = `https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id=${videoId}&key=${process.env.YOUTUBE_API_KEY}`
     }
+    else if (type === 'video/vimeo') {
+      const parsed = URL.parse(v.annotation.body.source.id)
+      infoUrl = `https://api.vimeo.com/videos/${parsed.pathname.substr(1)}?access_token=${process.env.VIMEO_ACCESS_TOKEN}`
+    }
     const info = await axios.get(infoUrl)
     let duration
     try {
       if (type === 'video/mp4') duration = info.data.meta.ffprobe.format.duration
-      if (type === 'video/youtube') {
+      else if (type === 'video/youtube') {
         if (info.data.items && info.data.items.length) {
           duration = info.data.items[0].contentDetails.duration
           duration = duration.replace('PT', '')
@@ -57,6 +61,9 @@ const groupBySessions = async function (annotations, secondsDist = constants.SES
           duration = duration.map(val => parseInt(val))
           duration = duration[0] * 60.0 + duration[1]
         }
+      }
+      else if (type === 'video/vimeo') {
+        duration = info.data.duration
       }
     }
     catch (e) { /* ignored */ }
