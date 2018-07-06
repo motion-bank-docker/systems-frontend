@@ -71,7 +71,7 @@
     },
     mounted () {
       const _this = this
-      this.$store.dispatch('maps/find', { query: { type: constants.MAP_TYPE_TIMELINE } })
+      this.$store.dispatch('maps/find', { type: constants.MAP_TYPE_TIMELINE })
         .then(maps => {
           _this.groups = maps
         })
@@ -82,7 +82,7 @@
         this.currentVideos = []
         this.loadingVideos = true
         const _this = this
-        this.$store.dispatch('annotations/find', { query: { type: 'Annotation', 'body.purpose': 'linking', 'target.id': this.currentGroup.uuid } })
+        this.$store.dispatch('annotations/find', { type: 'Annotation', 'body.purpose': 'linking', 'target.id': this.currentGroup.uuid })
           .then(videos => {
             return Promise.map(videos, entry => {
               const newEntry = ObjectUtil.merge({}, entry)
@@ -92,7 +92,7 @@
                   if (entry.body.source.indexOf('http') !== 0) return
                   if (path.extname(url.parse(entry.body.source).path) === '.mp4') return
                   // TODO: check if change from superagent to axios plugin is breaking
-                  return _this.$axios.get(`${_this.$globalConfig.app.hosts.api}/proxy?url=${encodeURIComponent(entry.body.source)}`)
+                  return _this.$axios.get(`${process.env.API_HOST}/proxy?url=${encodeURIComponent(entry.body.source)}`)
                     .then(result => {
                       let title = result.text.match(/<title[^>]*>([^<]+)<\/title>/)[1]
                       newEntry.title = he.decode(title)
