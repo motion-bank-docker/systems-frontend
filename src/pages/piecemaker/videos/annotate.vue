@@ -1,8 +1,8 @@
 <template lang="pug">
 
-  div(style="height: calc(100vh - 52px); overflow: hidden;")
+  div.bg-dark(style="height: calc(100vh - 52px); overflow: hidden;")
 
-    div(style="height: calc(100vh - 52px); overflow: hidden; position: relative;")
+    div.bg-dark(style="height: calc(100vh - 52px); overflow: hidden; position: relative;")
 
       // VIDEO
       //
@@ -36,12 +36,12 @@
 
     // ANNOTATIONS
     //
-    q-layout-drawer(v-model="drawer", side="right")
-      q-list.no-border.bg-dark
+    q-layout-drawer.bg-dark(dark, v-model="drawer", side="right")
+      q-list.no-border.bg-dark(dark)
         q-item
           q-btn.full-width(@click="drawer = false")
             q-icon.flip-horizontal(name="keyboard_backspace")
-        q-item.bg-dark(v-for="(annotation, i) in annotations", :class="{ highlight: i === currentIndex }", :key="annotation.uuid", :ref="annotation.uuid")
+        q-item.bg-dark(dark, v-for="(annotation, i) in annotations", :class="{ highlight: i === currentIndex }", :key="annotation.uuid", :ref="annotation.uuid")
           q-item-main
             q-item-tile
               q-btn(v-if="annotation.target.selector", @click="gotoSelector(annotation.target.selector.value), changeState()", size="sm") {{ formatSelectorForList(annotation.target.selector.value) }}
@@ -184,6 +184,7 @@
             selector: ObjectUtil.merge({}, _this.currentSelector)
           }
         }
+        annotation.body.value = annotation.body.value.trim()
         return this.$store.dispatch('annotations/post', annotation)
           .then(res => {
             _this.getAnnotations().then(() => {
