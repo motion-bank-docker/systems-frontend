@@ -243,7 +243,7 @@
             @mouseenter="previewLine.positionY = annotation.seconds, previewLine.visibility = true",
             :ref="annotation.annotation.uuid"
             )
-              .row.moba-list-entry
+              .row.moba-list-entry(:ref="`annotation-${annotation.annotation.uuid}-${annotation.seconds.toFixed(3)}`")
                 .row.col-12(style="line-height: 1.35rem;")
                   .col-12.row.q-px-md.q-py-sm.moba-round-borders(:class="[annotation.type != 'system' ? 'moba-hover' : '', annotation.type == 'separator' ? 'bg-grey-9 text-black text-center' : '']")
                     div.col-10
@@ -328,8 +328,11 @@
 </template>
 
 <script>
+  import { scroll } from 'quasar'
   import VideoPlayer from '../../shared/media/VideoPlayer'
   import SessionHelpers from '../../../lib/annotations/session-helpers'
+
+  const { getScrollTarget, setScrollPosition } = scroll
 
   export default {
     components: {
@@ -374,11 +377,13 @@
         this.propGrouped.sessions[this.currentSession].annotations.forEach(aobj => {
           if (aobj.seconds >= _this.sessionTime && !found) {
             aobj.active = found = true
+            const el = this.$refs[`annotation-${aobj.annotation.uuid}-${aobj.seconds}`]
+            if (Array.isArray(el)) _this.scrollToElement(el[0], 500)
           }
           else aobj.active = false
         })
         if (this.player && !this.player.paused()) {
-          console.log('playing', this.sessionTime)
+          console.debug('playing', this.sessionTime)
         }
       }
     },
@@ -411,6 +416,11 @@
         else {
           this.fixDiagram = false
         }
+      },
+      scrollToElement (el, duration = 1000) {
+        let target = getScrollTarget(el)
+        let offset = el.offsetTop - el.scrollHeight
+        setScrollPosition(target, offset, duration)
       },
       jumpToAnchor (target) {
         var element = this.$refs[target]
