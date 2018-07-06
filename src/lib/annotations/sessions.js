@@ -3,6 +3,9 @@ import Sorting from './sorting'
 import { DateTime } from 'luxon'
 import TimelineSelector from './selectors/timeline'
 import { ObjectUtil } from 'mbjs-utils'
+import { guessType } from './videos'
+import SessionHelpers from './session-helpers'
+import URL from 'url'
 import axios from 'axios'
 
 const resurrectAnnotation = function (annotation) {
@@ -26,10 +29,35 @@ const groupBySessions = async function (annotations, secondsDist = constants.SES
       }
     })
   for (let v of videos) {
-    const info = await axios.get(v.annotation.body.source.id.replace('.mp4', '.json'))
+    const type = guessType(v.annotation.body.source.id)
+    let infoUrl
+    if (type === 'video/mp4') {
+      infoUrl = v.annotation.body.source.id.replace('.mp4', '.json')
+    }
+    else if (type === 'video/youtube') {
+      const parsed = URL.parse(v.annotation.body.source.id)
+      const params = parsed.query.split('&')
+      let videoId = ''
+      params.forEach(param => {
+        const kv = param.split('=')
+        if (kv[0] === 'v') videoId = kv[1]
+      })
+      infoUrl = `https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id=${videoId}&key=${process.env.YOUTUBE_API_KEY}`
+    }
+    const info = await axios.get(infoUrl)
     let duration
     try {
-      duration = info.data.meta.ffprobe.format.duration
+      if (type === 'video/mp4') duration = info.data.meta.ffprobe.format.duration
+      if (type === 'video/youtube') {
+        if (info.data.items && info.data.items.length) {
+          duration = info.data.items[0].contentDetails.duration
+          duration = duration.replace('PT', '')
+          duration = duration.split('M')
+          duration[1] = duration[1].replace('S', '')
+          duration = duration.map(val => parseInt(val))
+          duration = duration[0] * 60.0 + duration[1]
+        }
+      }
     }
     catch (e) { /* ignored */ }
     if (duration) v.meta.seconds = duration
@@ -50,6 +78,11 @@ const groupBySessions = async function (annotations, secondsDist = constants.SES
       if (dist.as('seconds') >= secondsDist || i === annotations.length - 1) {
         session.end = TimelineSelector.fromDateTime(a.target.selector.value)
         session.seconds = TimelineSelector.timeBetween(session.start, session.end).as('seconds')
+        videos.forEach(video => {
+          // FIXME: end value stays wrong
+          const s = SessionHelpers.annotationToSessionTime(video.meta.seconds, video.annotation, session)
+          session.seconds = Math.max(session.seconds, s)
+        })
         session.annotations.push({ annotation: a, seconds, active: false })
         sessions.push(session)
         session = ObjectUtil.merge({}, defaultSession)
