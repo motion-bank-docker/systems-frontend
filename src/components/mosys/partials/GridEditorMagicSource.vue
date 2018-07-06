@@ -162,7 +162,7 @@
               type = 'IFrame'
 
               // TODO: check if change from superagent to axios plugin is breaking
-              _this.$axios.get(`${_this.$globalConfig.app.hosts.api}/proxy?url=${encodeURIComponent(this.term)}`)
+              _this.$axios.get(`${process.env.API_HOST}/proxy?url=${encodeURIComponent(this.term)}`)
                 .then(resp => {
                   if (resp.status === 301) { // prem redirect
                     if (resp.headers['location']) _this.term = resp.headers['location']
@@ -185,7 +185,7 @@
           // TAGGING
           else if (/^[\s]*#.+/.test(this.term)) {
             const tag = this.term.replace(/^[\s]*#/, '').toLowerCase()
-            _this.$store.dispatch('annotations/find', {query: {'body.purpose': 'tagging'}})
+            _this.$store.dispatch('annotations/find', {'body.purpose': 'tagging'})
               .then(tagAnnotations => {
                 console.log(tagAnnotations)
                 let targetsMatched = {}

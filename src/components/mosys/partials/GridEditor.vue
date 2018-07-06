@@ -49,7 +49,7 @@
         .cell-item.cell-item-tmp(:style="getCellStyle(tmpCell)")
           cell(:cell="tmpCell")
 
-      q-fixed-position(corner="top-right", :offset="[18, 18]", v-if="!$store.state.mosysGridEditorStore.showSources")
+      div.fixed-top-right(style="right:18px; top:68px", v-if="!$store.state.mosysGridEditorStore.showSources")
         q-btn(round, color="primary", small, @click="handleGridButtonClickEdit", style="margin-right: 0.5em")
           q-icon(name="add")
         q-btn(round, color="primary", small, @click="$router.push(`/mosys/grids/${$route.params.id}`)")
@@ -198,7 +198,7 @@
       handleCellContextMenuDelete (event, cell, refId) {
         const _this = this
         _this.cells = _this.cells.filter(c => c !== cell)
-        this.$store.dispatch('annotations/remove', cell.uuid)
+        this.$store.dispatch('annotations/delete', cell.uuid)
           .then(() => {
             _this.fetchCellAnnotations()
           })
@@ -284,7 +284,7 @@
         Promise
           .resolve()
           .then(() => {
-            return _this.$store.dispatch('annotations/create', annotation)
+            return _this.$store.dispatch('annotations/post', annotation)
           })
           .then(() => {
             _this.fetchCellAnnotations()
@@ -428,10 +428,10 @@
       },
       fetchCellAnnotations () {
         const _this = this,
-          query = { query: { 'body.type': '2DCell', 'target.id': this.gridUuid } }
+          query = { 'body.type': '2DCell', 'target.id': this.gridUuid }
         this.$store.dispatch('annotations/find', query)
           .then(annotations => {
-            _this.cells = annotations.map(annotation => {
+            _this.cells = annotations.items.map(annotation => {
               let cell = JSON.parse(annotation.body.value)
               if (cell) {
                 cell.uuid = annotation.uuid
@@ -444,11 +444,11 @@
       },
       fetchMetadataAnnotations () {
         const _this = this
-        const query = { query: { 'body.type': '2DGridMetadata', 'target.id': this.gridUuid } }
+        const query = { 'body.type': '2DGridMetadata', 'target.id': this.gridUuid }
         return new Promise((resolve, reject) => {
           this.$store.dispatch('annotations/find', query)
             .then(annotations => {
-              let annotation = annotations.shift()
+              let annotation = annotations.items.shift()
               if (annotation) {
                 let metadata = JSON.parse(annotation.body.value)
                 metadata.uuid = annotation.uuid
@@ -476,7 +476,6 @@
             purpose: 'linking',
             value: JSON.stringify(cell)
           },
-          author: this.$store.state.auth.payload.userId,
           target: {
             id: this.gridUuid,
             type: 'Map',
@@ -494,7 +493,6 @@
             purpose: 'linking',
             value: JSON.stringify(metadata)
           },
-          author: this.$store.state.auth.payload.userId,
           target: {
             id: uuid,
             type: 'Map'
@@ -511,7 +509,7 @@
               return _this.$store.dispatch('annotations/patch', [cell.uuid, annotation])
             }
             else {
-              return _this.$store.dispatch('annotations/create', annotation)
+              return _this.$store.dispatch('annotations/post', annotation)
             }
           })
           .then(() => {
@@ -527,7 +525,7 @@
             if (_this.gridMetadata.uuid) {
               return _this.$store.dispatch('annotations/patch', [_this.gridMetadata.uuid, mapAnnotation])
             }
-            return _this.$store.dispatch('annotations/create', mapAnnotation)
+            return _this.$store.dispatch('annotations/post', mapAnnotation)
           })
           .then(() => {
             _this.updateGridDimensions()

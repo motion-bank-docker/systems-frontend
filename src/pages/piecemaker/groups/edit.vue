@@ -43,7 +43,7 @@
           },
           submit: {
             handler () {
-              return _this.$store.dispatch('maps/patch', _this.payload.uuid, _this.payload)
+              return _this.$store.dispatch('maps/patch', [_this.payload.uuid, _this.payload])
                 .then(() => _this.$router.push({ name: 'piecemaker.groups.list' }))
             }
           }

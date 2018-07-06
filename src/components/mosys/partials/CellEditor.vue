@@ -104,7 +104,7 @@
       updateCellContent (value, cell) {
         const _this = this
         if (cell.sourceUuid) {
-          this.$store.dispatch('annotations/find', {query: {'uuid': cell.sourceUuid}})
+          this.$store.dispatch('annotations/find', {'uuid': cell.sourceUuid})
             .then(a => {
               a = a.shift()
               cell.content = value

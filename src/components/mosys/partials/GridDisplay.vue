@@ -9,7 +9,7 @@
           :title="cell.title")
             cell(:cell="cell", display, :messenger="messenger")
 
-      q-fixed-position(corner="top-right", :offset="[18, 18]", v-if="$store.state.auth.payload")
+      q-fixed-position(corner="top-right", :offset="[18, 18]", v-if="$store.state.auth.user")
         q-btn(round, color="primary", small, @click="$router.push(`/mosys/grids/${$route.params.id}/annotate`)")
           q-icon(name="edit")
 
@@ -64,7 +64,7 @@
     methods: {
       fetchCellAnnotations () {
         const _this = this,
-          query = { query: { 'body.type': '2DCell', 'target.id': this.gridUuid } }
+          query = { 'body.type': '2DCell', 'target.id': this.gridUuid }
         this.$store.dispatch('annotations/find', query)
           .then(annotations => {
             _this.annotations = annotations
@@ -80,7 +80,7 @@
       },
       fetchMetadataAnnotations () {
         const _this = this
-        const query = { query: { 'body.type': '2DGridMetadata', 'target.id': this.gridUuid } }
+        const query = { 'body.type': '2DGridMetadata', 'target.id': this.gridUuid }
         return new Promise((resolve, reject) => {
           this.$store.dispatch('annotations/find', query)
             .then(annotations => {
@@ -115,7 +115,7 @@
               return _this.$store.dispatch('annotations/patch', [cell.uuid, annotation])
             }
             else {
-              return _this.$store.dispatch('annotations/create', annotation)
+              return _this.$store.dispatch('annotations/post', annotation)
             }
           })
           .then(() => {
@@ -131,7 +131,7 @@
             if (_this.gridMetadata.uuid) {
               return _this.$store.dispatch('annotations/patch', [_this.gridMetadata.uuid, mapAnnotation])
             }
-            return _this.$store.dispatch('annotations/create', mapAnnotation)
+            return _this.$store.dispatch('annotations/post', mapAnnotation)
           })
           .then(() => {
             _this.updateGridDimensions()
@@ -191,7 +191,6 @@
             purpose: 'linking',
             value: JSON.stringify(metadata)
           },
-          author: this.$store.state.auth.payload.userId,
           target: {
             id: uuid,
             type: 'Map'
