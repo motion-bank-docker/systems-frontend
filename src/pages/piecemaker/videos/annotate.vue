@@ -1,44 +1,56 @@
 <template lang="pug">
 
   div(style="height: calc(100vh - 52px); overflow: hidden;")
-    q-layout#video-annotate-wrap
 
-      div#btn-back
+    div(style="height: calc(100vh - 52px); overflow: hidden; position: relative;")
+
+      // VIDEO
+      //
+      video-player(v-if="video", :src="video.body.source.id", @ready="playerReady($event)", @time="onPlayerTime($event)")
+
+      // BUTTONS
+      //
+      div.absolute-top.q-mt-sm.q-ml-sm
         q-btn(@click="$router.push('/piecemaker/groups/' + groupId + '/videos')",
-          color="grey", icon="keyboard_backspace", round, flat, small)
+        color="grey", icon="keyboard_backspace", round, flat, small)
         q-btn(v-if="!fullscreen", @click="toggleFullscreen(), fullscreenHandler()", icon="fullscreen", round, flat, small)
         q-btn(v-if="fullscreen", @click="toggleFullscreen(), fullscreenHandler()", icon="fullscreen_exit", round, flat, small)
 
-      div(style="height: calc(100vh - 52px); overflow: hidden;")
-        video-player(v-if="video", :src="video.body.source.id", @ready="playerReady($event)", @time="onPlayerTime($event)")
+      q-btn.absolute-bottom-right.q-mb-md.q-mr-md(v-if="!drawer", @click="drawer = true")
+        q-icon(name="keyboard_backspace")
 
-      #pop-up(v-bind:class="{ activeCondition: active }")
-
-        div.text-right.outline(@click="toggleForm()", v-if="!active", color="primary")
+      // POP-UP
+      //
+      .absolute-top-right.q-ma-md.cursor-pointer(style="width: 33%;")
+        div.bg-dark.q-pa-md.text-right.absolute(@click="toggleForm()", v-if="!active", color="primary", style="right: 0; opacity: .8;")
           | Start typing or click here
 
-        div(v-if="active")
+        div.bg-dark.q-pa-md(v-if="active")
           q-input(@keyup.enter="createAnnotation()", @keyup.esc="toggleForm(); closePopUp()",
-            v-model="currentBody.value", type="textarea", float-label="Start typing", autofocus)
+            v-model="currentBody.value", type="textarea", float-label="Start typing", autofocus, dark)
           div.row
             .col-6
               q-btn(@click="toggleForm()", small) Esc
             .col-6.text-right
               q-btn(@click="createAnnotation()", small) Enter
 
-      #annotation-wrap(v-if="!fullscreen" slot="right")
-        q-list.no-border
-          q-item.annotation(v-for="(annotation, i) in annotations", :class="{ highlight: i === currentIndex }", :key="annotation.uuid", :ref="annotation.uuid")
-            q-item-main.row
-              q-item-tile.col-6
-                q-btn(v-if="annotation.target.selector", @click="gotoSelector(annotation.target.selector.value), changeState()", small) {{ formatSelectorForList(annotation.target.selector.value) }}
-              q-item-tile.col-6
-                q-btn(@click="deleteAnnotation(annotation.uuid), changeState()", small) {{ $t('buttons.delete') }}
-                q-btn(@click="updateAnnotation(annotation), addKeypressListener()", small) {{ $t('buttons.save') }}
-              q-item-tile.col-12.author
-                span {{ annotation.author.name }}
-              q-item-tile.col-12
-                q-input(@click="changeState(), hideForm()", type="textarea", v-model="annotation.body.value")
+    // ANNOTATIONS
+    //
+    q-layout-drawer(v-model="drawer", side="right")
+      q-list.no-border.bg-dark
+        q-item
+          q-btn.full-width(@click="drawer = false")
+            q-icon.flip-horizontal(name="keyboard_backspace")
+        q-item.bg-dark(v-for="(annotation, i) in annotations", :class="{ highlight: i === currentIndex }", :key="annotation.uuid", :ref="annotation.uuid")
+          q-item-main
+            q-item-tile
+              q-btn(v-if="annotation.target.selector", @click="gotoSelector(annotation.target.selector.value), changeState()", size="sm") {{ formatSelectorForList(annotation.target.selector.value) }}
+              q-btn.float-right(@click="deleteAnnotation(annotation.uuid), changeState()", size="sm") {{ $t('buttons.delete') }}
+              q-btn.float-right(@click="updateAnnotation(annotation), addKeypressListener()", size="sm") {{ $t('buttons.save') }}
+            q-item-tile.q-caption.q-my-xs
+              span {{ annotation.author.name }}
+            q-item-tile.q-caption
+              q-input(@click="changeState(), hideForm()", type="textarea", v-model="annotation.body.value", dark, color="white")
 
 </template>
 
@@ -72,6 +84,7 @@
     },
     data () {
       return {
+        drawer: true,
         fullscreen: false,
         player: undefined,
         playerTime: 0.0,
@@ -235,56 +248,8 @@
 </script>
 
 <style scoped>
-  #btn-back {
-    position: absolute;
-    top: 1em;
-    left: 1em;
-    z-index: 9999;
-  }
-  #pop-up {
-    position: absolute;
-    top: 1em;
-    right: 1em;
-    width: 33%;
-    cursor: pointer;
-  }
-    #pop-up > div {
-      padding: 1em;
-      background-color: white;
-    }
-  .activeCondition {
-    box-shadow: 0 0 10px -2px rgba( 0, 0, 0, .35 );
-    background-color: rgba( 255, 255, 255, 1 );
-  }
-  .outline {
-    border: 1px solid white;
-    position: absolute;
-    right: 0;
-  }
-  .annotation {
-  }
-    .annotation:hover {
-      background-color: rgba( 0, 0, 0, .05 );
-    }
-  #annotation-wrap {
-  }
-    #annotation-wrap > div {
-      padding-top: 0;
-      height: 100%;
-      overflow-x: scroll;
-      padding-bottom: 100vh;
-    }
-  .author {
-    font-size: .8em;
-    padding-top: 5px;
-  }
   .highlight {
     /* background-color: rgba( 0, 255, 0, .5 );
     transition: background-color ease 500ms; */
   }
-  .layout-page {
-    height: calc(100vh - 52px)!important;
-    overflow: hidden!important;
-  }
-
 </style>
