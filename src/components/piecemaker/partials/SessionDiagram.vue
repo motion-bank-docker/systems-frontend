@@ -20,7 +20,7 @@
             q-icon(name="clear")
           // iframe(width="80%", height="100%", src="https://www.youtube.com/embed/zS8hEj37CrA", frameborder="0", allow="autoplay; encrypted-media", allowfullscreen)
           div(style="width: 80%; margin-left: 10%;")
-            video-player(v-if="video", :src="video", @ready="playerReady($event)", @time="onPlayerTime($event)")
+            video-player(v-if="video", :src="video.annotation.body.source.id", @ready="playerReady($event)", @time="onPlayerTime($event)")
 
       // annotations: diagram
       //
@@ -76,7 +76,7 @@
                 // WRAP
                 //
                 svg(width="100px")
-                  svg(v-for="(vid, i) in propGrouped.videos", @click="previewWindow.visibility = true, video = vid.annotation.body.source.id", width="20px", height="100%", :x="(20 + 10) * i", y="0")
+                  svg(v-for="(vid, i) in propGrouped.videos", @click="previewWindow.visibility = true, video = vid", width="20px", height="100%", :x="(20 + 10) * i", y="0")
                     rect.moba-swimlane(width="100%", height="100%", x="0", y="0")
                     line(v-for="n in 30", x1="0", x2="100%", :y1="n * 60", :y2="n * 60", style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;")
 
@@ -255,7 +255,7 @@
 
                       // value
                       //
-                      span {{ annotation.annotation.body.value }}
+                      span(:class="[annotation.active ? 'text-primary' : '']") {{ annotation.annotation.body.value }}
 
                     // annotation tags
                     //
@@ -328,21 +328,12 @@
 </template>
 
 <script>
-  import { QWindowResizeObservable, QFab, QList, QItem, QItemMain, QItemSide, QItemTile, QTooltip, QCard } from 'quasar'
   import VideoPlayer from '../../shared/media/VideoPlayer'
+  import SessionHelpers from '../../../lib/annotations/session-helpers'
 
   export default {
     components: {
-      VideoPlayer,
-      QWindowResizeObservable,
-      QFab,
-      QList,
-      QItem,
-      QItemMain,
-      QItemSide,
-      QItemTile,
-      QTooltip,
-      QCard
+      VideoPlayer
     },
     mounted () {
       const
@@ -376,12 +367,28 @@
     destroyed: function () {
       window.removeEventListener('scroll', this.scrollPos)
     },
+    watch: {
+      sessionTime () {
+        const _this = this
+        let found = false
+        this.propGrouped.sessions[this.currentSession].annotations.forEach(aobj => {
+          if (aobj.seconds >= _this.sessionTime && !found) {
+            aobj.active = found = true
+          }
+          else aobj.active = false
+        })
+        if (this.player && !this.player.paused()) {
+          console.log('playing', this.sessionTime)
+        }
+      }
+    },
     methods: {
       playerReady (player) {
         this.player = player
       },
       onPlayerTime (evt) {
-        console.debug('player time', evt)
+        this.sessionTime = SessionHelpers.annotationToSessionTime(evt, this.video.annotation,
+          this.propGrouped.sessions[this.currentSession])
       },
       shortenName (val) {
         return val.match(/\b\w/g).join('')
@@ -464,6 +471,7 @@
       const _this = this
       return {
         currentSession: 0,
+        sessionTime: 0,
         video: 'https://www.youtube.com/embed/zS8hEj37CrA',
         session: {
           duration: this.grouped.sessions[0].seconds
