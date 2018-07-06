@@ -10,7 +10,7 @@
         q-btn(v-if="fullscreen", @click="toggleFullscreen(), fullscreenHandler()", icon="fullscreen_exit", round, flat, small)
 
       div(style="height: calc(100vh - 52px); overflow: hidden;")
-        video-player(v-if="video", :src="video", @ready="playerReady($event)", @time="onPlayerTime($event)")
+        video-player(v-if="video", :src="video.body.source.id", @ready="playerReady($event)", @time="onPlayerTime($event)")
 
       #pop-up(v-bind:class="{ activeCondition: active }")
 
@@ -28,7 +28,7 @@
 
       #annotation-wrap(v-if="!fullscreen" slot="right")
         q-list.no-border
-          q-item.annotation(v-for="(annotation, i) in annotations", :class="{ highlight: i === currentIndex }", :key="annotation.uuid", :id="annotation.uuid")
+          q-item.annotation(v-for="(annotation, i) in annotations", :class="{ highlight: i === currentIndex }", :key="annotation.uuid", :ref="annotation.uuid")
             q-item-main.row
               q-item-tile.col-6
                 q-btn(v-if="annotation.target.selector", @click="gotoSelector(annotation.target.selector.value), changeState()", small) {{ formatSelectorForList(annotation.target.selector.value) }}
@@ -36,14 +36,15 @@
                 q-btn(@click="deleteAnnotation(annotation.uuid), changeState()", small) {{ $t('buttons.delete') }}
                 q-btn(@click="updateAnnotation(annotation), addKeypressListener()", small) {{ $t('buttons.save') }}
               q-item-tile.col-12.author
-                username(:uuid="annotation.author")
+                span {{ annotation.author.name }}
               q-item-tile.col-12
                 q-input(@click="changeState(), hideForm()", type="textarea", v-model="annotation.body.value")
 
 </template>
 
 <script>
-  import { AppFullscreen } from 'quasar'
+  import { scroll, AppFullscreen } from 'quasar'
+  const { getScrollTarget, setScrollPosition } = scroll
   import { ObjectUtil, Assert } from 'mbjs-utils'
   import uuidValidate from 'uuid-validate'
   import VideoPlayer from '../../../components/shared/media/VideoPlayer'
@@ -117,28 +118,29 @@
         this.fullscreen = !this.fullscreen
       },
       getVideo () {
-        const context = this
-        return this.$store.dispatch('annotations/get', context.$route.params.id)
+        const _this = this
+        return this.$store.dispatch('annotations/get', _this.$route.params.id)
           .then(result => {
             if (result.body) {
-              context.groupId = result.target.id
-              context.video = result.body
-              context.baseSelector = TimelineSelector.fromISOString(result.target.selector.value)
+              _this.groupId = result.target.id
+              _this.video = result
+              _this.baseSelector = TimelineSelector.fromISOString(result.target.selector.value)
             }
           })
       },
       getAnnotations () {
         const
-          context = this,
+          _this = this,
           query = {
-            'target.id': context.groupId,
+            'target.id': _this.groupId,
             'target.type': constants.MAP_TYPE_TIMELINE,
             'body.type': 'TextualBody'
           }
-        return this.$store.dispatch('annotations/find', { query })
+        return this.$store.dispatch('annotations/find', query)
           .then(results => {
-            if (results) {
-              context.annotations = results.sort(annotations.Sorting.sortOnTarget)
+            console.log(results)
+            if (results && Array.isArray(results.items)) {
+              _this.annotations = results.items.sort(annotations.Sorting.sortOnTarget)
             }
           })
       },
@@ -162,7 +164,6 @@
       createAnnotation () {
         const _this = this
         const annotation = {
-          author: _this.$store.state.auth.payload.userId,
           body: ObjectUtil.merge({}, _this.currentBody),
           target: {
             id: _this.groupId,
@@ -170,16 +171,19 @@
             selector: ObjectUtil.merge({}, _this.currentSelector)
           }
         }
-        return this.$store.dispatch('annotations/create', annotation)
+        return this.$store.dispatch('annotations/post', annotation)
           .then(res => {
             _this.getAnnotations().then(() => {
-              _this.scrollToElement(res.uuid)
+              const targets = this.$refs[res.uuid]
+              if (targets && targets.length) _this.scrollToElement(targets[0])
             })
           })
           .then(() => _this.toggleForm())
       },
-      scrollToElement (uuid) {
-        window.location.href = '#' + uuid
+      scrollToElement (el, duration = 1000) {
+        let target = getScrollTarget(el)
+        let offset = el.offsetTop - el.scrollHeight
+        setScrollPosition(target, offset, duration)
       },
       updateAnnotation (annotation) {
         Assert.isType(annotation, 'object')
@@ -190,7 +194,7 @@
       },
       deleteAnnotation (uuid) {
         Assert.ok(uuidValidate(uuid))
-        return this.$store.dispatch('annotations/remove', uuid)
+        return this.$store.dispatch('annotations/delete', uuid)
           .then(() => this.getAnnotations())
       },
       gotoSelector (selector) {
