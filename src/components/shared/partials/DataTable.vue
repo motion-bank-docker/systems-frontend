@@ -61,12 +61,6 @@
               return DateTime.fromISO(val).toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS)
             }
           }
-          else if (field === 'title') {
-            return (...args) => {
-              console.log('args', args)
-              return args[0]
-            }
-          }
           else if (field === 'author') {
             return val => val.name
           }
