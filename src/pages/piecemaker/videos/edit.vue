@@ -1,44 +1,67 @@
 <template lang="pug">
-
-  card-full
-    q-btn(slot="backButton", @click="$router.push('/piecemaker/groups/' + groupId + '/videos')", icon="keyboard_backspace", small, round)
-    span(slot="form-logo")
-    span(slot="form-title") {{ $t('routes.piecemaker.videos.edit.title') }}
-
-    .row
-      .col-6.padding-1em
-        tags(v-if="$route.params.id", :targetUuid="$route.params.id")
-      .col-6.padding-1em
-        edit-video.col-6
-
+  full-screen
+    .q-pa-xl(style="min-width: 50vw;")
+      h5.caption(dark) {{ $t('routes.piecemaker.videos.edit.title') }}
+      .row
+        .col-md-12
+          form-main(v-model="payload", :schema="schema")
 </template>
 
 <script>
-  import EditVideo from '../../../components/piecemaker/forms/EditVideo'
-  import CardFull from '../../../components/shared/layouts/CardFull'
-  import Tags from '../../../components/shared/partials/Tags'
+  import FormMain from '../../../components/shared/forms/FormMain'
+  import FullScreen from '../../../components/shared/layouts/FullScreen'
+
+  import { required } from 'vuelidate/lib/validators'
+  import { guessType } from '../../../lib/annotations/videos'
 
   export default {
     components: {
-      Tags,
-      EditVideo,
-      CardFull
+      FormMain,
+      FullScreen
     },
     data () {
+      const context = this
       return {
-        groupId: ''
-      }
-    },
-    mounted () {
-      this.fetchGroupId()
-    },
-    methods: {
-      fetchGroupId () {
-        const _this = this
-        this.$store.dispatch('annotations/find', {query: {'uuid': this.$route.params.id}})
-          .then(v => {
-            _this.groupId = v.shift().target.id
-          })
+        // FIXME: i know this is bullshit!!! (but i hope it works for now)
+        apiPayload: undefined,
+        payload: context.$store.dispatch('annotations/get', context.$route.params.id)
+          .then(result => {
+            return {
+              uuid: result.uuid,
+              url: result.body.source.id
+            }
+          }),
+        schema: {
+          fields: {
+            url: {
+              fullWidth: true,
+              type: 'text',
+              label: 'labels.video_url',
+              errorLabel: 'errors.field_required',
+              validators: {
+                required
+              }
+            }
+          },
+          submit: {
+            handler () {
+              context.apiPayload = {
+                body: {
+                  source: {
+                    id: context.payload.url,
+                    type: guessType(context.payload.url)
+                  }
+                }
+              }
+              console.log(context.payload, context.apiPayload)
+              return context.$store.dispatch('annotations/patch', [context.payload.uuid, context.apiPayload])
+                .then(() => context.$router.push({
+                  name: 'piecemaker.videos.list',
+                  params: { groupId: context.$route.params.groupId }
+                }))
+            }
+          }
+        }
       }
     }
   }
