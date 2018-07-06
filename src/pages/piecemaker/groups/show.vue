@@ -151,8 +151,7 @@
       svg.shadow-12(:width="diagramDimensions.barWidth * grouped.sessions.length + diagramDimensions.barSpace * (grouped.sessions.length - 1)", :height="diagramDimensions.height")
         // rect(width="10px", height="100%", fill="rgba(255, 255, 255, .1)")
         svg(v-for="(session, isession) in grouped.sessions", :width="diagramDimensions.barWidth", height="100%")
-          rect.cursor-pointer.moba-diagram-bar(@click="toggleShowSession()", width="100%", :height="100%")
-
+          rect.cursor-pointer.moba-diagram-bar(@click="toggleShowSession()", width="100%", height="100%")
     .text-center
       svg(
       :width="(newArrTimelineDataDummy.length * diagramDimensions.barWidth) + (newArrTimelineDataDummy.length * diagramDimensions.barSpace) - diagramDimensions.barSpace",
