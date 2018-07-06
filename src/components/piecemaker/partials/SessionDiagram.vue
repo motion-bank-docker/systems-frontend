@@ -86,7 +86,7 @@
                 svg(width="20%", height="100%", x="80%")
                   rect.cursor-pointer.moby-svg-entry(
                   v-for="(annotation, i) in propGrouped.sessions[currentSession].annotations",
-                    @click="sessionTime = annotation.seconds, previewLine.positionY = annotation.seconds",
+                    @click="setSessionTime(annotation.seconds), previewLine.positionY = annotation.seconds",
                   height="1",
                   width="100%",
                   x="0",
@@ -382,9 +382,6 @@
           }
           else aobj.active = false
         })
-        if (this.player && !this.player.paused()) {
-          console.debug('playing', this.sessionTime)
-        }
       }
     },
     methods: {
@@ -410,6 +407,16 @@
       },
       scrollPos () {
         this.fixDiagram = this.$refs.diagram.getBoundingClientRect().top < '50'
+      },
+      setSessionTime (seconds) {
+        console.log(seconds, this.player, this.sessionTime)
+        if (this.player) {
+          const time = SessionHelpers.sessionToAnnotationTime(seconds, this.video.annotation,
+            this.propGrouped.sessions[this.currentSession])
+          this.player.currentTime(time)
+          console.log('new time', time)
+        }
+        else this.sessionTime = seconds
       },
       scrollToElement (el, duration = 1000) {
         let target = getScrollTarget(el)
