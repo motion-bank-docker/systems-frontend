@@ -38,10 +38,10 @@ const makeResourceModule = function (client, resourceName, resourceNamePluralise
       isPending: {
         find: false,
         get: false,
-        create: false,
-        update: false,
+        post: false,
+        put: false,
         patch: false,
-        remove: false
+        delete: false
       }
     },
     mutations: {
@@ -78,10 +78,10 @@ const makeResourceModule = function (client, resourceName, resourceNamePluralise
     actions: {
       find: makeResourceAction('find'),
       get: makeResourceAction('get'),
-      create: makeResourceAction('create'),
-      update: makeResourceAction('update'),
+      post: makeResourceAction('post'),
+      put: makeResourceAction('put'),
       patch: makeResourceAction('patch'),
-      remove: makeResourceAction('remove')
+      delete: makeResourceAction('delete')
     }
   }
 }
