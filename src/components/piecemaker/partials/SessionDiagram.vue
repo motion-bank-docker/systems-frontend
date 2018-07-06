@@ -86,7 +86,7 @@
                 svg(width="20%", height="100%", x="80%")
                   rect.cursor-pointer.moby-svg-entry(
                   v-for="(annotation, i) in propGrouped.sessions[currentSession].annotations",
-                    @click="jumpToAnchor(annotation.annotation.uuid), previewLine.positionY = annotation.seconds",
+                    @click="sessionTime = annotation.seconds, previewLine.positionY = annotation.seconds",
                   height="1",
                   width="100%",
                   x="0",
