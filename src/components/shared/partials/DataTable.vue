@@ -20,16 +20,22 @@
     template(slot="top-right", slot-scope="props")
       q-search(hide-underline, v-model="filter", dark)
     q-td(slot="body-cell-title", slot-scope="props", :props="props")
-      router-link.primary(:to="getViewLink(props.row.uuid)") {{ props.value }}
+      router-link.primary(v-if="hasShow", :to="getViewLink(props.row.uuid)")
+        promise-span(:value="props.value")
+      promise-span(v-if="!hasShow", :value="props.value")
     q-td(slot="body-cell-actions", slot-scope="props", :props="props")
       q-btn(v-for="btn in props.value", flat, size="sm", :icon="btn.icon",
         @click="defaultClick(btn, props)") {{ $t(btn.title) }}
 </template>
 
 <script>
+  import PromiseSpan from './PromiseSpan'
   import { DateTime } from 'luxon'
   export default {
-    props: ['config', 'path', 'query', 'title', 'basePath'],
+    props: ['config', 'path', 'query', 'title', 'basePath', 'hasShow'],
+    components: {
+      PromiseSpan
+    },
     data () {
       return {
         // basePath: 'groups',
@@ -73,7 +79,7 @@
         }
         const cols = this.config.columns.map(column => {
           column = Object.assign({
-            name: column.field,
+            name: typeof column.field === 'string' ? column.field : undefined,
             align: 'left',
             filter: true,
             sort: true,
