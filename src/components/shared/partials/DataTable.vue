@@ -100,12 +100,11 @@
         this.cols = cols
       },
       defaultClick (btn, props) {
-        console.log('click', btn, props)
         const _this = this
         if (btn.click) return btn.click(props.row)
         if (btn.type === 'delete') {
           _this.loading = true
-          return this.$store.dispatch(`${this.path}/remove`, props.row.uuid).then(() => {
+          return this.$store.dispatch(`${this.path}/delete`, props.row.uuid).then(() => {
             _this.loading = false
           }).catch(err => {
             console.error(err)
@@ -131,7 +130,6 @@
           })
       },
       action (type, target) {
-        console.log(type, target)
         this.$emit('action', type, target)
       }
     },
@@ -146,7 +144,7 @@
     },
     watch: {
       selected () {
-        console.log(this.selected)
+        console.debug('selected', this.selected)
       },
       config () {
         this.updateConfig()
