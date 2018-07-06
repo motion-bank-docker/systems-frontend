@@ -24,7 +24,7 @@
 
       // annotations: diagram
       //
-      div#diagram
+      div#diagram(ref="diagram")
         .row.col-12.q-pt-xl
 
           // Filter
@@ -409,24 +409,12 @@
         // console.log(this.previewWindow.height)
       },
       scrollPos () {
-        var diagr = document.getElementById('diagram')
-        if (diagr.getBoundingClientRect().top < '50') {
-          this.fixDiagram = true
-        }
-        else {
-          this.fixDiagram = false
-        }
+        this.fixDiagram = this.$refs.diagram.getBoundingClientRect().top < '50'
       },
       scrollToElement (el, duration = 1000) {
         let target = getScrollTarget(el)
         let offset = el.offsetTop - el.scrollHeight
         setScrollPosition(target, offset, duration)
-      },
-      jumpToAnchor (target) {
-        var element = this.$refs[target]
-        var elementTest = element[0]
-        var top = elementTest.offsetTop - 120
-        window.scrollTo(0, top)
       },
       handlerPrevItem (valIndex, valProp) {
         if (valIndex > 0) {
