@@ -7,23 +7,36 @@
       //
       .fixed(v-if="previewWindow.visibility", :class="{'row full-width': fixDiagram, 'shadow-16': !fixDiagram}", :style="{height: previewWindow.height + 'px', bottom: 0, right: 0, zIndex: 10}")
         .bg-dark.text-center(:class="{'col-8 offset-4 moba-border-top': fixDiagram}", style="position: relative; min-width: 300px;")
-          // .absolute(style="bottom: 10px; left: 10px;")
-            q-icon(name="info_outlined")
-              q-tooltip.bg-dark.shadow-8.moba-border(anchor="top left", self="bottom left", :offset="[0, 10]")
-                div
-                  |Videoinfos:
-                  br
-                  | Author, Länge, ...
+
+          // ICON
+          // INFO
+          //
+            .absolute(style="bottom: 10px; left: 10px;")
+              q-icon(name="info_outlined")
+                q-tooltip.bg-dark.shadow-8.moba-border(anchor="top left", self="bottom left", :offset="[0, 10]")
+                  div
+                    |Videoinfos:
+                    br
+                    | Author, Länge, ...
+
+          // BTN
+          // RESIZE
+          //
           .absolute(v-if="fixDiagram", @mousedown="resizeButtonDown()", style="top: 10px; left: 10px;")
             q-icon.rotate-90(name="code")
-          q-btn.absolute(@click="previewWindow.visibility = false", style="top: 10px; right: 10px;", round, size="sm")
+
+          // BTN
+          // CLOSE
+          //
+          q-btn.absolute(@click="previewWindow.visibility = false, currentVideo = ''", style="top: 10px; right: 10px;", round, size="sm")
             q-icon(name="clear")
-          // iframe(width="80%", height="100%", src="https://www.youtube.com/embed/zS8hEj37CrA", frameborder="0", allow="autoplay; encrypted-media", allowfullscreen)
+
+          // VIDEO PLAYER
+          //
           div(style="width: 80%; margin-left: 10%;")
             video-player(v-if="video", :src="video.annotation.body.source.id", @ready="playerReady($event)", @time="onPlayerTime($event)")
 
       // DIAGRAM
-      // WRAP
       //
       div#diagram(ref="diagram")
         .row.col-12.q-pt-xl
@@ -39,7 +52,6 @@
               )
 
                 // SWIMLANES - VIDEOS
-                // WRAP
                 //
                 svg(width="100px")
                   svg(
@@ -92,16 +104,16 @@
                   .col-12.row.q-px-md.q-py-sm.moba-round-borders(:class="[annotation.type != 'system' ? 'moba-hover' : '', annotation.type == 'separator' ? 'bg-grey-9 text-black text-center' : '']")
                     div.col-10
 
-                      // author
+                      // AUTHOR
                       //
                       span.text-grey-9 {{ shortenName(annotation.annotation.author.name) }}&nbsp;&nbsp;
                         q-tooltip.bg-dark.shadow-8.moba-border(anchor="center left", self="center right", :offset="[10, 0]") {{ annotation.annotation.author.name }}
 
-                      // value
+                      // TEXT
                       //
                       span(:class="[annotation.active ? 'text-primary' : '']") {{ annotation.annotation.body.value }}
 
-                    // annotation tags
+                    // ANNOTATION TAGS
                     // erstmal drin lassen
                     //
                     .col-1
@@ -115,61 +127,11 @@
                                 q-item(v-for="(at, ati) in annotation.tags", :class="{'q-pa-xs': ati - 2 < annotation.tags.length}")
                                   q-chip.bg-transparent.text-grey-4.moba-border {{ at }}
 
-                    // btn -> post annotation screen
+                    // BUTTON
+                    // go to annotation screen
                     //
                     .col-1.text-right.moba-edit
                       q-btn.bg-dark.text-white.flip-horizontal.moba-border(icon="keyboard_backspace", size="sm", round, flat)
-
-            //
-              div.q-pl-sm(
-              v-for="(annotation, i) in byReferencetime",
-              @mouseenter="previewLine.positionY = annotation.referencetime, previewLine.visiibility = true",
-              // :class="{'q-my-xl': annotation.type === 'separator'}",
-              // :ref="annotation.id"
-              )
-                .row.moba-list-entry
-
-                  .row.col-12(style="line-height: 1.35rem;")
-
-                    // annotation
-                    //
-                    .col-12.row.q-px-md.q-py-sm.moba-round-borders(:class="[annotation.type != 'system' ? 'moba-hover' : '', annotation.type == 'separator' ? 'bg-grey-9 text-black text-center' : '']")
-                      div.col-10
-
-                        // author
-                        span.text-grey-9 {{ annotation.author }}&nbsp;&nbsp;
-                          q-tooltip.bg-dark.shadow-8.moba-border(anchor="center left", self="center right", :offset="[10, 0]") Christian Hansen
-
-                        // video
-                        iframe(v-if="annotation.type == 'video'", :class="{'hidden':annotation.type == 'video'}", width="100%", height="315", :src="annotation.text", frameborder="0", allow="autoplay; encrypted-media", allowfullscreen)
-
-                        //system
-                        span.text-grey-9.q-caption(v-else-if="annotation.type == 'system'") [{{ annotation.text }}]
-
-                        // tag
-                        q-chip.bg-transparent.text-grey-4.moba-border(v-else-if="annotation.type == 'tag'") {{ annotation.text }}
-                          q-context-menu.bg-dark.text-white.moba-border.moba-annotation-tag
-                            .q-pa-sm add to filter
-
-                        // separator
-                        q-chip.bg-transparent(v-else-if="annotation.type == 'separator'") {{ annotation.text }}
-
-                        // text
-                        span(v-else-if="annotation.type != 'tag'") {{ annotation.text }}
-
-                        // span.q-ml-lg.q-caption() {{ annotation.tags }}
-                      .col-1
-                        div(v-if="annotation.tags.length > 0")
-                          div.text-right
-                            span
-                              q-chip.bg-dark.text-white.moba-border.moba-annotation-tag
-                                | #
-                              q-tooltip.bg-dark.q-py-none.shadow-8.moba-border(anchor="top left", self="top right", :offset="[10, 0]")
-                                q-list.no-border
-                                  q-item(v-for="(at, ati) in annotation.tags", :class="{'q-pa-xs': ati - 2 < annotation.tags.length}")
-                                    q-chip.bg-transparent.text-grey-4.moba-border {{ at }}
-                      .col-1.text-right.moba-edit
-                        q-btn.bg-dark.text-white.flip-horizontal.moba-border(:class="[annotation.type != 'system' ? '' : 'hidden']", icon="keyboard_backspace", size="sm", round, flat)
 
 </template>
 
@@ -270,7 +232,6 @@
       },
       onResize (size) {
         this.viewportHeight = size.height
-        console.log(this.viewportHeight / 100 * 80)
       }
     },
     data () {
