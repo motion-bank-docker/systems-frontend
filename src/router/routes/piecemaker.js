@@ -30,7 +30,8 @@ export default {
     {
       path: '/piecemaker/groups/:id',
       component: () => import('pages/piecemaker/groups/show'),
-      name: 'piecemaker.groups.show'
+      name: 'piecemaker.groups.show',
+      meta: {private: true}
     },
     {
       path: '/piecemaker/groups/:id/annotate',
