@@ -86,7 +86,7 @@
                 svg(width="20%", height="100%", x="80%")
                   rect.cursor-pointer.moby-svg-entry(
                   v-for="(annotation, i) in propGrouped.sessions[currentSession].annotations",
-                    @click="jumpToAnchor(annotation.annotation._id), previewLine.positionY = annotation.seconds",
+                    @click="jumpToAnchor(annotation.annotation.uuid), previewLine.positionY = annotation.seconds",
                   height="1",
                   width="100%",
                   x="0",
@@ -241,7 +241,7 @@
             div.q-pl-sm(
             v-for="annotation in gr.annotations",
             @mouseenter="previewLine.positionY = annotation.seconds, previewLine.visibility = true",
-            :ref="annotation.annotation._id"
+            :ref="annotation.annotation.uuid"
             )
               .row.moba-list-entry
                 .row.col-12(style="line-height: 1.35rem;")
