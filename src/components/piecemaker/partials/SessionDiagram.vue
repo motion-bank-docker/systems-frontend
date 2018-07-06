@@ -240,7 +240,7 @@
           div#annotations-text.col-8(v-for="gr in propGrouped.sessions")
             div.q-pl-sm(
             v-for="annotation in gr.annotations",
-            @mouseenter="previewLine.positionY = annotation.seconds, previewLine.visiibility = true",
+            @mouseenter="previewLine.positionY = annotation.seconds, previewLine.visibility = true",
             :ref="annotation.annotation._id"
             )
               .row.moba-list-entry
