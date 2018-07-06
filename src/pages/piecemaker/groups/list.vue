@@ -3,15 +3,15 @@
     span(slot="form-logo")
     span(slot="form-title") {{ $t('routes.piecemaker.groups.list.title') }}
     data-table(:config="config", :title="'routes.piecemaker.groups.list.title'",
-      path="maps", :query="query", base-path="groups")
+      path="maps", :query="query", base-path="groups", :has-show="true")
       template(slot="buttons-left")
         q-btn(@click="$router.push({ name: 'piecemaker.groups.create' })", color="primary") {{ $t('buttons.create_group') }}
 </template>
 
 <script>
   import DataTable from '../../../components/shared/partials/DataTable'
-  import constants from '../../../lib/constants'
   import FullScreen from '../../../components/shared/layouts/FullScreen'
+  import constants from '../../../lib/constants'
 
   export default {
     components: {
