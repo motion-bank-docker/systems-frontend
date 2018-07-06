@@ -25,6 +25,7 @@
   // require('videojs-framebyframe')
 
   import { videoPlayer } from 'vue-video-player'
+  import { guessType } from '../../../lib/annotations/videos'
 
   export default {
     components: {
@@ -61,7 +62,7 @@
     props: ['src'],
     mounted () {
       if (!this.src) return
-      this.type = this.guessType(this.src)
+      this.type = guessType(this.src)
       if (this.type === 'video/youtube') {
         this.playerOptions.techOrder = ['youtube']
       }
@@ -72,7 +73,7 @@
     },
     watch: {
       src (val) {
-        this.type = this.guessType(val)
+        this.type = guessType(val)
         if (val) {
           if (this.type === 'video/youtube') {
             this.playerOptions.techOrder = ['youtube']
@@ -90,15 +91,6 @@
       }
     },
     methods: {
-      guessType (val) {
-        if (val.indexOf('youtube.com') > -1 || val.indexOf('youtu.be') > -1) {
-          return 'video/youtube'
-        }
-        else if (val.indexOf('vimeo.com') > -1) {
-          return 'video/vimeo'
-        }
-        return null
-      },
       onPlayerReady (player) {
         this.$emit('ready', player)
         if (this.type === 'video/youtube') {
