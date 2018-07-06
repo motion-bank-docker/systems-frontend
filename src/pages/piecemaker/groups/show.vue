@@ -81,7 +81,7 @@
         span.q-ml-md Filter
       | Filter
 
-      // filter
+      // FILTER
       //
       q-popover.bg-transparent.moba-round-borders-filter.moba-border.shadow-8(v-model="openFilter", anchor="top left", self="top right", :offset="[10,0]")
         div.bg-dark.q-pa-md.q-caption(style="min-height: 100%;")
@@ -138,21 +138,21 @@
                     q-checkbox.q-caption(v-model="filterTypes", :val="type", :label="type", color="white")
 
               q-tab-pane(name="date")
-                q-range.q-mt-lg(
-                  v-model="rangeValues",
-                  :min="0",
-                  :max="10",
-                  :step="1",
-                  color="white",
-                  label, dark
-                  )
+                q-range.q-mt-lg(v-model="rangeValues", :min="0", :max="10", :step="1", color="white", label, dark)
 
               q-tab-pane(name="search")
                 q-search.bg-transparent.text-white(color="white", dark)
                 q-btn.q-mt-sm.full-width search
 
-    // diagram
+    // DIAGRAM:
+    // TIMELINE OVERVIEW
     //
+    .text-center
+      svg.shadow-12(:width="diagramDimensions.barWidth * grouped.sessions.length + diagramDimensions.barSpace * (grouped.sessions.length - 1)", :height="diagramDimensions.height")
+        // rect(width="10px", height="100%", fill="rgba(255, 255, 255, .1)")
+        svg(v-for="(session, isession) in grouped.sessions", :width="diagramDimensions.barWidth", height="100%")
+          rect.cursor-pointer.moba-diagram-bar(@click="toggleShowSession()", width="100%", :height="100%")
+
     .text-center
       svg(
       :width="(newArrTimelineDataDummy.length * diagramDimensions.barWidth) + (newArrTimelineDataDummy.length * diagramDimensions.barSpace) - diagramDimensions.barSpace",
@@ -167,8 +167,7 @@
 
         svg(
           v-for="(data, idata) in newArrTimelineDataDummy",
-          :width="diagramDimensions.barWidth",
-          height="100%",
+          :width="diagramDimensions.barWidth", height="100%",
           :x="diagramDimensions.barWidth * idata + diagramDimensions.barSpace * idata"
           )
           rect.cursor-pointer.moba-diagram-bar(
@@ -180,22 +179,13 @@
           // separator – YEARS
           //
           g(v-if="handlerPrevItem(idata, 'year') != data.year")
-            rect(
-            width="1px",
-            height="100%",
-            fill="rgba(255, 255, 255, .1)"
-            )
+            rect(width="1px", height="100%", fill="rgba(255, 255, 255, .1)")
             text.rotate-90.q-caption(y="-5", fill="rgba( 255, 255, 255, .2)") {{ data.year }}
           //
           // separator – MONTHS
           //
           g(v-if="handlerPrevItem(idata, 'month') != data.month && handlerPrevItem(idata, 'year') == data.year")
-            rect(
-            width="1px",
-            height="50px",
-            y="calc(100% - 70px)",
-            fill="rgba(255, 255, 255, .1)"
-            )
+            rect(width="1px", height="50px", y="calc(100% - 70px)", fill="rgba(255, 255, 255, .1)")
             // text.q-caption(x="10", y="10", fill="rgba( 255, 255, 255, .2)") {{ data.month }}
 
     // wrap - recording sessions
@@ -410,6 +400,7 @@
           max: 4
         },
         diagramDimensions: {
+          height: 400,
           barWidth: 15,
           barSpace: 1,
           activeId: null
