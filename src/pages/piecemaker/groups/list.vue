@@ -27,7 +27,8 @@
             {
               label: _this.$t('labels.title'),
               field: 'title',
-              sort: true,
+              // FIXME: throws array sort exception when active
+              sort: false,
               filter: true
             },
             {
