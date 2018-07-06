@@ -1,32 +1,52 @@
 <template lang="pug">
-  //center-card-three-quarter
-  card-full
-    q-btn(
-      slot="backButton",
-      @click="$router.push(`/piecemaker/groups/`)",
-      icon="keyboard_backspace",
-      round, small,
-      style="position: absolute; top: calc(50px + 2rem); left: 2rem;"
-      )
-    span(slot="form-logo")
-    span(slot="form-title") {{ $t('routes.piecemaker.groups.create.title') }}
-    // p.caption(slot="form-caption") {{ $t('routes.piecemaker.groups.create.caption') }}
-    edit-group(redirect-to="/piecemaker/groups").width-100
-
+  full-screen
+    .q-pa-xl(style="min-width: 50vw;")
+      h5.caption(dark) {{ $t('routes.piecemaker.groups.create.title') }}
+      .row
+        .col-md-12
+          form-main(v-model="payload", :schema="schema")
 </template>
 
 <script>
-  import EditGroup from '../../../components/piecemaker/forms/EditGroup'
-  import CenterCardThreeQuarter from '../../../components/shared/layouts/CenterCardThreeQuarter'
-  import CardFull from '../../../components/shared/layouts/CardFull'
+  import Tags from '../../../components/shared/partials/Tags'
+  import FormMain from '../../../components/shared/forms/FormMain'
+  import FullScreen from '../../../components/shared/layouts/FullScreen'
+
+  import { required } from 'vuelidate/lib/validators'
+  import constants from '../../../lib/constants'
+
   export default {
     components: {
-      CardFull,
-      CenterCardThreeQuarter,
-      EditGroup
+      FormMain,
+      Tags,
+      FullScreen
+    },
+    data () {
+      const _this = this
+      return {
+        type: constants.MAP_TYPE_TIMELINE,
+        payload: undefined,
+        schema: {
+          fields: {
+            title: {
+              fullWidth: true,
+              type: 'text',
+              label: 'labels.group_title',
+              errorLabel: 'errors.field_required',
+              validators: {
+                required
+              }
+            }
+          },
+          submit: {
+            handler () {
+              _this.payload.type = [constants.MAP_TYPE_TIMELINE]
+              return _this.$store.dispatch('maps/post', _this.payload)
+                .then(() => _this.$router.push({ name: 'piecemaker.groups.list' }))
+            }
+          }
+        }
+      }
     }
   }
 </script>
-
-<style>
-</style>
