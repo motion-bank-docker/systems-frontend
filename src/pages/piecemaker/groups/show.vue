@@ -737,9 +737,10 @@
 </script>
 
 <style>
-  .moba-active {
+  /* .moba-active {
     background-color: rgba( 0, 0, 0, .1 );
-  }
+  } */
+
   .moba-border-top {
   border-top: 1px solid rgba( 255, 255, 255, .2 );
   }
@@ -755,7 +756,8 @@
     .moba-active-bar {
       fill: white!important;
     }
-  .moba-empty {
+
+  /* .moba-empty {
   }
 
   .moba-round-borders-filter {
@@ -776,7 +778,7 @@
   }
 
   .moba-svg-entry:hover {
-    /* fill: red!important;
-    opacity: 1; */
-  }
+    fill: red!important;
+    opacity: 1;
+  } */
 </style>
