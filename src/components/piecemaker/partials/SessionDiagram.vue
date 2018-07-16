@@ -5,15 +5,17 @@
 
       // VIDEO PREVIEW
       //
-      .fixed(v-if="previewWindow.visibility", :class="{'row full-width': fixDiagram, 'shadow-16': !fixDiagram}", :style="{height: previewWindow.height + 'px', bottom: 0, right: 0, zIndex: 10}")
+      .fixed(v-if="previewWindow.visibility", :class="{'row full-width': fixDiagram, 'shadow-16 q-mb-md q-mr-md': !fixDiagram}", :style="{height: previewWindow.height + 'px', bottom: 0, right: 0, zIndex: 10}")
         .bg-dark.text-center(:class="{'col-8 offset-4 moba-border-top': fixDiagram}", style="position: relative; min-width: 300px;")
 
           // ICON
           // INFO
           //
-            .absolute(style="bottom: 10px; left: 10px;")
+            .absolute(v-if="fixDiagram", style="bottom: 10px; left: 10px;")
               q-icon(name="info_outlined")
                 q-tooltip.bg-dark.shadow-8.moba-border(anchor="top left", self="bottom left", :offset="[0, 10]")
+                  q-list
+                    q-item(v-for="n in 10")
                   div
                     |Videoinfos:
                     br
@@ -33,7 +35,8 @@
 
           // VIDEO PLAYER
           //
-          div(style="width: 80%; margin-left: 10%;")
+            div(:class="{'moba-active-preview': fixDiagram}", :style="styleActivePreview")
+          div(:style="styleActivePreview")
             video-player(v-if="video", :src="video.annotation.body.source.id", @ready="playerReady($event)", @time="onPlayerTime($event)")
 
       // DIAGRAM
@@ -53,12 +56,13 @@
 
                 // SWIMLANES - VIDEOS
                 //
-                svg(width="100px")
+                svg(width="80%")
+                  // rect(width="100%", height="100%", fill="rgba(255, 0, 255, .3)")
                   svg(
                   v-for="(vid, i) in propGrouped.videos",
                   :id="vid.annotation._id",
                   @click="previewWindow.visibility = true, video = vid, currentVideo = vid.annotation._id",
-                  width="20px", height="100%", :x="(20 + 10) * i", y="0"
+                  :width="propGrouped.videos.length * 40", height="100%", :x="(propGrouped.videos.length * 40 + 10) * i", y="0"
                   )
                     rect.moba-swimlane(width="100%", height="100%", x="0", y="0")
                     line(v-for="n in parseInt(propGrouped.sessions[currentSession].seconds / 60 + 1)", x1="0", x2="100%", :y1="n * 60", :y2="n * 60", style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;")
@@ -77,10 +81,10 @@
                   width="100%",
                   x="0",
                   :y="annotation.seconds",
-                  style="fill: rgba(255,255,255, .1);"
+                  style="fill: rgba(255,255,255, .2);"
                   )
 
-                // preview line
+                // PREVIEW LINE
                 //
                 svg(width="100%", height="100%")
                   rect(
@@ -200,7 +204,9 @@
         window.removeEventListener('mousemove', this.handlerPreviewWindow)
       },
       handlerPreviewWindow () {
-        this.previewWindow.height = this.viewportHeight - event.clientY + 20
+        this.previewWindow.height = this.viewport.height - event.clientY + 20
+        this.styleActivePreview.width = (this.viewport.width / 12 * 8) - event.clientY + 'px'
+        this.styleActivePreview.marginLeft = ((this.viewport.width / 12 * 8) - ((this.viewport.width / 12 * 8) - event.clientY)) / 2 + 'px'
       },
       scrollPos () {
         this.fixDiagram = this.$refs.diagram.getBoundingClientRect().top < '50'
@@ -231,12 +237,18 @@
         }
       },
       onResize (size) {
-        this.viewportHeight = size.height
+        this.viewport.height = size.height
+        this.viewport.width = size.width
       }
     },
     data () {
       const _this = this
       return {
+        styleActivePreview: {
+          width: 20 + '%',
+          maxWidth: '100%',
+          marginLeft: '10%'
+        },
         currentVideo: '',
         currentSession: 0,
         sessionTime: 0,
@@ -272,7 +284,11 @@
         selectedAnnotationSessions: [],
         svgHeight: '100',
         svgWidth: '',
-        viewportHeight: '',
+        // viewportHeight: '',
+        viewport: {
+          height: '',
+          width: ''
+        },
         columns: [
           {
             label: _this.$t('labels.video_title'),
@@ -317,9 +333,15 @@
     /*transition: all ease 350ms;*/
   }
 
+  /* .moba-active-preview {
+    margin-left: 10%;
+    width: 80%;
+  } */
+
   .moba-active-swimlane {
     fill: rgba(255, 255, 255, 1);
   }
+
   .moba-border {
     border: 1px solid rgba( 255, 255, 255, .075 );
   }
