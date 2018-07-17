@@ -1,5 +1,4 @@
 <template lang="pug">
-
   .wrapper
     q-btn#button-back(slot="nav-button", icon="keyboard_backspace", @click="$router.push(`/piecemaker/groups/show`)", round, small)
     span(slot="form-logo")
@@ -14,7 +13,6 @@
             q-input.color(type="textarea" v-model="annotation.body.value")
         q-item-side.text-right
           q-btn(@click="deleteAnnotation(annotation.uuid, i)", icon="clear", round, small)
-
 </template>
 
 <script>
@@ -68,7 +66,6 @@
       createAnnotation () {
         const _this = this
         const annotation = {
-          author: _this.$store.state.auth.payload.userId,
           body: ObjectUtil.merge({}, _this.currentBody),
           target: {
             id: _this.$route.params.id,
@@ -76,9 +73,10 @@
             selector: ObjectUtil.merge({}, _this.currentSelector)
           }
         }
+        annotation.body.value = annotation.body.value.trim()
         this.currentBody.value = undefined
         this.currentSelector.value = undefined
-        return this.$store.dispatch('annotations/create', annotation)
+        return this.$store.dispatch('annotations/post', annotation)
           .then(annotation => {
             _this.annotations.push(annotation)
             _this.annotations = _this.annotations.sort(annotations.Sorting.sortOnTarget)
@@ -89,7 +87,7 @@
       deleteAnnotation (uuid, index) {
         Assert.ok(uuidValidate(uuid))
         Assert.isType(index, 'number')
-        return this.$store.dispatch('annotations/remove', uuid)
+        return this.$store.dispatch('annotations/delete', uuid)
           .then(() => {
             this.annotations.splice(index, 1)
           })
