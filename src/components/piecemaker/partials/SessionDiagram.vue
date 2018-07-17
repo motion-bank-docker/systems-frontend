@@ -5,8 +5,8 @@
 
       // VIDEO PREVIEW
       //
-      .fixed(v-if="previewWindow.visibility", :class="{'row full-width': fixDiagram, 'shadow-16 q-mb-md q-mr-md': !fixDiagram}", :style="{height: previewWindow.height + 'px', bottom: 0, right: 0, zIndex: 10}")
-        .bg-dark.text-center(:class="{'col-8 offset-4 moba-border-top': fixDiagram}", style="position: relative; min-width: 300px;")
+      .fixed-bottom-right(v-if="previewWindow.visibility", :class="{'row full-width': fixDiagram, 'shadow-16 q-mb-md q-mr-md': !fixDiagram}", style="z-Index: 10;")
+        .bg-dark.text-center.relative-position(:class="{'col-8 offset-4 moba-border-top': fixDiagram}")
 
           // DEV: height test
           //
@@ -15,13 +15,14 @@
           // VIDEO PLAYER
           //
             div(:class="{'moba-active-preview': fixDiagram}", :style="styleActivePreview")
-          div(:style="styleActivePreview")
+            div(:style="styleActivePreview", :class="{styleActivePreviewDocked: fixDiagram}")
+          div(:style="[fixDiagram ? styleActivePreview : styleActivePreviewDocked]")
             video-player(v-if="video", :src="video.annotation.body.source.id", @ready="playerReady($event)", @time="onPlayerTime($event)")
 
           // ICON
           // INFO
           //
-          .absolute-bottom-left.q-mb-sm.q-ml-sm(v-if="fixDiagram")
+          .absolute-bottom-left.q-mb-sm.q-ml-sm
             q-btn.bg-dark.text-center(round, size="sm")
               q-icon(name="info")
             q-tooltip.bg-dark.shadow-8.moba-border(anchor="top left", self="bottom left", :offset="[0, 10]")
@@ -311,6 +312,13 @@
           maxWidth: '100%',
           marginLeft: '30%'
         },
+        styleActivePreviewDocked: {
+          // scaleFactor: 1.77777,
+          width: 200 * 1.77777 + 'px',
+          height: 200 + 'px!important',
+          maxHeight: 200 + 'px!important',
+          marginLeft: '0px'
+        },
         scaleFactor: '',
         selectedAnnotationSessions: [],
         svgHeight: '100',
@@ -431,7 +439,10 @@
 
   .moba-swimlane {
     /* fill: rgba( 20, 20, 20, 1 ); */
-    fill: rgba( 255, 255, 255, 1 );
+    /* fill: rgba( 255, 255, 255, 1 ); */
+    fill: #1F1D1E;
+    stroke-width: 1;
+    stroke: rgba(255, 255, 255, .25);
     transition: fill ease 200ms;
   }
 
