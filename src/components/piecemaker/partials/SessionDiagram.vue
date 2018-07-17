@@ -8,36 +8,38 @@
       .fixed(v-if="previewWindow.visibility", :class="{'row full-width': fixDiagram, 'shadow-16 q-mb-md q-mr-md': !fixDiagram}", :style="{height: previewWindow.height + 'px', bottom: 0, right: 0, zIndex: 10}")
         .bg-dark.text-center(:class="{'col-8 offset-4 moba-border-top': fixDiagram}", style="position: relative; min-width: 300px;")
 
-          // ICON
-          // INFO
+          // DEV: height test
           //
-            .absolute(v-if="fixDiagram", style="bottom: 10px; left: 10px;")
-              q-icon(name="info_outlined")
-                q-tooltip.bg-dark.shadow-8.moba-border(anchor="top left", self="bottom left", :offset="[0, 10]")
-                  q-list
-                    q-item(v-for="n in 10")
-                  div
-                    |Videoinfos:
-                    br
-                    | Author, Länge, ...
-
-          // BTN
-          // RESIZE
-          //
-          .absolute(v-if="fixDiagram", @mousedown="resizeButtonDown()", style="top: 10px; left: 10px;")
-            q-icon.rotate-90(name="code")
-
-          // BTN
-          // CLOSE
-          //
-          q-btn.absolute(@click="previewWindow.visibility = false, currentVideo = ''", style="top: 10px; right: 10px;", round, size="sm")
-            q-icon(name="clear")
+            .absolute.bg-red(:style="{height: previewWindow.testHeight + 'px', width: previewWindow.testWidth + 'px', top: '0px', left: '0'}") blabla
 
           // VIDEO PLAYER
           //
             div(:class="{'moba-active-preview': fixDiagram}", :style="styleActivePreview")
           div(:style="styleActivePreview")
             video-player(v-if="video", :src="video.annotation.body.source.id", @ready="playerReady($event)", @time="onPlayerTime($event)")
+
+          // ICON
+          // INFO
+          //
+          .absolute-bottom-left.q-mb-sm.q-ml-sm(v-if="fixDiagram")
+            q-btn.bg-dark.text-center(round, size="sm")
+              q-icon(name="info")
+            q-tooltip.bg-dark.shadow-8.moba-border(anchor="top left", self="bottom left", :offset="[0, 10]")
+              q-list.no-border
+                q-item Videoinfos
+                q-item Author, Länge, ...
+
+          // BTN
+          // RESIZE
+          //
+          .absolute-top-left.q-mt-sm.q-ml-sm(v-if="fixDiagram", @mousedown="resizeButtonDown()")
+            q-btn.rotate-90.bg-dark(icon="code", round, size="sm")
+
+          // BTN
+          // CLOSE
+          //
+          .absolute-top-right.q-mt-sm.q-mr-sm(@click="previewWindow.visibility = false, currentVideo = ''")
+            q-btn.bg-dark(icon="clear", round, size="sm")
 
       // DIAGRAM
       //
@@ -195,7 +197,7 @@
       }
     },
     methods: {
-      checkPreviousVideo (video, seconds) {
+      checkPreviousVideo (video, seconds) { // TODO: doesn't work yet
         if (video !== this.prevVideo) {
           console.log('ch video ' + video)
           console.log('ch seconds ' + seconds)
@@ -224,10 +226,16 @@
       resizeButtonUp () {
         window.removeEventListener('mousemove', this.handlerPreviewWindow)
       },
-      handlerPreviewWindow () {
+      handlerPreviewWindow () { // TODO: clean up
         this.previewWindow.height = this.viewport.height - event.clientY + 20
-        this.styleActivePreview.width = (this.viewport.width / 12 * 8) - event.clientY + 'px'
-        this.styleActivePreview.marginLeft = ((this.viewport.width / 12 * 8) - ((this.viewport.width / 12 * 8) - event.clientY)) / 2 + 'px'
+        this.previewWindow.testHeight = this.viewport.height - event.clientY
+        this.previewWindow.testWidth = this.previewWindow.testHeight * 1.77777
+        // this.styleActivePreview.width = (this.viewport.width / 12 * 8) - event.clientY + 'px'
+        let testWidth = (this.viewport.height - event.clientY) * 1.777 + 35
+        let testMarginLeft = ((this.viewport.width / 12 * 8) / 2) - (testWidth / 2)
+        this.styleActivePreview.width = testWidth + 'px'
+        if (testMarginLeft > 0) this.styleActivePreview.marginLeft = testMarginLeft + 'px'
+        else this.styleActivePreview.marginLeft = '0px'
       },
       scrollPos () {
         this.fixDiagram = this.$refs.diagram.getBoundingClientRect().top < '50'
@@ -290,16 +298,18 @@
         },
         previewWindow: {
           visibility: false,
-          height: ''
+          height: '',
+          testHeight: '',
+          testWidth: ''
         },
         session: {
           duration: this.grouped.sessions[0].seconds
         },
         sessionTime: 0,
         styleActivePreview: {
-          width: 20 + '%',
+          width: 40 + '%',
           maxWidth: '100%',
-          marginLeft: '10%'
+          marginLeft: '30%'
         },
         scaleFactor: '',
         selectedAnnotationSessions: [],
@@ -426,7 +436,7 @@
   }
 
   .moba-swimlane:hover {
-    fill: rgba( 0, 0, 255, 1 );
+    fill: rgba( 255, 255, 255, .4 );
   }
 
   .moba-svg-entry {
