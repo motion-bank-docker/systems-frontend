@@ -48,32 +48,18 @@
           //
           .col-4(:class="{'row': fixDiagram, 'shadow-16': !fixDiagram}")
 
-            .col-4.shadow-16.moba-border(:class="{'moba-fixed': fixDiagram, 'full-width': fixDiagram}", style="height: calc(100vh - 50px); overflow: scroll; z-index: 20;")
+            .col-4.shadow-16.moba-border(:class="{'moba-fixed': fixDiagram, 'full-width': fixDiagram}",
+            style="height: calc(100vh - 50px); overflow: scroll; z-index: 20;")
               svg(
               width="100%",
               :height="session.duration",
               )
 
-                // SWIMLANES - VIDEOS
-                //
-                svg(width="80%")
-                  // rect(width="100%", height="100%", fill="rgba(255, 0, 255, .3)")
-                  svg(
-                  v-for="(vid, i) in propGrouped.videos",
-                  :id="vid.annotation._id",
-                  @click="previewWindow.visibility = true, video = vid, currentVideo = vid.annotation._id",
-                  :width="propGrouped.videos.length * 40", height="100%", :x="(propGrouped.videos.length * 40 + 10) * i", y="0"
-                  )
-                    rect.moba-swimlane(width="100%", height="100%", x="0", y="0")
-                    line(v-for="n in parseInt(propGrouped.sessions[currentSession].seconds / 60 + 1)", x1="0", x2="100%", :y1="n * 60", :y2="n * 60", style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;")
-                    g(v-if="currentVideo == vid.annotation._id")
-                      rect.moba-svg-entry(v-for="n in parseInt(propGrouped.sessions[currentSession].seconds / 20 + 1)", @click="setSessionTime(parseInt(n * 20))", width="100%", height="20", :y="(n - 1) * 20")
-                      line(v-for="n in parseInt(propGrouped.sessions[currentSession].seconds / 20 + 1)", x1="20%", x2="80%", :y1="n * 20", :y2="n * 20", style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;")
-
                 // LINES - ANNOTATIONS
                 // WRAP
                 //
-                svg(width="20%", height="100%", x="80%")
+                  svg(width="20%", height="100%", x="80%")
+                svg(width="100%", height="100%", x="0%")
                   rect.cursor-pointer.moby-svg-entry(
                   v-for="(annotation, i) in propGrouped.sessions[currentSession].annotations",
                     @click="setSessionTime(annotation.seconds), previewLine.positionY = annotation.seconds",
@@ -81,8 +67,29 @@
                   width="100%",
                   x="0",
                   :y="annotation.seconds",
-                  style="fill: rgba(255,255,255, .2);"
+                  style="fill: rgba(255, 255, 255, .2);"
                   )
+
+                // SWIMLANES - VIDEOS
+                //
+                svg(width="80%")
+                  // rect(width="100%", height="100%", fill="rgba(255, 0, 255, .3)")
+                  svg.shadow-6(
+                  v-for="(vid, i) in propGrouped.videos",
+                  :id="vid.annotation._id",
+                  @click="previewWindow.visibility = true, video = vid, currentVideo = vid.annotation._id, checkPreviousVideo(vid.annotation._id, sessionTime)",
+                  :width="propGrouped.videos.length * 10", height="100%", :x="(propGrouped.videos.length * 10 + 15) * i + 20", y="0"
+                  )
+                    rect.moba-swimlane(:class="{ 'moba-active-swimlane': currentVideo == vid.annotation._id }",
+                    width="100%", height="100%", x="0", y="0")
+                    line(v-for="n in parseInt(propGrouped.sessions[currentSession].seconds / 60 + 1)",
+                    x1="0", x2="100%", :y1="n * 60", :y2="n * 60", style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;")
+                    g(v-if="currentVideo == vid.annotation._id")
+                      rect.moba-svg-entry(v-for="n in parseInt(propGrouped.sessions[currentSession].seconds / 20 + 1)",
+                      @click="setSessionTime(parseInt(n * 20)), prevVideo = vid.annotation._id",
+                      width="100%", height="20", :y="(n - 1) * 20")
+                      line(v-for="n in parseInt(propGrouped.sessions[currentSession].seconds / 20 + 1)",
+                      x1="25%", x2="75%", :y1="n * 20", :y2="n * 20", style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;")
 
                 // PREVIEW LINE
                 //
@@ -91,7 +98,7 @@
                   width="100%",
                   height="1",
                   :y="previewLine.positionY"
-                  style="fill: rgba(255, 255, 255, .1)!important;"
+                  style="fill: rgba(255, 255, 255, .5)!important;"
                   )
 
           // TEXT
@@ -140,7 +147,7 @@
 </template>
 
 <script>
-  import { scroll } from 'quasar'
+  import { scroll, easing } from 'quasar'
   import VideoPlayer from '../../shared/media/VideoPlayer'
   import SessionHelpers from '../../../lib/annotations/session-helpers'
 
@@ -148,6 +155,7 @@
 
   export default {
     components: {
+      easing,
       VideoPlayer
     },
     mounted () {
@@ -180,13 +188,26 @@
           if (aobj.seconds >= _this.sessionTime && !found) {
             aobj.active = found = true
             const el = this.$refs[`annotation-${aobj.annotation.uuid}-${aobj.seconds}`]
-            if (Array.isArray(el)) _this.scrollToElement(el[0], 500)
+            if (Array.isArray(el)) _this.scrollToElement(el[0], 250)
           }
           else aobj.active = false
         })
       }
     },
     methods: {
+      checkPreviousVideo (video, seconds) {
+        if (video !== this.prevVideo) {
+          console.log('ch video ' + video)
+          console.log('ch seconds ' + seconds)
+          console.log('ch sessionTime ' + this.sessionTime)
+          // this.sessionTime = seconds
+          // this.setSessionTime(this.sessionTime)
+          // this.player.currentTime(this.sessionTime)
+          this.setSessionTime(seconds)
+        }
+        // console.log(val)
+        // console.log(this.prevVideo)
+      },
       playerReady (player) {
         this.player = player
       },
@@ -244,33 +265,20 @@
     data () {
       const _this = this
       return {
-        styleActivePreview: {
-          width: 20 + '%',
-          maxWidth: '100%',
-          marginLeft: '10%'
-        },
-        currentVideo: '',
-        currentSession: 0,
-        sessionTime: 0,
-        video: '',
-        session: {
-          duration: this.grouped.sessions[0].seconds
-        },
-        propGrouped: this.grouped,
-        fixDiagram: '',
-        previewWindow: {
-          visibility: false,
-          height: ''
-        },
-        prevItem: '',
-        map: undefined,
-        allAnnotationSessions: [],
+        /* allAnnotationSessions: [], */
         annotations: [],
         annotationsBlocks: [],
-        byReferencetime: [],
-        filteredAnnotations: [],
+        /* byReferencetime: [], */
+        currentVideo: '',
+        currentSession: 0,
+        /* filteredAnnotations: [], */
+        fixDiagram: '',
         hoverVal: '',
+        map: undefined,
+        propGrouped: this.grouped,
         // prevCreated: '100',
+        prevItem: '',
+        prevVideo: '',
         previewDot: {
           positionY: '',
           referencetime: '',
@@ -280,11 +288,25 @@
           positionY: '',
           visibility: false
         },
+        previewWindow: {
+          visibility: false,
+          height: ''
+        },
+        session: {
+          duration: this.grouped.sessions[0].seconds
+        },
+        sessionTime: 0,
+        styleActivePreview: {
+          width: 20 + '%',
+          maxWidth: '100%',
+          marginLeft: '10%'
+        },
         scaleFactor: '',
         selectedAnnotationSessions: [],
         svgHeight: '100',
         svgWidth: '',
         // viewportHeight: '',
+        video: '',
         viewport: {
           height: '',
           width: ''
@@ -339,7 +361,7 @@
   } */
 
   .moba-active-swimlane {
-    fill: rgba(255, 255, 255, 1);
+    fill: #749dfc!important;
   }
 
   .moba-border {
@@ -398,12 +420,13 @@
   }
 
   .moba-swimlane {
-    fill: rgba( 255, 255, 255, .1 );
+    /* fill: rgba( 20, 20, 20, 1 ); */
+    fill: rgba( 255, 255, 255, 1 );
     transition: fill ease 200ms;
   }
 
   .moba-swimlane:hover {
-    fill: rgba( 0, 0, 255, .1 );
+    fill: rgba( 0, 0, 255, 1 );
   }
 
   .moba-svg-entry {
@@ -413,6 +436,6 @@
 
   .moba-svg-entry:hover {
     fill: rgba(255, 255, 255, 1)!important;
-    opacity: .2;
+    opacity: 1;
   }
 </style>
