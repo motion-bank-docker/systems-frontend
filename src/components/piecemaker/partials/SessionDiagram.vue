@@ -21,10 +21,17 @@
           .absolute-bottom-left.q-mb-sm.q-ml-sm
             q-btn.bg-dark.text-center(round, size="sm")
               q-icon(name="info")
-            q-tooltip.bg-dark.shadow-8.moba-border(anchor="top left", self="bottom left", :offset="[0, 10]")
+            q-tooltip.bg-dark.shadow-8.moba-border.no-padding(anchor="top left", self="bottom left", :offset="[0, 5]")
               q-list.no-border
-                q-item Videoinfos
-                q-item Author, Länge, ...
+                q-item
+                  q-item-side ID:
+                  q-item-main {{ video.annotation.body.source.id }}
+                q-item
+                  q-item-side Author:
+                  q-item-main {{ video.annotation.author.name }}
+                q-item
+                  q-item-side Created:
+                  q-item-main {{ video.annotation.created }}
 
           // BTN
           // RESIZE
