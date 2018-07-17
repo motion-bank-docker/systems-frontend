@@ -5,7 +5,7 @@
     // detect window dimensions
     // (necessary, do not delete)
     //
-    q-window-resize-observable(@resize="onResize")
+    q-window-resize-observable(@resize="onWindowResize")
 
     // filter
     //
@@ -148,9 +148,9 @@
     // TIMELINE OVERVIEW
     //
     .text-center
-      svg.shadow-12(:width="diagramDimensions.barWidth * grouped.sessions.length + diagramDimensions.barSpace * (grouped.sessions.length - 1)", :height="diagramDimensions.height")
+      svg.shadow-12(:width="(diagramDimensions.barWidth + diagramDimensions.barSpace) * grouped.sessions.length - diagramDimensions.barSpace", :height="diagramDimensions.height")
         // rect(width="10px", height="100%", fill="rgba(255, 255, 255, .1)")
-        svg(v-for="(session, isession) in grouped.sessions", :width="diagramDimensions.barWidth", height="100%")
+        svg(v-for="(session, isession) in grouped.sessions", :width="diagramDimensions.barWidth", height="100%", :x="(diagramDimensions.barWidth + diagramDimensions.barSpace) * isession")
           rect.cursor-pointer.moba-diagram-bar(@click="toggleShowSession()", width="100%", height="100%")
     //
       .text-center
@@ -199,7 +199,8 @@
           .text-center.q-mt-sm
             q-btn.shadow-6(@click="showSession = false, diagramDimensions.activeId = null", icon="clear", label="close", size="small", flat)
       .col-12
-        SessionDiagram(:data="annotations", :grouped="grouped", :meta="e")
+        // SessionDiagram(:data="annotations", :grouped="grouped", :meta="e")
+        SessionDiagram(:grouped="grouped")
     .row.q-my-xl(v-else)
       .col-12.row
         .col-10.offset-1
@@ -230,24 +231,25 @@
         })
       this.$store.dispatch('annotations/find', { 'target.id': uuid })
         .then(annotations => {
-          return groupBySessions(annotations.items)
+          return groupBySessions(annotations.items, 40) // geteilt
+          // return groupBySessions(annotations.items)
         })
         .then(grouped => {
           _this.grouped = grouped
           console.log(_this.grouped)
         })
-      this.getSvgHeight(this.videos)
-      this.appendRandomAnnotations()
-      this.divideInBlocks(this.annotations)
-      this.filterAnnotations(0, this.numberRandomAnnotations)
-      this.handlerCountAllSessions()
+      // this.getSvgHeight(this.videos)
+      // this.appendRandomAnnotations()
+      // this.divideInBlocks(this.annotations)
+      // this.filterAnnotations(0, this.numberRandomAnnotations)
+      // this.handlerCountAllSessions()
     },
     methods: {
       toggleShowSession () {
         // this.showSession = !this.showSession
         this.showSession = true
       },
-      handlerPrevItem (valIndex, valProp) {
+      /* handlerPrevItem (valIndex, valProp) {
         if (valIndex > 0) {
           let newIndex = valIndex - 1
           if (valProp === 'year') {
@@ -256,12 +258,9 @@
           else if (valProp === 'month') {
             return this.newArrTimelineDataDummy[newIndex].month
           }
-          /* else if (valProp === 'referencetime') {
-            return this.byReferencetime[newIndex].referencetime
-          } */
         }
-      },
-      handlerCountAllSessions () {
+      }, */
+      /* handlerCountAllSessions () {
         let i = 0
         let j = 0
         let k = 0
@@ -278,13 +277,11 @@
             }
           }
         }
-        /* console.log('all sessions: ' + this.countAllSessions)
-        console.log(this.newArrTimelineDataDummy[2].duration) */
-      },
-      randomNumber (fromRandom, toRandom) {
+      }, */
+      /* randomNumber (fromRandom, toRandom) {
         return Math.floor(Math.random() * toRandom) + fromRandom
-      },
-      filterAnnotations (valFrom, valTo) {
+      }, */
+      /* filterAnnotations (valFrom, valTo) {
         this.filteredAnnotations = this.annotations.filter(annotation => annotation.created > valFrom && annotation.created <= valTo)
         // console.log(this.filteredAnnotations)
         // console.log(this.arrFilter)
@@ -292,8 +289,8 @@
         for (i = 0; i < this.arrFilter.length; i++) {
           this.annotationsBlocks.push(this.annotations.filter(annotation => annotation.created > this.arrFilter[i]['rangebegin'] && annotation.created <= this.arrFilter[i]['rangeend']))
         }
-      },
-      appendRandomAnnotations () {
+      }, */
+      /* appendRandomAnnotations () {
         // console.log('GEHT !')
         let i = 0
         let author = ''
@@ -351,8 +348,8 @@
           }
           this.annotations.push({id: i, referencetime: Math.floor(Math.random() * this.svgHeight), duration: dur, created: i, text: text, type: type, author: author})
         }
-      },
-      getSvgHeight (arr) {
+      }, */
+      /* getSvgHeight (arr) {
         let newArr = []
         let arrLength = arr.length
         let i = 0
@@ -364,8 +361,8 @@
         })
         // console.log(newArr)
         this.svgHeight = newArr[arrLength - 1]
-      },
-      divideInBlocks (arr) {
+      }, */
+      /* divideInBlocks (arr) {
         // let ab = this.annotationsBlocks
         // console.log(ab)
         var byReferencetime = arr.slice(0)
@@ -374,12 +371,12 @@
         })
         // console.log(byReferencetime)
         // console.log(arr)
-      },
-      setPrevCreated (val, valPrev) {
+      }, */
+      /* setPrevCreated (val, valPrev) {
         // console.log(val)
         console.log(valPrev)
         this.prevCreated = parseInt(val) + parseInt(50)
-      },
+      }, */
       onAction (type, data) {
         const _this = this
         switch (type) {
@@ -387,7 +384,7 @@
           return _this.$router.push(`/piecemaker/videos/${data.row.uuid}/annotate`)
         }
       },
-      onResize (size) {
+      onWindowResize (size) {
         this.viewportHeight = size.height
         this.viewportWidth = size.width - 96
       }
@@ -395,30 +392,27 @@
     data () {
       const _this = this
       return {
-        rangeValues: {
-          min: 2,
-          max: 4
-        },
+        // activeDiagram: '',
+        // annotations: [],
+        // annotationsBlocks: [],
+        // annotationTypes: ['text', 'system', 'video', 'separator', 'tag'],
+        // authors: ['A.Z.', 'B.Y.', 'C.X.'],
+        // countAllSessions: null,
         diagramDimensions: {
-          height: 250,
-          barWidth: 15,
+          activeId: null,
           barSpace: 1,
-          activeId: null
+          barWidth: 15,
+          height: 250
         },
-        countAllSessions: null,
         filterAuthors: [],
         filterTags: [],
         filterTypes: [],
-        radioFilter: 'none',
-        openFilter: false,
-        map: undefined,
-        activeDiagram: '',
-        annotations: [],
         grouped: { annotations: [], videos: [] },
-        annotationsBlocks: [],
-        annotationTypes: ['text', 'system', 'video', 'separator', 'tag'],
-        authors: ['A.Z.', 'B.Y.', 'C.X.'],
-        arrFilter: [{ // dev only
+        map: undefined,
+        openFilter: false,
+        radioFilter: 'none',
+        rangeValues: { max: 4, min: 2 },
+        /* arrFilter: [{ // dev only
           rangebegin: 0,
           rangeend: 30
         }, {
@@ -430,9 +424,9 @@
         }, {
           rangebegin: 151,
           rangeend: 200
-        }],
-        newArrTimelineDataDummy: [],
-        arrTimelineDataDummy: [{ // dev only
+        }], */
+        // newArrTimelineDataDummy: [],
+        /* arrTimelineDataDummy: [{ // dev only
           year: 2018,
           months: [{
             month: '1',
@@ -651,19 +645,19 @@
               }]
             }]
           }]
-        }],
-        byReferencetime: [],
-        filteredAnnotations: [],
-        hoverVal: '',
+        }], */
+        // byReferencetime: [],
+        // filteredAnnotations: [],
+        // hoverVal: '',
         // maps: [],
-        numberRandomAnnotations: 200, // dev only
-        prevCreated: '100',
+        // numberRandomAnnotations: 200, // dev only
+        // prevCreated: '100',
         previewLine: {
           visibility: false,
           positionY: ''
         },
         showSession: false,
-        svgHeight: '100',
+        // svgHeight: '100',
         viewportHeight: '',
         columns: [
           {
@@ -695,8 +689,8 @@
           { type: 'edit', title: 'buttons.edit' },
           { type: 'synchronize', title: 'buttons.synchronize' },
           { type: 'delete', title: 'buttons.delete', icon: 'highlight off' }
-        ],
-        videos: [{ // dev only
+        ]
+        /* videos: [{ // dev only
           created: '1',
           duration: '1000',
           id: '',
@@ -731,7 +725,7 @@
           referencetime: '12',
           title: 'video vfvdfcasd',
           type: 'video'
-        }]
+        }] */
       }
     }
   }
