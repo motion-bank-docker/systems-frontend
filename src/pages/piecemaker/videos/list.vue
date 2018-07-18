@@ -74,7 +74,8 @@
               name: 'title',
               label: _this.$t('labels.title'),
               field: val => val.body.source.id,
-              sort: true,
+              // FIXME: throws array sort exception when active
+              sort: false,
               filter: true,
               format: async (val) => {
                 const title = await _this.getPageTitle(val)

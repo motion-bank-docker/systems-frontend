@@ -10,7 +10,7 @@
         q-item-side(v-if="annotation.target.selector") {{ formatSelectorForList(annotation.target.selector.value) }}
         q-item-main
           q-item-tile.text-left
-            q-input.color(type="textarea" v-model="annotation.body.value")
+            q-input(type="textarea", v-model="annotation.body.value", dark)
         q-item-side.text-right
           q-btn(@click="deleteAnnotation(annotation.uuid, i)", icon="clear", round, small)
 </template>
