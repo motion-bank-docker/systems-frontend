@@ -201,7 +201,14 @@
         div
           h5.q-my-xs
             span (Recording Session Titel)
-          div {{ activeSession.start._dateTime }} &mdash; {{ activeSession.end._dateTime }}
+          .row.q-mt-sm
+            div {{ activeSession.start._dateTime.weekdayShort }}, {{ activeSession.start._dateTime.year }}-{{ activeSession.start._dateTime.month }}-{{ activeSession.start._dateTime.day }}
+              br
+              | {{ activeSession.start._dateTime.hour }}:{{ activeSession.start._dateTime.minute }}:{{ activeSession.start._dateTime.second }}
+            div.q-mx-md &mdash;
+            div {{ activeSession.end._dateTime.weekdayShort }}, {{ activeSession.end._dateTime.year }}-{{ activeSession.end._dateTime.month }}-{{ activeSession.end._dateTime.day }}
+              br
+              | {{ activeSession.end._dateTime.hour }}:{{ activeSession.end._dateTime.minute }}:{{ activeSession.end._dateTime.second }}
       .col-1.text-right
         q-btn.shadow-6(@click="showSession = false, diagramDimensions.activeId = null, activeBar = null", icon="clear", size="small", flat)
 
@@ -257,16 +264,9 @@
         else if (val && this.activeBar < this.grouped.sessions.length - 1) this.activeBar += 1
         this.setActiveSession(this.activeBar)
       },
-      setActiveSession (val) { // TODO
+      setActiveSession (val) {
         this.activeSession = this.grouped.sessions[val]
-        /* console.log(this.grouped.sessions[val])
-        console.log(this.textIndex)
-        console.log('---') */
-        /* console.log('VVV')
-        console.log(val)
-        console.log(this.grouped.sessions[val])
         console.log(this.activeSession)
-        console.log('AAA') */
       },
       toggleShowSession () {
         // this.showSession = !this.showSession
