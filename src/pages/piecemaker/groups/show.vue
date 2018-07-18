@@ -1,7 +1,6 @@
 <template lang="pug">
 
   full-screen
-
     // detect window dimensions
     // (necessary, do not delete)
     //
@@ -148,13 +147,18 @@
     // TIMELINE OVERVIEW
     //
     .text-center
-      svg.shadow-12(:width="(diagramDimensions.barWidth + diagramDimensions.barSpace) * grouped.sessions.length - diagramDimensions.barSpace", :height="diagramDimensions.height")
-        // rect(width="10px", height="100%", fill="rgba(255, 255, 255, .1)")
+      svg(:width="(diagramDimensions.barWidth + diagramDimensions.barSpace) * grouped.sessions.length - diagramDimensions.barSpace", :height="diagramDimensions.height")
         svg(v-for="(session, isession) in grouped.sessions", :width="diagramDimensions.barWidth",
         height="100%", :x="(diagramDimensions.barWidth + diagramDimensions.barSpace) * isession")
           rect.cursor-pointer.moba-diagram-bar(@click="toggleShowSession(), setActiveSession(isession), activeBar = isession",
+          @mouseenter="hoverVal = session.start",
+          @mouseleave="hoverVal = ''",
           :class="{'moba-active-bar' : activeBar == isession}",
-          width="100%", height="100%")
+          width="100%", :height="getActiveSessionDuration(session.start.millis, session.end.millis) + 10", :y="diagramDimensions.height - getActiveSessionDuration(session.start.millis, session.end.millis)")
+
+    .text-center(style="min-height: 2rem;")
+      | {{ hoverVal }}
+
     //
       .text-center
         svg(
@@ -197,18 +201,21 @@
       .col-11.row
         div
           q-btn.bg-grey-10(@click='jumpBetweenSessions(false)', icon="keyboard_arrow_left", flat, round)
-          q-btn.bg-grey-10.q-ml-sm.q-mr-md(@click='jumpBetweenSessions(true)', icon="keyboard_arrow_right", flat, round)
+          q-btn.bg-grey-10.q-ml-sm.q-mr-md(@click="jumpBetweenSessions(true), getActiveSessionDuration(activeSession.start.millis, activeSession.end.millis)", icon="keyboard_arrow_right", flat, round)
         div
-          h5.q-my-xs
+          // h5.q-my-xs
             span (Recording Session Titel)
           .row.q-mt-sm
-            div {{ activeSession.start._dateTime.weekdayShort }}, {{ activeSession.start._dateTime.year }}-{{ activeSession.start._dateTime.month }}-{{ activeSession.start._dateTime.day }}
-              br
-              | {{ activeSession.start._dateTime.hour }}:{{ activeSession.start._dateTime.minute }}:{{ activeSession.start._dateTime.second }}
-            div.q-mx-md &mdash;
-            div {{ activeSession.end._dateTime.weekdayShort }}, {{ activeSession.end._dateTime.year }}-{{ activeSession.end._dateTime.month }}-{{ activeSession.end._dateTime.day }}
-              br
-              | {{ activeSession.end._dateTime.hour }}:{{ activeSession.end._dateTime.minute }}:{{ activeSession.end._dateTime.second }}
+            div {{ activeSession.start.millis }} – {{ activeSession.end.millis }}
+            // .col-12 {{ activeSessionDuration }}
+            //
+              div {{ activeSession.start._dateTime.weekdayShort }}, {{ activeSession.start._dateTime.year }}-{{ activeSession.start._dateTime.month }}-{{ activeSession.start._dateTime.day }}
+                br
+                | {{ activeSession.start._dateTime.hour }}:{{ activeSession.start._dateTime.minute }}:{{ activeSession.start._dateTime.second }}
+              div.q-mx-md &mdash;
+              div {{ activeSession.end._dateTime.weekdayShort }}, {{ activeSession.end._dateTime.year }}-{{ activeSession.end._dateTime.month }}-{{ activeSession.end._dateTime.day }}
+                br
+                | {{ activeSession.end._dateTime.hour }}:{{ activeSession.end._dateTime.minute }}:{{ activeSession.end._dateTime.second }}
       .col-1.text-right
         q-btn.shadow-6(@click="showSession = false, diagramDimensions.activeId = null, activeBar = null", icon="clear", size="small", flat)
 
@@ -259,6 +266,11 @@
       // this.handlerCountAllSessions()
     },
     methods: {
+      getActiveSessionDuration (start, end) {
+        // getActiveSessionDuration () {
+        // this.activeSessionDuration = (end - start) / 1000
+        return (end - start) / 1000
+      },
       jumpBetweenSessions (val) {
         if (!val && this.activeBar > 0) this.activeBar -= 1
         else if (val && this.activeBar < this.grouped.sessions.length - 1) this.activeBar += 1
@@ -423,6 +435,7 @@
         // countAllSessions: null,
         activeBar: null,
         activeSession: [],
+        activeSessionDuration: '',
         diagramDimensions: {
           activeId: null,
           barSpace: 1,
@@ -673,7 +686,7 @@
         }], */
         // byReferencetime: [],
         // filteredAnnotations: [],
-        // hoverVal: '',
+        hoverVal: null,
         // maps: [],
         // numberRandomAnnotations: 200, // dev only
         // prevCreated: '100',
