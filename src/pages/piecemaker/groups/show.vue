@@ -193,14 +193,17 @@
 
     // WRAP - recording sessions
     //
-    .row.q-mt-xl(v-if="showSession")
-      .col-11
-        h5.q-mt-none
-          q-btn.bg-grey-10(@click='jumpBetweenSessions(), activeBar -= 1, setActiveSession(activeBar)', icon="keyboard_arrow_left", flat, round)
-          q-btn.bg-grey-10.q-ml-sm.q-mr-md(@click='activeBar += 1, setActiveSession(activeBar)', icon="keyboard_arrow_right", flat, round)
-          span (Recording Session Titel)
+    .row.q-mt-xl.q-pt-xl(v-if="showSession")
+      .col-11.row
+        div
+          q-btn.bg-grey-10(@click='jumpBetweenSessions(false)', icon="keyboard_arrow_left", flat, round)
+          q-btn.bg-grey-10.q-ml-sm.q-mr-md(@click='jumpBetweenSessions(true)', icon="keyboard_arrow_right", flat, round)
+        div
+          h5.q-my-xs
+            span (Recording Session Titel)
+          div {{ activeSession.start._dateTime }} &mdash; {{ activeSession.end._dateTime }}
       .col-1.text-right
-        q-btn.shadow-6(@click="showSession = false, diagramDimensions.activeId = null, activeBar = null", icon="clear", label="close", size="small", flat)
+        q-btn.shadow-6(@click="showSession = false, diagramDimensions.activeId = null, activeBar = null", icon="clear", size="small", flat)
 
       .col-12
         SessionDiagram(:grouped="grouped", :activesession="activeSession")
@@ -250,10 +253,12 @@
     },
     methods: {
       jumpBetweenSessions (val) {
-        console.log(val)
+        if (!val && this.activeBar > 0) this.activeBar -= 1
+        else if (val && this.activeBar < this.grouped.sessions.length - 1) this.activeBar += 1
+        this.setActiveSession(this.activeBar)
       },
       setActiveSession (val) { // TODO
-        if (val >= 0 && val <= this.grouped.sessions.length) this.activeSession = this.grouped.sessions[val]
+        this.activeSession = this.grouped.sessions[val]
         /* console.log(this.grouped.sessions[val])
         console.log(this.textIndex)
         console.log('---') */
