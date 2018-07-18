@@ -150,8 +150,9 @@
     .text-center
       svg.shadow-12(:width="(diagramDimensions.barWidth + diagramDimensions.barSpace) * grouped.sessions.length - diagramDimensions.barSpace", :height="diagramDimensions.height")
         // rect(width="10px", height="100%", fill="rgba(255, 255, 255, .1)")
-        svg(v-for="(session, isession) in grouped.sessions", :width="diagramDimensions.barWidth", height="100%", :x="(diagramDimensions.barWidth + diagramDimensions.barSpace) * isession")
-          rect.cursor-pointer.moba-diagram-bar(@click="toggleShowSession()", width="100%", height="100%")
+        svg(v-for="(session, isession) in grouped.sessions", :width="diagramDimensions.barWidth",
+        height="100%", :x="(diagramDimensions.barWidth + diagramDimensions.barSpace) * isession")
+          rect.cursor-pointer.moba-diagram-bar(@click="toggleShowSession(), setActiveSession(isession)", width="100%", height="100%")
     //
       .text-center
         svg(
@@ -200,7 +201,8 @@
             q-btn.shadow-6(@click="showSession = false, diagramDimensions.activeId = null", icon="clear", label="close", size="small", flat)
       .col-12
         // SessionDiagram(:data="annotations", :grouped="grouped", :meta="e")
-        SessionDiagram(:grouped="grouped")
+        SessionDiagram(:grouped="grouped", :activesession="activeSession")
+        // SessionDiagram(:grouped="activeSession")
     .row.q-my-xl(v-else)
       .col-12.row
         .col-10.offset-1
@@ -245,6 +247,14 @@
       // this.handlerCountAllSessions()
     },
     methods: {
+      setActiveSession (val) { // TODO
+        this.activeSession = this.grouped.sessions[val]
+        /* console.log('VVV')
+        console.log(val)
+        console.log(this.grouped.sessions[val])
+        console.log(this.activeSession)
+        console.log('AAA') */
+      },
       toggleShowSession () {
         // this.showSession = !this.showSession
         this.showSession = true
@@ -398,6 +408,7 @@
         // annotationTypes: ['text', 'system', 'video', 'separator', 'tag'],
         // authors: ['A.Z.', 'B.Y.', 'C.X.'],
         // countAllSessions: null,
+        activeSession: [],
         diagramDimensions: {
           activeId: null,
           barSpace: 1,

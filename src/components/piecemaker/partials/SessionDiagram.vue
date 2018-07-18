@@ -3,6 +3,10 @@
     div(@mouseup="resizeButtonUp()")
       q-window-resize-observable(@resize="onResize")
 
+      // DEV
+      //
+      div {{ this.propActiveSession }}
+
       // VIDEO PREVIEW
       //
       .fixed-bottom-right(v-if="previewWindow.visibility", :class="{'row full-width': fixDiagram, 'shadow-16 q-mb-md q-mr-md': !fixDiagram}", style="z-Index: 10;")
@@ -166,6 +170,11 @@
       VideoPlayer
     },
     mounted () {
+      /* console.log('mounted')
+      console.log(this.propGrouped)
+      console.log('___')
+      console.log(this.propActiveSession)
+      console.log('---') */
       const
         _this = this,
         uuid = this.$route.params.id
@@ -180,7 +189,8 @@
         })
       this.getSvgHeight(this.propGrouped)
     },
-    props: ['data', 'grouped', 'meta'],
+    // props: ['data', 'grouped', 'meta'],
+    props: ['grouped', 'activesession'],
     created: function () {
       window.addEventListener('scroll', this.scrollPos)
     },
@@ -204,9 +214,9 @@
     methods: {
       checkPreviousVideo (video, seconds) { // TODO: doesn't work yet
         if (video !== this.prevVideo) {
-          console.log('ch video ' + video)
+          /* console.log('ch video ' + video)
           console.log('ch seconds ' + seconds)
-          console.log('ch sessionTime ' + this.sessionTime)
+          console.log('ch sessionTime ' + this.sessionTime) */
           // this.sessionTime = seconds
           // this.setSessionTime(this.sessionTime)
           // this.player.currentTime(this.sessionTime)
@@ -278,25 +288,27 @@
     data () {
       const _this = this
       return {
-        /* allAnnotationSessions: [], */
+        // allAnnotationSessions: [],
         annotations: [],
-        annotationsBlocks: [],
-        /* byReferencetime: [], */
+        // annotationsBlocks: [],
+        // byReferencetime: [],
         currentVideo: '',
         currentSession: 0,
-        /* filteredAnnotations: [], */
-        fixDiagram: '',
+        // filteredAnnotations: [],
+        fixDiagram: false,
         hoverVal: '',
         map: undefined,
+        propActiveSession: this.activesession,
         propGrouped: this.grouped,
+        // propSessionAnnotations: this.sessionannotations,
         // prevCreated: '100',
-        prevItem: '',
+        // prevItem: '',
         prevVideo: '',
-        previewDot: {
+        /* previewDot: {
           positionY: '',
           referencetime: '',
           visibility: false
-        },
+        }, */
         previewLine: {
           positionY: '',
           visibility: false
@@ -307,6 +319,8 @@
           testHeight: '',
           testWidth: ''
         },
+        scaleFactor: '',
+        // selectedAnnotationSessions: [],
         session: {
           duration: this.grouped.sessions[0].seconds
         },
@@ -317,14 +331,11 @@
           marginLeft: '30%'
         },
         styleActivePreviewDocked: {
-          // scaleFactor: 1.77777,
           width: 200 * 1.77777 + 'px',
           height: 200 + 'px!important',
           maxHeight: 200 + 'px!important',
           marginLeft: '0px'
         },
-        scaleFactor: '',
-        selectedAnnotationSessions: [],
         svgHeight: '100',
         svgWidth: '',
         // viewportHeight: '',
