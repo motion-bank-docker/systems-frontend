@@ -3,10 +3,6 @@
     div(@mouseup="resizeButtonUp()")
       q-window-resize-observable(@resize="onResize")
 
-      // DEV
-      //
-      div {{ this.propActiveSession }}
-
       // VIDEO PREVIEW
       //
       .fixed-bottom-right(v-if="previewWindow.visibility", :class="{'row full-width': fixDiagram, 'shadow-16 q-mb-md q-mr-md': !fixDiagram}", style="z-Index: 10;")
@@ -70,8 +66,17 @@
                 //
                   svg(width="20%", height="100%", x="80%")
                 svg(width="100%", height="100%", x="0%")
+                  // rect.cursor-pointer.moby-svg-entry(
+                    v-for="(annotation, i) in propGrouped.sessions[currentSession].annotations",
+                      @click="setSessionTime(annotation.seconds), previewLine.positionY = annotation.seconds",
+                    height="1",
+                    width="100%",
+                    x="0",
+                    // :y="annotation.seconds",
+                    style="fill: rgba(255, 255, 255, .2);"
+                    )
                   rect.cursor-pointer.moby-svg-entry(
-                  v-for="(annotation, i) in propGrouped.sessions[currentSession].annotations",
+                  v-for="(annotation, i) in propActiveSession.annotations",
                     @click="setSessionTime(annotation.seconds), previewLine.positionY = annotation.seconds",
                   height="1",
                   width="100%",
@@ -103,7 +108,7 @@
 
                 // PREVIEW LINE
                 //
-                svg(width="100%", height="100%")
+                svg(v-if="previewLine.visibility", width="100%", height="100%")
                   rect(
                   width="100%",
                   height="1",
@@ -113,47 +118,50 @@
 
           // TEXT
           //
-          .col-8
-            div(v-for="gr in propGrouped.sessions")
-              div.q-pl-sm(
-              v-for="annotation in gr.annotations",
-              @mouseenter="previewLine.positionY = annotation.seconds, previewLine.visibility = true",
-              @click="setSessionTime(annotation.seconds)",
-              :ref="annotation.annotation.uuid"
-              )
-                .row.moba-list-entry(:ref="`annotation-${annotation.annotation.uuid}-${annotation.seconds.toFixed(3)}`")
-                  .row.col-12(style="line-height: 1.35rem;")
-                    .col-12.row.q-px-md.q-py-sm.moba-round-borders(:class="[annotation.type != 'system' ? 'moba-hover' : '', annotation.type == 'separator' ? 'bg-grey-9 text-black text-center' : '']")
-                      div.col-10
+          .col-8(style="min-height: 100vh;")
 
-                        // AUTHOR
-                        //
-                        span.text-grey-9 {{ shortenName(annotation.annotation.author.name) }}&nbsp;&nbsp;
-                          q-tooltip.bg-dark.shadow-8.moba-border(anchor="center left", self="center right", :offset="[10, 0]") {{ annotation.annotation.author.name }}
+            // div(v-for="gr in propGrouped.sessions")
+            // div(v-for="gr in propActiveSession")
+            div.q-pl-sm(
+            v-for="annotation in propActiveSession.annotations",
+            @mouseenter="previewLine.positionY = annotation.seconds, previewLine.visibility = true",
+            @mouseleave="previewLine.visibility = false",
+            @click="setSessionTime(annotation.seconds)",
+            :ref="annotation.annotation.uuid"
+            )
+              .row.moba-list-entry(:ref="`annotation-${annotation.annotation.uuid}-${annotation.seconds.toFixed(3)}`")
+                .row.col-12(style="line-height: 1.35rem;")
+                  .col-12.row.q-px-md.q-py-sm.moba-round-borders(:class="[annotation.type != 'system' ? 'moba-hover' : '', annotation.type == 'separator' ? 'bg-grey-9 text-black text-center' : '']")
+                    div.col-10
 
-                        // TEXT
-                        //
-                        span(:class="[annotation.active ? 'text-primary' : '']") {{ annotation.annotation.body.value }}
-
-                      // ANNOTATION TAGS
-                      // erstmal drin lassen
+                      // AUTHOR
                       //
-                      .col-1
-                        // div(v-if="annotation.tags.length > 0")
-                          div.text-right
-                            span
-                              q-chip.bg-dark.text-white.moba-border.moba-annotation-tag
-                                | #
-                              q-tooltip.bg-dark.q-py-none.shadow-8.moba-border(anchor="top left", self="top right", :offset="[10, 0]")
-                                q-list.no-border
-                                  q-item(v-for="(at, ati) in annotation.tags", :class="{'q-pa-xs': ati - 2 < annotation.tags.length}")
-                                    q-chip.bg-transparent.text-grey-4.moba-border {{ at }}
+                      span.text-grey-9 {{ shortenName(annotation.annotation.author.name) }}&nbsp;&nbsp;
+                        q-tooltip.bg-dark.shadow-8.moba-border(anchor="center left", self="center right", :offset="[10, 0]") {{ annotation.annotation.author.name }}
 
-                      // BUTTON
-                      // go to annotation screen
+                      // TEXT
                       //
-                      .col-1.text-right.moba-edit
-                        q-btn.bg-dark.text-white.flip-horizontal.moba-border(icon="keyboard_backspace", size="sm", round, flat)
+                      span(:class="[annotation.active ? 'text-primary' : '']") {{ annotation.annotation.body.value }}
+
+                    // ANNOTATION TAGS
+                    // erstmal drin lassen
+                    //
+                    .col-1
+                      // div(v-if="annotation.tags.length > 0")
+                        div.text-right
+                          span
+                            q-chip.bg-dark.text-white.moba-border.moba-annotation-tag
+                              | #
+                            q-tooltip.bg-dark.q-py-none.shadow-8.moba-border(anchor="top left", self="top right", :offset="[10, 0]")
+                              q-list.no-border
+                                q-item(v-for="(at, ati) in annotation.tags", :class="{'q-pa-xs': ati - 2 < annotation.tags.length}")
+                                  q-chip.bg-transparent.text-grey-4.moba-border {{ at }}
+
+                    // BUTTON
+                    // go to annotation screen
+                    //
+                    .col-1.text-right.moba-edit
+                      q-btn.bg-dark.text-white.flip-horizontal.moba-border(icon="keyboard_backspace", size="sm", round, flat)
 
 </template>
 
@@ -209,6 +217,9 @@
           }
           else aobj.active = false
         })
+      },
+      activesession () {
+        this.propActiveSession = this.activesession
       }
     },
     methods: {
@@ -298,9 +309,6 @@
         fixDiagram: false,
         hoverVal: '',
         map: undefined,
-        propActiveSession: this.activesession,
-        propGrouped: this.grouped,
-        // propSessionAnnotations: this.sessionannotations,
         // prevCreated: '100',
         // prevItem: '',
         prevVideo: '',
@@ -319,6 +327,9 @@
           testHeight: '',
           testWidth: ''
         },
+        propActiveSession: this.activesession,
+        propGrouped: this.grouped,
+        // propSessionAnnotations: this.sessionannotations,
         scaleFactor: '',
         // selectedAnnotationSessions: [],
         session: {
@@ -455,9 +466,10 @@
   .moba-swimlane {
     /* fill: rgba( 20, 20, 20, 1 ); */
     /* fill: rgba( 255, 255, 255, 1 ); */
-    fill: #1F1D1E;
+    /* fill: #1F1D1E; */
+    fill: rgba(255, 255, 255, .75);
     stroke-width: 1;
-    stroke: rgba(255, 255, 255, .25);
+    stroke: rgba(255, 255, 255, .1);
     transition: fill ease 200ms;
   }
 

@@ -62,9 +62,9 @@
         // div {{ $t('routes.piecemaker.groups.show.title') }}: Titel der Timeline
         h5.no-margin.text-center
           div Meine Timeline seit Studienbeginn (Titel)
-          .text-grey-8 by Christian Hansen (Inhaber)
+          .text-grey-8 by Vorname Nachname (Inhaber)
 
-    // no logo
+    // hide logo
     //
     span(slot="form-logo")
 
@@ -152,7 +152,9 @@
         // rect(width="10px", height="100%", fill="rgba(255, 255, 255, .1)")
         svg(v-for="(session, isession) in grouped.sessions", :width="diagramDimensions.barWidth",
         height="100%", :x="(diagramDimensions.barWidth + diagramDimensions.barSpace) * isession")
-          rect.cursor-pointer.moba-diagram-bar(@click="toggleShowSession(), setActiveSession(isession)", width="100%", height="100%")
+          rect.cursor-pointer.moba-diagram-bar(@click="toggleShowSession(), setActiveSession(isession), activeBar = isession",
+          :class="{'moba-active-bar' : activeBar == isession}",
+          width="100%", height="100%")
     //
       .text-center
         svg(
@@ -189,20 +191,20 @@
               rect(width="1px", height="50px", y="calc(100% - 70px)", fill="rgba(255, 255, 255, .1)")
               // text.q-caption(x="10", y="10", fill="rgba( 255, 255, 255, .2)") {{ data.month }}
 
-    // wrap - recording sessions
+    // WRAP - recording sessions
     //
-    .row.q-mt-xl.moba-border-top(v-if="showSession")
-      .col-10.offset-1
-        h5.text-center
-          q-btn(@click='diagramDimensions.activeId -= 1', icon="keyboard_arrow_left", flat)
-          span.q-px-md (Recording Session Titel)
-          q-btn(@click='diagramDimensions.activeId += 1', icon="keyboard_arrow_right", flat)
-          .text-center.q-mt-sm
-            q-btn.shadow-6(@click="showSession = false, diagramDimensions.activeId = null", icon="clear", label="close", size="small", flat)
+    .row.q-mt-xl(v-if="showSession")
+      .col-11
+        h5.q-mt-none
+          q-btn.bg-grey-10(@click='jumpBetweenSessions(), activeBar -= 1, setActiveSession(activeBar)', icon="keyboard_arrow_left", flat, round)
+          q-btn.bg-grey-10.q-ml-sm.q-mr-md(@click='activeBar += 1, setActiveSession(activeBar)', icon="keyboard_arrow_right", flat, round)
+          span (Recording Session Titel)
+      .col-1.text-right
+        q-btn.shadow-6(@click="showSession = false, diagramDimensions.activeId = null, activeBar = null", icon="clear", label="close", size="small", flat)
+
       .col-12
-        // SessionDiagram(:data="annotations", :grouped="grouped", :meta="e")
         SessionDiagram(:grouped="grouped", :activesession="activeSession")
-        // SessionDiagram(:grouped="activeSession")
+
     .row.q-my-xl(v-else)
       .col-12.row
         .col-10.offset-1
@@ -247,8 +249,14 @@
       // this.handlerCountAllSessions()
     },
     methods: {
+      jumpBetweenSessions (val) {
+        console.log(val)
+      },
       setActiveSession (val) { // TODO
-        this.activeSession = this.grouped.sessions[val]
+        if (val >= 0 && val <= this.grouped.sessions.length) this.activeSession = this.grouped.sessions[val]
+        /* console.log(this.grouped.sessions[val])
+        console.log(this.textIndex)
+        console.log('---') */
         /* console.log('VVV')
         console.log(val)
         console.log(this.grouped.sessions[val])
@@ -408,6 +416,7 @@
         // annotationTypes: ['text', 'system', 'video', 'separator', 'tag'],
         // authors: ['A.Z.', 'B.Y.', 'C.X.'],
         // countAllSessions: null,
+        activeBar: null,
         activeSession: [],
         diagramDimensions: {
           activeId: null,
