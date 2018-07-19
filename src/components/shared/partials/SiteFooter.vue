@@ -1,5 +1,7 @@
 <template lang="pug">
-  .row.full-width.light-paragraph.justify-between.items-center.generic-margin
+
+  // .row.full-width.light-paragraph.justify-between.items-center.generic-margin
+  .row.full-width.justify-between.q-my-md
     .group(v-bind:class="{ 'absolute-bottom-left': positionCorners, 'layout-padding': positionCorners }")
       small.generic-margin {{ $t('site.copyright') }}
       small.generic-margin
@@ -8,11 +10,13 @@
         a(@click="openURL('http://motionbank.org/de/content/kontakt')") {{ $t('navigation.contact') }}
       small.generic-margin
         a(@click="openURL('http://motionbank.org/de/content/impressum')") {{ $t('navigation.terms') }}
+
     .group(v-bind:class="{ 'absolute-bottom-right': positionCorners, 'layout-padding': positionCorners }")
       small.generic-margin
         a(@click="openURL('https://github.com/motionbank')") {{ $t('navigation.github') }}
       small {{ $t('site.version') }}: v{{ version }}
       small {{ $t('site.license') }}: {{ license }}
+
 </template>
 
 <script>
