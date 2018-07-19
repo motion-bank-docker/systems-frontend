@@ -16,6 +16,10 @@ export default {
       component: () => import('pages/shared/site/help'),
       name: 'site.help',
       meta: {private: true}
+    }, {
+      path: '/imprint',
+      component: () => import('pages/shared/site/imprint'),
+      name: 'site.imprint'
     }
   ]
 }
