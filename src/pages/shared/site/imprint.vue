@@ -8,8 +8,8 @@
         p.q-mb-xs Hochschule Mainz
         p.q-mb-xs Studiengang Kommunikationsdesign
         p.q-mb-xs Holzstrasse 36, 55116 Mainz
-        p.q-mb-xs Telefon:
-        p E-Mail:
+        p.q-mb-xs Telefon: +49 6131 628-2259
+        p E-Mail: florian.jenett (at) hs-mainz.de
 
       .col-xs-12.col-xs-10.col-sm-8
         h5.q-mb-md Profile
