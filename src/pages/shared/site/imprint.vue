@@ -41,11 +41,11 @@
 
       .col-xs-12.col-xs-10.col-sm-8
         h5.q-mb-md Rechtlicher Hinweis
-        p Trotz sorgfältiger inhaltlicher Kontrolle übernehmen wir keine Haftung für die Inhalte externer Links. Für den Inhalt der verlinkten Seiten sind ausschlie?lich deren Betreiber zust?ndig.
+        p Trotz sorgfältiger inhaltlicher Kontrolle übernehmen wir keine Haftung für die Inhalte externer Links. Für den Inhalt der verlinkten Seiten sind ausschließlich deren Betreiber zuständig.
 
       .col-xs-12.col-xs-10.col-sm-8
         h5.q-mb-md Haftungsausschluss
-        p Mit Urteil vom 12. Mai 1998 hat das Landgericht Hamburg entschieden, dass man durch die Ausbringung eines Links die Inhalte der gelinkten Seite ggf. mit zu verantworten hat. Dies kann - so das LG - nur dadurch verhindert werden, dass man sich ausdr?cklich von diesen Inhalten distanziert. Der Studiengang Kommunikationsdesign der Hochschule Mainz hat auf ihrer Website Links zu anderen Seiten im Internet gelegt. F?r alle diese Links gilt: Es wird ausdr?cklich betont, dass der Studiengang Kommunikationsdesign der Hochschule Mainz keinerlei Einfluss auf die Gestaltung und die Inhalte der verlinkten Seiten hat. Deshalb distanziert sich der Studiengang Kommunikationsdesign der Hochschule Mainz hiermit ausdrücklich von allen Inhalten aller gelinkten Seiten auf dieser Homepage und macht sich ihre Inhalte nicht zueigen. Diese Erklärung gilt für alle auf dieser Homepage ausgebrachten Links. Alle genannten Warenzeichen und Marken sind Besitz ihrer jeweilig registrierten Eigent?mer.
+        p Mit Urteil vom 12. Mai 1998 hat das Landgericht Hamburg entschieden, dass man durch die Ausbringung eines Links die Inhalte der gelinkten Seite ggf. mit zu verantworten hat. Dies kann - so das LG - nur dadurch verhindert werden, dass man sich ausdrücklich von diesen Inhalten distanziert. Der Studiengang Kommunikationsdesign der Hochschule Mainz hat auf ihrer Website Links zu anderen Seiten im Internet gelegt. Für alle diese Links gilt: Es wird ausdrücklich betont, dass der Studiengang Kommunikationsdesign der Hochschule Mainz keinerlei Einfluss auf die Gestaltung und die Inhalte der verlinkten Seiten hat. Deshalb distanziert sich der Studiengang Kommunikationsdesign der Hochschule Mainz hiermit ausdrücklich von allen Inhalten aller gelinkten Seiten auf dieser Homepage und macht sich ihre Inhalte nicht zueigen. Diese Erklärung gilt für alle auf dieser Homepage ausgebrachten Links. Alle genannten Warenzeichen und Marken sind Besitz ihrer jeweilig registrierten Eigentümer.
 
 </template>
 
