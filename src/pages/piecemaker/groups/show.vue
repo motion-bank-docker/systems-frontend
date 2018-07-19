@@ -769,26 +769,23 @@
   }
 </script>
 
-<style>
+<style lang="stylus">
+  $primary = #729BFF
   /* .moba-active {
     background-color: rgba( 0, 0, 0, .1 );
   } */
 
-  .moba-border-top {
-  border-top: 1px solid rgba( 255, 255, 255, .2 );
-  }
+  .moba-border-top
+    border-top 1px solid rgba( 255, 255, 255, .2 )
 
-  .moba-diagram-bar {
-    fill: rgba(255, 255, 255, .05);
-  }
+  .moba-diagram-bar
+    fill rgba(255, 255, 255, .05)
 
-  .moba-diagram-bar:hover {
-    fill: rgba(255, 255, 255, .2);
-  }
+  .moba-diagram-bar:hover
+    fill rgba(255, 255, 255, .2)
 
-    .moba-active-bar {
-      fill: white!important;
-    }
+  .moba-active-bar
+    fill $primary!important
 
   /* .moba-empty {
   }
