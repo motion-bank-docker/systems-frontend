@@ -3,7 +3,7 @@
     .group(v-bind:class="{ 'absolute-bottom-left': positionCorners, 'layout-padding': positionCorners }")
       small.generic-margin {{ $t('site.copyright') }}
       small.generic-margin
-        a(@click="openURL('http://motionbank.org/de/content/impressum')") {{ $t('navigation.imprint') }}
+        a(@click="currentApp = 'site.imprint'; $router.push({ name: 'site.imprint' })") {{ $t('navigation.imprint') }}
       small.generic-margin
         a(@click="openURL('http://motionbank.org/de/content/kontakt')") {{ $t('navigation.contact') }}
       small.generic-margin
