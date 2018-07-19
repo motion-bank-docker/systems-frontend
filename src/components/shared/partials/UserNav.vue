@@ -25,9 +25,10 @@
         big, flat
         ) Help
 
-    q-btn(color="primary", flat, icon="help",
-    @click="currentApp = 'site.help'; $router.push({ name: 'site.help' })",
-    v-if="userState")
+    //
+      q-btn(color="primary", flat, icon="help",
+      @click="currentApp = 'site.help'; $router.push({ name: 'site.help' })",
+      v-if="userState")
 
     q-btn(color="primary", flat,
     @click="currentApp = 'site.imprint'; $router.push({ name: 'site.imprint' })",
