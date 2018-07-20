@@ -1,25 +1,32 @@
 <template lang="pug">
+
   // center-card-three-quarter
   card-full
-    // hide logo
-    //
+
+    // hides logo
     span(slot="form-logo")
 
-    h5(slot="form-title") {{ $t('routes.users.manage.title') }}
-    p.caption(slot="form-caption") {{ $t('routes.users.manage.caption') }}
-
-    h5.text-grey-3(slot="form-title") {{ $t('routes.users.first_login.title') }}
-    p.text-grey-6(slot="form-caption") {{ $t('routes.users.first_login.caption') }}
+    h5.no-margin(slot="form-title")
+      div(v-if="state == 'manage-profile'")
+        span.text-grey-6 {{ $t('routes.users.manage.title') }}
+        br
+        | {{ $t('routes.users.manage.caption') }}
+      div(v-else)
+        span.text-grey-6 {{ $t('routes.users.first_login.title') }}
+        br
+        | {{ $t('routes.users.first_login.caption') }}
 
     // form-main(v-if="payload !== undefined", v-model="payload", :schema="schema")
     form-main(v-model="payload", :schema="schema")
+      q-btn.q-mr-md.bg-grey-9(v-if="state == 'manage-profile'", slot="form-buttons-add", label="close account")
 
 </template>
 
 <script>
   import CardFull from '../../../components/shared/layouts/CardFull'
   import { FormMain } from '../../../components/shared/forms'
-  import { required, sameAs, minLength, email } from 'vuelidate/lib/validators'
+  // import { required, sameAs, minLength, email } from 'vuelidate/lib/validators'
+  import { required, sameAs, minLength } from 'vuelidate/lib/validators'
   export default {
     components: {
       CardFull,
@@ -28,6 +35,7 @@
     data () {
       const context = this
       return {
+        state: 'manage-profile',
         schema: {
           fields: {
             name: {
@@ -39,7 +47,7 @@
                 minLength: minLength(2)
               }
             },
-            email: {
+            /* email: {
               type: 'text',
               label: 'labels.email',
               errorLabel: 'errors.invalid_email',
@@ -51,7 +59,7 @@
             location: {
               type: 'text',
               label: 'labels.location'
-            },
+            }, */
             organisation: {
               type: 'text',
               label: 'labels.organisation'
@@ -80,7 +88,7 @@
               return context.$store.dispatch('users/patch',
                 [context.$store.state.auth.payload.userId, context.payload])
             },
-            label: 'buttons.save_changes',
+            label: 'buttons.save',
             message: 'messages.update_success'
           }
         },
