@@ -5,6 +5,7 @@
       .row
         .col-md-12
           form-main(v-model="payload", :schema="schema")
+            q-btn.q-mr-md.bg-grey-9(slot="form-buttons-add", label="import archive")
 </template>
 
 <script>
