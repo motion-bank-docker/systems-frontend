@@ -108,7 +108,10 @@
       // div
         // p {{ hoverVal.start.weekdayShort }}, {{ hoverVal.start.year }}-{{ hoverVal.start.month }}-{{ hoverVal.start.day }}
         // p {{ hoverVal.start }}
-      div(v-if="hoverVal.start") {{ hoverVal.start.hour }} &mdash; {{ hoverVal.end }}
+      div(v-if="hoverVal.start")
+        p {{ hoverVal.start.year }} {{ hoverVal.start.month }} {{ hoverVal.start.day }} – {{ hoverVal.start.hour }} {{ hoverVal.start.minute }} {{ hoverVal.start.second }} &mdash; {{ hoverVal.end }}
+      div(v-if="hoverVal.start")
+        p {{ hoverVal.start.year }} {{ hoverVal.start.month }} {{ hoverVal.start.day }} – {{ hoverVal.start.hour }} {{ hoverVal.start.minute }} {{ hoverVal.start.second }} &mdash; {{ hoverVal.end }}
     //
       .text-center
         svg(
@@ -255,12 +258,12 @@
     data () {
       // const _this = this
       return {
-        actions: [
+        /* actions: [
           { type: 'annotate', title: 'buttons.annotate', color: 'primary' },
           { type: 'delete', title: 'buttons.delete', icon: 'highlight off' },
           { type: 'edit', title: 'buttons.edit' },
           { type: 'synchronize', title: 'buttons.synchronize' }
-        ],
+        ], */
         activeBar: null,
         activeSession: [],
         /* columns: [
