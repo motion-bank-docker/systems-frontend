@@ -65,21 +65,12 @@
                 // LINES - ANNOTATIONS
                 // WRAP
                 //
-                  svg(width="20%", height="100%", x="80%")
                 svg(width="100%", height="100%", x="0%")
-                  // rect.cursor-pointer.moby-svg-entry(
-                    v-for="(annotation, i) in propGrouped.sessions[currentSession].annotations",
-                      @click="setSessionTime(annotation.seconds), previewLine.positionY = annotation.seconds",
-                    height="1",
-                    width="100%",
-                    x="0",
-                    // :y="annotation.seconds",
-                    style="fill: rgba(255, 255, 255, .2);"
-                    )
                   rect.cursor-pointer.moby-svg-entry(
                   v-for="(annotation, i) in propActiveSession.annotations",
                     @click="setSessionTime(annotation.seconds), previewLine.positionY = annotation.seconds",
                   height="1",
+                  :class="[annotation.active ? 'moba-active-line' : '']"
                   width="100%",
                   x="0",
                   :y="annotation.seconds",
@@ -121,8 +112,6 @@
           //
           .col-8(style="min-height: 100vh;")
 
-            // div(v-for="gr in propGrouped.sessions")
-            // div(v-for="gr in propActiveSession")
             div.q-pl-sm(
             v-for="annotation in propActiveSession.annotations",
             @mouseenter="previewLine.positionY = annotation.seconds, previewLine.visibility = true",
@@ -133,7 +122,7 @@
               .row.moba-list-entry(:ref="`annotation-${annotation.annotation.uuid}-${annotation.seconds.toFixed(3)}`")
                 .row.col-12(style="line-height: 1.35rem;")
                   .col-12.row.q-px-md.q-py-sm.moba-round-borders(:class="[annotation.type != 'system' ? 'moba-hover' : '', annotation.type == 'separator' ? 'bg-grey-9 text-black text-center' : '']")
-                    div.col-10
+                    div.col-10.cursor-pointer
 
                       // AUTHOR
                       //
@@ -210,7 +199,7 @@
       sessionTime () {
         const _this = this
         let found = false
-        this.propGrouped.sessions[this.currentSession].annotations.forEach(aobj => {
+        this.propActiveSession.annotations.forEach(aobj => {
           if (aobj.seconds >= _this.sessionTime && !found) {
             aobj.active = found = true
             const el = this.$refs[`annotation-${aobj.annotation.uuid}-${aobj.seconds}`]
@@ -218,6 +207,14 @@
           }
           else aobj.active = false
         })
+        /* this.propGrouped.sessions[this.currentSession].annotations.forEach(aobj => {
+          if (aobj.seconds >= _this.sessionTime && !found) {
+            aobj.active = found = true
+            const el = this.$refs[`annotation-${aobj.annotation.uuid}-${aobj.seconds}`]
+            if (Array.isArray(el)) _this.scrollToElement(el[0], 250)
+          }
+          else aobj.active = false
+        }) */
       },
       activesession () {
         this.propActiveSession = this.activesession
@@ -397,35 +394,30 @@
   }
 </script>
 
-<style>
+<style lang="stylus">
+  $primary = #729BFF
 
-  .moba-annotation-tag:hover {
-    background-color: white!important;
-    color: #000!important;
+  .moba-active-line
+    fill $primary!important
+
+  .moba-active-swimlane
+    fill $primary!important
+
+  .moba-annotation-tag:hover
+    background-color white!important
+    color #000!important
     /*transition: all ease 350ms;*/
-  }
 
-  /* .moba-active-preview {
-    margin-left: 10%;
-    width: 80%;
-  } */
+  .moba-border
+    border 1px solid rgba( 255, 255, 255, .075 )
 
-  .moba-active-swimlane {
-    fill: #749dfc!important;
-  }
+  .moba-border-top
+    border-top 1px solid rgba( 255, 255, 255, .05 )
 
-  .moba-border {
-    border: 1px solid rgba( 255, 255, 255, .075 );
-  }
-  .moba-border-top {
-    border-top: 1px solid rgba( 255, 255, 255, .05 );
-  }
-
-  .moba-fixed {
-    position: fixed;
-    top: 50px;
-    left: 0px;
-  }
+  .moba-fixed
+    position fixed
+    top 50px
+    left 0px
 
   .moba-hover {
     border: 1px solid transparent;
