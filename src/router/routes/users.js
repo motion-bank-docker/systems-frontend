@@ -26,6 +26,11 @@ export default {
       path: 'manage',
       name: 'users.manage',
       component: () => import('pages/shared/users/manage')
+    },
+    {
+      path: 'profile',
+      name: 'users.profile',
+      component: () => import('pages/shared/users/profile')
     }
   ]
 }
