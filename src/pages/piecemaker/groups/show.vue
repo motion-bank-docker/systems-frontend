@@ -6,62 +6,14 @@
     //
     q-window-resize-observable(@resize="onWindowResize")
 
-    // filter
-    //
-      q-layout-drawer(v-model="openDiagram", side="right", overlay)
-        div diagram
-
-    // filter
-    //
-    // q-layout-drawer(v-model="openFilter", side="right", overlay)
-      // div.bg-dark.q-pa-md.q-caption(:class="{ 'text-grey-8': radioFilter == 'allsessions' || radioFilter == 'thissession' }")
-      div.bg-dark.q-pa-md.q-caption(style="min-height: 100%;")
-        .row.q-mb-md
-          .col-10.bg-grey-10.q-pa-sm
-            // q-radio.q-mb-md(v-model="radioFilter", val="allsessions", label="Apply on all sessions in this timeline.", color="white")
-            q-radio.q-mb-md(v-model="radioFilter", val="thissession", label="Apply filter.", color="white")
-            br
-            q-radio(v-model="radioFilter", val="none", label="Do not apply.", color="white")
-          .col-2.text-right
-            q-btn.rotate-180(@click="openFilter = false", icon="keyboard_backspace", size="sm", round, flat)
-
-        div(:class="{ 'text-grey-8': radioFilter == 'none' }")
-          q-tabs(color="dark")
-            q-tab(slot="title", name="authors") authors
-            q-tab(slot="title", name="types") types
-            q-tab(slot="title", name="date") date
-            q-tab(slot="title", name="search") search
-
-            q-tab-pane(name="authors")
-              q-list.no-border
-                q-item.no-padding
-                  q-btn(size="sm") select all
-                  q-btn(size="sm") select none
-                q-item.no-padding(v-for="author in authors")
-                  q-checkbox.q-caption(v-model="filterAuthors", :val="author", :label="author", color="white")
-
-            q-tab-pane(name="types")
-              q-list.no-border
-                q-item.no-padding
-                  q-btn(size="sm") select all
-                  q-btn(size="sm") select none
-                q-item.no-padding(v-for="type in annotationTypes")
-                  q-checkbox.q-caption(v-model="filterTypes", :val="type", :label="type", color="white")
-
-            q-tab-pane(name="date")
-              div creation
-
-            q-tab-pane(name="search")
-              q-search.bg-transparent.text-white(color="white", dark)
-
     // headline
     //
     .row.q-mb-xl
       .col-10.offset-1(slot="form-title")
         // div {{ $t('routes.piecemaker.groups.show.title') }}: Titel der Timeline
         h5.no-margin.text-center
-          div Meine Timeline seit Studienbeginn (Titel)
-          .text-grey-8 by Vorname Nachname (Inhaber)
+          div {{ map.title }}
+          .text-grey-8 {{ map.author.name }}
 
     // hide logo
     //
@@ -74,10 +26,6 @@
     // btn: filter
     //
     q-btn.fixed.text-white(@click="openFilter = true", :class="{ 'bg-green': radioFilter == 'allsessions' || radioFilter == 'thissession' }", style="top: 66px; right: 16px; z-index: 1000;")
-      //
-        q-icon(v-if="radioFilter == 'allsessions' || radioFilter == 'thissession'", name="visibility")
-        q-icon(v-else, name="visibility_off")
-        span.q-ml-md Filter
       | Filter
 
       // FILTER
@@ -151,14 +99,16 @@
         svg(v-for="(session, isession) in grouped.sessions", :width="diagramDimensions.barWidth",
         height="100%", :x="(diagramDimensions.barWidth + diagramDimensions.barSpace) * isession")
           rect.cursor-pointer.moba-diagram-bar(@click="toggleShowSession(), setActiveSession(isession), activeBar = isession",
-          @mouseenter="hoverVal = session.start",
-          @mouseleave="hoverVal = ''",
+          @mouseenter="hoverVal.start = session.start._dateTime, hoverVal.end = session.end",
+          @mouseleave="hoverVal.start = false, hoverVal.end = ''",
           :class="{'moba-active-bar' : activeBar == isession}",
-          width="100%", :height="getActiveSessionDuration(session.start.millis, session.end.millis) + 10", :y="diagramDimensions.height - getActiveSessionDuration(session.start.millis, session.end.millis)")
+          width="100%", :height="(getActiveSessionDuration(session.start.millis, session.end.millis) / 2) + 10", :y="diagramDimensions.height - (getActiveSessionDuration(session.start.millis, session.end.millis) / 2)")
 
-    .text-center(style="min-height: 2rem;")
-      | {{ hoverVal }}
-
+    .row.full-width.text-center.q-mt-md(style="min-height: 2rem;")
+      // div
+        // p {{ hoverVal.start.weekdayShort }}, {{ hoverVal.start.year }}-{{ hoverVal.start.month }}-{{ hoverVal.start.day }}
+        // p {{ hoverVal.start }}
+      div(v-if="hoverVal.start") {{ hoverVal.start.hour }} &mdash; {{ hoverVal.end }}
     //
       .text-center
         svg(
@@ -206,16 +156,23 @@
           // h5.q-my-xs
             span (Recording Session Titel)
           .row.q-mt-sm
-            div {{ activeSession.start.millis }} – {{ activeSession.end.millis }}
-            // .col-12 {{ activeSessionDuration }}
+            // .col-12 Session: {{ activeSession.start.millis }} – {{ activeSession.end.millis }}
             //
-              div {{ activeSession.start._dateTime.weekdayShort }}, {{ activeSession.start._dateTime.year }}-{{ activeSession.start._dateTime.month }}-{{ activeSession.start._dateTime.day }}
-                br
-                | {{ activeSession.start._dateTime.hour }}:{{ activeSession.start._dateTime.minute }}:{{ activeSession.start._dateTime.second }}
-              div.q-mx-md &mdash;
-              div {{ activeSession.end._dateTime.weekdayShort }}, {{ activeSession.end._dateTime.year }}-{{ activeSession.end._dateTime.month }}-{{ activeSession.end._dateTime.day }}
-                br
-                | {{ activeSession.end._dateTime.hour }}:{{ activeSession.end._dateTime.minute }}:{{ activeSession.end._dateTime.second }}
+              .col-12.q-my-xs(v-for="video in grouped.videos")
+                div video start: {{ video.annotation.created.ts }}
+                div seconds: {{ video.meta.seconds }}
+                div milliseconds: {{ video.meta.seconds * 1000 }}
+                div video end: {{ video.annotation.created.ts + (video.meta.seconds * 1000) }}
+                .bg-red(v-if="video.annotation.created.ts <= activeSession.start.millis || video.annotation.created.ts + (video.meta.seconds * 1000) <= activeSession.end.millis") bla
+                // .bg-green(v-if="checkVideoVisibility(video.annotation.created.ts, video.annotation.created.ts + (video.meta.seconds * 1000), activeSession.start.millis, activeSession.end.millis)") bla
+                .bg-blue bla {{ checkVideoVisibility(video.annotation.created.ts, video.annotation.created.ts + (video.meta.seconds * 1000), activeSession.start.millis, activeSession.end.millis) }}
+            div {{ activeSession.start._dateTime.weekdayShort }}, {{ activeSession.start._dateTime.year }}-{{ activeSession.start._dateTime.month }}-{{ activeSession.start._dateTime.day }}
+              br
+              | {{ activeSession.start._dateTime.hour }}:{{ activeSession.start._dateTime.minute }}:{{ activeSession.start._dateTime.second }}
+            div.q-mx-md &mdash;
+            div {{ activeSession.end._dateTime.weekdayShort }}, {{ activeSession.end._dateTime.year }}-{{ activeSession.end._dateTime.month }}-{{ activeSession.end._dateTime.day }}
+              br
+              | {{ activeSession.end._dateTime.hour }}:{{ activeSession.end._dateTime.minute }}:{{ activeSession.end._dateTime.second }}
       .col-1.text-right
         q-btn.shadow-6(@click="showSession = false, diagramDimensions.activeId = null, activeBar = null", icon="clear", size="small", flat)
 
@@ -232,7 +189,6 @@
 </template>
 
 <script>
-  // import CardFull from '../../../components/shared/layouts/CardFull'
   import FullScreen from '../../../components/shared/layouts/FullScreen'
   import SessionDiagram from '../../../components/piecemaker/partials/SessionDiagram'
   import groupBySessions from '../../../lib/annotations/sessions'
@@ -249,27 +205,28 @@
       this.$store.dispatch('maps/get', uuid)
         .then(map => {
           _this.map = map
+          console.log(map)
         })
       this.$store.dispatch('annotations/find', { 'target.id': uuid })
         .then(annotations => {
-          return groupBySessions(annotations.items, 40) // geteilt
+          return groupBySessions(annotations.items, 60) // geteilt
           // return groupBySessions(annotations.items)
         })
         .then(grouped => {
           _this.grouped = grouped
           console.log(_this.grouped)
         })
-      // this.getSvgHeight(this.videos)
-      // this.appendRandomAnnotations()
-      // this.divideInBlocks(this.annotations)
-      // this.filterAnnotations(0, this.numberRandomAnnotations)
-      // this.handlerCountAllSessions()
     },
     methods: {
+      checkVideoVisibility (videoStart, videoEnd, sessionStart, sessionEnd) {
+        // console.log(videoStart, videoEnd, sessionStart, sessionEnd)
+        if ((videoStart <= sessionStart && videoEnd >= sessionEnd) || (videoStart >= sessionStart && videoEnd <= sessionEnd) || (videoStart > sessionStart && videoStart < sessionEnd && videoEnd > sessionEnd)) return true
+        else return false
+      },
       getActiveSessionDuration (start, end) {
-        // getActiveSessionDuration () {
-        // this.activeSessionDuration = (end - start) / 1000
-        return (end - start) / 1000
+        let difference = (end - start) / 1000
+        if (difference <= 10) difference = 10
+        return difference
       },
       jumpBetweenSessions (val) {
         if (!val && this.activeBar > 0) this.activeBar -= 1
@@ -281,137 +238,8 @@
         console.log(this.activeSession)
       },
       toggleShowSession () {
-        // this.showSession = !this.showSession
         this.showSession = true
       },
-      /* handlerPrevItem (valIndex, valProp) {
-        if (valIndex > 0) {
-          let newIndex = valIndex - 1
-          if (valProp === 'year') {
-            return this.newArrTimelineDataDummy[newIndex].year
-          }
-          else if (valProp === 'month') {
-            return this.newArrTimelineDataDummy[newIndex].month
-          }
-        }
-      }, */
-      /* handlerCountAllSessions () {
-        let i = 0
-        let j = 0
-        let k = 0
-        let l = 0
-        for (i = 0; i < this.arrTimelineDataDummy.length; i++) {
-          for (j = 0; j < this.arrTimelineDataDummy[i].months.length; j++) {
-            // this.countAllSessions++
-            for (k = 0; k < this.arrTimelineDataDummy[i].months[j].days.length; k++) {
-              // this.countAllSessions++
-              for (l = 0; l < this.arrTimelineDataDummy[i].months[j].days[k].entries.length; l++) {
-                this.countAllSessions++
-                this.newArrTimelineDataDummy.push({id: this.countAllSessions, year: this.arrTimelineDataDummy[i].year, month: this.arrTimelineDataDummy[i].months[j].month, day: this.arrTimelineDataDummy[i].months[j].days[k].date, begin: this.arrTimelineDataDummy[i].months[j].days[k].entries[l].start, duration: this.arrTimelineDataDummy[i].months[j].days[k].entries[l].duration})
-              }
-            }
-          }
-        }
-      }, */
-      /* randomNumber (fromRandom, toRandom) {
-        return Math.floor(Math.random() * toRandom) + fromRandom
-      }, */
-      /* filterAnnotations (valFrom, valTo) {
-        this.filteredAnnotations = this.annotations.filter(annotation => annotation.created > valFrom && annotation.created <= valTo)
-        // console.log(this.filteredAnnotations)
-        // console.log(this.arrFilter)
-        let i = 0
-        for (i = 0; i < this.arrFilter.length; i++) {
-          this.annotationsBlocks.push(this.annotations.filter(annotation => annotation.created > this.arrFilter[i]['rangebegin'] && annotation.created <= this.arrFilter[i]['rangeend']))
-        }
-      }, */
-      /* appendRandomAnnotations () {
-        // console.log('GEHT !')
-        let i = 0
-        let author = ''
-        let dur = ''
-        let text = 'Hier steht ein Text.'
-        let type = ''
-        for (i = 0; i < this.numberRandomAnnotations; i++) {
-          if (i >= 0 && i <= 10) {
-            dur = 40
-          }
-          else {
-            dur = 1
-          }
-          if (i >= 1 && i <= 5) {
-            type = this.annotationTypes[2]
-            text = 'https://www.youtube.com/embed/lDJFMvU2ZqY'
-          }
-          else if (i >= 30 && i <= 80) {
-            type = this.annotationTypes[1]
-            text = 'Log entry'
-          }
-          else if (i >= 85 && i <= 120) {
-            type = this.annotationTypes[4]
-            text = '#tag1'
-          }
-          else if (i >= 10 && i <= 20) {
-            type = this.annotationTypes[0]
-            text = 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.   \n' +
-              '\n' +
-              'Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.   \n' +
-              '\n' +
-              'Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.   \n' +
-              '\n' +
-              'Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer'
-          }
-          else if (i === 81 || i === 121) {
-            type = this.annotationTypes[3]
-            text = 'New Section: Lorem ipsum'
-          }
-          else {
-            type = this.annotationTypes[0]
-            text = 'Consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo du.'
-          }
-          if (i >= 1 && i <= 20) {
-            author = 'A. Z.'
-          }
-          else if (i >= 30 && i <= 80) {
-            author = 'System'
-          }
-          else if (i >= 100 && i <= 130) {
-            author = 'B. Y.'
-          }
-          else {
-            author = 'C. X.'
-          }
-          this.annotations.push({id: i, referencetime: Math.floor(Math.random() * this.svgHeight), duration: dur, created: i, text: text, type: type, author: author})
-        }
-      }, */
-      /* getSvgHeight (arr) {
-        let newArr = []
-        let arrLength = arr.length
-        let i = 0
-        for (i = 0; i < arrLength; i++) {
-          newArr.push(parseInt(arr[i].referencetime) + parseInt(arr[i].duration))
-        }
-        newArr.sort(function (a, b) {
-          return a - b
-        })
-        // console.log(newArr)
-        this.svgHeight = newArr[arrLength - 1]
-      }, */
-      /* divideInBlocks (arr) {
-        // let ab = this.annotationsBlocks
-        // console.log(ab)
-        var byReferencetime = arr.slice(0)
-        byReferencetime.sort(function (a, b) {
-          return a.byReferencetime - b.byReferencetime
-        })
-        // console.log(byReferencetime)
-        // console.log(arr)
-      }, */
-      /* setPrevCreated (val, valPrev) {
-        // console.log(val)
-        console.log(valPrev)
-        this.prevCreated = parseInt(val) + parseInt(50)
-      }, */
       onAction (type, data) {
         const _this = this
         switch (type) {
@@ -425,279 +253,17 @@
       }
     },
     data () {
-      const _this = this
+      // const _this = this
       return {
-        // activeDiagram: '',
-        // annotations: [],
-        // annotationsBlocks: [],
-        // annotationTypes: ['text', 'system', 'video', 'separator', 'tag'],
-        // authors: ['A.Z.', 'B.Y.', 'C.X.'],
-        // countAllSessions: null,
+        actions: [
+          { type: 'annotate', title: 'buttons.annotate', color: 'primary' },
+          { type: 'delete', title: 'buttons.delete', icon: 'highlight off' },
+          { type: 'edit', title: 'buttons.edit' },
+          { type: 'synchronize', title: 'buttons.synchronize' }
+        ],
         activeBar: null,
         activeSession: [],
-        activeSessionDuration: '',
-        diagramDimensions: {
-          activeId: null,
-          barSpace: 1,
-          barWidth: 15,
-          height: 250
-        },
-        filterAuthors: [],
-        filterTags: [],
-        filterTypes: [],
-        grouped: { annotations: [], videos: [] },
-        map: undefined,
-        openFilter: false,
-        radioFilter: 'none',
-        rangeValues: { max: 4, min: 2 },
-        /* arrFilter: [{ // dev only
-          rangebegin: 0,
-          rangeend: 30
-        }, {
-          rangebegin: 31,
-          rangeend: 120
-        }, {
-          rangebegin: 121,
-          rangeend: 150
-        }, {
-          rangebegin: 151,
-          rangeend: 200
-        }], */
-        // newArrTimelineDataDummy: [],
-        /* arrTimelineDataDummy: [{ // dev only
-          year: 2018,
-          months: [{
-            month: '1',
-            days: [{
-              date: '4',
-              entries: [{
-                duration: 300,
-                end: '22.12',
-                id: '1',
-                start: '12',
-                title: 'Titel bc'
-              }]
-            }]
-          }, {
-            month: '3',
-            days: [{
-              date: '15',
-              entries: [{
-                duration: 1000,
-                end: '22.12',
-                id: '2',
-                start: '8:24',
-                title: 'aaaa'
-              }]
-            }]
-          }, {
-            month: '10',
-            days: [{
-              date: '18',
-              entries: [{
-                duration: 1000,
-                end: '22.12',
-                id: '3',
-                start: '7',
-                title: 'Titel bc'
-              }]
-            }, {
-              date: '21',
-              entries: [{
-                duration: 1000,
-                end: '22.12',
-                id: '4',
-                start: '7.30',
-                title: 'Titel bc'
-              }, {
-                duration: 400,
-                end: '22.12',
-                id: '5',
-                start: '14.45',
-                title: 'Titel abc'
-              }]
-            }, {
-              date: '26',
-              entries: [{
-                duration: 400,
-                end: '22.12',
-                id: '6',
-                start: '5',
-                title: 'Titel abc'
-              }]
-            }]
-          }, {
-            month: '11',
-            days: [{
-              date: '2',
-              entries: [{
-                duration: 934,
-                end: '22.12',
-                id: '7',
-                start: '8:50',
-                title: 'vdvdscdscd Titel abc'
-              }]
-            }, {
-              date: '4',
-              entries: [{
-                duration: 400,
-                end: '22.12',
-                id: '8',
-                start: '8:43',
-                title: 'kgnvadvdscvads'
-              }]
-            }]
-          }]
-        }, {
-          year: '2016',
-          months: [{
-            month: '6',
-            days: [{
-              date: '2',
-              entries: [{
-                duration: 320,
-                end: '23.00',
-                id: 'dedasca',
-                start: '19.12',
-                title: 'hallo'
-              }]
-            }, {
-              date: '9',
-              entries: [{
-                duration: 1200,
-                end: '23.00',
-                id: '9',
-                start: '19.12',
-                title: 'hallo'
-              }]
-            }, {
-              date: '10',
-              entries: [{
-                duration: 410,
-                end: '23.00',
-                id: '9vvdscasdc',
-                start: '19.12',
-                title: 'hallo'
-              }]
-            }, {
-              date: '15',
-              entries: [{
-                duration: 80,
-                end: '23.00',
-                id: 'lvdsvsdc',
-                start: '19.12',
-                title: 'hallo'
-              }]
-            }]
-          }, {
-            month: '12',
-            days: [{
-              date: '14',
-              entries: [{
-                duration: 561,
-                end: '23.00',
-                id: '10',
-                start: '11:00',
-                title: 'vormittags'
-              }, {
-                duration: 912,
-                end: '12.00',
-                id: '11',
-                start: '9:00',
-                title: 'blablabla'
-              }]
-            }]
-          }]
-        }, {
-          year: '2015',
-          months: [{
-            month: '6',
-            days: [{
-              date: '9',
-              entries: [{
-                duration: 1287,
-                end: '23.00',
-                id: '12',
-                start: '19.12',
-                title: 'hallo'
-              }]
-            }]
-          }, {
-            month: '7',
-            days: [{
-              date: '14',
-              entries: [{
-                duration: 1058,
-                end: '23.00',
-                id: '13',
-                start: '11:00',
-                title: 'vormittags'
-              }, {
-                duration: 1701,
-                end: '23.00',
-                id: '14',
-                start: '18:19',
-                title: 'blablabla'
-              }]
-            }]
-          }, {
-            month: '9',
-            days: [{
-              date: '9',
-              entries: [{
-                duration: 461,
-                end: '23.00',
-                id: '15',
-                start: '19.12',
-                title: 'hallo'
-              }]
-            }]
-          }, {
-            month: '12',
-            days: [{
-              date: '14',
-              entries: [{
-                duration: 950,
-                end: '11.00',
-                id: '16',
-                start: '11:00',
-                title: 'vormittags'
-              }, {
-                duration: 317,
-                end: '12.00',
-                id: '17',
-                start: '18:19',
-                title: 'blablabla'
-              }, {
-                duration: 873,
-                end: '13.00',
-                id: '18',
-                start: '11:00',
-                title: 'vormittags'
-              }, {
-                duration: 900,
-                end: '14.00',
-                id: '19',
-                start: '18:19',
-                title: 'blablabla'
-              }]
-            }]
-          }]
-        }], */
-        // byReferencetime: [],
-        // filteredAnnotations: [],
-        hoverVal: null,
-        // maps: [],
-        // numberRandomAnnotations: 200, // dev only
-        // prevCreated: '100',
-        previewLine: {
-          visibility: false,
-          positionY: ''
-        },
-        showSession: false,
-        // svgHeight: '100',
-        viewportHeight: '',
-        columns: [
+        /* columns: [
           {
             label: _this.$t('labels.video_title'),
             field: 'title',
@@ -721,49 +287,31 @@
             label: _this.$t('labels.author'),
             field: 'author'
           }
-        ],
-        actions: [
-          { type: 'annotate', title: 'buttons.annotate', color: 'primary' },
-          { type: 'edit', title: 'buttons.edit' },
-          { type: 'synchronize', title: 'buttons.synchronize' },
-          { type: 'delete', title: 'buttons.delete', icon: 'highlight off' }
-        ]
-        /* videos: [{ // dev only
-          created: '1',
-          duration: '1000',
-          id: '',
-          referencetime: '0',
-          title: 'video 1',
-          type: 'video'
-        }, {
-          created: '20',
-          duration: '1100',
-          id: '',
-          referencetime: '20',
-          title: 'video 1',
-          type: 'video'
-        }, {
-          created: '25',
-          duration: '500',
-          id: '',
-          referencetime: '270',
-          title: 'video 1',
-          type: 'video'
-        }, {
-          created: '59',
-          duration: '821',
-          id: '',
-          referencetime: '200',
-          title: 'Zeitraum 1',
-          type: 'timerange'
-        }, {
-          created: '300',
-          duration: '1282',
-          id: '',
-          referencetime: '12',
-          title: 'video vfvdfcasd',
-          type: 'video'
-        }] */
+        ], */
+        diagramDimensions: {
+          activeId: null,
+          barSpace: 1,
+          barWidth: 15,
+          height: 250
+        },
+        filterAuthors: [],
+        filterTags: [],
+        filterTypes: [],
+        grouped: { annotations: [], videos: [] },
+        hoverVal: {
+          end: null,
+          start: null
+        },
+        map: undefined,
+        openFilter: false,
+        previewLine: {
+          visibility: false,
+          positionY: ''
+        },
+        radioFilter: 'none',
+        rangeValues: { max: 4, min: 2 },
+        showSession: false,
+        viewportHeight: ''
       }
     }
   }
@@ -771,9 +319,6 @@
 
 <style lang="stylus">
   $primary = #729BFF
-  /* .moba-active {
-    background-color: rgba( 0, 0, 0, .1 );
-  } */
 
   .moba-border-top
     border-top 1px solid rgba( 255, 255, 255, .2 )
@@ -786,29 +331,4 @@
 
   .moba-active-bar
     fill $primary!important
-
-  /* .moba-empty {
-  }
-
-  .moba-round-borders-filter {
-    border-radius: .5rem;
-  }
-
-  .moba-swimlane {
-    fill: rgba( 255, 255, 255, .1 );
-    transition: fill ease 200ms;
-  }
-
-  .moba-swimlane:hover {
-    fill: rgba( 0, 0, 0, 1 );
-  }
-
-  .moba-svg-entry {
-    opacity: .2;
-  }
-
-  .moba-svg-entry:hover {
-    fill: red!important;
-    opacity: 1;
-  } */
 </style>

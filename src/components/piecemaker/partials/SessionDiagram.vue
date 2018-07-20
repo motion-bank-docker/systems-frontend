@@ -56,6 +56,7 @@
 
             .col-4.shadow-16.moba-border(:class="{'moba-fixed': fixDiagram, 'full-width': fixDiagram}",
             style="height: calc(100vh - 50px); overflow: scroll; z-index: 20;")
+
               svg(
               width="100%",
               :height="session.duration",
@@ -88,7 +89,7 @@
                 // SWIMLANES - VIDEOS
                 //
                 svg(width="80%")
-                  // rect(width="100%", height="100%", fill="rgba(255, 0, 255, .3)")
+                  // .bg-red(v-if="vid.annotation.created.ts <= activeSession.start.millis || vid.annotation.created.ts + (vid.meta.seconds * 1000) <= activeSession.end.millis") bla
                   svg.shadow-6(
                   v-for="(vid, i) in propGrouped.videos",
                   :id="vid.annotation._id",
@@ -223,6 +224,11 @@
       }
     },
     methods: {
+      checkVideoVisibility (videoStart, videoEnd, sessionStart, sessionEnd) {
+        // console.log(videoStart, videoEnd, sessionStart, sessionEnd)
+        if ((videoStart <= sessionStart && videoEnd >= sessionEnd) || (videoStart >= sessionStart && videoEnd <= sessionEnd) || (videoStart > sessionStart && videoStart < sessionEnd && videoEnd > sessionEnd)) return true
+        else return false
+      },
       checkPreviousVideo (video, seconds) { // TODO: doesn't work yet
         if (video !== this.prevVideo) {
           /* console.log('ch video ' + video)
