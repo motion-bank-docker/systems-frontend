@@ -156,7 +156,7 @@
           .q-mt-sm.q-pt-xs {{ getTime(activeSession.start) }} – {{ getTime(activeSession.end) }}
 
       .col-1.text-right
-        q-btn.shadow-6(@click="showSession = false, diagramDimensions.activeId = null, activeBar = null", icon="clear", size="small", flat)
+        q-btn.shadow-6(@click="showSession = false, diagramDimensions.activeId = null, activeBar = null", icon="clear", size="small", flat, round)
 
       .col-12
         SessionDiagram(:grouped="grouped", :activesession="activeSession")

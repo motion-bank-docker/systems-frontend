@@ -1,10 +1,18 @@
 <template lang="pug">
   // center-card-three-quarter
   card-full
+    // hide logo
+    //
+    span(slot="form-logo")
 
-    span(slot="form-title") {{ $t('routes.users.manage.title') }}
+    h5(slot="form-title") {{ $t('routes.users.manage.title') }}
     p.caption(slot="form-caption") {{ $t('routes.users.manage.caption') }}
-    form-main(v-if="payload !== undefined", v-model="payload", :schema="schema")
+
+    h5.text-grey-3(slot="form-title") {{ $t('routes.users.first_login.title') }}
+    p.text-grey-6(slot="form-caption") {{ $t('routes.users.first_login.caption') }}
+
+    // form-main(v-if="payload !== undefined", v-model="payload", :schema="schema")
+    form-main(v-model="payload", :schema="schema")
 
 </template>
 
