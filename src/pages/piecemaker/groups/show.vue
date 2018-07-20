@@ -99,19 +99,14 @@
         svg(v-for="(session, isession) in grouped.sessions", :width="diagramDimensions.barWidth",
         height="100%", :x="(diagramDimensions.barWidth + diagramDimensions.barSpace) * isession")
           rect.cursor-pointer.moba-diagram-bar(@click="toggleShowSession(), setActiveSession(isession), activeBar = isession",
-          @mouseenter="hoverVal.start = session.start._dateTime, hoverVal.end = session.end",
+          @mouseenter="hoverVal.start = getTime(session.start), hoverVal.end = getTime(session.end)",
           @mouseleave="hoverVal.start = false, hoverVal.end = ''",
           :class="{'moba-active-bar' : activeBar == isession}",
           width="100%", :height="(getActiveSessionDuration(session.start.millis, session.end.millis) / 2) + 10", :y="diagramDimensions.height - (getActiveSessionDuration(session.start.millis, session.end.millis) / 2)")
 
-    .row.full-width.text-center.q-mt-md(style="min-height: 2rem;")
-      // div
-        // p {{ hoverVal.start.weekdayShort }}, {{ hoverVal.start.year }}-{{ hoverVal.start.month }}-{{ hoverVal.start.day }}
-        // p {{ hoverVal.start }}
-      div(v-if="hoverVal.start")
-        p {{ hoverVal.start.year }} {{ hoverVal.start.month }} {{ hoverVal.start.day }} – {{ hoverVal.start.hour }} {{ hoverVal.start.minute }} {{ hoverVal.start.second }} &mdash; {{ hoverVal.end }}
-      div(v-if="hoverVal.start")
-        p {{ hoverVal.start.year }} {{ hoverVal.start.month }} {{ hoverVal.start.day }} – {{ hoverVal.start.hour }} {{ hoverVal.start.minute }} {{ hoverVal.start.second }} &mdash; {{ hoverVal.end }}
+    .row.full-width.q-mt-md(style="min-height: 2rem;")
+      .full-width.text-center(v-if="hoverVal.start") {{ hoverVal.start }} &mdash; {{ hoverVal.end }}
+
     //
       .text-center
         svg(
@@ -158,24 +153,8 @@
         div
           // h5.q-my-xs
             span (Recording Session Titel)
-          .row.q-mt-sm
-            // .col-12 Session: {{ activeSession.start.millis }} – {{ activeSession.end.millis }}
-            //
-              .col-12.q-my-xs(v-for="video in grouped.videos")
-                div video start: {{ video.annotation.created.ts }}
-                div seconds: {{ video.meta.seconds }}
-                div milliseconds: {{ video.meta.seconds * 1000 }}
-                div video end: {{ video.annotation.created.ts + (video.meta.seconds * 1000) }}
-                .bg-red(v-if="video.annotation.created.ts <= activeSession.start.millis || video.annotation.created.ts + (video.meta.seconds * 1000) <= activeSession.end.millis") bla
-                // .bg-green(v-if="checkVideoVisibility(video.annotation.created.ts, video.annotation.created.ts + (video.meta.seconds * 1000), activeSession.start.millis, activeSession.end.millis)") bla
-                .bg-blue bla {{ checkVideoVisibility(video.annotation.created.ts, video.annotation.created.ts + (video.meta.seconds * 1000), activeSession.start.millis, activeSession.end.millis) }}
-            div {{ activeSession.start._dateTime.weekdayShort }}, {{ activeSession.start._dateTime.year }}-{{ activeSession.start._dateTime.month }}-{{ activeSession.start._dateTime.day }}
-              br
-              | {{ activeSession.start._dateTime.hour }}:{{ activeSession.start._dateTime.minute }}:{{ activeSession.start._dateTime.second }}
-            div.q-mx-md &mdash;
-            div {{ activeSession.end._dateTime.weekdayShort }}, {{ activeSession.end._dateTime.year }}-{{ activeSession.end._dateTime.month }}-{{ activeSession.end._dateTime.day }}
-              br
-              | {{ activeSession.end._dateTime.hour }}:{{ activeSession.end._dateTime.minute }}:{{ activeSession.end._dateTime.second }}
+          .q-mt-sm.q-pt-xs {{ getTime(activeSession.start) }} – {{ getTime(activeSession.end) }}
+
       .col-1.text-right
         q-btn.shadow-6(@click="showSession = false, diagramDimensions.activeId = null, activeBar = null", icon="clear", size="small", flat)
 
@@ -221,6 +200,9 @@
         })
     },
     methods: {
+      getTime (val) {
+        return val._dateTime.toLocaleString({ year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit', second: '2-digit' })
+      },
       checkVideoVisibility (videoStart, videoEnd, sessionStart, sessionEnd) {
         // console.log(videoStart, videoEnd, sessionStart, sessionEnd)
         if ((videoStart <= sessionStart && videoEnd >= sessionEnd) || (videoStart >= sessionStart && videoEnd <= sessionEnd) || (videoStart > sessionStart && videoStart < sessionEnd && videoEnd > sessionEnd)) return true
