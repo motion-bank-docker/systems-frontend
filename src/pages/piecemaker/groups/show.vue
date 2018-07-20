@@ -104,8 +104,9 @@
           :class="{'moba-active-bar' : activeBar == isession}",
           width="100%", :height="(getActiveSessionDuration(session.start.millis, session.end.millis) / 2) + 10", :y="diagramDimensions.height - (getActiveSessionDuration(session.start.millis, session.end.millis) / 2)")
 
-    .row.full-width.q-mt-md(style="min-height: 2rem;")
-      .full-width.text-center(v-if="hoverVal.start") {{ hoverVal.start }} &mdash; {{ hoverVal.end }}
+    .row.full-width.q-mt-lg(style="min-height: 2rem;")
+      .full-width.text-center(v-if="hoverVal.start")
+        span.q-py-sm.q-px-md.shadow-6.moba-border {{ hoverVal.start }} &mdash; {{ hoverVal.end }}
 
     //
       .text-center
@@ -150,10 +151,8 @@
         div
           q-btn.bg-grey-10(@click='jumpBetweenSessions(false)', icon="keyboard_arrow_left", flat, round)
           q-btn.bg-grey-10.q-ml-sm.q-mr-md(@click="jumpBetweenSessions(true), getActiveSessionDuration(activeSession.start.millis, activeSession.end.millis)", icon="keyboard_arrow_right", flat, round)
-        div
-          // h5.q-my-xs
-            span (Recording Session Titel)
-          .q-mt-sm.q-pt-xs {{ getTime(activeSession.start) }} – {{ getTime(activeSession.end) }}
+        div.q-pt-xs
+          .q-py-sm.q-px-md.shadow-6.moba-border {{ getTime(activeSession.start) }} – {{ getTime(activeSession.end) }}
 
       .col-1.text-right
         q-btn.shadow-6(@click="showSession = false, diagramDimensions.activeId = null, activeBar = null", icon="clear", size="small", flat, round)
@@ -304,6 +303,9 @@
 
 <style lang="stylus">
   $primary = #729BFF
+
+  .moba-border
+    border 1px solid rgba( 255, 255, 255, .075 )
 
   .moba-border-top
     border-top 1px solid rgba( 255, 255, 255, .2 )
