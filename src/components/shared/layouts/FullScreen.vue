@@ -1,7 +1,10 @@
 <template lang="pug">
 
   div
-    .absolute(style="top: 70px; left: 20px;")
+    //
+      .absolute(style="top: 70px; left: 20px;")
+        slot(name="backButton")
+    .q-ma-md
       slot(name="backButton")
 
     .q-px-xl
