@@ -91,18 +91,46 @@
                 q-search.bg-transparent.text-white(color="white", dark)
                 q-btn.q-mt-sm.full-width search
 
-    // DIAGRAM:
+    // DIAGRAM
     // TIMELINE OVERVIEW
     //
     .text-center
-      svg(:width="(diagramDimensions.barWidth + diagramDimensions.barSpace) * grouped.sessions.length - diagramDimensions.barSpace", :height="diagramDimensions.height")
-        svg(v-for="(session, isession) in grouped.sessions", :width="diagramDimensions.barWidth",
-        height="100%", :x="(diagramDimensions.barWidth + diagramDimensions.barSpace) * isession")
-          rect.cursor-pointer.moba-diagram-bar(@click="toggleShowSession(), setActiveSession(isession), activeBar = isession",
-          @mouseenter="hoverVal.start = getTime(session.start), hoverVal.end = getTime(session.end)",
-          @mouseleave="hoverVal.start = false, hoverVal.end = ''",
-          :class="{'moba-active-bar' : activeBar == isession}",
-          width="100%", :height="(getActiveSessionDuration(session.start.millis, session.end.millis) / 2) + 10", :y="diagramDimensions.height - (getActiveSessionDuration(session.start.millis, session.end.millis) / 2)")
+      //
+        svg(
+        // :width="(diagramDimensions.barWidth + diagramDimensions.barSpace) * grouped.sessions.length - diagramDimensions.barSpace",
+        // :height="diagramDimensions.height")
+      svg(
+      width="100%",
+      :height="diagramDimensions.height")
+
+        line(
+        v-for="n in 4"
+        x1="0",
+        :y1="diagramDimensions.height / 4 * (n - 1)",
+        x2="100%",
+        :y2="diagramDimensions.height / 4 * (n - 1)",
+        style="stroke: rgba( 255, 255, 255, .1 ); stroke-width: 1;")
+
+        //
+          svg(v-for="(session, isession) in grouped.sessions", :width="diagramDimensions.barWidth",
+          height="100%", :x="(diagramDimensions.barWidth + diagramDimensions.barSpace) * isession")
+        svg(:x="((viewportWidth / 2) - 48)")
+          svg(v-for="(session, isession) in grouped.sessions", :width="diagramDimensions.barWidth",
+          height="100%", :x="(diagramDimensions.barWidth + diagramDimensions.barSpace) * isession")
+            rect.cursor-pointer.moba-diagram-bar(
+            @click="toggleShowSession(), setActiveSession(isession), activeBar = isession",
+            @mouseenter="hoverVal.start = getTime(session.start), hoverVal.end = getTime(session.end)",
+            @mouseleave="hoverVal.start = false, hoverVal.end = ''",
+            :class="{'moba-active-bar' : activeBar == isession}",
+            width="100%", :height="(getActiveSessionDuration(session.start.millis, session.end.millis) / 2) + 10",
+            :y="diagramDimensions.height - (getActiveSessionDuration(session.start.millis, session.end.millis) / 2)")
+
+        line(
+        x1="0",
+        :y1="diagramDimensions.height",
+        x2="100%",
+        :y2="diagramDimensions.height",
+        style="stroke: rgba( 255, 255, 255, .25 ); stroke-width: 1;")
 
     .row.full-width.q-mt-lg(style="min-height: 2rem;")
       .full-width.text-center(v-if="hoverVal.start")
@@ -144,23 +172,22 @@
               rect(width="1px", height="50px", y="calc(100% - 70px)", fill="rgba(255, 255, 255, .1)")
               // text.q-caption(x="10", y="10", fill="rgba( 255, 255, 255, .2)") {{ data.month }}
 
-    // WRAP - recording sessions
+    // WRAP
+    // sessions
     //
-    .row.q-mt-xl.q-pt-xl(v-if="showSession")
-      .col-11.row
-        div
-          q-btn.bg-grey-10(@click='jumpBetweenSessions(false)', icon="keyboard_arrow_left", flat, round)
-          q-btn.bg-grey-10.q-ml-sm.q-mr-md(@click="jumpBetweenSessions(true), getActiveSessionDuration(activeSession.start.millis, activeSession.end.millis)", icon="keyboard_arrow_right", flat, round)
-        div.q-pt-xs
-          .q-py-sm.q-px-md.shadow-6.moba-border {{ getTime(activeSession.start) }} – {{ getTime(activeSession.end) }}
+    .row.q-mt-md(v-if="showSession")
+      .col-10.offset-1.text-center
+        q-btn.bg-grey-10(@click='jumpBetweenSessions(false)', icon="keyboard_arrow_left", flat, round)
+        span.q-mx-md.q-py-sm.q-px-md.shadow-6.text-primary.moba-border {{ getTime(activeSession.start) }} – {{ getTime(activeSession.end) }}
+        q-btn.bg-grey-10(@click="jumpBetweenSessions(true), getActiveSessionDuration(activeSession.start.millis, activeSession.end.millis)", icon="keyboard_arrow_right", flat, round)
 
       .col-1.text-right
         q-btn.shadow-6(@click="showSession = false, diagramDimensions.activeId = null, activeBar = null", icon="clear", size="small", flat, round)
 
-      .col-12
+      .col-12.q-mt-xl
         SessionDiagram(:grouped="grouped", :activesession="activeSession")
 
-    .row.q-my-xl(v-else)
+    .row.q-my-md(v-else)
       .col-12.row
         .col-10.offset-1
           q-btn.full-width.q-py-xl.bg-transparent.shadow-6(
