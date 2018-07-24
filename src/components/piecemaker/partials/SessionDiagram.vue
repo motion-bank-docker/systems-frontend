@@ -10,8 +10,6 @@
 
           // VIDEO PLAYER
           //
-            div(:class="{'moba-active-preview': fixDiagram}", :style="styleActivePreview")
-            div(:style="styleActivePreview", :class="{styleActivePreviewDocked: fixDiagram}")
           div(:style="[fixDiagram ? styleActivePreview : styleActivePreviewDocked]")
             video-player(v-if="video", :src="video.annotation.body.source.id", @ready="playerReady($event)", @time="onPlayerTime($event)")
 
@@ -47,7 +45,7 @@
 
       // DIAGRAM
       //
-      div#diagram(ref="diagram")
+      div(ref="diagram")
         .row.col-12.q-pt-xl
 
           // SVG
@@ -62,7 +60,8 @@
               :height="session.duration",
               )
 
-                // LINES - ANNOTATIONS
+                // LINES - horizontal
+                // ANNOTATIONS
                 // WRAP
                 //
                 svg(width="100%", height="100%", x="0%")
@@ -77,7 +76,8 @@
                   style="fill: rgba(255, 255, 255, .2);"
                   )
 
-                // SWIMLANES - VIDEOS
+                // SWIMLANES - vertical
+                // VIDEOS
                 //
                 svg(width="80%")
                   // .bg-red(v-if="vid.annotation.created.ts <= activeSession.start.millis || vid.annotation.created.ts + (vid.meta.seconds * 1000) <= activeSession.end.millis") bla
@@ -87,7 +87,7 @@
                   @click="previewWindow.visibility = true, video = vid, currentVideo = vid.annotation._id, checkPreviousVideo(vid.annotation._id, sessionTime)",
                   :width="propGrouped.videos.length * 10", height="100%", :x="(propGrouped.videos.length * 10 + 15) * i + 20", y="0"
                   )
-                    rect.moba-swimlane(:class="{ 'moba-active-swimlane': currentVideo == vid.annotation._id }",
+                    rect.moba-swimlane(:class="{ 'moba-active-swimlane': currentVideo == vid.annotation._id && previewWindow.visibility }",
                     width="100%", height="100%", x="0", y="0")
                     line(v-for="n in parseInt(propGrouped.sessions[currentSession].seconds / 60 + 1)",
                     x1="0", x2="100%", :y1="n * 60", :y2="n * 60", style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;")
@@ -98,7 +98,7 @@
                       line(v-for="n in parseInt(propGrouped.sessions[currentSession].seconds / 20 + 1)",
                       x1="25%", x2="75%", :y1="n * 20", :y2="n * 20", style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;")
 
-                // PREVIEW LINE
+                // PREVIEW LINE – horizontal
                 //
                 svg(v-if="previewLine.visibility", width="100%", height="100%")
                   rect(
@@ -110,7 +110,8 @@
 
           // TEXT
           //
-          .col-8(style="min-height: 100vh;")
+            .col-8(:style="{minHeight: '100vh', paddingBottom: '60vh'}")
+          .col-8(:style="{minHeight: '100vh', paddingBottom: previewWindow.height + 'px'}")
 
             div.q-pl-sm(
             v-for="annotation in propActiveSession.annotations",
@@ -168,11 +169,6 @@
       VideoPlayer
     },
     mounted () {
-      /* console.log('mounted')
-      console.log(this.propGrouped)
-      console.log('___')
-      console.log(this.propActiveSession)
-      console.log('---') */
       const
         _this = this,
         uuid = this.$route.params.id
@@ -207,14 +203,6 @@
           }
           else aobj.active = false
         })
-        /* this.propGrouped.sessions[this.currentSession].annotations.forEach(aobj => {
-          if (aobj.seconds >= _this.sessionTime && !found) {
-            aobj.active = found = true
-            const el = this.$refs[`annotation-${aobj.annotation.uuid}-${aobj.seconds}`]
-            if (Array.isArray(el)) _this.scrollToElement(el[0], 250)
-          }
-          else aobj.active = false
-        }) */
       },
       activesession () {
         this.propActiveSession = this.activesession
@@ -228,23 +216,25 @@
       },
       checkPreviousVideo (video, seconds) { // TODO: doesn't work yet
         if (video !== this.prevVideo) {
-          /* console.log('ch video ' + video)
+          // console.log('ch video ' + video)
           console.log('ch seconds ' + seconds)
-          console.log('ch sessionTime ' + this.sessionTime) */
+          // console.log('ch sessionTime ' + this.sessionTime) */
           // this.sessionTime = seconds
           // this.setSessionTime(this.sessionTime)
           // this.player.currentTime(this.sessionTime)
-          this.setSessionTime(seconds)
+          // this.setSessionTime(100)
         }
-        // console.log(val)
-        // console.log(this.prevVideo)
       },
       playerReady (player) {
         this.player = player
+        // this.sessionTime = 200
+        this.setSessionTime(this.sessionTime)
+        // alert('playerReady fired')
       },
       onPlayerTime (evt) {
         this.sessionTime = SessionHelpers.annotationToSessionTime(evt, this.video.annotation,
           this.propGrouped.sessions[this.currentSession])
+        // alert('onPlayerTime fired')
       },
       shortenName (val) {
         return val.match(/\b\w/g).join('')
@@ -268,6 +258,8 @@
       },
       scrollPos () {
         this.fixDiagram = this.$refs.diagram.getBoundingClientRect().top < '50'
+        // console.log(this.$refs.diagram.getBoundingClientRect().top)
+        // console.log(this.$refs.diagram.getBoundingClientRect().bottom - this.viewport.height)
       },
       setSessionTime (seconds) {
         console.log(seconds, this.player, this.sessionTime)
