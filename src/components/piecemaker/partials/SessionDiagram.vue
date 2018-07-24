@@ -108,6 +108,17 @@
                   style="fill: rgba(255, 255, 255, .5)!important;"
                   )
 
+                // CURRENT TIME – horizontal
+                //
+                  svg(v-if="previewLine.visibility", width="100%", height="100%")
+                svg(width="100%", height="100%")
+                  rect(
+                  width="100%",
+                  height="1",
+                  :y="sessionTime"
+                  style="fill: rgba(255, 0, 0, .5)!important;"
+                  )
+
           // TEXT
           //
             .col-8(:style="{minHeight: '100vh', paddingBottom: '60vh'}")
@@ -227,14 +238,11 @@
       },
       playerReady (player) {
         this.player = player
-        // this.sessionTime = 200
         this.setSessionTime(this.sessionTime)
-        // alert('playerReady fired')
       },
       onPlayerTime (evt) {
         this.sessionTime = SessionHelpers.annotationToSessionTime(evt, this.video.annotation,
           this.propGrouped.sessions[this.currentSession])
-        // alert('onPlayerTime fired')
       },
       shortenName (val) {
         return val.match(/\b\w/g).join('')
@@ -294,24 +302,13 @@
     data () {
       const _this = this
       return {
-        // allAnnotationSessions: [],
         annotations: [],
-        // annotationsBlocks: [],
-        // byReferencetime: [],
         currentVideo: '',
         currentSession: 0,
-        // filteredAnnotations: [],
         fixDiagram: false,
         hoverVal: '',
         map: undefined,
-        // prevCreated: '100',
-        // prevItem: '',
         prevVideo: '',
-        /* previewDot: {
-          positionY: '',
-          referencetime: '',
-          visibility: false
-        }, */
         previewLine: {
           positionY: '',
           visibility: false
@@ -324,9 +321,7 @@
         },
         propActiveSession: this.activesession,
         propGrouped: this.grouped,
-        // propSessionAnnotations: this.sessionannotations,
         scaleFactor: '',
-        // selectedAnnotationSessions: [],
         session: {
           duration: this.grouped.sessions[0].seconds
         },
@@ -344,7 +339,6 @@
         },
         svgHeight: '100',
         svgWidth: '',
-        // viewportHeight: '',
         video: '',
         viewport: {
           height: '',
