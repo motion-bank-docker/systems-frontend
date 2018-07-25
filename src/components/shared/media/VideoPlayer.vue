@@ -73,6 +73,7 @@
     },
     watch: {
       src (val) {
+        if (!val) return this.setSources([])
         this.type = guessType(val)
         if (val) {
           if (this.type === 'video/youtube') {
