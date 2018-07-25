@@ -13,29 +13,27 @@
           div(:style="[fixDiagram ? styleActivePreview : styleActivePreviewDocked]")
             video-player(v-if="video", :src="video.annotation.body.source.id", @ready="playerReady($event)", @time="onPlayerTime($event)")
 
-          // ICON
-          // INFO
-          //
-          .absolute-bottom-left.q-mb-sm.q-ml-sm
+          .absolute-top-left.q-mt-sm.q-ml-sm(@mousedown="resizeButtonDown()")
+            // BTN
+            // RESIZE
+            //
+            q-btn.q-mr-xs.rotate-90.bg-dark(v-if="fixDiagram", icon="code", round, size="sm")
+            // BTN
+            // INFO
+            //
             q-btn.bg-dark.text-center(round, size="sm")
               q-icon(name="info")
-            q-tooltip.bg-dark.shadow-8.moba-border.no-padding(anchor="top left", self="bottom left", :offset="[0, 5]")
-              q-list.no-border
-                q-item
-                  q-item-side ID:
-                  q-item-main {{ video.annotation.body.source.id }}
-                q-item
-                  q-item-side Author:
-                  q-item-main {{ video.annotation.author.name }}
-                q-item
-                  q-item-side Created:
-                  q-item-main {{ video.annotation.created }}
-
-          // BTN
-          // RESIZE
-          //
-          .absolute-top-left.q-mt-sm.q-ml-sm(v-if="fixDiagram", @mousedown="resizeButtonDown()")
-            q-btn.rotate-90.bg-dark(icon="code", round, size="sm")
+              q-tooltip.bg-black.shadow-8.moba-border.no-padding(anchor="top left", self="bottom left", :offset="[0, 5]")
+                q-list.no-border
+                  q-item
+                    q-item-side ID:
+                    q-item-main {{ video.annotation.body.source.id }}
+                  q-item
+                    q-item-side Author:
+                    q-item-main {{ video.annotation.author.name }}
+                  q-item
+                    q-item-side Created:
+                    q-item-main {{ video.annotation.created }}
 
           // BTN
           // CLOSE
@@ -61,8 +59,7 @@
               )
 
                 // LINES - horizontal
-                // ANNOTATIONS
-                // WRAP
+                // displays the annotations as lines in the diagramm
                 //
                 svg(width="100%", height="100%", x="0%")
                   rect.cursor-pointer.moby-svg-entry(
@@ -76,28 +73,41 @@
                   style="fill: rgba(255, 255, 255, .2);"
                   )
 
+                // CURRENT TIME
+                line(
+                v-if="previewWindow.visibility",
+                x1="0", :y1="sessionTime",
+                x2="100%", :y2="sessionTime",
+                style="stroke: #50AE54; stroke-width: 1;"
+                )
+
                 // SWIMLANES - vertical
-                // VIDEOS
+                // vertical visualization of the videos
                 //
                 svg(width="80%")
+
                   svg.shadow-6(
                   v-for="(vid, i) in propGrouped.videos",
                   :id="vid.annotation._id",
                   @click="previewWindow.visibility = true, video = vid, currentVideo = vid.annotation._id",
-                  :width="propGrouped.videos.length * 10", height="100%", :x="(propGrouped.videos.length * 10 + 15) * i + 20", y="0"
+                  :width="propGrouped.videos.length * 10", height="100%",
+                  :x="(propGrouped.videos.length * 10 + 15) * i + 20", y="0"
                   )
                     rect.moba-swimlane(:class="{ 'moba-active-swimlane': currentVideo == vid.annotation._id && previewWindow.visibility }",
                     width="100%", height="100%", x="0", y="0")
-                    line(v-for="n in parseInt(propGrouped.sessions[currentSession].seconds / 60 + 1)",
-                    x1="0", x2="100%", :y1="n * 60", :y2="n * 60", style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;")
+
                     g(v-if="currentVideo == vid.annotation._id")
-                      rect.moba-svg-entry(v-for="n in parseInt(propGrouped.sessions[currentSession].seconds / 20 + 1)",
-                      @click="setSessionTime(parseInt(n * 20)), prevVideo = vid.annotation._id",
-                      width="100%", height="20", :y="(n - 1) * 20")
-                      line(v-for="n in parseInt(propGrouped.sessions[currentSession].seconds / 20 + 1)",
-                      x1="25%", x2="75%", :y1="n * 20", :y2="n * 20", style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;")
+                      rect.moba-svg-entry(v-for="n in parseInt(propGrouped.sessions[currentSession].seconds / 10 + 1)",
+                      @click="setSessionTime(parseInt(n * 10)), prevVideo = vid.annotation._id",
+                      width="100%", height="10", :y="(n - 1) * 10")
+                      line(v-for="n in parseInt(propGrouped.sessions[currentSession].seconds / 10 + 1)",
+                      x1="25%", x2="75%", :y1="n * 10", :y2="n * 10", style="stroke: rgba(255, 255, 255, .5); stroke-width: 1;")
+
+                    line(v-if="currentVideo == vid.annotation._id", v-for="n in parseInt(propGrouped.sessions[currentSession].seconds / 60 + 1)",
+                    x1="0", x2="100%", :y1="n * 60", :y2="n * 60", style="stroke: rgba(255, 255, 255, 1); stroke-width: 1;")
 
                 // PREVIEW LINE – horizontal
+                // appears on the left when hovering matching text on the right
                 //
                 svg(v-if="previewLine.visibility", width="100%", height="100%")
                   rect(
@@ -107,23 +117,50 @@
                   style="fill: rgba(255, 255, 255, .5)!important;"
                   )
 
-                // CURRENT TIME – horizontal
+                // CURRENT TIME
+                // appears on the right side of the diagram when video is playing
                 //
-                  svg(v-if="previewLine.visibility", width="100%", height="100%")
-                svg(@mousedown="changeSessionTimeDown()",
-                width="20%", height="40",
-                x="80%",
-                :y="sessionTime - 20"
+                  svg(
+                  v-if="previewWindow.visibility",
+                  @mousedown="changeSessionTimeDown()",
+                  width="15%", height="100%",
+                  x="85%",)
+                    rect( width="100%", height="100%", fill="#1f1d1e")
+                    svg(width="100%", height="100%")
+                      rect(@click="setSessionTime(n)",,
+                      v-for="n in 1000", :y="n", height="1", width="100%", fill="transparent")
+                    line(x1="0", y1="0", x2="0", y2="100%", style="stroke: rgba(255, 255, 255, .5); stroke-width: 1;")
+                    svg( width="100%", height="50px", :y="sessionTime - 20" )
+                      line(
+                      x1="0", y1="20",
+                      x2="100%", y2="20",
+                      style="stroke: rgba(255, 255, 255, .5); stroke-width: 1;"
+                      )
+                      circle.cursor-pointer(
+                      cx="50%", cy="20", r="12", stroke="rgba(255, 255, 255, .5)", stroke-width="1", fill="#1f1d1e"
+                      )
+
+                // VIDEO TIME
+                // displays the actual time of the selected video
+                //
+                svg(
+                v-for="(vid, i) in propGrouped.videos",
                 )
-                  //
-                    line(
-                    x1="0", y1="10",
-                    x2="100%", y2="10",
-                    style="stroke: rgba(255, 255, 255, .5); stroke-width: 1;"
+                  svg(v-if="currentVideo == vid.annotation._id", :y="(sessionTime - 10)", :x="(propGrouped.videos.length * 10) + ((propGrouped.videos.length * 10 + 15) * i + 20) + 5")
+                    rect(width="50", height="20", fill="#749DFC")
+                    text.q-caption(x="2", y="15", fill="white") {{ Math.floor(sessionTime / 60) }}:{{ Math.trunc(sessionTime - Math.floor(sessionTime / 60) * 60) }}
+                //
+                  svg(width="50", height="20", :y="sessionTime - 10", x="100")
+                    //
+                      rect(
+                      width="100%", height="100%",
+                      fill="rgba(255, 255, 255, .25)"
+                      )
+                    rect(
+                    width="100%", height="100%",
+                    fill="rgba(0, 0, 0, 1)"
                     )
-                  circle.cursor-pointer(
-                  cx="50%", cy="20", r="12", stroke="rgba(255, 255, 255, .5)", stroke-width="1", fill="#1f1d1e"
-                  )
+                    text(x="2", y="12", fill="white") {{ sessionTime }}
 
           // TEXT
           //
@@ -227,7 +264,9 @@
     },
     methods: {
       changeSessionTimeDown () {
-        console.log('changeSessionTime fired')
+        // console.log('changeSessionTime fired')
+        // console.log('--> ' + event.clientY)
+        this.setSessionTime(event.clientY)
       },
       checkVideoVisibility (videoStart, videoEnd, sessionStart, sessionEnd) {
         // console.log(videoStart, videoEnd, sessionStart, sessionEnd)
