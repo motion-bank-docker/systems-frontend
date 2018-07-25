@@ -1,5 +1,6 @@
 <template lang="pug">
   full-screen
+    q-btn(slot="backButton", @click="$router.push({ name: 'piecemaker.groups.list' })", icon="keyboard_backspace", round, small)
     span(slot="form-logo")
     span(slot="form-title") {{ $t('routes.piecemaker.videos.list.title') }}
     data-table(:config="config", :title="'routes.piecemaker.videos.list.title'",
@@ -108,6 +109,7 @@
             {
               type: 'edit',
               title: 'buttons.edit',
+              // click: (item) => _this.$router.push({ name: 'piecemaker.videos.edit', params: { id: item.uuid } })
               click: (item) => _this.$router.push({ name: 'piecemaker.videos.edit', params: { id: item.uuid } })
             },
             {

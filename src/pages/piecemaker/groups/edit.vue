@@ -1,10 +1,13 @@
 <template lang="pug">
   full-screen
+    q-btn(slot="backButton", @click="$router.push({ name: 'piecemaker.groups.list' })", icon="keyboard_backspace", round, small)
+
     .q-pa-xl(style="min-width: 50vw;")
       h5.caption(dark) {{ $t('routes.piecemaker.groups.edit.title') }}
       .row
         .col-md-12
           form-main(v-model="payload", :schema="schema")
+            q-btn.q-mr-md.bg-grey-9(slot="form-buttons-add", label="export archive")
       // .row
       //   .col-md-12
       //     tags(v-if="payload", :targetUuid="payload.uuid", fullWidth)

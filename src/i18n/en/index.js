@@ -137,6 +137,10 @@ export default {
         title: 'Forgot Password',
         caption: 'Enter the Email address associated with your account to request a password reset.'
       },
+      first_login: {
+        title: 'First Login',
+        caption: 'Please leave some information about you.'
+      },
       login: {
         title: 'Login',
         caption: 'Please authenticate with your Piecemaker credentials.'

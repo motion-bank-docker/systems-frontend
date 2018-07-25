@@ -1,5 +1,6 @@
 <template lang="pug">
   full-screen
+    q-btn(slot="backButton", @click="$router.push({ name: 'piecemaker.videos.list' })", icon="keyboard_backspace", round, small)
     .q-pa-xl(style="min-width: 50vw;")
       h5.caption(dark) {{ $t('routes.piecemaker.videos.create.title') }}
       .row

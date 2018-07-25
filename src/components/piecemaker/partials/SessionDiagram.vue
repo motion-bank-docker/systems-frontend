@@ -10,8 +10,6 @@
 
           // VIDEO PLAYER
           //
-            div(:class="{'moba-active-preview': fixDiagram}", :style="styleActivePreview")
-            div(:style="styleActivePreview", :class="{styleActivePreviewDocked: fixDiagram}")
           div(:style="[fixDiagram ? styleActivePreview : styleActivePreviewDocked]")
             video-player(v-if="video", :src="video.annotation.body.source.id", @ready="playerReady($event)", @time="onPlayerTime($event)")
 
@@ -47,7 +45,7 @@
 
       // DIAGRAM
       //
-      div#diagram(ref="diagram")
+      div(ref="diagram")
         .row.col-12.q-pt-xl
 
           // SVG
@@ -56,46 +54,39 @@
 
             .col-4.shadow-16.moba-border(:class="{'moba-fixed': fixDiagram, 'full-width': fixDiagram}",
             style="height: calc(100vh - 50px); overflow: scroll; z-index: 20;")
+
               svg(
               width="100%",
               :height="session.duration",
               )
 
-                // LINES - ANNOTATIONS
+                // LINES - horizontal
+                // ANNOTATIONS
                 // WRAP
                 //
-                  svg(width="20%", height="100%", x="80%")
                 svg(width="100%", height="100%", x="0%")
-                  // rect.cursor-pointer.moby-svg-entry(
-                    v-for="(annotation, i) in propGrouped.sessions[currentSession].annotations",
-                      @click="setSessionTime(annotation.seconds), previewLine.positionY = annotation.seconds",
-                    height="1",
-                    width="100%",
-                    x="0",
-                    // :y="annotation.seconds",
-                    style="fill: rgba(255, 255, 255, .2);"
-                    )
                   rect.cursor-pointer.moby-svg-entry(
                   v-for="(annotation, i) in propActiveSession.annotations",
                     @click="setSessionTime(annotation.seconds), previewLine.positionY = annotation.seconds",
                   height="1",
+                  :class="[annotation.active ? 'moba-active-line' : '']"
                   width="100%",
                   x="0",
                   :y="annotation.seconds",
                   style="fill: rgba(255, 255, 255, .2);"
                   )
 
-                // SWIMLANES - VIDEOS
+                // SWIMLANES - vertical
+                // VIDEOS
                 //
                 svg(width="80%")
-                  // rect(width="100%", height="100%", fill="rgba(255, 0, 255, .3)")
                   svg.shadow-6(
                   v-for="(vid, i) in propGrouped.videos",
                   :id="vid.annotation._id",
-                  @click="previewWindow.visibility = true, video = vid, currentVideo = vid.annotation._id, checkPreviousVideo(vid.annotation._id, sessionTime)",
+                  @click="previewWindow.visibility = true, video = vid, currentVideo = vid.annotation._id",
                   :width="propGrouped.videos.length * 10", height="100%", :x="(propGrouped.videos.length * 10 + 15) * i + 20", y="0"
                   )
-                    rect.moba-swimlane(:class="{ 'moba-active-swimlane': currentVideo == vid.annotation._id }",
+                    rect.moba-swimlane(:class="{ 'moba-active-swimlane': currentVideo == vid.annotation._id && previewWindow.visibility }",
                     width="100%", height="100%", x="0", y="0")
                     line(v-for="n in parseInt(propGrouped.sessions[currentSession].seconds / 60 + 1)",
                     x1="0", x2="100%", :y1="n * 60", :y2="n * 60", style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;")
@@ -106,7 +97,7 @@
                       line(v-for="n in parseInt(propGrouped.sessions[currentSession].seconds / 20 + 1)",
                       x1="25%", x2="75%", :y1="n * 20", :y2="n * 20", style="stroke: rgba(255, 255, 255, .1); stroke-width: 1;")
 
-                // PREVIEW LINE
+                // PREVIEW LINE – horizontal
                 //
                 svg(v-if="previewLine.visibility", width="100%", height="100%")
                   rect(
@@ -116,12 +107,29 @@
                   style="fill: rgba(255, 255, 255, .5)!important;"
                   )
 
+                // CURRENT TIME – horizontal
+                //
+                  svg(v-if="previewLine.visibility", width="100%", height="100%")
+                svg(@mousedown="changeSessionTimeDown()",
+                width="20%", height="40",
+                x="80%",
+                :y="sessionTime - 20"
+                )
+                  //
+                    line(
+                    x1="0", y1="10",
+                    x2="100%", y2="10",
+                    style="stroke: rgba(255, 255, 255, .5); stroke-width: 1;"
+                    )
+                  circle.cursor-pointer(
+                  cx="50%", cy="20", r="12", stroke="rgba(255, 255, 255, .5)", stroke-width="1", fill="#1f1d1e"
+                  )
+
           // TEXT
           //
-          .col-8(style="min-height: 100vh;")
+            .col-8(:style="{minHeight: '100vh', paddingBottom: '60vh'}")
+          .col-8(:style="{minHeight: '100vh', paddingBottom: previewWindow.height + 'px'}")
 
-            // div(v-for="gr in propGrouped.sessions")
-            // div(v-for="gr in propActiveSession")
             div.q-pl-sm(
             v-for="annotation in propActiveSession.annotations",
             @mouseenter="previewLine.positionY = annotation.seconds, previewLine.visibility = true",
@@ -132,7 +140,7 @@
               .row.moba-list-entry(:ref="`annotation-${annotation.annotation.uuid}-${annotation.seconds.toFixed(3)}`")
                 .row.col-12(style="line-height: 1.35rem;")
                   .col-12.row.q-px-md.q-py-sm.moba-round-borders(:class="[annotation.type != 'system' ? 'moba-hover' : '', annotation.type == 'separator' ? 'bg-grey-9 text-black text-center' : '']")
-                    div.col-10
+                    div.col-10.cursor-pointer
 
                       // AUTHOR
                       //
@@ -178,11 +186,6 @@
       VideoPlayer
     },
     mounted () {
-      /* console.log('mounted')
-      console.log(this.propGrouped)
-      console.log('___')
-      console.log(this.propActiveSession)
-      console.log('---') */
       const
         _this = this,
         uuid = this.$route.params.id
@@ -209,7 +212,7 @@
       sessionTime () {
         const _this = this
         let found = false
-        this.propGrouped.sessions[this.currentSession].annotations.forEach(aobj => {
+        this.propActiveSession.annotations.forEach(aobj => {
           if (aobj.seconds >= _this.sessionTime && !found) {
             aobj.active = found = true
             const el = this.$refs[`annotation-${aobj.annotation.uuid}-${aobj.seconds}`]
@@ -223,21 +226,17 @@
       }
     },
     methods: {
-      checkPreviousVideo (video, seconds) { // TODO: doesn't work yet
-        if (video !== this.prevVideo) {
-          /* console.log('ch video ' + video)
-          console.log('ch seconds ' + seconds)
-          console.log('ch sessionTime ' + this.sessionTime) */
-          // this.sessionTime = seconds
-          // this.setSessionTime(this.sessionTime)
-          // this.player.currentTime(this.sessionTime)
-          this.setSessionTime(seconds)
-        }
-        // console.log(val)
-        // console.log(this.prevVideo)
+      changeSessionTimeDown () {
+        console.log('changeSessionTime fired')
+      },
+      checkVideoVisibility (videoStart, videoEnd, sessionStart, sessionEnd) {
+        // console.log(videoStart, videoEnd, sessionStart, sessionEnd)
+        if ((videoStart <= sessionStart && videoEnd >= sessionEnd) || (videoStart >= sessionStart && videoEnd <= sessionEnd) || (videoStart > sessionStart && videoStart < sessionEnd && videoEnd > sessionEnd)) return true
+        else return false
       },
       playerReady (player) {
         this.player = player
+        this.setSessionTime(this.sessionTime)
       },
       onPlayerTime (evt) {
         this.sessionTime = SessionHelpers.annotationToSessionTime(evt, this.video.annotation,
@@ -265,6 +264,8 @@
       },
       scrollPos () {
         this.fixDiagram = this.$refs.diagram.getBoundingClientRect().top < '50'
+        // console.log(this.$refs.diagram.getBoundingClientRect().top)
+        // console.log(this.$refs.diagram.getBoundingClientRect().bottom - this.viewport.height)
       },
       setSessionTime (seconds) {
         console.log(seconds, this.player, this.sessionTime)
@@ -297,65 +298,16 @@
       }
     },
     data () {
-      const _this = this
+      // const _this = this
       return {
-        // allAnnotationSessions: [],
+        /* actions: [
+          { type: 'annotate', title: 'buttons.annotate', color: 'primary' },
+          { type: 'edit', title: 'buttons.edit' },
+          { type: 'synchronize', title: 'buttons.synchronize' },
+          { type: 'delete', title: 'buttons.delete', icon: 'highlight off' }
+        ], */
         annotations: [],
-        // annotationsBlocks: [],
-        // byReferencetime: [],
-        currentVideo: '',
-        currentSession: 0,
-        // filteredAnnotations: [],
-        fixDiagram: false,
-        hoverVal: '',
-        map: undefined,
-        // prevCreated: '100',
-        // prevItem: '',
-        prevVideo: '',
-        /* previewDot: {
-          positionY: '',
-          referencetime: '',
-          visibility: false
-        }, */
-        previewLine: {
-          positionY: '',
-          visibility: false
-        },
-        previewWindow: {
-          visibility: false,
-          height: '',
-          testHeight: '',
-          testWidth: ''
-        },
-        propActiveSession: this.activesession,
-        propGrouped: this.grouped,
-        // propSessionAnnotations: this.sessionannotations,
-        scaleFactor: '',
-        // selectedAnnotationSessions: [],
-        session: {
-          duration: this.grouped.sessions[0].seconds
-        },
-        sessionTime: 0,
-        styleActivePreview: {
-          width: 40 + '%',
-          maxWidth: '100%',
-          marginLeft: '30%'
-        },
-        styleActivePreviewDocked: {
-          width: 200 * 1.77777 + 'px',
-          height: 200 + 'px!important',
-          maxHeight: 200 + 'px!important',
-          marginLeft: '0px'
-        },
-        svgHeight: '100',
-        svgWidth: '',
-        // viewportHeight: '',
-        video: '',
-        viewport: {
-          height: '',
-          width: ''
-        },
-        columns: [
+        /* columns: [
           {
             label: _this.$t('labels.video_title'),
             field: 'title',
@@ -379,47 +331,77 @@
             label: _this.$t('labels.author'),
             field: 'author'
           }
-        ],
-        actions: [
-          { type: 'annotate', title: 'buttons.annotate', color: 'primary' },
-          { type: 'edit', title: 'buttons.edit' },
-          { type: 'synchronize', title: 'buttons.synchronize' },
-          { type: 'delete', title: 'buttons.delete', icon: 'highlight off' }
-        ]
+        ], */
+        currentVideo: '',
+        currentSession: 0,
+        fixDiagram: false,
+        hoverVal: '',
+        map: undefined,
+        prevVideo: '',
+        previewLine: {
+          positionY: '',
+          visibility: false
+        },
+        previewWindow: {
+          visibility: false,
+          height: '',
+          testHeight: '',
+          testWidth: ''
+        },
+        propActiveSession: this.activesession,
+        propGrouped: this.grouped,
+        scaleFactor: '',
+        session: {
+          duration: this.grouped.sessions[0].seconds
+        },
+        sessionTime: 0,
+        styleActivePreview: {
+          width: 40 + '%',
+          maxWidth: '100%',
+          marginLeft: '30%'
+        },
+        styleActivePreviewDocked: {
+          width: 200 * 1.77777 + 'px',
+          height: 200 + 'px!important',
+          maxHeight: 200 + 'px!important',
+          marginLeft: '0px'
+        },
+        svgHeight: '100',
+        svgWidth: '',
+        video: '',
+        viewport: {
+          height: '',
+          width: ''
+        }
       }
     }
   }
 </script>
 
-<style>
+<style lang="stylus">
+  $primary = #729BFF
 
-  .moba-annotation-tag:hover {
-    background-color: white!important;
-    color: #000!important;
+  .moba-active-line
+    fill $primary!important
+
+  .moba-active-swimlane
+    fill $primary!important
+
+  .moba-annotation-tag:hover
+    background-color white!important
+    color #000!important
     /*transition: all ease 350ms;*/
-  }
 
-  /* .moba-active-preview {
-    margin-left: 10%;
-    width: 80%;
-  } */
+  .moba-border
+    border 1px solid rgba( 255, 255, 255, .075 )
 
-  .moba-active-swimlane {
-    fill: #749dfc!important;
-  }
+  .moba-border-top
+    border-top 1px solid rgba( 255, 255, 255, .05 )
 
-  .moba-border {
-    border: 1px solid rgba( 255, 255, 255, .075 );
-  }
-  .moba-border-top {
-    border-top: 1px solid rgba( 255, 255, 255, .05 );
-  }
-
-  .moba-fixed {
-    position: fixed;
-    top: 50px;
-    left: 0px;
-  }
+  .moba-fixed
+    position fixed
+    top 50px
+    left 0px
 
   .moba-hover {
     border: 1px solid transparent;
