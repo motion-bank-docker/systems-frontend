@@ -80,11 +80,10 @@
                 // VIDEOS
                 //
                 svg(width="80%")
-                  // .bg-red(v-if="vid.annotation.created.ts <= activeSession.start.millis || vid.annotation.created.ts + (vid.meta.seconds * 1000) <= activeSession.end.millis") bla
                   svg.shadow-6(
                   v-for="(vid, i) in propGrouped.videos",
                   :id="vid.annotation._id",
-                  @click="previewWindow.visibility = true, video = vid, currentVideo = vid.annotation._id, checkPreviousVideo(vid.annotation._id, sessionTime)",
+                  @click="previewWindow.visibility = true, video = vid, currentVideo = vid.annotation._id",
                   :width="propGrouped.videos.length * 10", height="100%", :x="(propGrouped.videos.length * 10 + 15) * i + 20", y="0"
                   )
                     rect.moba-swimlane(:class="{ 'moba-active-swimlane': currentVideo == vid.annotation._id && previewWindow.visibility }",
@@ -111,12 +110,19 @@
                 // CURRENT TIME – horizontal
                 //
                   svg(v-if="previewLine.visibility", width="100%", height="100%")
-                svg(width="100%", height="100%")
-                  rect(
-                  width="100%",
-                  height="1",
-                  :y="sessionTime"
-                  style="fill: rgba(255, 0, 0, .5)!important;"
+                svg(@mousedown="changeSessionTimeDown()",
+                width="20%", height="40",
+                x="80%",
+                :y="sessionTime - 20"
+                )
+                  //
+                    line(
+                    x1="0", y1="10",
+                    x2="100%", y2="10",
+                    style="stroke: rgba(255, 255, 255, .5); stroke-width: 1;"
+                    )
+                  circle.cursor-pointer(
+                  cx="50%", cy="20", r="12", stroke="rgba(255, 255, 255, .5)", stroke-width="1", fill="#1f1d1e"
                   )
 
           // TEXT
@@ -220,21 +226,13 @@
       }
     },
     methods: {
+      changeSessionTimeDown () {
+        console.log('changeSessionTime fired')
+      },
       checkVideoVisibility (videoStart, videoEnd, sessionStart, sessionEnd) {
         // console.log(videoStart, videoEnd, sessionStart, sessionEnd)
         if ((videoStart <= sessionStart && videoEnd >= sessionEnd) || (videoStart >= sessionStart && videoEnd <= sessionEnd) || (videoStart > sessionStart && videoStart < sessionEnd && videoEnd > sessionEnd)) return true
         else return false
-      },
-      checkPreviousVideo (video, seconds) { // TODO: doesn't work yet
-        if (video !== this.prevVideo) {
-          // console.log('ch video ' + video)
-          console.log('ch seconds ' + seconds)
-          // console.log('ch sessionTime ' + this.sessionTime) */
-          // this.sessionTime = seconds
-          // this.setSessionTime(this.sessionTime)
-          // this.player.currentTime(this.sessionTime)
-          // this.setSessionTime(100)
-        }
       },
       playerReady (player) {
         this.player = player
@@ -300,9 +298,40 @@
       }
     },
     data () {
-      const _this = this
+      // const _this = this
       return {
+        /* actions: [
+          { type: 'annotate', title: 'buttons.annotate', color: 'primary' },
+          { type: 'edit', title: 'buttons.edit' },
+          { type: 'synchronize', title: 'buttons.synchronize' },
+          { type: 'delete', title: 'buttons.delete', icon: 'highlight off' }
+        ], */
         annotations: [],
+        /* columns: [
+          {
+            label: _this.$t('labels.video_title'),
+            field: 'title',
+            type: 'string',
+            sort: true,
+            filter: true
+          },
+          {
+            label: _this.$t('labels.created'),
+            field: 'created',
+            type: 'date',
+            sort: true
+          },
+          {
+            label: _this.$t('labels.updated'),
+            field: 'updated',
+            type: 'date',
+            sort: true
+          },
+          {
+            label: _this.$t('labels.author'),
+            field: 'author'
+          }
+        ], */
         currentVideo: '',
         currentSession: 0,
         fixDiagram: false,
@@ -343,38 +372,7 @@
         viewport: {
           height: '',
           width: ''
-        },
-        columns: [
-          {
-            label: _this.$t('labels.video_title'),
-            field: 'title',
-            type: 'string',
-            sort: true,
-            filter: true
-          },
-          {
-            label: _this.$t('labels.created'),
-            field: 'created',
-            type: 'date',
-            sort: true
-          },
-          {
-            label: _this.$t('labels.updated'),
-            field: 'updated',
-            type: 'date',
-            sort: true
-          },
-          {
-            label: _this.$t('labels.author'),
-            field: 'author'
-          }
-        ],
-        actions: [
-          { type: 'annotate', title: 'buttons.annotate', color: 'primary' },
-          { type: 'edit', title: 'buttons.edit' },
-          { type: 'synchronize', title: 'buttons.synchronize' },
-          { type: 'delete', title: 'buttons.delete', icon: 'highlight off' }
-        ]
+        }
       }
     }
   }
