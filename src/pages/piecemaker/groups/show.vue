@@ -109,13 +109,27 @@
         :y2="diagramDimensions.height / diagramDimensions.distances.length * (n - 1)",
         style="stroke: rgba( 255, 255, 255, .1 ); stroke-width: 1;")
 
-        // BACKGROUND LINES
+        // TIME LABELS
         //
-        text(
+        text.q-caption(
         v-for="(n, i) in diagramDimensions.distances.length"
         x="10",
-        :y="diagramDimensions.height - (diagramDimensions.height / diagramDimensions.distances.length * (n - 1)) - ((diagramDimensions.height / diagramDimensions.distances.length) / 2) + 5",
-        style="fill: rgba( 255, 255, 255, 1 );") {{ diagramDimensions.distances[i] }}
+        :y="diagramDimensions.height - (diagramDimensions.height / diagramDimensions.distances.length * (n - 1)) - ((diagramDimensions.height / diagramDimensions.distances.length)) + 3",
+        style="fill: rgba( 255, 255, 255, .5 );") {{ diagramDimensions.distances[i] }}
+
+        // BACKGROUND LINE + TIME LABEL
+        // if session duration <= minimum time
+        line(
+        v-for="n in diagramDimensions.distances.length"
+        x1="0",
+        :y1="diagramDimensions.height - (diagramDimensions.height / 2 / 60 * diagramDimensions.barMinHeight)",
+        x2="100%",
+        :y2="diagramDimensions.height - (diagramDimensions.height / 2 / 60 * diagramDimensions.barMinHeight)",
+        style="stroke: rgba( 255, 255, 255, .05 ); stroke-width: 1;")
+        text.q-caption(
+        x="10",
+        :y="diagramDimensions.height - (diagramDimensions.height / 2 / 60 * diagramDimensions.barMinHeight / 2) + 4",
+        style="fill: rgba( 255, 255, 255, .5 );") < 10min
 
         // SESSION BARS
         //
@@ -240,7 +254,7 @@
         })
       this.$store.dispatch('annotations/find', { 'target.id': uuid })
         .then(annotations => {
-          return groupBySessions(annotations.items, 90) // geteilt
+          return groupBySessions(annotations.items, 30) // geteilt
           // return groupBySessions(annotations.items)
         })
         .then(grouped => {
@@ -258,8 +272,11 @@
         else return false
       },
       getActiveSessionDuration (start, end) {
-        let difference = (end - start)
-        if (difference <= 10) difference = 10
+        let difference = (end - start),
+          barMinHeight = this.diagramDimensions.barMinHeight,
+          milliHeight = (this.diagramDimensions.height / this.diagramDimensions.distances.length / 60 / 60 / 1000),
+          minVal = barMinHeight / milliHeight
+        if (difference <= minVal) difference = minVal
         return difference
       },
       jumpBetweenSessions (val) {
@@ -293,10 +310,11 @@
         activeSession: [],
         diagramDimensions: {
           activeId: null,
+          barMinHeight: 10, // duration in min
           barSpace: 1,
           barWidth: 15,
           height: 250,
-          distances: ['0 - 30min', '30 - 60min', '60 - 90min', '90 - 120min']
+          distances: ['30min', '60min', '90min', '120min']
         },
         filterAuthors: [],
         filterTags: [],
@@ -331,7 +349,7 @@
     border-top 1px solid rgba( 255, 255, 255, .2 )
 
   .moba-diagram-bar
-    fill rgba(255, 255, 255, .05)
+    fill rgba(255, 255, 255, .1)
 
   .moba-diagram-bar:hover
     fill rgba(255, 255, 255, .2)
