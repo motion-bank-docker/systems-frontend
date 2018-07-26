@@ -296,7 +296,7 @@
           barSpace: 1,
           barWidth: 15,
           height: 250,
-          distances: ['0 - 30', '30 - 60', '60 - 90', '90 - 120']
+          distances: ['0 - 30min', '30 - 60min', '60 - 90min', '90 - 120min']
         },
         filterAuthors: [],
         filterTags: [],
