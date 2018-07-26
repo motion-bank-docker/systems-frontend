@@ -147,8 +147,9 @@
                 v-for="(vid, i) in propGrouped.videos",
                 )
                   svg(v-if="currentVideo == vid.annotation._id", :y="(sessionTime - 10)", :x="(propGrouped.videos.length * 10) + ((propGrouped.videos.length * 10 + 15) * i + 20) + 5")
-                    rect(width="50", height="20", fill="#749DFC")
-                    text.q-caption(x="2", y="15", fill="white") {{ Math.floor(sessionTime / 60) }}:{{ Math.trunc(sessionTime - Math.floor(sessionTime / 60) * 60) }}
+                    polygon(points="10 0 0 10 10 20 60 20 60 0 10 0", fill="#749DFC")
+                    // rect(width="50", height="20", x="10", fill="#749DFC")
+                    text.q-caption(x="20", y="15", fill="white") {{ Math.floor(sessionTime / 60) }}:{{ Math.trunc(sessionTime - Math.floor(sessionTime / 60) * 60) }}
                 //
                   svg(width="50", height="20", :y="sessionTime - 10", x="100")
                     //
