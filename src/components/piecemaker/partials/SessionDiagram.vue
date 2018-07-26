@@ -64,12 +64,12 @@
                 svg(width="100%", height="100%", x="0%")
                   rect.cursor-pointer.moby-svg-entry(
                   v-for="(annotation, i) in propActiveSession.annotations",
-                    @click="setSessionTime(annotation.seconds), previewLine.positionY = annotation.seconds",
+                    @click="setSessionTime(annotation.duration), previewLine.positionY = annotation.duration",
                   height="1",
                   :class="[annotation.active ? 'moba-active-line' : '']"
                   width="100%",
                   x="0",
-                  :y="annotation.seconds",
+                  :y="annotation.duration",
                   style="fill: rgba(255, 255, 255, .2);"
                   )
 
@@ -97,13 +97,13 @@
                     width="100%", height="100%", x="0", y="0")
 
                     g(v-if="currentVideo == vid.annotation._id")
-                      rect.moba-svg-entry(v-for="n in parseInt(propGrouped.sessions[currentSession].seconds / 10 + 1)",
+                      rect.moba-svg-entry(v-for="n in parseInt(propGrouped.sessions[currentSession].duration / 10 + 1)",
                       @click="setSessionTime(parseInt(n * 10)), prevVideo = vid.annotation._id",
                       width="100%", height="10", :y="(n - 1) * 10")
-                      line(v-for="n in parseInt(propGrouped.sessions[currentSession].seconds / 10 + 1)",
+                      line(v-for="n in parseInt(propGrouped.sessions[currentSession].duration / 10 + 1)",
                       x1="25%", x2="75%", :y1="n * 10", :y2="n * 10", style="stroke: rgba(255, 255, 255, .5); stroke-width: 1;")
 
-                    line(v-if="currentVideo == vid.annotation._id", v-for="n in parseInt(propGrouped.sessions[currentSession].seconds / 60 + 1)",
+                    line(v-if="currentVideo == vid.annotation._id", v-for="n in parseInt(propGrouped.sessions[currentSession].duration / 60 + 1)",
                     x1="0", x2="100%", :y1="n * 60", :y2="n * 60", style="stroke: rgba(255, 255, 255, 1); stroke-width: 1;")
 
                 // PREVIEW LINE – horizontal
@@ -170,12 +170,12 @@
 
             div.q-pl-sm(
             v-for="annotation in propActiveSession.annotations",
-            @mouseenter="previewLine.positionY = annotation.seconds, previewLine.visibility = true",
+            @mouseenter="previewLine.positionY = annotation.duration, previewLine.visibility = true",
             @mouseleave="previewLine.visibility = false",
-            @click="setSessionTime(annotation.seconds)",
+            @click="setSessionTime(annotation.duration)",
             :ref="annotation.annotation.uuid"
             )
-              .row.moba-list-entry(:ref="`annotation-${annotation.annotation.uuid}-${annotation.seconds.toFixed(3)}`")
+              .row.moba-list-entry(:ref="`annotation-${annotation.annotation.uuid}-${annotation.duration.toFixed(3)}`")
                 .row.col-12(style="line-height: 1.35rem;")
                   .col-12.row.q-px-md.q-py-sm.moba-round-borders(:class="[annotation.type != 'system' ? 'moba-hover' : '', annotation.type == 'separator' ? 'bg-grey-9 text-black text-center' : '']")
                     div.col-10.cursor-pointer
@@ -251,9 +251,9 @@
         const _this = this
         let found = false
         this.propActiveSession.annotations.forEach(aobj => {
-          if (aobj.seconds >= _this.sessionTime && !found) {
+          if (aobj.duration >= _this.sessionTime && !found) {
             aobj.active = found = true
-            const el = this.$refs[`annotation-${aobj.annotation.uuid}-${aobj.seconds}`]
+            const el = this.$refs[`annotation-${aobj.annotation.uuid}-${aobj.duration}`]
             if (Array.isArray(el)) _this.scrollToElement(el[0], 250)
           }
           else aobj.active = false
@@ -323,7 +323,7 @@
         setScrollPosition(target, offset, duration)
       },
       getSvgHeight (arr) {
-        this.svgHeight = arr.sessions[this.currentSession].seconds
+        this.svgHeight = arr.sessions[this.currentSession].duration
       },
       onAction (type, data) {
         const _this = this
@@ -392,7 +392,7 @@
         propGrouped: this.grouped,
         scaleFactor: '',
         session: {
-          duration: this.grouped.sessions[0].seconds
+          duration: this.grouped.sessions[0].duration
         },
         sessionTime: 0,
         styleActivePreview: {
