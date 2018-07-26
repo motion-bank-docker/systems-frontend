@@ -92,39 +92,54 @@
                 q-btn.q-mt-sm.full-width search
 
     // DIAGRAM
-    // TIMELINE OVERVIEW
+    // timeline overview
     //
     .text-center
-      //
-        svg(
-        // :width="(diagramDimensions.barWidth + diagramDimensions.barSpace) * grouped.sessions.length - diagramDimensions.barSpace",
-        // :height="diagramDimensions.height")
       svg(
       width="100%",
       :height="diagramDimensions.height")
 
+        // BACKGROUND LINES
+        //
         line(
-        v-for="n in 4"
+        v-for="n in diagramDimensions.distances.length"
         x1="0",
-        :y1="diagramDimensions.height / 4 * (n - 1)",
+        :y1="diagramDimensions.height / diagramDimensions.distances.length * (n - 1)",
         x2="100%",
-        :y2="diagramDimensions.height / 4 * (n - 1)",
+        :y2="diagramDimensions.height / diagramDimensions.distances.length * (n - 1)",
         style="stroke: rgba( 255, 255, 255, .1 ); stroke-width: 1;")
 
+        // BACKGROUND LINES
         //
-          svg(v-for="(session, isession) in grouped.sessions", :width="diagramDimensions.barWidth",
-          height="100%", :x="(diagramDimensions.barWidth + diagramDimensions.barSpace) * isession")
+        text(
+        v-for="(n, i) in diagramDimensions.distances.length"
+        x="10",
+        :y="diagramDimensions.height - (diagramDimensions.height / diagramDimensions.distances.length * (n - 1)) - ((diagramDimensions.height / diagramDimensions.distances.length) / 2) + 5",
+        style="fill: rgba( 255, 255, 255, 1 );") {{ diagramDimensions.distances[i] }}
+
+        // SESSION BARS
+        //
         svg(:x="((viewportWidth / 2) - 48)")
           svg(v-for="(session, isession) in grouped.sessions", :width="diagramDimensions.barWidth",
           height="100%", :x="(diagramDimensions.barWidth + diagramDimensions.barSpace) * isession")
             rect.cursor-pointer.moba-diagram-bar(
             @click="toggleShowSession(), setActiveSession(isession), activeBar = isession",
-            @mouseenter="hoverVal.start = getTime(session.start), hoverVal.end = getTime(session.end)",
+            @mouseenter="hoverVal.start = session.start.millis, hoverVal.end = session.end.millis",
             @mouseleave="hoverVal.start = false, hoverVal.end = ''",
             :class="{'moba-active-bar' : activeBar == isession}",
-            width="100%", :height="(getActiveSessionDuration(session.start.millis, session.end.millis) / 2) + 10",
-            :y="diagramDimensions.height - (getActiveSessionDuration(session.start.millis, session.end.millis) / 2)")
+            width="100%",
+            :height="(diagramDimensions.height / 2 / 60 / 60) * (getActiveSessionDuration(session.start.millis, session.end.millis) / 1000)",
+            :y="diagramDimensions.height - ((diagramDimensions.height / 2 / 60 / 60) * (getActiveSessionDuration(session.start.millis, session.end.millis) / 1000))")
+            // rect.cursor-pointer.moba-diagram-bar(
+              @click="toggleShowSession(), setActiveSession(isession), activeBar = isession",
+              @mouseenter="hoverVal.start = getTime(session.start), hoverVal.end = getTime(session.end)",
+              @mouseleave="hoverVal.start = false, hoverVal.end = ''",
+              // :class="{'moba-active-bar' : activeBar == isession}",
+              width="100%", :height="(getActiveSessionDuration(session.start.millis, session.end.millis) / 2) + 10",
+              // :y="diagramDimensions.height - (getActiveSessionDuration(session.start.millis, session.end.millis) / 2)")
 
+        // BOTTOM LINE
+        //
         line(
         x1="0",
         :y1="diagramDimensions.height",
@@ -132,10 +147,16 @@
         :y2="diagramDimensions.height",
         style="stroke: rgba( 255, 255, 255, .25 ); stroke-width: 1;")
 
+    // HOVERSTATE
+    // shows time range from hovering session bar in diagram above
+    //
     .row.full-width.q-mt-lg(style="min-height: 2rem;")
       .full-width.text-center(v-if="hoverVal.start")
-        span.q-py-sm.q-px-md.shadow-6.moba-border {{ hoverVal.start }} &mdash; {{ hoverVal.end }}
+        // span.q-py-sm.q-px-md.shadow-6.moba-border {{ hoverVal.start }} &mdash; {{ hoverVal.end }}
+        // span.q-py-sm.q-px-md.shadow-6.moba-border {{ (hoverVal.end - hoverVal.start) * 0.035 }}
+        span.q-py-sm.q-px-md.shadow-6.moba-border {{ (hoverVal.end - hoverVal.start) / 1000 }}
 
+    // vorübergehend drin lassen
     //
       .text-center
         svg(
@@ -172,8 +193,7 @@
               rect(width="1px", height="50px", y="calc(100% - 70px)", fill="rgba(255, 255, 255, .1)")
               // text.q-caption(x="10", y="10", fill="rgba( 255, 255, 255, .2)") {{ data.month }}
 
-    // WRAP
-    // sessions
+    // ACTIVE SESSION IN DETAIL
     //
     .row.q-mt-md(v-if="showSession")
       .col-10.offset-1.text-center
@@ -187,6 +207,9 @@
       .col-12.q-mt-xl
         SessionDiagram(:grouped="grouped", :activesession="activeSession")
 
+    // BUTTON: LIVE ANNOTATE
+    // appears when no session active
+    //
     .row.q-my-md(v-else)
       .col-12.row
         .col-10.offset-1
@@ -217,7 +240,7 @@
         })
       this.$store.dispatch('annotations/find', { 'target.id': uuid })
         .then(annotations => {
-          return groupBySessions(annotations.items, 60) // geteilt
+          return groupBySessions(annotations.items, 90) // geteilt
           // return groupBySessions(annotations.items)
         })
         .then(grouped => {
@@ -235,7 +258,7 @@
         else return false
       },
       getActiveSessionDuration (start, end) {
-        let difference = (end - start) / 1000
+        let difference = (end - start)
         if (difference <= 10) difference = 10
         return difference
       },
@@ -266,44 +289,14 @@
     data () {
       // const _this = this
       return {
-        /* actions: [
-          { type: 'annotate', title: 'buttons.annotate', color: 'primary' },
-          { type: 'delete', title: 'buttons.delete', icon: 'highlight off' },
-          { type: 'edit', title: 'buttons.edit' },
-          { type: 'synchronize', title: 'buttons.synchronize' }
-        ], */
         activeBar: null,
         activeSession: [],
-        /* columns: [
-          {
-            label: _this.$t('labels.video_title'),
-            field: 'title',
-            type: 'string',
-            sort: true,
-            filter: true
-          },
-          {
-            label: _this.$t('labels.created'),
-            field: 'created',
-            type: 'date',
-            sort: true
-          },
-          {
-            label: _this.$t('labels.updated'),
-            field: 'updated',
-            type: 'date',
-            sort: true
-          },
-          {
-            label: _this.$t('labels.author'),
-            field: 'author'
-          }
-        ], */
         diagramDimensions: {
           activeId: null,
           barSpace: 1,
           barWidth: 15,
-          height: 250
+          height: 250,
+          distances: ['0 - 30', '30 - 60', '60 - 90', '90 - 120']
         },
         filterAuthors: [],
         filterTags: [],
