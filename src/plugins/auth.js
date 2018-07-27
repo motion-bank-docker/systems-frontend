@@ -31,7 +31,7 @@ class AuthService extends TinyEmitter {
     return new Promise((resolve, reject) => {
       if (!localStorage.getItem('access_token')) return resolve()
       const expires = JSON.parse(localStorage.getItem('expires_at'))
-      if (expires > new Date().getTime()) resolve({ accessToken: localStorage.getItem('user') })
+      if (expires > new Date().getTime()) resolve({ accessToken: localStorage.getItem('access_token') })
       else {
         this.webAuth.checkSession({}, (err, authResult) => {
           if (err) {
