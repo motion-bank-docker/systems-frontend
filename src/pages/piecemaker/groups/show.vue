@@ -6,6 +6,15 @@
     //
     q-window-resize-observable(@resize="onWindowResize")
 
+    // TOOLTIP FOR TIMELINE DIAGRAM BARS
+    //
+      .fixed.bg-red(:style="{top: '100px'}")
+    .fixed.bg-dark.shadow-6.moba-border(v-if="barTooltip.visibility", :style="{left: barTooltip.cursorX + 15 + 'px', top: barTooltip.cursorY + 15 + 'px', zIndex: 1000}")
+      .q-ma-sm
+        div {{ hoverVal.start }}
+        div {{ hoverVal.end }}
+        div {{ hoverVal.duration / 1000 }} seconds
+
     // headline
     //
     .row.q-mb-xl
@@ -92,50 +101,86 @@
                 q-btn.q-mt-sm.full-width search
 
     // DIAGRAM
-    // TIMELINE OVERVIEW
+    // timeline overview
     //
     .text-center
-      //
-        svg(
-        // :width="(diagramDimensions.barWidth + diagramDimensions.barSpace) * grouped.sessions.length - diagramDimensions.barSpace",
-        // :height="diagramDimensions.height")
       svg(
       width="100%",
-      :height="diagramDimensions.height")
+      :height="diagramDimensions.height + diagramDimensions.offsetY")
 
-        line(
-        v-for="n in 4"
-        x1="0",
-        :y1="diagramDimensions.height / 4 * (n - 1)",
-        x2="100%",
-        :y2="diagramDimensions.height / 4 * (n - 1)",
-        style="stroke: rgba( 255, 255, 255, .1 ); stroke-width: 1;")
-
+        // BACKGROUND LINES
         //
-          svg(v-for="(session, isession) in grouped.sessions", :width="diagramDimensions.barWidth",
-          height="100%", :x="(diagramDimensions.barWidth + diagramDimensions.barSpace) * isession")
+        line(
+        v-for="n in diagramDimensions.distances.length"
+        x1="0",
+        :y1="diagramDimensions.height / diagramDimensions.distances.length * (n - 1) + diagramDimensions.offsetY",
+        x2="100%",
+        :y2="diagramDimensions.height / diagramDimensions.distances.length * (n - 1) + diagramDimensions.offsetY",
+        style="stroke: rgba( 255, 255, 255, .1 ); stroke-width: 1;")
+        rect(width="60", height="100%", fill="#1F1D1E")
+
+        // TIME LABELS
+        //
+        text.q-caption(
+        v-for="(n, i) in diagramDimensions.distances.length"
+        x="0",
+        :y="diagramDimensions.height - (diagramDimensions.height / diagramDimensions.distances.length * (n - 1)) - ((diagramDimensions.height / diagramDimensions.distances.length)) + 3 + diagramDimensions.offsetY",
+        style="fill: rgba( 255, 255, 255, .5 );") {{ diagramDimensions.distances[i] }}
+
+        // BACKGROUND LINE + TIME LABEL
+        // if session duration <= minimum time
+        line(
+        v-for="n in diagramDimensions.distances.length"
+        x1="0",
+        :y1="diagramDimensions.height - (diagramDimensions.height / 2 / 60 * diagramDimensions.barMinHeight) + diagramDimensions.offsetY",
+        x2="100%",
+        :y2="diagramDimensions.height - (diagramDimensions.height / 2 / 60 * diagramDimensions.barMinHeight) + diagramDimensions.offsetY",
+        style="stroke: rgba( 255, 255, 255, .05 ); stroke-width: 1;")
+        text.q-caption(
+        x="0",
+        :y="diagramDimensions.height - (diagramDimensions.height / 2 / 60 * diagramDimensions.barMinHeight / 2) + 4 + diagramDimensions.offsetY",
+        style="fill: rgba( 255, 255, 255, .5 );") < 10min
+
+        // SESSION BARS
+        //
         svg(:x="((viewportWidth / 2) - 48)")
           svg(v-for="(session, isession) in grouped.sessions", :width="diagramDimensions.barWidth",
           height="100%", :x="(diagramDimensions.barWidth + diagramDimensions.barSpace) * isession")
             rect.cursor-pointer.moba-diagram-bar(
             @click="toggleShowSession(), setActiveSession(isession), activeBar = isession",
-            @mouseenter="hoverVal.start = getTime(session.start), hoverVal.end = getTime(session.end)",
-            @mouseleave="hoverVal.start = false, hoverVal.end = ''",
+            @mouseenter="hoverVal.start = getTime(session.start), hoverVal.end = getTime(session.end), hoverVal.duration = session.end.millis - session.start.millis, handlerBarTooltip()",
+            @mouseleave="hoverVal.start = false, hoverVal.end = '', barTooltip.visibility = false",
             :class="{'moba-active-bar' : activeBar == isession}",
-            width="100%", :height="(getActiveSessionDuration(session.start.millis, session.end.millis) / 2) + 10",
-            :y="diagramDimensions.height - (getActiveSessionDuration(session.start.millis, session.end.millis) / 2)")
+            width="100%",
+            :height="(diagramDimensions.height / 2 / 60 / 60) * (getActiveSessionDuration(session.start.millis, session.end.millis) / 1000)",
+            :y="diagramDimensions.height - ((diagramDimensions.height / 2 / 60 / 60) * (getActiveSessionDuration(session.start.millis, session.end.millis) / 1000)) + diagramDimensions.offsetY")
+            // rect.cursor-pointer.moba-diagram-bar(
+              @click="toggleShowSession(), setActiveSession(isession), activeBar = isession",
+              @mouseenter="hoverVal.start = getTime(session.start), hoverVal.end = getTime(session.end)",
+              @mouseleave="hoverVal.start = false, hoverVal.end = ''",
+              // :class="{'moba-active-bar' : activeBar == isession}",
+              width="100%", :height="(getActiveSessionDuration(session.start.millis, session.end.millis) / 2) + 10",
+              // :y="diagramDimensions.height - (getActiveSessionDuration(session.start.millis, session.end.millis) / 2)")
 
+        // BOTTOM LINE
+        //
         line(
         x1="0",
-        :y1="diagramDimensions.height",
+        :y1="diagramDimensions.height + diagramDimensions.offsetY",
         x2="100%",
-        :y2="diagramDimensions.height",
+        :y2="diagramDimensions.height + diagramDimensions.offsetY",
         style="stroke: rgba( 255, 255, 255, .25 ); stroke-width: 1;")
 
-    .row.full-width.q-mt-lg(style="min-height: 2rem;")
-      .full-width.text-center(v-if="hoverVal.start")
-        span.q-py-sm.q-px-md.shadow-6.moba-border {{ hoverVal.start }} &mdash; {{ hoverVal.end }}
+    // HOVERSTATE
+    // shows time range from hovering session bar in diagram above
+    //
+      .row.full-width.q-mt-lg(style="min-height: 2rem;")
+        .full-width.text-center(v-if="hoverVal.start")
+          // span.q-py-sm.q-px-md.shadow-6.moba-border {{ hoverVal.start }} &mdash; {{ hoverVal.end }}
+          // span.q-py-sm.q-px-md.shadow-6.moba-border {{ (hoverVal.end - hoverVal.start) * 0.035 }}
+          span.q-py-sm.q-px-md.shadow-6.moba-border {{ (hoverVal.end - hoverVal.start) / 1000 }}
 
+    // vorübergehend drin lassen
     //
       .text-center
         svg(
@@ -172,10 +217,9 @@
               rect(width="1px", height="50px", y="calc(100% - 70px)", fill="rgba(255, 255, 255, .1)")
               // text.q-caption(x="10", y="10", fill="rgba( 255, 255, 255, .2)") {{ data.month }}
 
-    // WRAP
-    // sessions
+    // ACTIVE SESSION IN DETAIL
     //
-    .row.q-mt-md(v-if="showSession")
+    .row.q-mt-xl(v-if="showSession")
       .col-10.offset-1.text-center
         q-btn.bg-grey-10(@click='jumpBetweenSessions(false)', icon="keyboard_arrow_left", flat, round)
         span.q-mx-md.q-py-sm.q-px-md.shadow-6.text-primary.moba-border {{ getTime(activeSession.start) }} – {{ getTime(activeSession.end) }}
@@ -184,9 +228,12 @@
       .col-1.text-right
         q-btn.shadow-6(@click="showSession = false, diagramDimensions.activeId = null, activeBar = null", icon="clear", size="small", flat, round)
 
-      .col-12.q-mt-xl
+      .col-12.q-mt-md
         SessionDiagram(:grouped="grouped", :activesession="activeSession")
 
+    // BUTTON: LIVE ANNOTATE
+    // appears when no session active
+    //
     .row.q-my-md(v-else)
       .col-12.row
         .col-10.offset-1
@@ -206,6 +253,12 @@
       FullScreen,
       SessionDiagram
     },
+    created: function () {
+      window.addEventListener('mousemove', this.moveTooltip)
+    },
+    destroyed: function () {
+      window.removeEventListener('mousemove', this.moveTooltip)
+    },
     mounted () {
       const
         _this = this,
@@ -217,7 +270,7 @@
         })
       this.$store.dispatch('annotations/find', { 'target.id': uuid })
         .then(annotations => {
-          return groupBySessions(annotations.items, 60) // geteilt
+          return groupBySessions(annotations.items, 90) // geteilt
           // return groupBySessions(annotations.items)
         })
         .then(grouped => {
@@ -226,6 +279,16 @@
         })
     },
     methods: {
+      moveTooltip () {
+        console.log('xxxx')
+        this.barTooltip.cursorX = event.clientX
+        this.barTooltip.cursorY = event.clientY
+      },
+      handlerBarTooltip () {
+        // this.barTooltip.cursorX = event.clientX
+        // this.barTooltip.cursorY = event.clientY
+        this.barTooltip.visibility = true
+      },
       getTime (val) {
         return val._dateTime.toLocaleString({ year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit', second: '2-digit' })
       },
@@ -235,8 +298,11 @@
         else return false
       },
       getActiveSessionDuration (start, end) {
-        let difference = (end - start) / 1000
-        if (difference <= 10) difference = 10
+        let difference = (end - start),
+          barMinHeight = this.diagramDimensions.barMinHeight,
+          milliHeight = (this.diagramDimensions.height / this.diagramDimensions.distances.length / 60 / 60 / 1000),
+          minVal = barMinHeight / milliHeight
+        if (difference <= minVal) difference = minVal
         return difference
       },
       jumpBetweenSessions (val) {
@@ -266,50 +332,28 @@
     data () {
       // const _this = this
       return {
-        /* actions: [
-          { type: 'annotate', title: 'buttons.annotate', color: 'primary' },
-          { type: 'delete', title: 'buttons.delete', icon: 'highlight off' },
-          { type: 'edit', title: 'buttons.edit' },
-          { type: 'synchronize', title: 'buttons.synchronize' }
-        ], */
         activeBar: null,
         activeSession: [],
-        /* columns: [
-          {
-            label: _this.$t('labels.video_title'),
-            field: 'title',
-            type: 'string',
-            sort: true,
-            filter: true
-          },
-          {
-            label: _this.$t('labels.created'),
-            field: 'created',
-            type: 'date',
-            sort: true
-          },
-          {
-            label: _this.$t('labels.updated'),
-            field: 'updated',
-            type: 'date',
-            sort: true
-          },
-          {
-            label: _this.$t('labels.author'),
-            field: 'author'
-          }
-        ], */
+        barTooltip: {
+          cursorX: 0,
+          cursorY: 0,
+          visibility: false
+        },
         diagramDimensions: {
           activeId: null,
+          barMinHeight: 10, // duration in min
           barSpace: 1,
           barWidth: 15,
-          height: 250
+          distances: ['30min', '60min', '90min', '120min'],
+          height: 250,
+          offsetY: 20
         },
         filterAuthors: [],
         filterTags: [],
         filterTypes: [],
         grouped: { annotations: [], videos: [] },
         hoverVal: {
+          duration: 0,
           end: null,
           start: null
         },
@@ -338,7 +382,7 @@
     border-top 1px solid rgba( 255, 255, 255, .2 )
 
   .moba-diagram-bar
-    fill rgba(255, 255, 255, .05)
+    fill rgba(255, 255, 255, .1)
 
   .moba-diagram-bar:hover
     fill rgba(255, 255, 255, .2)
