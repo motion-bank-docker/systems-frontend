@@ -1,7 +1,0 @@
-# Web Frontend
-frontend:
-   build: ./
-   container_name: motionbank-systems-frontend
-   ports:
-    - 80:80
-    - 443:443
