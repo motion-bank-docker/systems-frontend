@@ -24,11 +24,13 @@ const fetchMetaData = async videos => {
     if (type === 'video/youtube') key = process.env.YOUTUBE_API_KEY
     else if (type === 'video/vimeo') key = process.env.VIMEO_ACCESS_TOKEN
     try {
-      const meta = await getMetaData(v.annotation.body.source, key)
-      v.meta = meta
+      console.debug('fetchMetaData', v.annotation.body.source)
+      const meta = await getMetaData({ id: v.annotation.body.source.id, type }, key)
+      Object.assign(v.meta, meta)
     }
-    catch (e) { /* ignored */ }
+    catch (e) { console.error('fetchMetaData', e.message, e.stack) }
   }
+  return videos
 }
 
 const groupBySessions = async function (annotations, secondsDist = constants.SESSION_DISTANCE_SECONDS) {
