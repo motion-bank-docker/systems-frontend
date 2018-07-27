@@ -30,7 +30,7 @@
 
     // btn: back
     //
-    q-btn(slot="backButton", @click="$router.push({ name: 'piecemaker.groups.list' })", icon="keyboard_backspace", round, small)
+    q-btn.absolute-top-left(slot="backButton", @click="$router.push({ name: 'piecemaker.groups.list' })", icon="keyboard_backspace", round, small, style="top: 66px; left: 16px;")
 
     // btn: filter
     //
@@ -108,6 +108,11 @@
       width="100%",
       :height="diagramDimensions.height + diagramDimensions.offsetY")
 
+        defs
+          linearGradient(id="lgrad" x1="50%" y1="0%" x2="50%" y2="100%")
+            stop(offset="0%" style="stop-color: rgb(255,255,255); stop-opacity: .5;")
+            stop(offset="100%" style="stop-color: rgb(0,0,0); stop-opacity: .2;")
+
         // BACKGROUND LINES
         //
         line(
@@ -153,7 +158,8 @@
             :class="{'moba-active-bar' : activeBar == isession}",
             width="100%",
             :height="(diagramDimensions.height / 2 / 60 / 60) * (getActiveSessionDuration(session.start.millis, session.end.millis) / 1000)",
-            :y="diagramDimensions.height - ((diagramDimensions.height / 2 / 60 / 60) * (getActiveSessionDuration(session.start.millis, session.end.millis) / 1000)) + diagramDimensions.offsetY")
+            :y="diagramDimensions.height - ((diagramDimensions.height / 2 / 60 / 60) * (getActiveSessionDuration(session.start.millis, session.end.millis) / 1000)) + diagramDimensions.offsetY"
+            )
             // rect.cursor-pointer.moba-diagram-bar(
               @click="toggleShowSession(), setActiveSession(isession), activeBar = isession",
               @mouseenter="hoverVal.start = getTime(session.start), hoverVal.end = getTime(session.end)",
