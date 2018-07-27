@@ -106,24 +106,25 @@
     .text-center
       svg(
       width="100%",
-      :height="diagramDimensions.height")
+      :height="diagramDimensions.height + diagramDimensions.offsetY")
 
         // BACKGROUND LINES
         //
         line(
         v-for="n in diagramDimensions.distances.length"
         x1="0",
-        :y1="diagramDimensions.height / diagramDimensions.distances.length * (n - 1)",
+        :y1="diagramDimensions.height / diagramDimensions.distances.length * (n - 1) + diagramDimensions.offsetY",
         x2="100%",
-        :y2="diagramDimensions.height / diagramDimensions.distances.length * (n - 1)",
+        :y2="diagramDimensions.height / diagramDimensions.distances.length * (n - 1) + diagramDimensions.offsetY",
         style="stroke: rgba( 255, 255, 255, .1 ); stroke-width: 1;")
+        rect(width="60", height="100%", fill="#1F1D1E")
 
         // TIME LABELS
         //
         text.q-caption(
         v-for="(n, i) in diagramDimensions.distances.length"
-        x="10",
-        :y="diagramDimensions.height - (diagramDimensions.height / diagramDimensions.distances.length * (n - 1)) - ((diagramDimensions.height / diagramDimensions.distances.length)) + 3",
+        x="0",
+        :y="diagramDimensions.height - (diagramDimensions.height / diagramDimensions.distances.length * (n - 1)) - ((diagramDimensions.height / diagramDimensions.distances.length)) + 3 + diagramDimensions.offsetY",
         style="fill: rgba( 255, 255, 255, .5 );") {{ diagramDimensions.distances[i] }}
 
         // BACKGROUND LINE + TIME LABEL
@@ -131,13 +132,13 @@
         line(
         v-for="n in diagramDimensions.distances.length"
         x1="0",
-        :y1="diagramDimensions.height - (diagramDimensions.height / 2 / 60 * diagramDimensions.barMinHeight)",
+        :y1="diagramDimensions.height - (diagramDimensions.height / 2 / 60 * diagramDimensions.barMinHeight) + diagramDimensions.offsetY",
         x2="100%",
-        :y2="diagramDimensions.height - (diagramDimensions.height / 2 / 60 * diagramDimensions.barMinHeight)",
+        :y2="diagramDimensions.height - (diagramDimensions.height / 2 / 60 * diagramDimensions.barMinHeight) + diagramDimensions.offsetY",
         style="stroke: rgba( 255, 255, 255, .05 ); stroke-width: 1;")
         text.q-caption(
-        x="10",
-        :y="diagramDimensions.height - (diagramDimensions.height / 2 / 60 * diagramDimensions.barMinHeight / 2) + 4",
+        x="0",
+        :y="diagramDimensions.height - (diagramDimensions.height / 2 / 60 * diagramDimensions.barMinHeight / 2) + 4 + diagramDimensions.offsetY",
         style="fill: rgba( 255, 255, 255, .5 );") < 10min
 
         // SESSION BARS
@@ -152,7 +153,7 @@
             :class="{'moba-active-bar' : activeBar == isession}",
             width="100%",
             :height="(diagramDimensions.height / 2 / 60 / 60) * (getActiveSessionDuration(session.start.millis, session.end.millis) / 1000)",
-            :y="diagramDimensions.height - ((diagramDimensions.height / 2 / 60 / 60) * (getActiveSessionDuration(session.start.millis, session.end.millis) / 1000))")
+            :y="diagramDimensions.height - ((diagramDimensions.height / 2 / 60 / 60) * (getActiveSessionDuration(session.start.millis, session.end.millis) / 1000)) + diagramDimensions.offsetY")
             // rect.cursor-pointer.moba-diagram-bar(
               @click="toggleShowSession(), setActiveSession(isession), activeBar = isession",
               @mouseenter="hoverVal.start = getTime(session.start), hoverVal.end = getTime(session.end)",
@@ -165,9 +166,9 @@
         //
         line(
         x1="0",
-        :y1="diagramDimensions.height",
+        :y1="diagramDimensions.height + diagramDimensions.offsetY",
         x2="100%",
-        :y2="diagramDimensions.height",
+        :y2="diagramDimensions.height + diagramDimensions.offsetY",
         style="stroke: rgba( 255, 255, 255, .25 ); stroke-width: 1;")
 
     // HOVERSTATE
@@ -343,8 +344,9 @@
           barMinHeight: 10, // duration in min
           barSpace: 1,
           barWidth: 15,
+          distances: ['30min', '60min', '90min', '120min'],
           height: 250,
-          distances: ['30min', '60min', '90min', '120min']
+          offsetY: 20
         },
         filterAuthors: [],
         filterTags: [],
