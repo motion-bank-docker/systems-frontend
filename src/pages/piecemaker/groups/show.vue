@@ -6,6 +6,15 @@
     //
     q-window-resize-observable(@resize="onWindowResize")
 
+    // TOOLTIP FOR TIMELINE DIAGRAM BARS
+    //
+      .fixed.bg-red(:style="{top: '100px'}")
+    .fixed.bg-dark.shadow-6.moba-border(v-if="barTooltip.visibility", :style="{left: barTooltip.cursorX + 15 + 'px', top: barTooltip.cursorY + 15 + 'px', zIndex: 1000}")
+      .q-ma-sm
+        div {{ hoverVal.start }}
+        div {{ hoverVal.end }}
+        div {{ hoverVal.duration / 1000 }} seconds
+
     // headline
     //
     .row.q-mb-xl
@@ -138,8 +147,8 @@
           height="100%", :x="(diagramDimensions.barWidth + diagramDimensions.barSpace) * isession")
             rect.cursor-pointer.moba-diagram-bar(
             @click="toggleShowSession(), setActiveSession(isession), activeBar = isession",
-            @mouseenter="hoverVal.start = session.start.millis, hoverVal.end = session.end.millis",
-            @mouseleave="hoverVal.start = false, hoverVal.end = ''",
+            @mouseenter="hoverVal.start = getTime(session.start), hoverVal.end = getTime(session.end), hoverVal.duration = session.end.millis - session.start.millis, handlerBarTooltip()",
+            @mouseleave="hoverVal.start = false, hoverVal.end = '', barTooltip.visibility = false",
             :class="{'moba-active-bar' : activeBar == isession}",
             width="100%",
             :height="(diagramDimensions.height / 2 / 60 / 60) * (getActiveSessionDuration(session.start.millis, session.end.millis) / 1000)",
@@ -164,11 +173,11 @@
     // HOVERSTATE
     // shows time range from hovering session bar in diagram above
     //
-    .row.full-width.q-mt-lg(style="min-height: 2rem;")
-      .full-width.text-center(v-if="hoverVal.start")
-        // span.q-py-sm.q-px-md.shadow-6.moba-border {{ hoverVal.start }} &mdash; {{ hoverVal.end }}
-        // span.q-py-sm.q-px-md.shadow-6.moba-border {{ (hoverVal.end - hoverVal.start) * 0.035 }}
-        span.q-py-sm.q-px-md.shadow-6.moba-border {{ (hoverVal.end - hoverVal.start) / 1000 }}
+      .row.full-width.q-mt-lg(style="min-height: 2rem;")
+        .full-width.text-center(v-if="hoverVal.start")
+          // span.q-py-sm.q-px-md.shadow-6.moba-border {{ hoverVal.start }} &mdash; {{ hoverVal.end }}
+          // span.q-py-sm.q-px-md.shadow-6.moba-border {{ (hoverVal.end - hoverVal.start) * 0.035 }}
+          span.q-py-sm.q-px-md.shadow-6.moba-border {{ (hoverVal.end - hoverVal.start) / 1000 }}
 
     // vorübergehend drin lassen
     //
@@ -209,7 +218,7 @@
 
     // ACTIVE SESSION IN DETAIL
     //
-    .row.q-mt-md(v-if="showSession")
+    .row.q-mt-xl(v-if="showSession")
       .col-10.offset-1.text-center
         q-btn.bg-grey-10(@click='jumpBetweenSessions(false)', icon="keyboard_arrow_left", flat, round)
         span.q-mx-md.q-py-sm.q-px-md.shadow-6.text-primary.moba-border {{ getTime(activeSession.start) }} – {{ getTime(activeSession.end) }}
@@ -218,7 +227,7 @@
       .col-1.text-right
         q-btn.shadow-6(@click="showSession = false, diagramDimensions.activeId = null, activeBar = null", icon="clear", size="small", flat, round)
 
-      .col-12.q-mt-xl
+      .col-12.q-mt-md
         SessionDiagram(:grouped="grouped", :activesession="activeSession")
 
     // BUTTON: LIVE ANNOTATE
@@ -243,6 +252,12 @@
       FullScreen,
       SessionDiagram
     },
+    created: function () {
+      window.addEventListener('mousemove', this.moveTooltip)
+    },
+    destroyed: function () {
+      window.removeEventListener('mousemove', this.moveTooltip)
+    },
     mounted () {
       const
         _this = this,
@@ -254,7 +269,7 @@
         })
       this.$store.dispatch('annotations/find', { 'target.id': uuid })
         .then(annotations => {
-          return groupBySessions(annotations.items, 30) // geteilt
+          return groupBySessions(annotations.items, 90) // geteilt
           // return groupBySessions(annotations.items)
         })
         .then(grouped => {
@@ -263,6 +278,16 @@
         })
     },
     methods: {
+      moveTooltip () {
+        console.log('xxxx')
+        this.barTooltip.cursorX = event.clientX
+        this.barTooltip.cursorY = event.clientY
+      },
+      handlerBarTooltip () {
+        // this.barTooltip.cursorX = event.clientX
+        // this.barTooltip.cursorY = event.clientY
+        this.barTooltip.visibility = true
+      },
       getTime (val) {
         return val._dateTime.toLocaleString({ year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit', second: '2-digit' })
       },
@@ -308,6 +333,11 @@
       return {
         activeBar: null,
         activeSession: [],
+        barTooltip: {
+          cursorX: 0,
+          cursorY: 0,
+          visibility: false
+        },
         diagramDimensions: {
           activeId: null,
           barMinHeight: 10, // duration in min
@@ -321,6 +351,7 @@
         filterTypes: [],
         grouped: { annotations: [], videos: [] },
         hoverVal: {
+          duration: 0,
           end: null,
           start: null
         },
