@@ -69,12 +69,6 @@ export default {
       component: () => import('pages/piecemaker/videos/edit'),
       name: 'piecemaker.videos.edit',
       meta: {private: true}
-    },
-    {
-      path: '/piecemaker/videos/session',
-      component: () => import('pages/piecemaker/videos/session'),
-      name: 'piecemaker.videos.edit',
-      meta: {private: true}
     }
   ]
 }
