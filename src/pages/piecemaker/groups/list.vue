@@ -2,6 +2,17 @@
   full-screen
     span(slot="form-logo")
     span(slot="form-title") {{ $t('routes.piecemaker.groups.list.title') }}
+
+    // DIAGRAM
+    div.q-mb-xl(ref="diagramList")
+      svg(width="100%", :height="diagramDimensions.height")
+        line(x1="0", x2="100%", :y1="diagramDimensions.height / 2", :y2="diagramDimensions.height / 2", style="stroke: rgba( 255, 255, 255, .25 ); stroke-width: 1;")
+        circle(v-for="n in 11", r="2", :cx="(diagramDimensions.currentWidth / 10) * n", :cy="diagramDimensions.height / 2", fill="rgba( 255, 255, 255, 1)")
+        text.q-caption(v-for="n in 11",:x="(diagramDimensions.currentWidth / 10) * n - 2", :y="diagramDimensions.height / 2 - 10", fill="rgba( 255, 255, 255, .2)") {{ 1999 + n }}
+        svg(v-for="(dummy, i) in dummyData", width="diagramDimensions.currentWidth - dummy.created", height="diagramDimensions.barHeight", :x="dummy.created")
+          line(x1="0", x2="0", y1="0", y2="100%", style="stroke: rgba( 255, 255, 255, .25 ); stroke-width: 1;")
+          rect.cursor-pointer.moba-hover-timeline(width="100%", height="100%")
+
     data-table(:config="config", :title="'routes.piecemaker.groups.list.title'",
       path="maps", :query="query", base-path="groups", :has-show="true")
       template(slot="buttons-left")
@@ -18,9 +29,41 @@
       DataTable,
       FullScreen
     },
+    mounted () {
+      this.diagramDimensions.currentWidth = this.$refs['diagramList'].offsetWidth
+    },
     data () {
       const _this = this
       return {
+        diagramDimensions: {
+          activeId: null,
+          barHeight: 50,
+          currentWidth: 0,
+          height: 100,
+          offsetY: 20
+        },
+        dummyData: [
+          {
+            author: 'ch',
+            created: 0
+          },
+          {
+            author: 'ch',
+            created: 100
+          },
+          {
+            author: 'ch',
+            created: 105
+          },
+          {
+            author: 'ch',
+            created: 300
+          },
+          {
+            author: 'ch',
+            created: 800
+          }
+        ],
         query: { type: constants.MAP_TYPE_TIMELINE },
         config: {
           columns: [
@@ -74,3 +117,11 @@
     }
   }
 </script>
+
+<style lang="stylus">
+  .moba-hover-timeline
+    fill: transparent
+
+  .moba-hover-timeline:hover
+    fill: rgba(255, 255, 255, .25)
+</style>
