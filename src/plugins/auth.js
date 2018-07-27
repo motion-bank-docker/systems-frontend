@@ -22,6 +22,7 @@ class AuthService extends TinyEmitter {
     localStorage.removeItem('access_token')
     localStorage.removeItem('id_token')
     localStorage.removeItem('expires_at')
+    localStorage.removeItem('user')
     this.emit('auth-state', undefined)
     this.webAuth.logout({ returnTo: process.env.UI_HOST })
   }
@@ -66,11 +67,17 @@ class AuthService extends TinyEmitter {
   getUserInfo (token) {
     const _this = this
     return new Promise((resolve, reject) => {
+      if (localStorage.getItem('user')) {
+        const user = JSON.parse(localStorage.getItem('user'))
+        _this.emit('auth-state', user)
+        resolve(user)
+      }
       _this.webAuth.client.userInfo(token, function (err, user) {
         if (err) {
           console.error('Auth0 User Info Error', err)
           return reject(err)
         }
+        localStorage.setItem('user', JSON.stringify(user))
         _this._user = user
         _this.emit('auth-state', user)
         resolve(user)
