@@ -2,7 +2,7 @@
 
   card-full
 
-    q-btn(slot="backButton", @click="$router.push(`/piecemaker/groups/`)", icon="keyboard_backspace", round, small)
+    q-btn(slot="backButton", @click="$router.push(`/piecemaker/timelines/`)", icon="keyboard_backspace", round, small)
 
     span(slot="form-logo")
 

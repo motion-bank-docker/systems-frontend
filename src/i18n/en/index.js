@@ -9,8 +9,7 @@ export default {
     add_and_go: 'Add & Go',
     back: 'Back',
     create_account: 'Create Account',
-    // create_group: 'Create Group',
-    create_group: 'Create Timeline',
+    create_timeline: 'Create Timeline',
     create_grid: 'Create Grid',
     cancel: 'Cancel',
     change: 'Change',
@@ -50,8 +49,8 @@ export default {
     email: 'Email',
     embedded: 'Embedded in',
     elements_length: 'Used Elements',
-    // group_title: 'Group title',
-    group_title: 'Timeline title',
+    // timeline_title: 'Group title',
+    timeline_title: 'Timeline title',
     grid_title: 'Grid title',
     last_annotation: 'Last annotated',
     last_edit: 'Last edit',
@@ -169,11 +168,11 @@ export default {
         title: 'Add',
         caption: 'Add an URL'
       },
-      groups: {
+      timelines: {
         create: {
           title: 'New Timeline',
-          // caption: 'Create a group representing a global timeline.'
-          caption: 'Create a global group timeline.'
+          // caption: 'Create a timeline representing a global timeline.'
+          caption: 'Create a global timeline.'
         },
         edit: {
           title: 'Edit Timeline',
@@ -207,7 +206,7 @@ export default {
         },
         create: {
           title: 'Add Video',
-          caption: 'Add a new video to your group.'
+          caption: 'Add a new video to your timeline.'
         }
       }
     },

@@ -38,7 +38,7 @@
     },
     data () {
       return {
-        // basePath: 'groups',
+        // basePath: 'timelines',
         rowsPerPage: [0],
         pagination: {
           sortBy: 'title',

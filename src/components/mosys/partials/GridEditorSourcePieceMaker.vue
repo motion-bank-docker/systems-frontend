@@ -7,7 +7,7 @@
           @click="handleClickUnsetCurrentGroup", icon="keyboard backspace")
         span Videos in Group #[strong {{currentGroup.title}}]
       template(v-else)
-        router-link(:to="{name: 'piecemaker.groups.list'}") Piecemaker Groups
+        router-link(:to="{name: 'piecemaker.timelines.list'}") Piecemaker Groups
 
     q-item-separator
 
@@ -40,9 +40,9 @@
             q-item-main
               a(@click.prevent="event => {handleVideoItemClick(event, video)}") {{video.title}}
 
-    // groups list
+    // timelines list
     template(v-else)
-      template(v-for="(group, i) in groups")
+      template(v-for="(group, i) in timelines")
         template(v-if="i > 0")
           q-item-separator
         q-item
@@ -63,7 +63,7 @@
   export default {
     data () {
       return {
-        groups: [],
+        timelines: [],
         currentGroup: null,
         currentVideos: [],
         loadingVideos: false
@@ -73,7 +73,7 @@
       const _this = this
       this.$store.dispatch('maps/find', { type: constants.MAP_TYPE_TIMELINE })
         .then(maps => {
-          _this.groups = maps
+          _this.timelines = maps
         })
     },
     methods: {

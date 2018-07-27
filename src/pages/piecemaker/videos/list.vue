@@ -1,6 +1,6 @@
 <template lang="pug">
   full-screen
-    q-btn(slot="backButton", @click="$router.push({ name: 'piecemaker.groups.list' })", icon="keyboard_backspace", round, small)
+    q-btn(slot="backButton", @click="$router.push({ name: 'piecemaker.timelines.list' })", icon="keyboard_backspace", round, small)
     span(slot="form-logo")
     span(slot="form-title") {{ $t('routes.piecemaker.videos.list.title') }}
     data-table(:config="config", :title="'routes.piecemaker.videos.list.title'",

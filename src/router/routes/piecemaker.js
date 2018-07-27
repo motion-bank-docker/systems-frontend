@@ -10,51 +10,51 @@ export default {
     },
 
     {
-      path: '/piecemaker/groups',
-      component: () => import('pages/piecemaker/groups/list'),
-      name: 'piecemaker.groups.list',
+      path: '/piecemaker/timelines',
+      component: () => import('pages/piecemaker/timelines/list'),
+      name: 'piecemaker.timelines.list',
       meta: {private: true}
     },
     {
-      path: '/piecemaker/groups/create',
-      component: () => import('pages/piecemaker/groups/create'),
-      name: 'piecemaker.groups.create',
+      path: '/piecemaker/timelines/create',
+      component: () => import('pages/piecemaker/timelines/create'),
+      name: 'piecemaker.timelines.create',
       meta: {private: true}
     },
     {
-      path: '/piecemaker/groups/user',
-      component: () => import('pages/piecemaker/groups/user'),
-      name: 'piecemaker.groups.user',
+      path: '/piecemaker/timelines/user',
+      component: () => import('pages/piecemaker/timelines/user'),
+      name: 'piecemaker.timelines.user',
       meta: {private: true}
     },
     {
-      path: '/piecemaker/groups/:id',
-      component: () => import('pages/piecemaker/groups/show'),
-      name: 'piecemaker.groups.show',
+      path: '/piecemaker/timelines/:id',
+      component: () => import('pages/piecemaker/timelines/show'),
+      name: 'piecemaker.timelines.show',
       meta: {private: true}
     },
     {
-      path: '/piecemaker/groups/:id/annotate',
-      component: () => import('pages/piecemaker/groups/annotate'),
-      name: 'piecemaker.groups.annotate',
+      path: '/piecemaker/timelines/:id/annotate',
+      component: () => import('pages/piecemaker/timelines/annotate'),
+      name: 'piecemaker.timelines.annotate',
       meta: {private: true}
     },
     {
-      path: '/piecemaker/groups/:groupId/videos',
+      path: '/piecemaker/timelines/:groupId/videos',
       component: () => import('pages/piecemaker/videos/list'),
       name: 'piecemaker.videos.list',
       meta: {private: true}
     },
     {
-      path: '/piecemaker/groups/:groupId/videos/create',
+      path: '/piecemaker/timelines/:groupId/videos/create',
       component: () => import('pages/piecemaker/videos/create'),
       name: 'piecemaker.videos.create',
       meta: {private: true}
     },
     {
-      path: '/piecemaker/groups/:id/edit',
-      component: () => import('pages/piecemaker/groups/edit'),
-      name: 'piecemaker.groups.edit',
+      path: '/piecemaker/timelines/:id/edit',
+      component: () => import('pages/piecemaker/timelines/edit'),
+      name: 'piecemaker.timelines.edit',
       meta: {private: true}
     },
 

@@ -98,7 +98,7 @@
       },
       typeFromRoute () {
         let path = this.$route.path
-        if (/.+\/groups\/[^/]+\/edit$/.test(path)) {
+        if (/.+\/timelines\/[^/]+\/edit$/.test(path)) {
           return constants.MAP_TYPE_TIMELINE
         }
         else if (/.+\/videos\/[^/]+\/edit$/.test(path)) {

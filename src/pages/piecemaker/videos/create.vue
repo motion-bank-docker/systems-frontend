@@ -61,7 +61,7 @@
                 }
               }
               return _this.$store.dispatch('annotations/post', _this.apiPayload)
-                .then(() => _this.$router.push(`/piecemaker/groups/${_this.$route.params.groupId}/videos`))
+                .then(() => _this.$router.push(`/piecemaker/timelines/${_this.$route.params.groupId}/videos`))
             }
           }
         }

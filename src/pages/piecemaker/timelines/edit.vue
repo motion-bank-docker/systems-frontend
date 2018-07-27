@@ -1,13 +1,16 @@
 <template lang="pug">
   full-screen
-    q-btn(slot="backButton", @click="$router.push({ name: 'piecemaker.groups.list' })", icon="keyboard_backspace", round, small)
+    q-btn(slot="backButton", @click="$router.push({ name: 'piecemaker.timelines.list' })", icon="keyboard_backspace", round, small)
 
     .q-pa-xl(style="min-width: 50vw;")
-      h5.caption(dark) {{ $t('routes.piecemaker.groups.create.title') }}
+      h5.caption(dark) {{ $t('routes.piecemaker.timelines.edit.title') }}
       .row
         .col-md-12
           form-main(v-model="payload", :schema="schema")
-            q-btn.q-mr-md.bg-grey-9(slot="form-buttons-add", label="import archive")
+            q-btn.q-mr-md.bg-grey-9(slot="form-buttons-add", label="export archive")
+      // .row
+      //   .col-md-12
+      //     tags(v-if="payload", :targetUuid="payload.uuid", fullWidth)
 </template>
 
 <script>
@@ -28,13 +31,13 @@
       const _this = this
       return {
         type: constants.MAP_TYPE_TIMELINE,
-        payload: undefined,
+        payload: this.$route.params.id ? _this.$store.dispatch('maps/get', _this.$route.params.id) : undefined,
         schema: {
           fields: {
             title: {
               fullWidth: true,
               type: 'text',
-              label: 'labels.group_title',
+              label: 'labels.timeline_title',
               errorLabel: 'errors.field_required',
               validators: {
                 required
@@ -43,9 +46,8 @@
           },
           submit: {
             handler () {
-              _this.payload.type = [constants.MAP_TYPE_TIMELINE]
-              return _this.$store.dispatch('maps/post', _this.payload)
-                .then(() => _this.$router.push({ name: 'piecemaker.groups.list' }))
+              return _this.$store.dispatch('maps/patch', [_this.payload.uuid, _this.payload])
+                .then(() => _this.$router.push({ name: 'piecemaker.timelines.list' }))
             }
           }
         }

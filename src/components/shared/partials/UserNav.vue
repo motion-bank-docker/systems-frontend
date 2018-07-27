@@ -6,7 +6,7 @@
         @click="currentApp = null; $router.push({ name: 'site.welcome' })") Motionbank
       q-btn(
         :class="{ 'text-primary': currentApp === 'piecemaker' }",
-        @click="currentApp = 'piecemaker'; $router.push({ name: 'piecemaker.groups.list' })",
+        @click="currentApp = 'piecemaker'; $router.push({ name: 'piecemaker.timelines.list' })",
         big, flat
         ) Piecemaker
       q-btn(

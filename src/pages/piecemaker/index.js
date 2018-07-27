@@ -1,12 +1,12 @@
 import dashboard from './dashboard'
-import * as groups from './groups'
+import * as timelines from './timelines'
 import * as videos from './videos'
 import * as codarts from './codarts'
 import * as users from './users'
 
 export {
   dashboard,
-  groups,
+  timelines,
   videos,
   codarts,
   users

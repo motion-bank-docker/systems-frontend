@@ -1,7 +1,7 @@
 <template lang="pug">
   full-screen
     span(slot="form-logo")
-    span(slot="form-title") {{ $t('routes.piecemaker.groups.list.title') }}
+    span(slot="form-title") {{ $t('routes.piecemaker.timelines.list.title') }}
 
     // DIAGRAM
     div.q-mb-xl(ref="diagramList")
@@ -17,10 +17,10 @@
           rect.cursor-pointer.moba-hover-timeline(width="100%", height="100%")
         circle.cursor-pointer.moba-svg-circle(v-for="n in 11", r="3", :cx="(diagramDimensions.currentWidth / 10) * n", :cy="diagramDimensions.height / 2", fill="rgba( 255, 255, 255, 1)")
 
-    data-table(:config="config", :title="'routes.piecemaker.groups.list.title'",
-      path="maps", :query="query", base-path="groups", :has-show="true")
+    data-table(:config="config", :title="'routes.piecemaker.timelines.list.title'",
+      path="maps", :query="query", base-path="timelines", :has-show="true")
       template(slot="buttons-left")
-        q-btn(@click="$router.push({ name: 'piecemaker.groups.create' })", color="primary") {{ $t('buttons.create_group') }}
+        q-btn(@click="$router.push({ name: 'piecemaker.timelines.create' })", color="primary") {{ $t('buttons.create_timeline') }}
 </template>
 
 <script>
@@ -98,7 +98,7 @@
               type: 'live-annotate',
               title: 'buttons.live_annotate',
               color: 'primary',
-              click: (item) => _this.$router.push({ name: 'piecemaker.groups.annotate', params: { id: item.uuid } })
+              click: (item) => _this.$router.push({ name: 'piecemaker.timelines.annotate', params: { id: item.uuid } })
             },
             {
               type: 'videos',
@@ -109,7 +109,7 @@
             {
               type: 'edit',
               title: 'buttons.edit',
-              click: (item) => _this.$router.push({ name: 'piecemaker.groups.edit', params: { id: item.uuid } })
+              click: (item) => _this.$router.push({ name: 'piecemaker.timelines.edit', params: { id: item.uuid } })
             },
             {
               type: 'delete',

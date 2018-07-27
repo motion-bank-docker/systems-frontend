@@ -19,7 +19,7 @@
     //
     .row.q-mb-xl
       .col-10.offset-1(slot="form-title")
-        // div {{ $t('routes.piecemaker.groups.show.title') }}: Titel der Timeline
+        // div {{ $t('routes.piecemaker.timelines.show.title') }}: Titel der Timeline
         h5.no-margin.text-center
           div {{ map.title }}
           .text-grey-8 {{ map.author.name }}
@@ -30,7 +30,7 @@
 
     // btn: back
     //
-    q-btn.absolute-top-left(slot="backButton", @click="$router.push({ name: 'piecemaker.groups.list' })", icon="keyboard_backspace", round, small, style="top: 66px; left: 16px;")
+    q-btn.absolute-top-left(slot="backButton", @click="$router.push({ name: 'piecemaker.timelines.list' })", icon="keyboard_backspace", round, small, style="top: 66px; left: 16px;")
 
     // btn: filter
     //
@@ -244,7 +244,7 @@
       .col-12.row
         .col-10.offset-1
           q-btn.full-width.q-py-xl.bg-transparent.shadow-6(
-          @click="$router.push({ name: 'piecemaker.groups.annotate' })",
+          @click="$router.push({ name: 'piecemaker.timelines.annotate' })",
           style="border: 1px solid rgba( 255, 255, 255, .1 ); border-radius: .75rem; letter-spacing: .005rem;"
           ) Live Annotate this timeline
 </template>
