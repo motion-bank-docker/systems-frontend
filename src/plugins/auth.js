@@ -30,14 +30,18 @@ class AuthService extends TinyEmitter {
     const _this = this
     return new Promise((resolve, reject) => {
       if (!localStorage.getItem('access_token')) return resolve()
-      this.webAuth.checkSession({}, (err, authResult) => {
-        if (err) {
-          console.log('check session error', err)
-          return reject(err)
-        }
-        _this.setSession(authResult)
-        resolve(authResult)
-      })
+      const expires = JSON.parse(localStorage.getItem('expires_at'))
+      if (expires > new Date().getTime()) resolve({ accessToken: localStorage.getItem('user') })
+      else {
+        this.webAuth.checkSession({}, (err, authResult) => {
+          if (err) {
+            console.log('check session error', err)
+            return reject(err)
+          }
+          _this.setSession(authResult)
+          resolve(authResult)
+        })
+      }
     }).then(authResult => {
       if (authResult) return _this.getUserInfo(authResult.accessToken)
     })
@@ -77,9 +81,7 @@ class AuthService extends TinyEmitter {
   setSession (authResult) {
     console.debug('Auth0 Result', authResult)
     // Set the time that the Access Token will expire at
-    const expiresAt = JSON.stringify(
-      authResult.expiresIn * 1000 + new Date().getTime()
-    )
+    const expiresAt = JSON.stringify(authResult.expiresIn * 1000 + new Date().getTime())
     if (typeof authResult.scope === 'string') this._scope = authResult.scope.split(' ')
     localStorage.setItem('access_token', authResult.accessToken)
     localStorage.setItem('id_token', authResult.idToken)
