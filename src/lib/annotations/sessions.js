@@ -50,8 +50,8 @@ const groupBySessions = async function (annotations, secondsDist = constants.SES
     if (!session.start) {
       session.start = TimelineSelector.fromDateTime(a.target.selector.value)
     }
-    let seconds = TimelineSelector.timeBetween(session.start, TimelineSelector.fromDateTime(a.target.selector.value))
-    seconds = seconds ? seconds.as('seconds') : 0.0
+    let duration = TimelineSelector.timeBetween(session.start, TimelineSelector.fromDateTime(a.target.selector.value))
+    duration = duration ? duration.as('seconds') : 0.0
     if (lastDatetime) {
       const dist = TimelineSelector.timeBetween(lastDatetime, TimelineSelector.fromDateTime(a.target.selector.value))
       if (dist.as('seconds') >= secondsDist || i === annotations.length - 1) {
@@ -62,15 +62,15 @@ const groupBySessions = async function (annotations, secondsDist = constants.SES
           const s = SessionHelpers.annotationToSessionTime(video.meta.duration, video.annotation, session)
           session.duration = Math.max(session.duration, s)
         })
-        session.annotations.push({ annotation: a, seconds, active: false })
+        session.annotations.push({ annotation: a, duration, active: false })
         sessions.push(session)
         session = ObjectUtil.merge({}, defaultSession)
       }
       else {
-        session.annotations.push({ annotation: a, seconds, active: false })
+        session.annotations.push({ annotation: a, duration, active: false })
       }
     }
-    else session.annotations.push({ annotation: a, seconds, active: false })
+    else session.annotations.push({ annotation: a, duration, active: false })
     lastDatetime = TimelineSelector.fromDateTime(a.target.selector.value)
   }
   return { sessions, videos }
