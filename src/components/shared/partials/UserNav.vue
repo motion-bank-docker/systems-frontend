@@ -30,9 +30,10 @@
       @click="currentApp = 'site.help'; $router.push({ name: 'site.help' })",
       v-if="userState")
 
-    q-btn(color="primary", flat,
-    @click="currentApp = 'site.imprint'; $router.push({ name: 'site.imprint' })",
-    v-if="userState") {{ $t('navigation.imprint') }}
+    //
+      q-btn(color="primary", flat,
+      @click="currentApp = 'site.imprint'; $router.push({ name: 'site.imprint' })",
+      v-if="userState") {{ $t('navigation.imprint') }}
 
     q-btn(color="primary", flat, icon="settings",
     v-if="userState", @click="$router.push({ name: 'users.manage', params: { id: 'me' } })") {{ userState.name }}
