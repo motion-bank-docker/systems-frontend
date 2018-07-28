@@ -46,7 +46,8 @@ module.exports = function (ctx) {
         AUTH0_REDIRECT_URL: JSON.stringify(process.env.AUTH0_REDIRECT_URL || 'https://app.motionbank.org/users/callback'),
         AUTH0_AUDIENCE: JSON.stringify(process.env.AUTH0_AUDIENCE || 'https://api.motionbank.org'),
         YOUTUBE_API_KEY: JSON.stringify(process.env.YOUTUBE_API_KEY || 'AIzaSyDaKNfEmbMn6Ee-8Ah2Ywnme-LJrt59cAM'),
-        VIMEO_ACCESS_TOKEN: JSON.stringify(process.env.VIMEO_ACCESS_TOKEN || 'ff53a8fbe415dbf9198fe6cf7fdc7ee1')
+        VIMEO_ACCESS_TOKEN: JSON.stringify(process.env.VIMEO_ACCESS_TOKEN || 'ff53a8fbe415dbf9198fe6cf7fdc7ee1'),
+        IS_STAGING: JSON.stringify(process.env.VIMEO_ACCESS_TOKEN || false)
       }
     },
     devServer: {

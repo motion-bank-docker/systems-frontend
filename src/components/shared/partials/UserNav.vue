@@ -10,6 +10,7 @@
         big, flat
         ) Piecemaker
       q-btn(
+        v-if="staging",
         :color="currentApp === 'mosys' ? 'primary' : ''",
         @click="currentApp = 'mosys'; $router.push({ name: 'mosys.grids.list' })",
         big, flat
@@ -50,6 +51,7 @@
   export default {
     data () {
       return {
+        staging: process.env.IS_STAGING,
         currentApp: null
       }
     },
