@@ -7,7 +7,7 @@
       .row
         .col-md-12
           form-main(v-model="payload", :schema="schema")
-            q-btn.q-mr-md.bg-grey-9(slot="form-buttons-add", label="export archive")
+            q-btn.q-mr-md.bg-grey-9(q-if="$route.params.id", slot="form-buttons-add", :label="exportLabel", @click="exportTimeline")
       // .row
       //   .col-md-12
       //     tags(v-if="payload", :targetUuid="payload.uuid", fullWidth)
@@ -21,6 +21,8 @@
   import { required } from 'vuelidate/lib/validators'
   import constants from '../../../lib/constants'
 
+  import { openURL } from 'quasar'
+
   export default {
     components: {
       FormMain,
@@ -30,6 +32,8 @@
     data () {
       const _this = this
       return {
+        downloadURL: undefined,
+        exportLabel: this.$t('buttons.export_timeline'),
         type: constants.MAP_TYPE_TIMELINE,
         payload: this.$route.params.id ? _this.$store.dispatch('maps/get', _this.$route.params.id) : undefined,
         schema: {
@@ -51,6 +55,24 @@
             }
           }
         }
+      }
+    },
+    methods: {
+      exportTimeline () {
+        const _this = this
+        if (this.downloadURL) return openURL(this.downloadURL)
+        this.$axios.post(
+          `${process.env.API_HOST}/archives/maps`,
+          { id: this.$route.params.id },
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.access_token}`
+            }
+          }
+        ).then(result => {
+          _this.downloadURL = `${process.env.API_HOST}/archives/maps/${result.data}`
+          _this.exportLabel = _this.$t('buttons.download_archive')
+        })
       }
     }
   }
