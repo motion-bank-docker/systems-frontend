@@ -35,7 +35,8 @@ export default {
     {
       path: 'manage',
       name: 'users.manage',
-      component: () => import('pages/shared/users/manage')
+      component: () => import('pages/shared/users/manage'),
+      meta: {private: true}
     }
   ]
 }
