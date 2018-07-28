@@ -107,7 +107,7 @@ export default {
     maps: 'Maps',
     contact: 'Contact',
     imprint: 'Imprint',
-    github: 'GitHub',
+    repo: 'GitLab',
     logout: 'Sign Out',
     login: 'Sign In',
     manage_account: 'Account',

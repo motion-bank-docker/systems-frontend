@@ -13,7 +13,7 @@
 
     .group(v-bind:class="{ 'absolute-bottom-right': positionCorners, 'layout-padding': positionCorners }")
       small.generic-margin
-        a(@click="openURL('https://github.com/motionbank')") {{ $t('navigation.github') }}
+        a(@click="openURL('https://gitlab.rlp.net/motionbank')") {{ $t('navigation.repo') }}
       small {{ $t('site.version') }}: v{{ version }}
       small {{ $t('site.license') }}: {{ license }}
 
