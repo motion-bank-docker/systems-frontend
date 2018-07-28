@@ -47,19 +47,6 @@
                 minLength: minLength(2)
               }
             },
-            /* email: {
-              type: 'text',
-              label: 'labels.email',
-              errorLabel: 'errors.invalid_email',
-              validators: {
-                required,
-                email
-              }
-            },
-            location: {
-              type: 'text',
-              label: 'labels.location'
-            }, */
             organisation: {
               type: 'text',
               label: 'labels.organisation'

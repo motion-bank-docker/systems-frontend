@@ -8,6 +8,16 @@ export default {
       component: () => import('pages/shared/users/callback')
     },
     {
+      path: 'firstlogin',
+      name: 'users.firstlogin',
+      component: () => import('pages/shared/users/auth0-action')
+    },
+    {
+      path: 'resetpass',
+      name: 'users.resetpass',
+      component: () => import('pages/shared/users/auth0-action')
+    },
+    {
       path: 'create',
       name: 'users.create',
       component: () => import('pages/shared/users/create')
