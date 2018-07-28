@@ -17,7 +17,7 @@
           rect.cursor-pointer.moba-hover-timeline(width="100%", height="100%")
         circle.cursor-pointer.moba-svg-circle(v-for="n in 11", r="3", :cx="(diagramDimensions.currentWidth / 10) * n", :cy="diagramDimensions.height / 2", fill="rgba( 255, 255, 255, 1)")
 
-    data-table(:config="config", :title="'routes.piecemaker.timelines.list.title'",
+    data-table(:config="config", :title="'routes.piecemaker.timelines.list.title'", ref="listTable",
       path="maps", :query="query", base-path="timelines", :has-show="true")
       template(slot="buttons-left")
         q-btn(@click="$router.push({ name: 'piecemaker.timelines.create' })", color="primary") {{ $t('buttons.create_timeline') }}
@@ -113,7 +113,28 @@
             },
             {
               type: 'delete',
-              title: 'buttons.delete'
+              title: 'buttons.delete',
+              click: item => {
+                _this.$store.dispatch('annotations/find', { 'target.id': item.uuid }).then(async result => {
+                  for (let a of result.items) {
+                    await _this.$store.dispatch('annotations/delete', a.uuid)
+                  }
+                  await _this.$store.dispatch('maps/delete', item.uuid)
+                  this.$store.commit('notifications/addMessage', {
+                    body: 'messages.timeline_deleted',
+                    mode: 'alert',
+                    type: 'success'
+                  })
+                  this.$refs.listTable.request()
+                }).catch(err => {
+                  console.error('timeline delete failed', err.message)
+                  this.$store.commit('notifications/addMessage', {
+                    body: 'errors.timeline_delete_failed',
+                    mode: 'alert',
+                    type: 'error'
+                  })
+                })
+              }
             }
           ]
         }

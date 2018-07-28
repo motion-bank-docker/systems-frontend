@@ -59,7 +59,28 @@
             },
             {
               type: 'delete',
-              title: 'buttons.delete'
+              title: 'buttons.delete',
+              click: item => {
+                _this.$store.dispatch('annotations/find', { 'target.id': item.uuid }).then(async result => {
+                  for (let a of result.items) {
+                    await _this.$store.dispatch('annotations/delete', a.uuid)
+                  }
+                  await _this.$store.dispatch('maps/delete', item.uuid)
+                  this.$store.commit('notifications/addMessage', {
+                    body: 'messages.grid_deleted',
+                    mode: 'alert',
+                    type: 'success'
+                  })
+                  this.$refs.listTable.request()
+                }).catch(err => {
+                  console.error('grid delete failed', err.message)
+                  this.$store.commit('notifications/addMessage', {
+                    body: 'errors.grid_delete_failed',
+                    mode: 'alert',
+                    type: 'error'
+                  })
+                })
+              }
             }
           ]
         }

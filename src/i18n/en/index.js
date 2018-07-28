@@ -47,7 +47,9 @@ export default {
     invalid_password_confirmation: 'Passwords do not match',
     invalid_url: 'Invalid URL format',
     field_required: 'This field is mandatory',
-    has_duplicates: 'Import has existing items, please import as a copy'
+    has_duplicates: 'Import has existing items, please import as a copy',
+    grid_delete_failed: 'Failed to delete Grid',
+    timeline_delete_failed: 'Failed to delete Timeline'
   },
   labels: {
     annotations: 'Annotations',
@@ -95,7 +97,10 @@ export default {
     request_reset_success: 'Check your inbox for an email detailing how to reset your password.',
     update_success: 'Update successful',
     submit_success: 'Submission successful',
-    timeline_imported: 'Timeline imported successfully'
+    timeline_imported: 'Timeline imported successfully',
+    timeline_deleted: 'Timeline deleted',
+    grid_imported: 'Grid imported successfully',
+    grid_deleted: 'Grid deleted'
   },
   navigation: {
     annotate_video: 'Annotate Video',

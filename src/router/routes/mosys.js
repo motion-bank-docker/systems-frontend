@@ -49,24 +49,6 @@ export default {
       name: 'mosys.dashboard',
       meta: {private: true}
     },
-    {
-      path: 'listAllPublic',
-      component: () => import('pages/mosys/listAllPublic'),
-      name: 'mosys.listAllPublic',
-      meta: {private: true}
-    },
-    {
-      path: 'listPrivate',
-      component: () => import('pages/mosys/listPrivate'),
-      name: 'mosys.listPrivate',
-      meta: {private: true}
-    },
-    {
-      path: 'listGroups',
-      component: () => import('pages/mosys/listGroups'),
-      name: 'mosys.listGroups',
-      meta: {private: true}
-    },
     //
     //
     // Set
