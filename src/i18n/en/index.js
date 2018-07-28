@@ -160,7 +160,8 @@ export default {
       },
       manage: {
         title: 'Manage Account',
-        caption: 'Update your details and login credentials.'
+        caption: 'Update your details and login credentials.',
+        first_login: 'As this is your first login, please update your profile info.'
       }
     },
     site: {

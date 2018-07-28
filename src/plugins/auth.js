@@ -1,5 +1,6 @@
 import auth0 from 'auth0-js'
 import TinyEmitter from 'tiny-emitter'
+import { ObjectUtil, Assert } from 'mbjs-utils'
 
 class AuthService extends TinyEmitter {
   constructor (opts) {
@@ -77,6 +78,8 @@ class AuthService extends TinyEmitter {
           console.error('Auth0 User Info Error', err)
           return reject(err)
         }
+        Assert.isType(user.sub, 'string', 'user.sub must be string')
+        user.uuid = ObjectUtil.uuid5(user.sub)
         localStorage.setItem('user', JSON.stringify(user))
         _this._user = user
         _this.emit('auth-state', user)

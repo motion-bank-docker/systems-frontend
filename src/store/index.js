@@ -32,6 +32,7 @@ const store = new Vuex.Store({
     mosysGridEditorStore,
     annotations: makeResourceModule(apiClient, 'annotation'),
     maps: makeResourceModule(apiClient, 'map'),
+    profiles: makeResourceModule(apiClient, 'profile'),
     auth
   }
 })

@@ -11,6 +11,9 @@
         span.text-grey-6 {{ $t('routes.users.manage.title') }}
         br
         | {{ $t('routes.users.manage.caption') }}
+        div(v-if="isFirst")
+          br
+          | {{ $t('routes.users.manage.first_login') }}
       div(v-else)
         span.text-grey-6 {{ $t('routes.users.first_login.title') }}
         br
@@ -18,7 +21,7 @@
 
     // form-main(v-if="payload !== undefined", v-model="payload", :schema="schema")
     form-main(v-model="payload", :schema="schema")
-      q-btn.q-mr-md.bg-grey-9(v-if="state == 'manage-profile'", slot="form-buttons-add", label="close account")
+      q-btn.q-mr-md.bg-grey-9(v-if="!isFirst", slot="form-buttons-add", label="close account")
 
 </template>
 
@@ -26,15 +29,19 @@
   import CardFull from '../../../components/shared/layouts/CardFull'
   import { FormMain } from '../../../components/shared/forms'
   // import { required, sameAs, minLength, email } from 'vuelidate/lib/validators'
-  import { required, sameAs, minLength } from 'vuelidate/lib/validators'
+  import { required, minLength } from 'vuelidate/lib/validators'
   export default {
     components: {
       CardFull,
       FormMain
     },
+    mounted () {
+      this.isFirst = this.$route.params.isFirst
+    },
     data () {
       const context = this
       return {
+        isFirst: false,
         state: 'manage-profile',
         schema: {
           fields: {
@@ -50,36 +57,28 @@
             organisation: {
               type: 'text',
               label: 'labels.organisation'
-            },
-            password: {
-              type: 'password',
-              label: 'labels.password',
-              errorLabel: 'errors.invalid_password',
-              attributes: { autocomplete: 'section-login new-password' },
-              validators: {
-                minLength: minLength(6)
-              }
-            },
-            password_confirmation: {
-              type: 'password',
-              label: 'labels.password_confirmation',
-              errorLabel: 'errors.invalid_password_confirmation',
-              attributes: { autocomplete: 'section-login current-password-confirmation' },
-              validators: {
-                sameAsPassword: sameAs('password')
-              }
             }
           },
           submit: {
             handler () {
-              return context.$store.dispatch('users/patch',
-                [context.$store.state.auth.payload.userId, context.payload])
+              return context.$store.dispatch('profiles/patch', [context.$store.state.auth.user.uuid, context.payload]).then(() => {
+                return context.$store.dispatch('profiles/get', context.$store.state.auth.user.uuid)
+              }).then(profile => {
+                const user = context.$store.state.auth.user
+                user.profile = profile
+                context.$store.commit('auth/setUser', user)
+                localStorage.setItem('user', JSON.stringify(user))
+              }).then(() => {
+                if (context.$route.params.isFirst) {
+                  context.$router.push(context.$route.params.redirect.fullPath)
+                }
+              })
             },
             label: 'buttons.save',
             message: 'messages.update_success'
           }
         },
-        payload: context.$store.dispatch('users/get', context.$route.params.id)
+        payload: context.$store.dispatch('profiles/get', context.$store.state.auth.user.uuid)
       }
     }
   }
