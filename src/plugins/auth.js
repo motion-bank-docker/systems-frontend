@@ -28,7 +28,7 @@ class AuthService extends TinyEmitter {
     this.webAuth.logout({ returnTo: process.env.UI_HOST })
   }
 
-  checkSession () {
+  checkSession (store) {
     const _this = this
     return new Promise((resolve, reject) => {
       if (!localStorage.getItem('access_token')) return resolve()
@@ -45,11 +45,11 @@ class AuthService extends TinyEmitter {
         })
       }
     }).then(authResult => {
-      if (authResult) return _this.getUserInfo(authResult.accessToken)
+      if (authResult) return _this.getUserInfo(authResult.accessToken, store)
     })
   }
 
-  handleAuthentication () {
+  handleAuthentication (store) {
     const _this = this
     return new Promise((resolve, reject) => {
       _this.webAuth.parseHash({ hash: window.location.hash }, function (err, authResult) {
@@ -61,17 +61,18 @@ class AuthService extends TinyEmitter {
         resolve(authResult)
       })
     }).then(authResult => {
-      return _this.getUserInfo(authResult.accessToken)
+      return _this.getUserInfo(authResult.accessToken, store)
     })
   }
 
-  getUserInfo (token) {
+  getUserInfo (token, store) {
     const _this = this
+    let first = false
     return new Promise((resolve, reject) => {
       if (localStorage.getItem('user')) {
         const user = JSON.parse(localStorage.getItem('user'))
         _this.emit('auth-state', user)
-        resolve(user)
+        resolve({ user, first })
       }
       _this.webAuth.client.userInfo(token, function (err, user) {
         if (err) {
@@ -80,17 +81,36 @@ class AuthService extends TinyEmitter {
         }
         Assert.isType(user.sub, 'string', 'user.sub must be string')
         user.uuid = ObjectUtil.uuid5(user.sub)
-        localStorage.setItem('user', JSON.stringify(user))
-        _this._user = user
-        _this.emit('auth-state', user)
-        resolve(user)
+        store.dispatch('profiles/get', user.uuid).then(profile => {
+          user.profile = profile
+          _this.setUser(user, store)
+          resolve({ user, first })
+        }).catch(err => {
+          console.debug('router: unable to fetch user profile', err.message)
+          first = true
+          const profile = {
+            user: user.uuid,
+            name: user.name.indexOf('@') !== -1 ? user.nickname || '' : user.name
+          }
+          store.dispatch('profiles/post', profile).then(profile => {
+            user.profile = profile
+            _this.setUser(user, store)
+            resolve({ user, first })
+          })
+        })
       })
     })
   }
 
+  setUser (user, store) {
+    this._user = user
+    localStorage.setItem('user', JSON.stringify(user))
+    this.emit('auth-state', user)
+    store.commit('auth/setUser', user)
+  }
+
   setSession (authResult) {
     console.debug('Auth0 Result', authResult)
-    // Set the time that the Access Token will expire at
     const expiresAt = JSON.stringify(authResult.expiresIn * 1000 + new Date().getTime())
     if (typeof authResult.scope === 'string') this._scope = authResult.scope.split(' ')
     localStorage.setItem('access_token', authResult.accessToken)

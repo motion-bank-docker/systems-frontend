@@ -69,7 +69,7 @@
                 context.$store.commit('auth/setUser', user)
                 localStorage.setItem('user', JSON.stringify(user))
               }).then(() => {
-                if (context.$route.params.isFirst) {
+                if (context.$route.params.isFirst && context.$route.params.redirect) {
                   context.$router.push(context.$route.params.redirect.fullPath)
                 }
               })

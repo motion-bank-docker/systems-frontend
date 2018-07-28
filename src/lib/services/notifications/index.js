@@ -3,7 +3,6 @@ import { mapGetters } from 'vuex'
 
 const notifications = {
   data () {
-    console.log('initiit')
     return {
       alertInstance: undefined
     }
@@ -18,7 +17,6 @@ const notifications = {
   },
   watch: {
     messages (val) {
-      console.log('messages', val)
       if (!Array.isArray(val) || val.length === 0) {
         return
       }
