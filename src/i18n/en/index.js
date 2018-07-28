@@ -30,13 +30,24 @@ export default {
     synchronize: 'Sync',
     videos: 'Videos'
   },
+  forms: {
+    timelines: {
+      import: {
+        title: 'Upload timeline archive',
+        fields: {
+          title: 'New title (optional, creates a copy)'
+        }
+      }
+    }
+  },
   errors: {
     unknown: 'Unknown Error',
     invalid_email: 'Please enter a valid email',
     invalid_password: 'Password must be min. 6 characters long',
     invalid_password_confirmation: 'Passwords do not match',
     invalid_url: 'Invalid URL format',
-    field_required: 'This field is mandatory'
+    field_required: 'This field is mandatory',
+    has_duplicates: 'Import has existing items, please import as a copy'
   },
   labels: {
     annotations: 'Annotations',
@@ -83,7 +94,8 @@ export default {
     registration_success_confirm: 'Account was successfully created. Check your inbox to confirm your email!',
     request_reset_success: 'Check your inbox for an email detailing how to reset your password.',
     update_success: 'Update successful',
-    submit_success: 'Submission successful'
+    submit_success: 'Submission successful',
+    timeline_imported: 'Timeline imported successfully'
   },
   navigation: {
     annotate_video: 'Annotate Video',

@@ -131,7 +131,8 @@ module.exports = function (ctx) {
         // Other Components
         //
         'QIcon',
-        'QChip'
+        'QChip',
+        'QUploader'
       ],
       directives: [
         'Ripple',

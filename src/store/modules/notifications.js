@@ -3,6 +3,9 @@ const notifications = {
   state: {
     messages: []
   },
+  getters: {
+    getMessages: state => state.messages
+  },
   mutations: {
     addMessage: (state, message) => {
       state.messages.push(message)
