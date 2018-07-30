@@ -13,7 +13,7 @@
       template(v-if="i > 0")
         q-item-separator
 
-      q-item(draggable="true", @dragstart="event => {handleItemDragStart(event, item)}")
+      q-item(draggable="true", @dragstart.native="event => {handleItemDragStart(event, item)}")
         q-field(
           :icon="typeToIconName(item.type)", :helper="item.help", :error="item.error",
           :error-label="item.errorMessage", style="width: 100%")

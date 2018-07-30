@@ -1,7 +1,5 @@
-// FIXME: notifications are broken!
-
-// import alert from './alert'
-// import toast from './toast'
+import notification from './notification'
+import { mapGetters } from 'vuex'
 
 const notifications = {
   data () {
@@ -13,9 +11,9 @@ const notifications = {
     this.removeAlert()
   },
   computed: {
-    messages () {
-      return this.$store.state.notifications.messages
-    }
+    ...mapGetters({
+      messages: 'notifications/getMessages'
+    })
   },
   watch: {
     messages (val) {
@@ -27,18 +25,7 @@ const notifications = {
       this.removeAlert()
       while (messages.length > 0) {
         const msg = messages.pop()
-        if (msg.mode === 'alert') {
-          /**
-           * Show Alert
-           */
-          // this.alertInstance = this.alert(this.$t(msg.body), msg.type, {icon: msg.icon})
-        }
-        else {
-          /**
-           * Show Toast (default)
-           */
-          // this.toast(this.$t(msg.body), msg.type, {icon: msg.icon})
-        }
+        notification(this.$t(msg.body), msg.type, {icon: msg.icon})
       }
     }
   },
@@ -49,11 +36,6 @@ const notifications = {
         this.alertInstance = undefined
       }
     }
-    /**
-     * Registered Display Methods
-     */
-    // alert,
-    // toast
   },
   render: h => h('div')
 }

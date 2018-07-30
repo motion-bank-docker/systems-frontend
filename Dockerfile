@@ -1,4 +1,4 @@
-FROM smebberson/alpine-nginx:1
+FROM nginx:1-alpine
 MAINTAINER Motion Bank
 
 RUN ln -sf /dev/stdout /var/log/nginx/access.log && \

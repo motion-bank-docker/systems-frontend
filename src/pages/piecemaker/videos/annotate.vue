@@ -11,7 +11,7 @@
       // BUTTONS
       //
       div.absolute-top.q-mt-sm.q-ml-sm
-        q-btn(@click="$router.push('/piecemaker/groups/' + groupId + '/videos')",
+        q-btn(@click="$router.push(timelines + gtimelines + '/videos')",
         color="grey", icon="keyboard_backspace", round, flat, small)
         q-btn(v-if="!fullscreen", @click="toggleFullscreen(), fullscreenHandler()", icon="fullscreen", round, flat, small)
         q-btn(v-if="fullscreen", @click="toggleFullscreen(), fullscreenHandler()", icon="fullscreen_exit", round, flat, small)

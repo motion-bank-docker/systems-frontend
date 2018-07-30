@@ -9,14 +9,15 @@ export default {
     add_and_go: 'Add & Go',
     back: 'Back',
     create_account: 'Create Account',
-    // create_group: 'Create Group',
-    create_group: 'Create Timeline',
+    create_timeline: 'Create Timeline',
     create_grid: 'Create Grid',
     cancel: 'Cancel',
     change: 'Change',
     delete: 'Delete',
+    download_archive: 'Download Archive',
     done: 'Done',
     edit: 'Edit',
+    export_timeline: 'Export Timeline',
     forgot_password: 'Forgot Password',
     live_annotate: 'Live Annotate',
     login: 'Sign In',
@@ -29,13 +30,26 @@ export default {
     synchronize: 'Sync',
     videos: 'Videos'
   },
+  forms: {
+    timelines: {
+      import: {
+        title: 'Upload timeline archive',
+        fields: {
+          title: 'New title (optional, creates a copy)'
+        }
+      }
+    }
+  },
   errors: {
     unknown: 'Unknown Error',
     invalid_email: 'Please enter a valid email',
     invalid_password: 'Password must be min. 6 characters long',
     invalid_password_confirmation: 'Passwords do not match',
     invalid_url: 'Invalid URL format',
-    field_required: 'This field is mandatory'
+    field_required: 'This field is mandatory',
+    has_duplicates: 'Import has existing items, please import as a copy',
+    grid_delete_failed: 'Failed to delete Grid',
+    timeline_delete_failed: 'Failed to delete Timeline'
   },
   labels: {
     annotations: 'Annotations',
@@ -50,8 +64,8 @@ export default {
     email: 'Email',
     embedded: 'Embedded in',
     elements_length: 'Used Elements',
-    // group_title: 'Group title',
-    group_title: 'Timeline title',
+    // timeline_title: 'Group title',
+    timeline_title: 'Timeline title',
     grid_title: 'Grid title',
     last_annotation: 'Last annotated',
     last_edit: 'Last edit',
@@ -82,14 +96,18 @@ export default {
     registration_success_confirm: 'Account was successfully created. Check your inbox to confirm your email!',
     request_reset_success: 'Check your inbox for an email detailing how to reset your password.',
     update_success: 'Update successful',
-    submit_success: 'Submission successful'
+    submit_success: 'Submission successful',
+    timeline_imported: 'Timeline imported successfully',
+    timeline_deleted: 'Timeline deleted',
+    grid_imported: 'Grid imported successfully',
+    grid_deleted: 'Grid deleted'
   },
   navigation: {
     annotate_video: 'Annotate Video',
     maps: 'Maps',
     contact: 'Contact',
     imprint: 'Imprint',
-    github: 'GitHub',
+    repo: 'GitLab',
     logout: 'Sign Out',
     login: 'Sign In',
     manage_account: 'Account',
@@ -147,7 +165,8 @@ export default {
       },
       manage: {
         title: 'Manage Account',
-        caption: 'Update your details and login credentials.'
+        caption: 'Update your details and login credentials.',
+        first_login: 'As this is your first login, please update your profile info.'
       }
     },
     site: {
@@ -169,11 +188,11 @@ export default {
         title: 'Add',
         caption: 'Add an URL'
       },
-      groups: {
+      timelines: {
         create: {
           title: 'New Timeline',
-          // caption: 'Create a group representing a global timeline.'
-          caption: 'Create a global group timeline.'
+          // caption: 'Create a timeline representing a global timeline.'
+          caption: 'Create a global timeline.'
         },
         edit: {
           title: 'Edit Timeline',
@@ -207,7 +226,7 @@ export default {
         },
         create: {
           title: 'Add Video',
-          caption: 'Add a new video to your group.'
+          caption: 'Add a new video to your timeline.'
         }
       }
     },

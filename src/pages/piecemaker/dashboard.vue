@@ -11,9 +11,9 @@
             .row.justify-between.items-between
               h4 Groups
               div
-                q-btn(@click="$router.push('/piecemaker/groups')", flat, color="primary") All Groups
-                q-btn(@click="$router.push('/piecemaker/groups/create')", flat, color="primary") New Group
-          q-item(v-for="item in groups", :key="item.uuid", link, exact, :to="'/piecemaker/groups/' + item.uuid")
+                q-btn(@click="$router.push('/piecemaker/timelines')", flat, color="primary") All Groups
+                q-btn(@click="$router.push('/piecemaker/timelines/create')", flat, color="primary") New Group
+          q-item(v-for="item in timelines", :key="item.uuid", link, exact, :to="'/piecemaker/timelines/' + item.uuid")
             q-item-main
               q-item-tile(label) {{ item.title }}
               q-item-tile(sublabel) {{ item.description }}
@@ -39,7 +39,7 @@
     },
     data () {
       return {
-        groups: [],
+        timelines: [],
         videos: []
       }
     },
@@ -47,7 +47,7 @@
       const _this = this
       this.$store.dispatch('maps/find', { query: { type: constants.MAP_TYPE_TIMELINE } })
         .then(results => {
-          _this.groups = results
+          _this.timelines = results
         })
       this.$store.dispatch('annotations/find')
         .then(results => {

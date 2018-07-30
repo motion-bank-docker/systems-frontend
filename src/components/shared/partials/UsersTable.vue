@@ -157,7 +157,7 @@
         // const hl = this.headline
         switch (type) {
         case 'edit':
-            // return _this.$router.push({ name: 'piecemaker.groups.user' })
+            // return _this.$router.push({ name: 'piecemaker.timelines.user' })
           if (scope === 'grid') {
             return _this.$router.push({ name: 'mosys.grids.user' })
           }

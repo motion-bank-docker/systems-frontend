@@ -27,16 +27,26 @@ Router.beforeEach((to, from, next) => {
     else cb()
   }
   waitForStore(Router.app, () => {
-    if (!Router.app.$store.state.user && to.meta.private) {
-      Router.app.$auth.once('auth-state', user => {
-        console.debug('Auth0 state change', Router.app.$auth.hasScope('openid'))
-        Router.app.$store.commit('auth/setUser', user)
-        next()
-      })
-      Router.app.$auth.checkSession().catch(() => {
-        Router.app.$store.commit('auth/setRedirect', to)
-        Router.app.$auth.authenticate()
-        console.log(Router.app.$store.state)
+    if (!Router.app.$store.state.user) {
+      Router.app.$auth.checkSession(Router.app.$store).catch(() => {
+        if (to.meta.private) {
+          Router.app.$store.commit('auth/setRedirect', to)
+          Router.app.$auth.authenticate()
+        }
+      }).then(result => {
+        if (result) {
+          const { user, first } = result
+          if (first) {
+            console.debug('Auth0 first login', user)
+            next({ name: 'users.manage', params: { isFirst: true, redirect: to } })
+          }
+          else next()
+        }
+        else if (to.meta.private) {
+          Router.app.$store.commit('auth/setRedirect', to)
+          Router.app.$auth.authenticate()
+        }
+        else next()
       })
     }
     else next()

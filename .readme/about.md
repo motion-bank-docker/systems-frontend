@@ -33,3 +33,9 @@ npm run build
 ```shell
 npm run dev
 ```
+
+## Docker
+
+[![](https://images.microbadger.com/badges/image/motionbank/systems-frontend.svg)](https://microbadger.com/images/motionbank/systems-frontend "Get your own image badge on microbadger.com")
+
+The docker image can be pulled from `motionbank/systems-frontend:latest`
