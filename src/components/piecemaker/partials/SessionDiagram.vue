@@ -189,10 +189,14 @@
                       //
                       span(:class="[annotation.active ? 'text-primary' : '']") {{ annotation.annotation.body.value }}
 
-                    // ANNOTATION TAGS
-                    // erstmal drin lassen
+                    // ZITIER LINK
                     //
-                    .col-1
+                    .col-1.text-right.moba-edit
+                      q-btn.bg-dark.text-white.flip-horizontal.moba-border(icon="link", size="sm", round, flat)
+
+                      // ANNOTATION TAGS
+                      // erstmal drin lassen
+                      //
                       // div(v-if="annotation.tags.length > 0")
                         div.text-right
                           span
