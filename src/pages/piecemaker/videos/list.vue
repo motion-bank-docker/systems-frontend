@@ -68,7 +68,7 @@
     data () {
       const _this = this
       return {
-        query: { 'body.purpose': 'linking', 'target.id': this.$route.params.groupId },
+        query: { 'body.purpose': 'linking', 'target.id': `${process.env.TIMELINE_BASE_URI}${this.$route.params.groupId}` },
         config: {
           columns: [
             {

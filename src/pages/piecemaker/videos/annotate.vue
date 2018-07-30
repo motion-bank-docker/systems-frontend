@@ -62,6 +62,8 @@
   import VideoPlayer from '../../../components/shared/media/VideoPlayer'
   import annotations from '../../../lib/annotations'
   import constants from '../../../lib/constants'
+  import parseURI from '../../../lib/parse-uri'
+  import parseSelector from '../../../lib/parse-selector'
   import Username from '../../../components/shared/partials/Username'
 
   const TimelineSelector = annotations.selectors.TimelineSelector
@@ -90,7 +92,7 @@
         playerTime: 0.0,
         currentIndex: undefined,
         video: undefined,
-        groupId: undefined,
+        timelineId: undefined,
         baseSelector: undefined,
         active: false,
         annotations: [],
@@ -135,9 +137,9 @@
         return this.$store.dispatch('annotations/get', _this.$route.params.id)
           .then(result => {
             if (result.body) {
-              _this.groupId = result.target.id
+              _this.timelineId = parseURI(result.target.id).uuid
               _this.video = result
-              _this.baseSelector = TimelineSelector.fromISOString(result.target.selector.value)
+              _this.baseSelector = parseSelector(result.target.selector.value).start
             }
           })
       },
@@ -145,7 +147,7 @@
         const
           _this = this,
           query = {
-            'target.id': _this.groupId,
+            'target.id': `${process.env.TIMELINE_BASE_URI}${_this.timelineId}`,
             'target.type': constants.MAP_TYPE_TIMELINE,
             'body.type': 'TextualBody'
           }
@@ -179,7 +181,7 @@
         const annotation = {
           body: ObjectUtil.merge({}, _this.currentBody),
           target: {
-            id: _this.groupId,
+            id: `${process.env.TIMELINE_BASE_URI}${_this.timelineId}`,
             type: constants.MAP_TYPE_TIMELINE,
             selector: ObjectUtil.merge({}, _this.currentSelector)
           }
@@ -212,7 +214,7 @@
           .then(() => this.getAnnotations())
       },
       gotoSelector (selector) {
-        selector = TimelineSelector.fromISOString(selector)
+        selector = parseSelector(selector).start
         selector.subtract(this.baseSelector.millis)
         this.player.currentTime(selector.millis * 0.001)
       },
@@ -220,7 +222,7 @@
         this.player = player
       },
       formatSelectorForList (val) {
-        const selector = TimelineSelector.fromISOString(val)
+        const selector = parseSelector(val).start
         // selector.subtract(this.baseSelector.millis)
         return selector.toFormat(constants.TIMECODE_FORMAT)
       },
@@ -236,7 +238,7 @@
           selector, idx = 0, running = true
         while (running && this.annotations[idx]) {
           selector = this.annotations[idx].target.selector
-            ? TimelineSelector.fromISOString(this.annotations[idx].target.selector.value) : undefined
+            ? parseSelector(this.annotations[idx].target.selector.value).start : undefined
           running = selector && baseMillis < selector.millis
           if (!running) this.currentIndex = idx
           if (idx >= annoCount) break

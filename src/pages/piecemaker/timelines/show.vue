@@ -274,7 +274,7 @@
           _this.map = map
           console.log(map)
         })
-      this.$store.dispatch('annotations/find', { 'target.id': uuid })
+      this.$store.dispatch('annotations/find', { 'target.id': `${process.env.TIMELINE_BASE_URI}${uuid}` })
         .then(annotations => {
           return groupBySessions(annotations.items, 90) // geteilt
           // return groupBySessions(annotations.items)
@@ -286,7 +286,7 @@
     },
     methods: {
       moveTooltip () {
-        console.log('xxxx')
+        // console.log('xxxx')
         this.barTooltip.cursorX = event.clientX
         this.barTooltip.cursorY = event.clientY
       },

@@ -5,13 +5,14 @@ import TimelineSelector from './selectors/timeline'
 import { ObjectUtil } from 'mbjs-utils'
 import { guessType, getMetaData } from './videos'
 import SessionHelpers from './session-helpers'
+import parseSelector from '../parse-selector'
 
 const resurrectAnnotation = function (annotation) {
   if (typeof annotation.created === 'string') annotation.created = DateTime.fromISO(annotation.created)
   if (typeof annotation.updated === 'string') annotation.updated = DateTime.fromISO(annotation.updated)
   if (annotation.target && annotation.target.selector) {
     if (typeof annotation.target.selector.value === 'string') {
-      annotation.target.selector.value = DateTime.fromISO(annotation.target.selector.value)
+      annotation.target.selector.value = parseSelector(annotation.target.selector.value).dateTime
     }
   }
   return annotation
@@ -50,14 +51,14 @@ const groupBySessions = async function (annotations, secondsDist = constants.SES
   for (let i = 0; i < annotations.length; i++) {
     const a = annotations[i]
     if (!session.start) {
-      session.start = TimelineSelector.fromDateTime(a.target.selector.value)
+      session.start = parseSelector(a.target.selector.value).start
     }
-    let duration = TimelineSelector.timeBetween(session.start, TimelineSelector.fromDateTime(a.target.selector.value))
+    let duration = TimelineSelector.timeBetween(session.start, parseSelector(a.target.selector.value).start)
     duration = duration ? duration.as('seconds') : 0.0
     if (lastDatetime) {
-      const dist = TimelineSelector.timeBetween(lastDatetime, TimelineSelector.fromDateTime(a.target.selector.value))
+      const dist = TimelineSelector.timeBetween(lastDatetime, parseSelector(a.target.selector.value).start)
       if (dist.as('seconds') >= secondsDist || i === annotations.length - 1) {
-        session.end = TimelineSelector.fromDateTime(a.target.selector.value)
+        session.end = parseSelector(a.target.selector.value).start
         session.duration = TimelineSelector.timeBetween(session.start, session.end).as('seconds')
         videos.forEach(video => {
           // FIXME: end value stays wrong
@@ -73,7 +74,7 @@ const groupBySessions = async function (annotations, secondsDist = constants.SES
       }
     }
     else session.annotations.push({ annotation: a, duration, active: false })
-    lastDatetime = TimelineSelector.fromDateTime(a.target.selector.value)
+    lastDatetime = parseSelector(a.target.selector.value).start
   }
   return { sessions, videos }
 }

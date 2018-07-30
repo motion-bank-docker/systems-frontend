@@ -68,7 +68,7 @@
         const annotation = {
           body: ObjectUtil.merge({}, _this.currentBody),
           target: {
-            id: _this.$route.params.id,
+            id: `${process.env.TIMELINE_BASE_URI}${_this.$route.params.id}`,
             type: constants.MAP_TYPE_TIMELINE,
             selector: ObjectUtil.merge({}, _this.currentSelector)
           }

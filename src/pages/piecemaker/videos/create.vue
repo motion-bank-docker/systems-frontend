@@ -55,7 +55,7 @@
                   purpose: 'linking'
                 },
                 target: {
-                  id: _this.$route.params.groupId,
+                  id: `${process.env.TIMELINE_BASE_URI}${_this.$route.params.groupId}`,
                   type: constants.MAP_TYPE_TIMELINE,
                   selector: {
                     type: 'Fragment',
