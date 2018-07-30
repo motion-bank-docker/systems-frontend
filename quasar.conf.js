@@ -95,6 +95,7 @@ module.exports = function (ctx) {
         'QToggle',
         'QChipsInput',
         'QSearch',
+        'QDatetimePicker',
         //
         // Grouping
         //
