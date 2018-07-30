@@ -1,11 +1,12 @@
 <template lang="pug">
   full-screen
     q-btn(slot="backButton", @click="$router.push({ name: 'piecemaker.videos.list' })", icon="keyboard_backspace", round, small)
-    .q-pa-xl(style="min-width: 50vw;")
-      h5.caption(dark) {{ $t('routes.piecemaker.videos.create.title') }}
-      .row
-        .col-md-12
-          form-main(v-model="payload", :schema="schema")
+    // .q-pa-xl(style="min-width: 50vw;")
+    h5.caption(dark).text-center {{ $t('routes.piecemaker.videos.create.title') }}
+    .row
+      .col-md-8.offset-2
+        q-datetime.q-mb-xs(v-model="modelCalender", type="datetime", dark, clearable, modal, :placeholder="currentDate", float-label="Set date")
+        form-main(v-model="payload", :schema="schema")
 </template>
 
 <script>
@@ -27,7 +28,9 @@
       return {
         // FIXME: i know this is bullshit!!! (but i hope it works for now)
         apiPayload: undefined,
+        currentDate: DateTime.local().toLocaleString({ year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit', second: '2-digit' }),
         payload: undefined,
+        modelCalender: undefined,
         schema: {
           fields: {
             url: {
