@@ -235,7 +235,7 @@
         .then(map => {
           _this.map = map
         })
-      this.$store.dispatch('annotations/find', { query: { 'target.id': uuid } })
+      this.$store.dispatch('annotations/find', { query: { 'target.id': `${process.env.TIMELINE_BASE_URI}${uuid}` } })
         .then(annotations => {
           _this.annotations = annotations
           console.log(_this.annotations)
