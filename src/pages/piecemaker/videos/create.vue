@@ -5,7 +5,10 @@
     h5.caption(dark).text-center {{ $t('routes.piecemaker.videos.create.title') }}
     .row
       .col-md-8.offset-2
-        q-datetime.q-mb-xs(v-model="modelCalender", type="datetime", dark, clearable, modal, :placeholder="currentDate", float-label="Set date")
+        // | > {{ getDate(modelCalender) }} <
+        //
+          q-datetime.q-mb-xs(v-model="modelCalender", :before="[{icon: 'access_time'}]", type="datetime", format24h, dark, clearable, modal, :placeholder="currentDate", float-label="Set date")
+        q-datetime.q-mb-xs(v-model="modelCalender", :before="[{icon: 'event_note'}]", type="datetime", format24h, dark, clearable, modal, :placeholder="currentDate", float-label="Set date")
         form-main(v-model="payload", :schema="schema")
 </template>
 
@@ -13,6 +16,7 @@
   import FormMain from '../../../components/shared/forms/FormMain'
   import FullScreen from '../../../components/shared/layouts/FullScreen'
 
+  import { date } from 'quasar'
   import { DateTime } from 'luxon'
   import { required } from 'vuelidate/lib/validators'
   import { guessType } from '../../../lib/annotations/videos'
@@ -23,14 +27,22 @@
       FormMain,
       FullScreen
     },
+    methods: {
+      getDate (val) {
+        console.log(val, '11111111')
+        console.log(DateTime.local(), '22222222')
+        if (val) return date.formatDate(val, 'x')
+      }
+    },
     data () {
       const _this = this
       return {
         // FIXME: i know this is bullshit!!! (but i hope it works for now)
         apiPayload: undefined,
+        // currentDate: DateTime.local().toLocaleString({ year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit', second: '2-digit' }),
         currentDate: DateTime.local().toLocaleString({ year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit', second: '2-digit' }),
         payload: undefined,
-        modelCalender: undefined,
+        modelCalender: 1477298414674,
         schema: {
           fields: {
             url: {
