@@ -33,6 +33,7 @@ const store = new Vuex.Store({
     annotations: makeResourceModule(apiClient, 'annotation'),
     maps: makeResourceModule(apiClient, 'map'),
     profiles: makeResourceModule(apiClient, 'profile'),
+    sessions: makeResourceModule(apiClient, 'session'),
     auth
   }
 })

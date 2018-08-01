@@ -37,7 +37,7 @@
     "luxon": "^1.2.1",
     "mbjs-api-minimal-client": "^1.0.3",
     "mbjs-data-models": "0.0.8",
-    "mbjs-media": "0.0.8",
+    "mbjs-media": "0.0.9",
     "mbjs-utils": "^0.0.5",
     "pug": "^2.0.3",
     "sift": "^5.1.0",

@@ -41,13 +41,12 @@
 
 <script>
   import FullScreen from '../../../components/shared/layouts/FullScreen'
+  import { DateTime } from 'luxon'
   import {
     SessionDiagram,
     SessionFilter,
     SessionStream
   } from '../../../components/piecemaker/partials/sessions'
-
-  import groupBySessions from '../../../lib/annotations/sessions'
 
   export default {
     components: {
@@ -61,9 +60,13 @@
         uuid = this.$route.params.id,
         map = await this.$store.dispatch('maps/get', uuid)
       this.map = map
-      const annotations = await this.$store.dispatch('annotations/find',
-        { 'target.id': `${process.env.TIMELINE_BASE_URI}${uuid}` })
-      this.grouped = await groupBySessions(this.$store, annotations.items)
+      const grouped = await this.$store.dispatch('sessions/get', uuid)
+      grouped.sessions = grouped.sessions.map(session => {
+        session.start = DateTime.fromISO(session.start)
+        session.end = DateTime.fromISO(session.end)
+        return session
+      })
+      this.grouped = grouped
       console.log(map, this.grouped)
     },
     methods: {
