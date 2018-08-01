@@ -4,63 +4,65 @@
     // .q-pa-xl(style="min-width: 50vw;")
     h5.caption(dark).text-center {{ $t('routes.piecemaker.videos.create.title') }}
     .row
-      .col-xs-12.offset-xs-none.col-lg-10.offset-lg-1.col-xl-8.offset-xl-2
+      .col-xs-12.offset-xs-none.col-xl-10.offset-xl-1
 
         .row.q-mt-md
 
           // CALENDER
           //
-          q-collapsible.col-xs-12.col-lg-6(group="somegroup", icon="event_note", :label="formatDate(modelCalender, 'MMM Do, YYYY')")
-            q-card
-              q-datetime-picker.full-width(v-model="modelCalender", dark)
+          q-collapsible.col-xs-12.col-lg-6.q-mb-lg(group="somegroup", icon="event_note", :label="formatDate(modelCalender, 'MMM Do, YYYY')")
+            // q-card
+            q-datetime-picker.shadow-6.full-width(v-model="modelCalender", dark)
               // q-card-separator
                 | bhcbdhjs
-              // q-btn(@click="modelCalender = null", label="use current date")
+            .text-center.q-mt-sm
+              q-btn(@click="modelCalender = null", label="reset date")
 
           // TIME
           //
-          q-collapsible.col-xs-12.col-lg-6(group="somegroup", icon="access_time", :label="formatDate(modelCalender, 'HH:mm:ss:SSS')")
+          q-collapsible.col-xs-12.col-lg-6.q-mb-lg(group="somegroup", icon="access_time", :label="formatDate(modelCalender, 'HH:mm:ss:SSS')")
 
-            q-card
-              .q-list.no-border.q-px-lg
+            // q-card
+            .q-list.no-border.q-px-lg.shadow-6
 
-                // HOURS
-                q-item.no-padding
-                  q-item-side
-                    q-btn(@click="sliderHours--", round, size="sm", icon="remove", color="grey-9")
-                  q-item-main
-                    q-slider(v-model="sliderHours", :min="0", :max="23", label-always, :label-value="`${sliderHours}h`")
-                  q-item-side
-                    q-btn(@click="sliderHours++", round, size="sm", icon="add", dark, color="grey-9")
+              // HOURS
+              q-item.no-padding
+                q-item-side
+                  q-btn(@click="sliderHours--", round, size="sm", icon="remove", color="grey-9")
+                q-item-main
+                  q-slider(v-model="sliderHours", :min="0", :max="23", label-always, :label-value="`${sliderHours}h`")
+                q-item-side
+                  q-btn(@click="sliderHours++", round, size="sm", icon="add", dark, color="grey-9")
 
-                // MINUTES
-                q-item.no-padding
-                  q-item-side
-                    q-btn(@click="sliderMinutes--", round, size="sm", icon="remove", color="grey-9")
-                  q-item-main
-                    q-slider(v-model="sliderMinutes", :min="0", :max="59", label-always, :label-value="`${sliderMinutes}min`")
-                  q-item-side
-                    q-btn(@click="sliderMinutes++", round, size="sm", icon="add", dark, color="grey-9")
+              // MINUTES
+              q-item.no-padding
+                q-item-side
+                  q-btn(@click="sliderMinutes--", round, size="sm", icon="remove", color="grey-9")
+                q-item-main
+                  q-slider(v-model="sliderMinutes", :min="0", :max="59", label-always, :label-value="`${sliderMinutes}min`")
+                q-item-side
+                  q-btn(@click="sliderMinutes++", round, size="sm", icon="add", dark, color="grey-9")
 
-                // SECONDS
-                q-item.no-padding
-                  q-item-side
-                    q-btn(@click="sliderSeconds--", round, size="sm", icon="remove", color="grey-9")
-                  q-item-main
-                    q-slider(v-model="sliderSeconds", :min="0", :max="59", label-always, :label-value="`${sliderSeconds}s`")
-                  q-item-side
-                    q-btn(@click="sliderSeconds++", round, size="sm", icon="add", dark, color="grey-9")
+              // SECONDS
+              q-item.no-padding
+                q-item-side
+                  q-btn(@click="sliderSeconds--", round, size="sm", icon="remove", color="grey-9")
+                q-item-main
+                  q-slider(v-model="sliderSeconds", :min="0", :max="59", label-always, :label-value="`${sliderSeconds}s`")
+                q-item-side
+                  q-btn(@click="sliderSeconds++", round, size="sm", icon="add", dark, color="grey-9")
 
-                // MILLISECONDS
-                q-item.no-padding
-                  q-item-side
-                    q-btn(@click="sliderMilliseconds--", round, size="sm", icon="remove", color="grey-9")
-                  q-item-main
-                    q-slider(v-model="sliderMilliseconds", :min="0", :max="999", label-always, :label-value="`${sliderMilliseconds}ms`")
-                  q-item-side
-                    q-btn(@click="sliderMilliseconds++", round, size="sm", icon="add", dark, color="grey-9")
+              // MILLISECONDS
+              q-item.no-padding
+                q-item-side
+                  q-btn(@click="sliderMilliseconds--", round, size="sm", icon="remove", color="grey-9")
+                q-item-main
+                  q-slider(v-model="sliderMilliseconds", :min="0", :max="999", label-always, :label-value="`${sliderMilliseconds}ms`")
+                q-item-side
+                  q-btn(@click="sliderMilliseconds++", round, size="sm", icon="add", dark, color="grey-9")
 
-              q-btn(label="set current time")
+            .text-center.q-mt-sm
+              q-btn(@click="modelCalender = null", label="Reset time")
 
         form-main(v-model="payload", :schema="schema")
 
