@@ -4,7 +4,7 @@ import forms from './modules/forms'
 import makeResourceModule from './modules/make-resource-module'
 import auth from './modules/auth'
 
-import WebAuth from 'mbjs-api-minimal-client/src/web'
+import WebAuth from 'mbjs-api-client/src/web'
 import Vue from 'vue'
 import Vuex from 'vuex'
 

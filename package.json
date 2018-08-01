@@ -35,7 +35,7 @@
     "bluebird": "^3.5.1",
     "he": "^1.1.1",
     "luxon": "^1.2.1",
-    "mbjs-api-minimal-client": "^1.0.3",
+    "mbjs-api-client": "^1.0.4",
     "mbjs-data-models": "0.0.8",
     "mbjs-media": "0.0.9",
     "mbjs-utils": "^0.0.5",
