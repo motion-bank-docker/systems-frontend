@@ -56,15 +56,17 @@
 
 <script>
   import { scroll, AppFullscreen } from 'quasar'
-  const { getScrollTarget, setScrollPosition } = scroll
-  import { ObjectUtil, Assert } from 'mbjs-utils'
   import uuidValidate from 'uuid-validate'
-  import VideoPlayer from '../../../components/shared/media/VideoPlayer'
-  import constants from 'mbjs-data-models/src'
-  import { parseURI, parseSelector, Sorting } from 'mbjs-data-models/src/lib'
-  import Username from '../../../components/shared/partials/Username'
-  import { getMetaData } from 'mbjs-media/src/util/metadata'
   import { DateTime } from 'luxon'
+
+  import { ObjectUtil, Assert } from 'mbjs-utils'
+  import constants from 'mbjs-data-models/src/constants'
+  import { parseURI, parseSelector, Sorting } from 'mbjs-data-models/src/lib'
+
+  import VideoPlayer from '../../../components/shared/media/VideoPlayer'
+  import Username from '../../../components/shared/partials/Username'
+
+  const { getScrollTarget, setScrollPosition } = scroll
 
   export default {
     components: {
@@ -149,7 +151,10 @@
           this.video = result
           this.selector = parseSelector(result.target.selector.value)
           this.baseSelector = this.selector.start
-          this.metadata = await getMetaData(result, this.$store)
+          this.metadata = await this.$store.dispatch('metadata/get', result.uuid)
+          if (this.metadata.duration && !this.selector.end) {
+            this.selector.end = DateTime.fromISO(this.selector.start.toISO()).plus(this.metadata.duration * 1000)
+          }
         }
       },
       async getAnnotations () {
@@ -168,7 +173,6 @@
         if (this.selector.end) {
           query['target.selector.value']['$lte'] = this.selector.end.toISO()
         }
-        console.debug('QUERY', query)
         const results = await this.$store.dispatch('annotations/find', query)
         if (results && Array.isArray(results.items)) {
           _this.annotations = results.items.sort(Sorting.sortOnTarget)
@@ -184,9 +188,9 @@
         else {
           window.removeEventListener('keypress', this.toggleForm)
           if (!this.player) return
-          const selector = DateTime.fromISO(this.baseSelector.toISO())
+          let selector = DateTime.fromISO(this.baseSelector.toISO())
           let seconds = this.player.currentTime()
-          selector.plus(seconds * 1000)
+          selector = selector.plus(seconds * 1000)
           this.currentSelector.value = selector.toISO()
           this.active = true
         }
@@ -229,9 +233,8 @@
           .then(() => this.getAnnotations())
       },
       gotoSelector (selector) {
-        selector = parseSelector(selector).start
-        selector.subtract(this.baseSelector.toMillis())
-        this.player.currentTime(selector.toMillis() * 0.001)
+        const millis = parseSelector(selector).start.toMillis() - this.baseSelector.toMillis()
+        this.player.currentTime(millis * 0.001)
       },
       playerReady (player) {
         this.player = player
