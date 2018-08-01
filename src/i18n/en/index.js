@@ -84,6 +84,7 @@ export default {
     tag: 'Tag',
     tags: 'Tags',
     title: 'Title',
+    title_unknown: 'Unknown Title',
     video_title: 'Video title',
     video_url: 'Video URL'
   },

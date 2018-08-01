@@ -25,7 +25,7 @@
   // require('videojs-framebyframe')
 
   import { videoPlayer } from 'vue-video-player'
-  import { guessType } from '../../../lib/annotations/videos'
+  import { guessType } from 'mbjs-media/src/util/metadata'
 
   export default {
     components: {
