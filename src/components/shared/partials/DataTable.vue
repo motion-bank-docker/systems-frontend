@@ -106,6 +106,7 @@
           _this.loading = true
           return this.$store.dispatch(`${this.path}/delete`, props.row.uuid).then(() => {
             _this.loading = false
+            return _this.request()
           }).catch(err => {
             console.error('datatable error', err)
             _this.loading = false
@@ -118,7 +119,7 @@
       request (/* { pagination, filter } */) {
         this.loading = true
         const _this = this
-        this.$store.dispatch(`${this.path}/find`, this.query)
+        return this.$store.dispatch(`${this.path}/find`, this.query)
           .then((data) => {
             // _this.rowsNumber = data.items.length
             _this.rows = data.items.map(r => Object.assign(r, { actions: '' }))
