@@ -103,6 +103,7 @@ module.exports = function (ctx) {
         // Grouping
         //
         'QCard',
+        'QCardSeparator',
         'QCardMain',
         'QCollapsible',
         'QTable',
