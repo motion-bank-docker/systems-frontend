@@ -9,8 +9,7 @@
 </template>
 
 <script>
-  // import Promise from 'bluebird'
-  import constants from '../../../lib/constants'
+  import constants from 'mbjs-data-models/src'
 
   export default {
     props: ['targetUuid', 'targetType'],

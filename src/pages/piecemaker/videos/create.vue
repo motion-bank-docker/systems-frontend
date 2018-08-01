@@ -19,8 +19,8 @@
   import { date } from 'quasar'
   import { DateTime } from 'luxon'
   import { required } from 'vuelidate/lib/validators'
-  import { guessType } from '../../../lib/annotations/videos'
-  import constants from '../../../lib/constants'
+  import { guessType } from 'mbjs-media/src/util/metadata'
+  import constants from 'mbjs-data-models/src'
 
   export default {
     components: {

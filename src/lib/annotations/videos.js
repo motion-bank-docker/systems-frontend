@@ -3,7 +3,7 @@ import path from 'path'
 import { Assert } from 'mbjs-utils'
 import axios from 'axios'
 import { DateTime } from 'luxon'
-import parseSelector from '../parse-selector'
+import { parseSelector } from 'mbjs-data-models/src/lib'
 
 const guessType = url => {
   url = URL.parse(url)

@@ -1,10 +1,9 @@
-import constants from '../constants'
-import Sorting from './sorting'
+import constants from 'mbjs-data-models/src'
+import { Sorting, parseSelector } from 'mbjs-data-models/src/lib'
 import { DateTime } from 'luxon'
 import { ObjectUtil } from 'mbjs-utils'
 import { getMetaData } from './videos'
 import SessionHelpers from './session-helpers'
-import parseSelector from '../parse-selector'
 
 const resurrectAnnotation = function (annotation) {
   if (typeof annotation.created === 'string') annotation.created = DateTime.fromISO(annotation.created)

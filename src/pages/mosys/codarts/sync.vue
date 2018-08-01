@@ -50,7 +50,7 @@
   import { ObjectUtil } from 'mbjs-utils'
   import { DateTime } from 'luxon'
   import CardFull from '../../../components/shared/layouts/CardFull'
-  import constants from '../../../lib/constants'
+  import constants from 'mbjs-data-models/src'
   import VideoPlayer from '../../../components/shared/media/VideoPlayer'
   import VideoTitle from '../../../components/shared/partials/VideoTitle'
 

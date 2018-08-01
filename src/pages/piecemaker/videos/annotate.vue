@@ -60,12 +60,10 @@
   import { ObjectUtil, Assert } from 'mbjs-utils'
   import uuidValidate from 'uuid-validate'
   import VideoPlayer from '../../../components/shared/media/VideoPlayer'
-  import constants from '../../../lib/constants'
-  import parseURI from '../../../lib/parse-uri'
-  import parseSelector from '../../../lib/parse-selector'
+  import constants from 'mbjs-data-models/src'
+  import { parseURI, parseSelector, Sorting } from 'mbjs-data-models/src/lib'
   import Username from '../../../components/shared/partials/Username'
-  import annotations from '../../../lib/annotations'
-  import { getMetaData } from '../../../lib/annotations/videos'
+  import { getMetaData } from 'mbjs-media/src/util/metadata'
   import { DateTime } from 'luxon'
 
   export default {
@@ -173,7 +171,7 @@
         console.debug('QUERY', query)
         const results = await this.$store.dispatch('annotations/find', query)
         if (results && Array.isArray(results.items)) {
-          _this.annotations = results.items.sort(annotations.Sorting.sortOnTarget)
+          _this.annotations = results.items.sort(Sorting.sortOnTarget)
         }
       },
       toggleForm () {

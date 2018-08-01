@@ -10,7 +10,7 @@
 <script>
   import DataTable from '../../../components/shared/partials/DataTable'
   import FullScreen from '../../../components/shared/layouts/FullScreen'
-  import constants from '../../../lib/constants'
+  import constants from 'mbjs-data-models/src'
 
   export default {
     components: {

@@ -31,12 +31,9 @@
 
 <script>
   import { DateTime } from 'luxon'
-  import constants from '../../../../lib/constants'
+  import constants from 'mbjs-data-models/src'
   import Username from '../../../shared/partials/Username'
   import VideoTitle from '../../../shared/partials/VideoTitle'
-  import annotations from '../../../../lib/annotations'
-
-  const TimelineSelector = annotations.selectors.TimelineSelector
 
   export default {
     components: {
@@ -101,7 +98,7 @@
               type: this.map.type,
               selector: {
                 type: 'Fragment',
-                value: TimelineSelector.fromMilliseconds(_this.contextTime).isoString
+                value: DateTime.fromMillis(_this.contextTime).toISO()
               }
             }
           }
