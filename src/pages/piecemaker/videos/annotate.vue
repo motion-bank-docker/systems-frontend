@@ -41,16 +41,16 @@
         q-item
           q-btn.full-width(@click="drawer = false")
             q-icon.flip-horizontal(name="keyboard_backspace")
-        q-item.bg-dark(dark, v-for="(annotation, i) in annotations", :class="{ highlight: i === currentIndex }", :key="annotation.uuid", :ref="annotation.uuid")
+        q-item.bg-dark(dark, v-for="(annotation, i) in annotations", :key="annotation.uuid", :ref="annotation.uuid")
           q-item-main
             q-item-tile
-              q-btn(v-if="annotation.target.selector", @click="gotoSelector(annotation.target.selector.value), changeState()", size="sm") {{ formatSelectorForList(annotation.target.selector.value) }}
+              q-btn(v-if="annotation.target.selector", :color="currentIndex === i ? 'primary' : 'dark'", @click="gotoSelector(annotation.target.selector.value), changeState()", size="sm") {{ formatSelectorForList(annotation.target.selector.value) }}
               q-btn.float-right(@click="deleteAnnotation(annotation.uuid), changeState()", size="sm") {{ $t('buttons.delete') }}
               q-btn.float-right(@click="updateAnnotation(annotation), addKeypressListener()", size="sm") {{ $t('buttons.save') }}
             q-item-tile.q-caption.q-my-xs
               span {{ annotation.author.name }}
             q-item-tile.q-caption
-              q-input(@click="changeState(), hideForm()", type="textarea", v-model="annotation.body.value", dark, color="white")
+              q-input(@click="changeState(), hideForm()", color="white", type="textarea", v-model="annotation.body.value", dark)
 
 </template>
 
@@ -60,23 +60,23 @@
   import { ObjectUtil, Assert } from 'mbjs-utils'
   import uuidValidate from 'uuid-validate'
   import VideoPlayer from '../../../components/shared/media/VideoPlayer'
-  import annotations from '../../../lib/annotations'
   import constants from '../../../lib/constants'
   import parseURI from '../../../lib/parse-uri'
   import parseSelector from '../../../lib/parse-selector'
   import Username from '../../../components/shared/partials/Username'
-
-  const TimelineSelector = annotations.selectors.TimelineSelector
+  import annotations from '../../../lib/annotations'
+  import { getMetaData } from '../../../lib/annotations/videos'
+  import { DateTime } from 'luxon'
 
   export default {
     components: {
       VideoPlayer,
       Username
     },
-    mounted () {
-      const _this = this
+    async mounted () {
       if (this.$route.params.id) {
-        this.getVideo().then(() => _this.getAnnotations())
+        await this.getVideo()
+        await this.getAnnotations()
       }
       window.addEventListener('keypress', this.toggleForm)
     },
@@ -90,10 +90,11 @@
         fullscreen: false,
         player: undefined,
         playerTime: 0.0,
-        currentIndex: undefined,
         video: undefined,
         timelineId: undefined,
+        selector: undefined,
         baseSelector: undefined,
+        metadata: undefined,
         active: false,
         annotations: [],
         currentBody: {
@@ -111,6 +112,17 @@
           title: 'Marker'
         }
         ]
+      }
+    },
+    computed: {
+      currentIndex () {
+        if (!this.annotations.length) return
+        let selector, baseMillis = this.baseSelector.toMillis() + this.playerTime * 1000
+        for (let idx in this.annotations) {
+          selector = this.annotations[idx].target.selector
+            ? parseSelector(this.annotations[idx].target.selector.value).start.toMillis() : 0
+          if (selector >= baseMillis) return parseInt(idx)
+        }
       }
     },
     methods: {
@@ -132,32 +144,37 @@
       fullscreenHandler () {
         this.fullscreen = !this.fullscreen
       },
-      getVideo () {
-        const _this = this
-        return this.$store.dispatch('annotations/get', _this.$route.params.id)
-          .then(result => {
-            if (result.body) {
-              _this.timelineId = parseURI(result.target.id).uuid
-              _this.video = result
-              _this.baseSelector = parseSelector(result.target.selector.value).start
-            }
-          })
+      async getVideo () {
+        const result = await this.$store.dispatch('annotations/get', this.$route.params.id)
+        if (result.body) {
+          this.timelineId = parseURI(result.target.id).uuid
+          this.video = result
+          this.selector = parseSelector(result.target.selector.value)
+          this.baseSelector = this.selector.start
+          this.metadata = await getMetaData(result, this.$store)
+        }
       },
-      getAnnotations () {
+      async getAnnotations () {
         const
           _this = this,
           query = {
             'target.id': `${process.env.TIMELINE_BASE_URI}${_this.timelineId}`,
             'target.type': constants.MAP_TYPE_TIMELINE,
-            'body.type': 'TextualBody'
+            'body.type': 'TextualBody',
+            'target.selector.value': { $gte: this.baseSelector.toISO() }
           }
-        return this.$store.dispatch('annotations/find', query)
-          .then(results => {
-            console.log(results)
-            if (results && Array.isArray(results.items)) {
-              _this.annotations = results.items.sort(annotations.Sorting.sortOnTarget)
-            }
-          })
+        if (!this.selector.end && this.metadata.duration) {
+          this.selector.end = DateTime.fromISO(this.selector.start.toISO())
+          this.selector.end.add(this.metadata.duration * 1000)
+        }
+        if (this.selector.end) {
+          query['target.selector.value']['$lte'] = this.selector.end.toISO()
+        }
+        console.debug('QUERY', query)
+        const results = await this.$store.dispatch('annotations/find', query)
+        if (results && Array.isArray(results.items)) {
+          _this.annotations = results.items.sort(annotations.Sorting.sortOnTarget)
+        }
       },
       toggleForm () {
         if (this.active) {
@@ -169,10 +186,10 @@
         else {
           window.removeEventListener('keypress', this.toggleForm)
           if (!this.player) return
-          const selector = TimelineSelector.fromDateTime(this.baseSelector.dateTime)
+          const selector = DateTime.fromISO(this.baseSelector.toISO())
           let seconds = this.player.currentTime()
-          selector.add(seconds * 1000)
-          this.currentSelector.value = selector.isoString
+          selector.plus(seconds * 1000)
+          this.currentSelector.value = selector.toISO()
           this.active = true
         }
       },
@@ -215,44 +232,19 @@
       },
       gotoSelector (selector) {
         selector = parseSelector(selector).start
-        selector.subtract(this.baseSelector.millis)
-        this.player.currentTime(selector.millis * 0.001)
+        selector.subtract(this.baseSelector.toMillis())
+        this.player.currentTime(selector.toMillis() * 0.001)
       },
       playerReady (player) {
         this.player = player
       },
       formatSelectorForList (val) {
         const selector = parseSelector(val).start
-        // selector.subtract(this.baseSelector.millis)
         return selector.toFormat(constants.TIMECODE_FORMAT)
       },
       onPlayerTime (seconds) {
         this.playerTime = seconds
-        this.updateHighlight(seconds)
-      },
-      updateHighlight (seconds) {
-        if (!this.annotations.length) return
-        let
-          baseMillis = this.baseSelector.millis + seconds * 1000,
-          annoCount = this.annotations.length,
-          selector, idx = 0, running = true
-        while (running && this.annotations[idx]) {
-          selector = this.annotations[idx].target.selector
-            ? parseSelector(this.annotations[idx].target.selector.value).start : undefined
-          running = selector && baseMillis < selector.millis
-          if (!running) this.currentIndex = idx
-          if (idx >= annoCount) break
-          idx++
-        }
-        if (running) this.currentIndex = undefined
       }
     }
   }
 </script>
-
-<style scoped>
-  .highlight {
-    /* background-color: rgba( 0, 255, 0, .5 );
-    transition: background-color ease 500ms; */
-  }
-</style>

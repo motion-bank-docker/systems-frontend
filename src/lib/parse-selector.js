@@ -1,18 +1,19 @@
-import annotations from './annotations'
-
-const TimelineSelector = annotations.selectors.TimelineSelector
+import { DateTime } from 'luxon'
 
 const parseSelector = selector => {
-  if (selector.indexOf('|') !== -1) {
-    const parts = selector.split('|')
+  if (typeof selector === 'string') {
+    if (selector.indexOf('|') !== -1) {
+      const parts = selector.split('|')
+      return {
+        start: DateTime.fromISO(parts[0]),
+        end: DateTime.fromISO(parts[1])
+      }
+    }
     return {
-      start: TimelineSelector.fromISOString(parts[0]),
-      end: TimelineSelector.fromISOString(parts[1])
+      start: DateTime.fromISO(selector)
     }
   }
-  return {
-    start: TimelineSelector.fromISOString(selector)
-  }
+  return selector
 }
 
 export default parseSelector

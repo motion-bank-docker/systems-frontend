@@ -20,6 +20,7 @@ export default {
     export_timeline: 'Export Timeline',
     forgot_password: 'Forgot Password',
     live_annotate: 'Live Annotate',
+    live_annotate_timeline: 'Live Annotate this timeline',
     login: 'Sign In',
     more_info: 'More info',
     request_reset_pass: 'Request Password Reset',

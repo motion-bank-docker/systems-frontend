@@ -1,0 +1,72 @@
+<template lang="pug">
+  svg(:width="width", height="100%", :x="x * index")
+    rect.cursor-pointer.moba-diagram-bar(width="100%", :height="height", :y="y", :class="{'moba-active-bar' : active}",
+      @mouseenter="sessionBarEnter", @mouseleave="sessionBarLeave", @click="sessionBarClick")
+</template>
+
+<script>
+  export default {
+    props: ['session', 'index', 'dimensions', 'active', 'timeFormat'],
+    methods: {
+      sessionBarEnter () {
+        const hoverVal = {}
+        hoverVal.start = this.getTime(this.session.start)
+        hoverVal.end = this.getTime(this.session.end)
+        hoverVal.duration = this.session.end.toMillis() - this.session.start.toMillis()
+        this.$emit('hover', hoverVal)
+      },
+      sessionBarLeave () {
+        const hoverVal = {}
+        hoverVal.start = false
+        hoverVal.end = ''
+        this.$emit('hover', hoverVal)
+      },
+      sessionBarClick () {
+        this.$emit('click', { session: this.session, index: this.index })
+      },
+      getTime (val) {
+        return val.toLocaleString({
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          hour: 'numeric',
+          minute: '2-digit',
+          second: '2-digit'
+        })
+      }
+    },
+    computed: {
+      isConfigured () {
+        return this.session && this.dimensions
+      },
+      height () {
+        return this.isConfigured ? (this.dimensions.height / 2 / 60 / 60) * this.session.duration : 0
+          // (this.getActiveSessionDuration(this.session.start.millis, this.session.end.millis) / 1000)
+      },
+      width () {
+        return this.isConfigured ? this.dimensions.barWidth : 0
+      },
+      x () {
+        return this.isConfigured ? (this.dimensions.barWidth + this.dimensions.barSpace) : 0
+      },
+      y () {
+        return this.isConfigured ? this.dimensions.height - ((this.dimensions.height / 2 / 60 / 60) * this.session.duration) +
+          // (this.getActiveSessionDuration(this.session.start.millis, this.session.end.millis) / 1000)) +
+          this.dimensions.offsetY : 0
+      }
+    }
+  }
+</script>
+
+<style scoped lang="stylus">
+  @import '~variables'
+
+  .moba-diagram-bar
+    fill rgba(255, 255, 255, .1)
+
+  .moba-diagram-bar:hover
+    fill rgba(255, 255, 255, .2)
+
+  .moba-active-bar
+    fill $primary!important
+</style>

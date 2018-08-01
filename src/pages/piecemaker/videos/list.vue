@@ -19,6 +19,7 @@
   import path from 'path'
   import he from 'he'
   import { ObjectUtil } from 'mbjs-utils'
+  import { getMetaData } from '../../../lib/annotations/videos'
 
   export default {
     components: {
@@ -74,14 +75,19 @@
             {
               name: 'title',
               label: _this.$t('labels.title'),
-              field: val => val.body.source.id,
+              field: val => val,
               // FIXME: throws array sort exception when active
               sort: false,
               filter: true,
               format: async (val) => {
-                const title = await _this.getPageTitle(val)
-                console.log(title)
-                return title
+                let meta
+                try {
+                  meta = await getMetaData(val, _this.$store)
+                }
+                catch (e) {
+                  meta = { title: _this.$t('labels.title_unknown') }
+                }
+                return meta.title
               }
             },
             {

@@ -1,9 +1,8 @@
 import constants from '../constants'
 import Sorting from './sorting'
 import { DateTime } from 'luxon'
-import TimelineSelector from './selectors/timeline'
 import { ObjectUtil } from 'mbjs-utils'
-import { guessType, getMetaData } from './videos'
+import { getMetaData } from './videos'
 import SessionHelpers from './session-helpers'
 import parseSelector from '../parse-selector'
 
@@ -12,21 +11,25 @@ const resurrectAnnotation = function (annotation) {
   if (typeof annotation.updated === 'string') annotation.updated = DateTime.fromISO(annotation.updated)
   if (annotation.target && annotation.target.selector) {
     if (typeof annotation.target.selector.value === 'string') {
-      annotation.target.selector.value = parseSelector(annotation.target.selector.value).dateTime
+      const parsedSelector = parseSelector(annotation.target.selector.value)
+      if (parsedSelector.end) {
+        annotation.target.selector.value = {
+          start: parsedSelector.start,
+          end: parsedSelector.end
+        }
+      }
+      else {
+        annotation.target.selector.value = parsedSelector
+      }
     }
   }
   return annotation
 }
 
-const fetchMetaData = async videos => {
+const fetchMetaData = async (store, videos) => {
   for (let v of videos) {
-    const type = guessType(v.annotation.body.source.id)
-    let key
-    if (type === 'video/youtube') key = process.env.YOUTUBE_API_KEY
-    else if (type === 'video/vimeo') key = process.env.VIMEO_ACCESS_TOKEN
     try {
-      console.debug('fetchMetaData', v.annotation.body.source)
-      const meta = await getMetaData({ id: v.annotation.body.source.id, type }, key)
+      const meta = await getMetaData(v.annotation, store)
       Object.assign(v.meta, meta)
     }
     catch (e) { console.error('fetchMetaData', e.message, e.stack) }
@@ -34,37 +37,42 @@ const fetchMetaData = async videos => {
   return videos
 }
 
-const groupBySessions = async function (annotations, secondsDist = constants.SESSION_DISTANCE_SECONDS) {
-  annotations = annotations.sort(Sorting.sortOnTarget).map(annotation => resurrectAnnotation(annotation))
+const groupBySessions = async function (store, annotations, secondsDist = constants.SESSION_DISTANCE_SECONDS) {
+  let millisDist = secondsDist * 1000
+  annotations = annotations.map(annotation => resurrectAnnotation(annotation)).sort(Sorting.sortOnTarget)
   const videos = annotations.filter(anno => { return anno.body.type === 'Video' })
     .map(annotation => {
       return {
         meta: {},
-        annotation: resurrectAnnotation(annotation)
+        annotation: annotation
       }
     })
-  await fetchMetaData(videos)
+  await fetchMetaData(store, videos)
   annotations = annotations.filter(anno => { return anno.body.type === 'TextualBody' })
   const sessions = []
   const defaultSession = { start: undefined, end: undefined, duration: undefined, annotations: [] }
   let lastDatetime, session = ObjectUtil.merge({}, defaultSession)
   for (let i = 0; i < annotations.length; i++) {
     const a = annotations[i]
+    const select = a.target.selector.value.start
     if (!session.start) {
-      session.start = parseSelector(a.target.selector.value).start
+      session.start = select
     }
-    let duration = TimelineSelector.timeBetween(session.start, parseSelector(a.target.selector.value).start)
-    duration = duration ? duration.as('seconds') : 0.0
+    let duration = select.toMillis() - session.start.toMillis()
     if (lastDatetime) {
-      const dist = TimelineSelector.timeBetween(lastDatetime, parseSelector(a.target.selector.value).start)
-      if (dist.as('seconds') >= secondsDist || i === annotations.length - 1) {
-        session.end = parseSelector(a.target.selector.value).start
-        session.duration = TimelineSelector.timeBetween(session.start, session.end).as('seconds')
+      const dist = select.toMillis() - lastDatetime.toMillis()
+      if (dist >= millisDist || i === annotations.length - 1) {
+        session.end = select
+        session.duration = (session.end.toMillis() - session.start.toMillis()) * 0.001 // TimelineSelector.timeBetween(, ).as('seconds')
         videos.forEach(video => {
           // FIXME: end value stays wrong
           const s = SessionHelpers.annotationToSessionTime(video.meta.duration, video.annotation, session)
           session.duration = Math.max(session.duration, s)
         })
+        if (isNaN(session.duration)) {
+          console.error('duration NaN', session)
+          session.duration = 0
+        }
         session.annotations.push({ annotation: a, duration, active: false })
         sessions.push(session)
         session = ObjectUtil.merge({}, defaultSession)
@@ -74,7 +82,7 @@ const groupBySessions = async function (annotations, secondsDist = constants.SES
       }
     }
     else session.annotations.push({ annotation: a, duration, active: false })
-    lastDatetime = parseSelector(a.target.selector.value).start
+    lastDatetime = select
   }
   return { sessions, videos }
 }

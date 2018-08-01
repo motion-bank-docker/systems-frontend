@@ -1,12 +1,14 @@
-import TimelineSelector from './selectors/timeline'
+import parseSelector from '../parse-selector'
 
 class Sorting {
   static sortOnTarget (a, b) {
-    const
-      dta = a.target && a.target.selector ? TimelineSelector.fromISOString(a.target.selector.value) : null,
-      dtb = b.target && b.target.selector ? TimelineSelector.fromISOString(b.target.selector.value) : null
-    if (dta && dtb && dta.dateTime > dtb.dateTime) return 1
-    if (dta && dtb && dta.dateTime < dtb.dateTime) return -1
+    let selectorA, selectorB
+    if (typeof a.target.selector.value === 'string') selectorA = parseSelector(a.target.selector.value).start
+    else selectorA = a.target.selector.value.start
+    if (typeof b.target.selector.value === 'string') selectorB = parseSelector(b.target.selector.value).start
+    else selectorB = b.target.selector.value.start
+    if (selectorA > selectorB) return 1
+    if (selectorA < selectorB) return -1
     return 0
   }
 }
