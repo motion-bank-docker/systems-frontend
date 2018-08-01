@@ -4,23 +4,48 @@
     // .q-pa-xl(style="min-width: 50vw;")
     h5.caption(dark).text-center {{ $t('routes.piecemaker.videos.create.title') }}
     .row
-      .col-md-8.offset-2
-        q-btn(no-caps).q-mr-md
-          q-icon(name="event_note")
-          | {{ formatDate(modelCalender, 'MMM Do, YYYY') }}
-        q-btn.q-mx-sm(no-caps)
-          q-icon(name="access_time")
-          | {{ formatDate(modelCalender, 'HH:mm:ss:SSS') }}h
-        q-btn(@click="modelCalender = null", icon="clear", round)
-        q-btn(icon="keyboard_arrow_up", @click="calender = ''")
-        div.q-mt-md
-          q-datetime-picker.full-width.shadow-6(v-if="calender = 'val'", v-model="modelCalender", dark)
+      .col-xs-12.offset-xs-none.col-sm-10.offset-sm-1.col-md-8.offset-md-2
+
+        // BUTTONS
+        //
+        .row.cursor-pointer
+          .row.col-10.moba-hover(@click="handlerCalender()")
+            .col-1
+              q-btn(icon="keyboard_arrow_up", :class="{'rotate-180' : showCalender}", round, flat)
+            .col-11
+              span
+                q-icon.q-mr-sm(name="event_note", no-caps)
+                | {{ formatDate(modelCalender, 'MMM Do, YYYY') }}
+              span.q-mx-lg
+                q-icon.q-mr-xs(name="access_time", no-caps)
+                | {{ formatDate(modelCalender, 'HH:mm:ss:SSS') }}h
+              //
+                span
+                  q-btn(@click="modelCalender = null", icon="clear", round, size="sm")
+              //
+                q-btn(icon="event_note", no-caps)
+                  .q-ml-md {{ formatDate(modelCalender, 'MMM Do, YYYY') }}
+                q-btn.q-mx-sm(icon="access_time", no-caps)
+                  .q-ml-md {{ formatDate(modelCalender, 'HH:mm:ss:SSS') }}h
+          .col-2.text-right
+            q-btn(@click="modelCalender = null", icon="clear", round, flat)
+
+        .row.q-mt-md(v-if="showCalender")
+
+          // CALENDER
+          //
+          q-datetime-picker.col-6.shadow-6(v-if="calender = 'val'", v-model="modelCalender", dark)
           // q-datetime.q-mb-xs(v-model="modelCalender", :before="[{icon: 'event_note'}]", type="date", format24h, dark, clearable, modal, :placeholder="currentDate", float-label="Set date")
+          // q-datetime(v-model="modelCalender", :before="[{icon: 'event_note'}]", type="date", hide-underline, format24h, dark, clearable, modal)
           //
             .col-6.text-right(v-if="modelCalender")
               q-btn(icon="access_time") {{ formatDate(modelCalender, 'YYYY') }}h
-          q-list.no-border.shadow-6.q-pa-md
 
+          // TIME
+          //
+          .col-6.q-list.no-border.shadow-6.q-pa-md
+
+            // HOURS
             q-item.no-padding
               q-item-side
                 q-btn(@click="sliderHours--", round, size="sm", icon="remove", color="grey-9")
@@ -29,6 +54,7 @@
               q-item-side
                 q-btn(@click="sliderHours++", round, size="sm", icon="add", dark, color="grey-9")
 
+            // MINUTES
             q-item.no-padding
               q-item-side
                 q-btn(@click="sliderMinutes--", round, size="sm", icon="remove", color="grey-9")
@@ -37,6 +63,7 @@
               q-item-side
                 q-btn(@click="sliderMinutes++", round, size="sm", icon="add", dark, color="grey-9")
 
+            // SECONDS
             q-item.no-padding
               q-item-side
                 q-btn(@click="sliderSeconds--", round, size="sm", icon="remove", color="grey-9")
@@ -45,6 +72,7 @@
               q-item-side
                 q-btn(@click="sliderSeconds++", round, size="sm", icon="add", dark, color="grey-9")
 
+            // MILLISECONDS
             q-item.no-padding
               q-item-side
                 q-btn(@click="sliderMilliseconds--", round, size="sm", icon="remove", color="grey-9")
@@ -52,7 +80,9 @@
                 q-slider(v-model="sliderMilliseconds", :min="0", :max="999", label-always, :label-value="`${sliderMilliseconds}ms`")
               q-item-side
                 q-btn(@click="sliderMilliseconds++", round, size="sm", icon="add", dark, color="grey-9")
+
         form-main(v-model="payload", :schema="schema")
+
 </template>
 
 <script>
@@ -88,13 +118,10 @@
       }
     },
     methods: {
+      handlerCalender () {
+        this.showCalender = !this.showCalender
+      },
       formatDate (val, format) {
-        // console.log(val, '11111111')
-        // console.log(DateTime.local(), '22222222')
-        let newDate = val
-        newDate = date.addToDate(newDate, { month: 2 })
-        console.log(newDate, 'xxxxxxxxxx')
-        // if (val) return date.formatDate(val, 'x')
         if (val) return date.formatDate(val, format)
       }
     },
@@ -111,8 +138,9 @@
         apiPayload: undefined,
         // currentDate: DateTime.local().toLocaleString({ year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit', second: '2-digit' }),
         currentDate: DateTime.local().toLocaleString({ year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit', second: '2-digit' }),
-        payload: undefined,
         modelCalender: Date.now(),
+        showCalender: false,
+        payload: undefined,
         schema: {
           fields: {
             url: {
@@ -158,3 +186,10 @@
     }
   }
 </script>
+
+<style lang="stylus">
+  .moba-hover
+    vertical-align middle
+  .moba-hover:hover
+    background-color rgba(255, 255, 255, .025)
+</style>
