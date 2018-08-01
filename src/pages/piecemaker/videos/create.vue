@@ -5,24 +5,18 @@
     h5.caption(dark).text-center {{ $t('routes.piecemaker.videos.create.title') }}
     .row
       .col-xs-12.offset-xs-none.col-xl-10.offset-xl-1
-
         .row.q-mt-md
 
           // CALENDER
           //
           q-collapsible.col-xs-12.col-lg-6.q-mb-lg(group="somegroup", icon="event_note", :label="formatDate(modelCalender, 'MMM Do, YYYY')")
-            // q-card
             q-datetime-picker.shadow-6.full-width(v-model="modelCalender", dark)
-              // q-card-separator
-                | bhcbdhjs
             .text-center.q-mt-sm
-              q-btn(@click="modelCalender = null", label="reset date")
+              q-btn(@click="handlerReset()", label="Reset")
 
           // TIME
           //
           q-collapsible.col-xs-12.col-lg-6.q-mb-lg(group="somegroup", icon="access_time", :label="formatDate(modelCalender, 'HH:mm:ss:SSS')")
-
-            // q-card
             .q-list.no-border.q-px-lg.shadow-6
 
               // HOURS
@@ -62,7 +56,7 @@
                   q-btn(@click="sliderMilliseconds++", round, size="sm", icon="add", dark, color="grey-9")
 
             .text-center.q-mt-sm
-              q-btn(@click="modelCalender = null", label="Reset time")
+              q-btn(@click="handlerReset()", label="Reset")
 
         form-main(v-model="payload", :schema="schema")
 
@@ -106,13 +100,21 @@
       }, */
       formatDate (val, format) {
         if (val) return date.formatDate(val, format)
+      },
+      handlerReset () {
+        // this.modelCalender = date.adjustDate(this.modelCalender, { hours: date.formatDate(Date.now(), 'HH'), minutes: date.formatDate(Date.now(), 'mm'), seconds: date.formatDate(Date.now(), 'ss'), milliseconds: date.formatDate(Date.now(), 'SSS') })
+        this.modelCalender = Date.now()
+        this.sliderHours = this.formatDate(this.modelCalender, 'H')
+        this.sliderMinutes = this.formatDate(this.modelCalender, 'm')
+        this.sliderSeconds = this.formatDate(this.modelCalender, 'S')
+        this.sliderMilliseconds = this.formatDate(this.modelCalender, 'SSS')
       }
     },
     mounted () {
       this.sliderHours = this.formatDate(this.modelCalender, 'H')
-      this.sliderMilliseconds = this.formatDate(this.modelCalender, 'SSS')
       this.sliderMinutes = this.formatDate(this.modelCalender, 'm')
       this.sliderSeconds = this.formatDate(this.modelCalender, 'S')
+      this.sliderMilliseconds = this.formatDate(this.modelCalender, 'SSS')
     },
     data () {
       const _this = this
