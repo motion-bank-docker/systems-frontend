@@ -57,7 +57,7 @@
                     q-btn(@click="sliderMilliseconds++", round, size="sm", icon="add", dark, color="grey-9")
 
               // TEST
-              slider-time
+              slider-time(@slideVal="handlerSlideVal", @slideTarget="handlerSlideTarget")
 
             .text-center.q-mt-sm
               q-btn(@click="handlerReset()", label="Reset")
@@ -101,14 +101,16 @@
       }
     },
     methods: {
-      /* handlerCalender () {
-        this.showCalender = !this.showCalender
-      }, */
+      handlerSlideVal (val) {
+        console.log('val ' + val)
+      },
+      handlerSlideTarget (val) {
+        console.log('target ' + val)
+      },
       formatDate (val, format) {
         if (val) return date.formatDate(val, format)
       },
       handlerReset () {
-        // this.modelCalender = date.adjustDate(this.modelCalender, { hours: date.formatDate(Date.now(), 'HH'), minutes: date.formatDate(Date.now(), 'mm'), seconds: date.formatDate(Date.now(), 'ss'), milliseconds: date.formatDate(Date.now(), 'SSS') })
         this.modelCalender = Date.now()
         this.sliderHours = this.formatDate(this.modelCalender, 'H')
         this.sliderMinutes = this.formatDate(this.modelCalender, 'm')
@@ -117,20 +119,17 @@
       }
     },
     mounted () {
-      this.sliderHours = this.formatDate(this.modelCalender, 'H')
+      /* this.sliderHours = this.formatDate(this.modelCalender, 'H')
       this.sliderMinutes = this.formatDate(this.modelCalender, 'm')
       this.sliderSeconds = this.formatDate(this.modelCalender, 'S')
-      this.sliderMilliseconds = this.formatDate(this.modelCalender, 'SSS')
+      this.sliderMilliseconds = this.formatDate(this.modelCalender, 'SSS') */
     },
     data () {
       const _this = this
       return {
         // FIXME: i know this is bullshit!!! (but i hope it works for now)
         apiPayload: undefined,
-        // currentDate: DateTime.local().toLocaleString({ year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit', second: '2-digit' }),
-        currentDate: DateTime.local().toLocaleString({ year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit', second: '2-digit' }),
         modelCalender: Date.now(),
-        // showCalender: false,
         payload: undefined,
         schema: {
           fields: {
@@ -169,11 +168,6 @@
             }
           }
         },
-        schemaSlider: [
-          {
-            target: 'sliderMinutes'
-          }
-        ],
         sliderHours: null,
         sliderMilliseconds: null,
         sliderMinutes: null,
@@ -184,10 +178,4 @@
 </script>
 
 <style lang="stylus">
-  .moba-border-bottom
-    border-bottom 1px solid white
-  .moba-hover
-    vertical-align middle
-  .moba-hover:hover
-    background-color rgba(255, 255, 255, .025)
 </style>
