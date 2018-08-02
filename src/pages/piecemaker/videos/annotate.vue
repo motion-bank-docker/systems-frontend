@@ -6,7 +6,7 @@
 
       // VIDEO
       //
-      video-player(v-if="video", :src="video.body.source.id", @ready="playerReady($event)", @time="onPlayerTime($event)")
+      video-player(v-if="video", :annotation="video", @ready="playerReady($event)", @time="onPlayerTime($event)")
 
       // BUTTONS
       //

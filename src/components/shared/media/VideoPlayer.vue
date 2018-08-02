@@ -59,31 +59,16 @@
         }
       }
     },
-    props: ['src'],
-    mounted () {
-      if (!this.src) return
-      this.type = guessType(this.src)
-      if (this.type === 'video/youtube') {
-        this.playerOptions.techOrder = ['youtube']
-      }
-      else if (this.type === 'video/vimeo') {
-        this.playerOptions.techOrder = ['vimeo']
-      }
-      this.setSources([{ type: this.type, src: this.src }])
+    props: ['src', 'annotation'],
+    async mounted () {
+      await this.getSource(this.src, this.annotation)
     },
     watch: {
-      src (val) {
-        if (!val) return this.setSources([])
-        this.type = guessType(val)
-        if (val) {
-          if (this.type === 'video/youtube') {
-            this.playerOptions.techOrder = ['youtube']
-          }
-          else if (this.type === 'video/vimeo') {
-            this.playerOptions.techOrder = ['vimeo']
-          }
-          this.setSources([{type: this.type, src: val}])
-        }
+      async src (val) {
+        await this.getSource(val, this.annotation)
+      },
+      async annotation (val) {
+        await this.getSource(this.src, val)
       }
     },
     computed: {
@@ -94,15 +79,23 @@
     methods: {
       onPlayerReady (player) {
         this.$emit('ready', player)
+      },
+      async getSource (src, annotation = undefined) {
+        if (!src && !annotation) return
+        this.type = guessType(src || annotation.body.source.id)
         if (this.type === 'video/youtube') {
-          // console.log('youtube tech', player.tech_.ytPlayer)
+          this.playerOptions.techOrder = ['youtube']
         }
         else if (this.type === 'video/vimeo') {
-          // console.log('vimeo tech', player.tech_)
+          this.playerOptions.techOrder = ['vimeo']
         }
-        else {
-          // console.log('html5 tech', player.tech_)
+        else if (this.type === 'video/panopto' && annotation) {
+          this.type = 'video/mp4'
+          const meta = await this.$store.dispatch('metadata/get', annotation.uuid)
+          if (meta && meta.video) src = meta.video
+          else console.error('panopto video failed to load', meta.video)
         }
+        this.setSources([{ type: this.type, src: src }])
       },
       onPlayerEvent (type, player) {
         this.$emit(type, player)
