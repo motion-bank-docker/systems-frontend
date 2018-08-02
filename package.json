@@ -5,6 +5,14 @@
   "productName": "Motion Bank Systems Frontend",
   "cordovaId": "org.motionbank.frontend",
   "author": "Mainz University of Applied Sciences (Motion Bank Project)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.rlp.net/motionbank/systems-frontend.git"
+  },
+  "bugs": {
+    "url": "https://gitlab.rlp.net/motionbank/systems-frontend/issues"
+  },
+  "homepage": "https://gitlab.rlp.net/motionbank/systems-frontend#readme",
   "scripts": {
     "build": "cross-env NODE_ENV=production quasar build",
     "clean": "quasar clean",
