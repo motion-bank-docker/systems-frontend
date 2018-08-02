@@ -38,9 +38,9 @@
                   meta = await _this.$store.dispatch('metadata/get', val.uuid)
                 }
                 catch (e) {
-                  meta = { title: _this.$t('labels.title_unknown') }
+                  meta = {}
                 }
-                return meta.title
+                return meta && meta.title ? meta.title : _this.$t('labels.title_unknown')
               }
             },
             {
