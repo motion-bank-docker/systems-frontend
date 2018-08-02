@@ -34,7 +34,7 @@ const store = new Vuex.Store({
     maps: makeResourceModule(apiClient, 'map'),
     profiles: makeResourceModule(apiClient, 'profile'),
     sessions: makeResourceModule(apiClient, 'session'),
-    metadata: makeResourceModule(apiClient, 'metadata', 'metadata'),
+    metadata: makeResourceModule(apiClient, 'metadata', 'metadata', process.env.TRANSCODER_HOST),
     auth
   }
 })

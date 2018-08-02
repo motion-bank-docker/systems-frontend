@@ -39,6 +39,7 @@ module.exports = function (ctx) {
       // Runtime globals
       env: {
         API_HOST: JSON.stringify(process.env.API_HOST || 'https://api.motionbank.org'),
+        TRANSCODER_HOST: JSON.stringify(process.env.TRANSCODER_HOST || 'https://transcoder.motionbank.org'),
         UI_HOST: JSON.stringify(process.env.UI_HOST || 'https://app.motionbank.org'),
         TIMELINE_BASE_URI: JSON.stringify(process.env.TIMELINE_BASE_URI || 'https://app.motionbank.org/piecemaker/timelines/'),
         GRID_BASE_URI: JSON.stringify(process.env.GRID_BASE_URI || 'https://app.motionbank.org/mosys/grids/'),
