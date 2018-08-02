@@ -1,8 +1,8 @@
 <template lang="pug">
-  q-list.no-border
+  q-list.no-border.q-px-lg.shadow-6
     slider-time-row(v-for="(row, i) in rows",
-    @slideVal="handlerSlideVal", @slideTarget="handlerSlideTarget",
-    :max="row.max", :key="i", :suffix="row.suffix", :type="row.type")
+    @slide="handlerSlide",
+    :key="i", :max="row.max", :suffix="row.suffix", :type="row.type")
 </template>
 
 <script>
@@ -13,11 +13,8 @@
       SliderTimeRow
     },
     methods: {
-      handlerSlideVal (val) {
-        this.$emit('slideVal', val)
-      },
-      handlerSlideTarget (val) {
-        this.$emit('slideTarget', val)
+      handlerSlide (val) {
+        this.$emit('slide', val)
       }
     },
     data () {

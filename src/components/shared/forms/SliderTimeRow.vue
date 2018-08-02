@@ -13,21 +13,22 @@
 
   export default {
     mounted () {
+      let timeUnit
       switch (this.type) {
       case 'hours':
-        this.timeUnit = 'H'
+        timeUnit = 'H'
         break
       case 'minutes':
-        this.timeUnit = 'm'
+        timeUnit = 'm'
         break
       case 'seconds':
-        this.timeUnit = 's'
+        timeUnit = 's'
         break
       case 'milliseconds':
-        this.timeUnit = 'SSS'
+        timeUnit = 'SSS'
         break
       }
-      // this.modelSlider = this.formatDate(Date.now(), this.timeUnit)
+      this.modelSlider = parseInt(date.formatDate(Date.now(), timeUnit))
     },
     watch: {
       modelSlider: function (val) {
@@ -46,8 +47,7 @@
           target = 'milliseconds'
           break
         }
-        this.$emit('slideTarget', target)
-        this.$emit('slideVal', val)
+        this.$emit('slide', {target, val})
       }
     },
     methods: {
@@ -58,16 +58,12 @@
         let _modelSlider = this.modelSlider
         if (val === 'up' && _modelSlider < this.max) this.modelSlider++
         else if (val === 'down' && _modelSlider > 0) this.modelSlider--
-      },
-      someHandler () {
-        alert('bla')
       }
     },
     props: ['max', 'suffix', 'type'],
     data () {
       return {
-        modelSlider: 0,
-        timeUnit: undefined
+        modelSlider: 0
       }
     }
   }
