@@ -95,6 +95,7 @@
           if (meta && meta.video) src = meta.video
           else console.error('panopto video failed to load', meta.video)
         }
+        if (!src && annotation) src = annotation.body.source.id
         this.setSources([{ type: this.type, src: src }])
       },
       onPlayerEvent (type, player) {
