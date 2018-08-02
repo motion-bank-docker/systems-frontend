@@ -1,6 +1,8 @@
 <template lang="pug">
   q-list.no-border
-    slider-time-row(v-for="(row, i) in rows", :length="row.length", :key="i", :suffix="row.suffix")
+    slider-time-row(v-for="(row, i) in rows",
+    @slideVal="handlerSlideVal", @slideTarget="handlerSlideTarget",
+    :max="row.max", :key="i", :suffix="row.suffix", :type="row.type")
 </template>
 
 <script>
@@ -10,22 +12,30 @@
     components: {
       SliderTimeRow
     },
+    methods: {
+      handlerSlideVal (val) {
+        this.$emit('slideVal', val)
+      },
+      handlerSlideTarget (val) {
+        this.$emit('slideTarget', val)
+      }
+    },
     data () {
       return {
         rows: [{
-          length: 23,
+          max: 23,
           suffix: 'h',
           type: 'hours'
         }, {
-          length: 59,
+          max: 59,
           suffix: 'min',
           type: 'minutes'
         }, {
-          length: 59,
+          max: 59,
           suffix: 's',
           type: 'seconds'
         }, {
-          length: 999,
+          max: 999,
           suffix: 'ms',
           type: 'milliseconds'
         }]
