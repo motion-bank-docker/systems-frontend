@@ -17,43 +17,47 @@
           // TIME
           //
           q-collapsible.col-xs-12.col-lg-6.q-mb-lg(group="somegroup", icon="access_time", :label="formatDate(modelCalender, 'HH:mm:ss:SSS')")
-            .q-list.no-border.q-px-lg.shadow-6
+            q-list.no-border.q-px-lg.shadow-6
 
-              // HOURS
-              q-item.no-padding
-                q-item-side
-                  q-btn(@click="sliderHours--", round, size="sm", icon="remove", color="grey-9")
-                q-item-main
-                  q-slider(v-model="sliderHours", :min="0", :max="23", label-always, :label-value="`${sliderHours}h`")
-                q-item-side
-                  q-btn(@click="sliderHours++", round, size="sm", icon="add", dark, color="grey-9")
+              //
+                // HOURS
+                q-item.no-padding
+                  q-item-side
+                    q-btn(@click="sliderHours--", round, size="sm", icon="remove", color="grey-9")
+                  q-item-main
+                    q-slider(v-model="sliderHours", :min="0", :max="23", label-always, :label-value="`${sliderHours}h`")
+                  q-item-side
+                    q-btn(@click="sliderHours++", round, size="sm", icon="add", dark, color="grey-9")
 
-              // MINUTES
-              q-item.no-padding
-                q-item-side
-                  q-btn(@click="sliderMinutes--", round, size="sm", icon="remove", color="grey-9")
-                q-item-main
-                  q-slider(v-model="sliderMinutes", :min="0", :max="59", label-always, :label-value="`${sliderMinutes}min`")
-                q-item-side
-                  q-btn(@click="sliderMinutes++", round, size="sm", icon="add", dark, color="grey-9")
+                // MINUTES
+                q-item.no-padding
+                  q-item-side
+                    q-btn(@click="sliderMinutes--", round, size="sm", icon="remove", color="grey-9")
+                  q-item-main
+                    q-slider(v-model="sliderMinutes", :min="0", :max="59", label-always, :label-value="`${sliderMinutes}min`")
+                  q-item-side
+                    q-btn(@click="sliderMinutes++", round, size="sm", icon="add", dark, color="grey-9")
 
-              // SECONDS
-              q-item.no-padding
-                q-item-side
-                  q-btn(@click="sliderSeconds--", round, size="sm", icon="remove", color="grey-9")
-                q-item-main
-                  q-slider(v-model="sliderSeconds", :min="0", :max="59", label-always, :label-value="`${sliderSeconds}s`")
-                q-item-side
-                  q-btn(@click="sliderSeconds++", round, size="sm", icon="add", dark, color="grey-9")
+                // SECONDS
+                q-item.no-padding
+                  q-item-side
+                    q-btn(@click="sliderSeconds--", round, size="sm", icon="remove", color="grey-9")
+                  q-item-main
+                    q-slider(v-model="sliderSeconds", :min="0", :max="59", label-always, :label-value="`${sliderSeconds}s`")
+                  q-item-side
+                    q-btn(@click="sliderSeconds++", round, size="sm", icon="add", dark, color="grey-9")
 
-              // MILLISECONDS
-              q-item.no-padding
-                q-item-side
-                  q-btn(@click="sliderMilliseconds--", round, size="sm", icon="remove", color="grey-9")
-                q-item-main
-                  q-slider(v-model="sliderMilliseconds", :min="0", :max="999", label-always, :label-value="`${sliderMilliseconds}ms`")
-                q-item-side
-                  q-btn(@click="sliderMilliseconds++", round, size="sm", icon="add", dark, color="grey-9")
+                // MILLISECONDS
+                q-item.no-padding
+                  q-item-side
+                    q-btn(@click="sliderMilliseconds--", round, size="sm", icon="remove", color="grey-9")
+                  q-item-main
+                    q-slider(v-model="sliderMilliseconds", :min="0", :max="999", label-always, :label-value="`${sliderMilliseconds}ms`")
+                  q-item-side
+                    q-btn(@click="sliderMilliseconds++", round, size="sm", icon="add", dark, color="grey-9")
+
+              // TEST
+              slider-time
 
             .text-center.q-mt-sm
               q-btn(@click="handlerReset()", label="Reset")
@@ -64,6 +68,7 @@
 
 <script>
   import FormMain from '../../../components/shared/forms/FormMain'
+  import SliderTime from '../../../components/shared/forms/SliderTime'
   import FullScreen from '../../../components/shared/layouts/FullScreen'
 
   import { date } from 'quasar'
@@ -75,7 +80,8 @@
   export default {
     components: {
       FormMain,
-      FullScreen
+      FullScreen,
+      SliderTime
     },
     watch: {
       modelCalender: function (val) {
@@ -163,6 +169,11 @@
             }
           }
         },
+        schemaSlider: [
+          {
+            target: 'sliderMinutes'
+          }
+        ],
         sliderHours: null,
         sliderMilliseconds: null,
         sliderMinutes: null,
@@ -173,6 +184,8 @@
 </script>
 
 <style lang="stylus">
+  .moba-border-bottom
+    border-bottom 1px solid white
   .moba-hover
     vertical-align middle
   .moba-hover:hover
