@@ -27,7 +27,7 @@
 <script>
   import DataTable from '../../../components/shared/partials/DataTable'
   import FullScreen from '../../../components/shared/layouts/FullScreen'
-  import constants from '../../../lib/constants'
+  import constants from 'mbjs-data-models/src'
 
   export default {
     components: {
@@ -117,7 +117,7 @@
               type: 'delete',
               title: 'buttons.delete',
               click: item => {
-                _this.$store.dispatch('annotations/find', { 'target.id': item.uuid }).then(async result => {
+                _this.$store.dispatch('annotations/find', { 'target.id': `${process.env.TIMELINE_BASE_URI}${item.uuid}` }).then(async result => {
                   for (let a of result.items) {
                     await _this.$store.dispatch('annotations/delete', a.uuid)
                   }

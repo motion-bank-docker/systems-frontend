@@ -4,7 +4,7 @@ import forms from './modules/forms'
 import makeResourceModule from './modules/make-resource-module'
 import auth from './modules/auth'
 
-import WebAuth from 'mbjs-api-minimal-client/src/web'
+import WebAuth from 'mbjs-api-client/src/web'
 import Vue from 'vue'
 import Vuex from 'vuex'
 
@@ -33,6 +33,8 @@ const store = new Vuex.Store({
     annotations: makeResourceModule(apiClient, 'annotation'),
     maps: makeResourceModule(apiClient, 'map'),
     profiles: makeResourceModule(apiClient, 'profile'),
+    sessions: makeResourceModule(apiClient, 'session'),
+    metadata: makeResourceModule(apiClient, 'metadata', 'metadata', process.env.TRANSCODER_HOST),
     auth
   }
 })

@@ -24,7 +24,7 @@
   import Uploader from '../../../components/shared/partials/Uploader'
 
   import { required } from 'vuelidate/lib/validators'
-  import constants from '../../../lib/constants'
+  import constants from 'mbjs-data-models/src'
 
   export default {
     components: {

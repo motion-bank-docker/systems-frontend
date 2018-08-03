@@ -19,7 +19,7 @@
   import FullScreen from '../../../components/shared/layouts/FullScreen'
 
   import { required } from 'vuelidate/lib/validators'
-  import constants from '../../../lib/constants'
+  import constants from 'mbjs-data-models/src'
 
   import { openURL } from 'quasar'
 

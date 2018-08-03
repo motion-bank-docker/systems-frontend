@@ -6,6 +6,7 @@
   import path from 'path'
   import url from 'url'
   import he from 'he'
+  // import { getMetaData } from '../../../lib/annotations/videos'
 
   const fetchTitle = function (source) {
     const _this = this
@@ -33,6 +34,13 @@
 
   export default {
     props: ['source'],
+    /*
+    watch: {
+      async source () {
+        const meta = await getMetaData()
+      }
+    },
+    */
     asyncComputed: {
       async videoTitle () {
         const title = await fetchTitle(this.source)

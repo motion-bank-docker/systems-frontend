@@ -48,9 +48,9 @@
 
 <script>
   import { ObjectUtil } from 'mbjs-utils'
+  import { DateTime } from 'luxon'
   import CardFull from '../../../components/shared/layouts/CardFull'
-  import constants from '../../../lib/constants'
-  import TimelineSelector from '../../../lib/annotations/selectors/timeline'
+  import constants from 'mbjs-data-models/src'
   import VideoPlayer from '../../../components/shared/media/VideoPlayer'
   import VideoTitle from '../../../components/shared/partials/VideoTitle'
 
@@ -108,7 +108,7 @@
       },
       setMarker (player, target = 0) {
         if (!player) return
-        const selector = TimelineSelector.fromMilliseconds(player.currentTime() * 1000.0)
+        const selector = DateTime.fromMillis(player.currentTime() * 1000.0)
         switch (target) {
         case 1:
           this.targetSelector = selector
@@ -122,15 +122,15 @@
       applySync () {
         const
           _this = this,
-          diff = TimelineSelector.timeBetween(this.srcSelector, this.targetSelector),
+          diff = this.targetSelector.toMillis() - this.srcSelector.toMillis(),
           video = this.video, // this.refVideos[this.refIndex],
-          selector = TimelineSelector.fromISOString(video.target.selector.value)
-        selector.add(diff)
+          selector = DateTime.fromISO(video.target.selector.value)
+        selector.plus(diff)
         const update = {
           target: ObjectUtil.merge({}, video.target, {
             selector: {
               type: 'Fragment',
-              value: selector.toString()
+              value: selector.toISO()
             }
           })
         }
@@ -138,8 +138,8 @@
           .then(annotation => {
             console.log(
               'sync updated',
-              this.targetSelector.millis,
-              this.srcSelector.millis,
+              this.targetSelector.toMillis(),
+              this.srcSelector.toMillis(),
               diff,
               video.uuid,
               annotation

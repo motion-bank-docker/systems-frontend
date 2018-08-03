@@ -53,7 +53,7 @@
 </template>
 
 <script>
-  import constants from '../../../lib/constants'
+  import constants from 'mbjs-data-models/src'
   import Promise from 'bluebird'
   import url from 'url'
   import path from 'path'

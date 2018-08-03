@@ -1,20 +1,10 @@
-import TimelineSelector from './selectors/timeline'
-import parseSelector from '../parse-selector'
-
 class SessionHelpers {
   static annotationToSessionTime (seconds, annotation, session) {
-    const offset = TimelineSelector.timeBetween(
-      parseSelector(annotation.target.selector.value).start,
-      session.start
-    ).as('seconds')
+    const offset = (session.start.toMillis() - annotation.target.selector.value.start.toMillis()) * 0.001
     return offset + seconds
   }
-
   static sessionToAnnotationTime (seconds, annotation, session) {
-    const offset = TimelineSelector.timeBetween(
-      parseSelector(annotation.target.selector.value).start,
-      session.start
-    ).as('seconds')
+    const offset = (session.start.toMillis() - annotation.target.selector.value.start.toMillis()) * 0.001
     return seconds - offset
   }
 }

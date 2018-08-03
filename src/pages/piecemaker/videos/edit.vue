@@ -14,7 +14,7 @@
   import FullScreen from '../../../components/shared/layouts/FullScreen'
 
   import { required } from 'vuelidate/lib/validators'
-  import { guessType } from '../../../lib/annotations/videos'
+  import { guessType } from 'mbjs-media/src/util/metadata'
 
   export default {
     components: {

@@ -20,6 +20,7 @@ export default {
     export_timeline: 'Export Timeline',
     forgot_password: 'Forgot Password',
     live_annotate: 'Live Annotate',
+    live_annotate_timeline: 'Live Annotate this timeline',
     login: 'Sign In',
     more_info: 'More info',
     request_reset_pass: 'Request Password Reset',
@@ -83,6 +84,7 @@ export default {
     tag: 'Tag',
     tags: 'Tags',
     title: 'Title',
+    title_unknown: 'Unknown Title',
     video_title: 'Video title',
     video_url: 'Video URL'
   },
