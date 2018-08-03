@@ -1,7 +1,6 @@
 <template lang="pug">
 
   .cell-item-inner(:class="{'display-preview': preview, 'display-full': display}")
-
     template(v-if="cellTypeName")
       component(
         :is="cellTypeName",
