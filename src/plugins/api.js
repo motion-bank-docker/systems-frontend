@@ -1,4 +1,4 @@
-import WebAuth from 'mbjs-api-minimal-client/src/web'
+import WebAuth from 'mbjs-api-client/src/web'
 
 export default ({ Vue }) => {
   const apiClient = new WebAuth({

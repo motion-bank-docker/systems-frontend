@@ -39,14 +39,15 @@ module.exports = function (ctx) {
       // Runtime globals
       env: {
         API_HOST: JSON.stringify(process.env.API_HOST || 'https://api.motionbank.org'),
+        TRANSCODER_HOST: JSON.stringify(process.env.TRANSCODER_HOST || 'https://transcoder.motionbank.org'),
         UI_HOST: JSON.stringify(process.env.UI_HOST || 'https://app.motionbank.org'),
+        TIMELINE_BASE_URI: JSON.stringify(process.env.TIMELINE_BASE_URI || 'https://app.motionbank.org/piecemaker/timelines/'),
+        GRID_BASE_URI: JSON.stringify(process.env.GRID_BASE_URI || 'https://app.motionbank.org/mosys/grids/'),
         ID_FIELD: JSON.stringify(process.env.ID_FIELD || 'uuid'),
         AUTH0_DOMAIN: JSON.stringify(process.env.AUTH0_DOMAIN || 'motionbank.eu.auth0.com'),
         AUTH0_CLIENT_ID: JSON.stringify(process.env.AUTH0_CLIENT_ID || 'lyVRrHYxUCOosFip40Ws5BRJyfHWSWTi'),
         AUTH0_REDIRECT_URL: JSON.stringify(process.env.AUTH0_REDIRECT_URL || 'https://app.motionbank.org/users/callback'),
         AUTH0_AUDIENCE: JSON.stringify(process.env.AUTH0_AUDIENCE || 'https://api.motionbank.org'),
-        YOUTUBE_API_KEY: JSON.stringify(process.env.YOUTUBE_API_KEY || 'AIzaSyDaKNfEmbMn6Ee-8Ah2Ywnme-LJrt59cAM'),
-        VIMEO_ACCESS_TOKEN: JSON.stringify(process.env.VIMEO_ACCESS_TOKEN || 'ff53a8fbe415dbf9198fe6cf7fdc7ee1'),
         IS_STAGING: JSON.stringify(process.env.IS_STAGING || false)
       }
     },
@@ -96,10 +97,13 @@ module.exports = function (ctx) {
         'QToggle',
         'QChipsInput',
         'QSearch',
+        'QDatetimePicker',
+        'QDatetime',
         //
         // Grouping
         //
         'QCard',
+        'QCardSeparator',
         'QCardMain',
         'QCollapsible',
         'QTable',

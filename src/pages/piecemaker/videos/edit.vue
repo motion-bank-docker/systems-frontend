@@ -6,20 +6,28 @@
       h5.caption(dark) {{ $t('routes.piecemaker.videos.edit.title') }}
       .row
         .col-md-12
+          calender-time-main(@getTimeAndDate="getTimeAndDate")
           form-main(v-model="payload", :schema="schema")
 </template>
 
 <script>
+  import CalenderTimeMain from '../../../components/shared/forms/CalenderTimeMain'
   import FormMain from '../../../components/shared/forms/FormMain'
   import FullScreen from '../../../components/shared/layouts/FullScreen'
 
   import { required } from 'vuelidate/lib/validators'
-  import { guessType } from '../../../lib/annotations/videos'
+  import { guessType } from 'mbjs-media/src/util/metadata'
 
   export default {
     components: {
+      CalenderTimeMain,
       FormMain,
       FullScreen
+    },
+    methods: {
+      getTimeAndDate (val) {
+        console.log(val)
+      }
     },
     data () {
       const context = this

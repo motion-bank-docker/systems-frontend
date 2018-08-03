@@ -14,74 +14,33 @@
   import DataTable from '../../../components/shared/partials/DataTable'
   import FullScreen from '../../../components/shared/layouts/FullScreen'
 
-  import Promise from 'bluebird'
-  import URL from 'url'
-  import path from 'path'
-  import he from 'he'
-  import { ObjectUtil } from 'mbjs-utils'
-
   export default {
     components: {
       DataTable,
       FullScreen
     },
-    methods: {
-      getPageTitle (url) {
-        const _this = this
-        if (url.indexOf('http') !== 0) return
-        if (path.extname(URL.parse(url).path) === '.mp4') return
-        // TODO: check if change from superagent to axios is breaking
-        return _this.$axios.get(`${process.env.API_HOST}/proxy?url=${encodeURIComponent(url)}`)
-          .then(result => {
-            let title = result.data.match(/<title[^>]*>([^<]+)<\/title>/)[1]
-            return he.decode(title)
-          })
-          .catch(err => {
-            console.warn(`Error getting title for ${url}: ${err.message}`)
-          })
-      },
-      loadVideoTitles (entries) {
-        const _this = this
-        return Promise.map(entries, entry => {
-          const newEntry = ObjectUtil.merge({}, entry)
-          newEntry.title = entry.body.source
-          return Promise.resolve()
-            .then(() => {
-              if (entry.body.source.indexOf('http') !== 0) return
-              if (path.extname(URL.parse(entry.body.source).path) === '.mp4') return
-              // TODO: check if change from superagent to axios is breaking
-              return _this.$axios.get(`${process.env.API_HOST}/proxy?url=${encodeURIComponent(entry.body.source)}`)
-                .then(result => {
-                  let title = result.text.match(/<title[^>]*>([^<]+)<\/title>/)[1]
-                  newEntry.title = he.decode(title)
-                })
-                .catch(err => {
-                  console.warn(`Error getting title for ${entry.body.source}: ${err.message}`)
-                })
-            })
-            .then(() => {
-              return newEntry
-            })
-        })
-      }
-    },
     data () {
       const _this = this
       return {
-        query: { 'body.purpose': 'linking', 'target.id': this.$route.params.groupId },
+        query: { 'body.purpose': 'linking', 'target.id': `${process.env.TIMELINE_BASE_URI}${this.$route.params.groupId}` },
         config: {
           columns: [
             {
               name: 'title',
               label: _this.$t('labels.title'),
-              field: val => val.body.source.id,
+              field: val => val,
               // FIXME: throws array sort exception when active
               sort: false,
               filter: true,
               format: async (val) => {
-                const title = await _this.getPageTitle(val)
-                console.log(title)
-                return title
+                let meta
+                try {
+                  meta = await _this.$store.dispatch('metadata/get', val.uuid)
+                }
+                catch (e) {
+                  meta = {}
+                }
+                return meta && meta.title ? meta.title : _this.$t('labels.title_unknown')
               }
             },
             {

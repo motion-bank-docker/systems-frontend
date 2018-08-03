@@ -4,18 +4,19 @@
     span(slot="form-title") {{ $t('routes.piecemaker.timelines.list.title') }}
 
     // DIAGRAM
-    div.q-mb-xl(ref="diagramList")
-      svg(width="100%", :height="diagramDimensions.height")
-        defs
-          linearGradient(id="lgrad" x1="0%" y1="50%" x2="100%" y2="50%")
-            stop(offset="0%" style="stop-color:rgb(255,255,255);stop-opacity:.2")
-            stop(offset="100%" style="stop-color:rgb(255,255,255);stop-opacity:.025")
-        line(x1="0", x2="100%", :y1="diagramDimensions.height / 2", :y2="diagramDimensions.height / 2", style="stroke: rgba( 255, 255, 255, .25 ); stroke-width: 1;")
-        text.q-caption(v-for="n in 11",:x="(diagramDimensions.currentWidth / 10) * n - 2", :y="diagramDimensions.height / 2 - 10", fill="rgba( 255, 255, 255, .2)") {{ 1999 + n }}
-        svg(v-for="(dummy, i) in dummyData", :width="diagramDimensions.currentWidth - dummy.created", height="diagramDimensions.barHeight", :x="dummy.created")
-          line(x1="0", x2="0", y1="0", y2="100%", style="stroke: rgba( 255, 255, 255, .25 ); stroke-width: 1;")
-          rect.cursor-pointer.moba-hover-timeline(width="100%", height="100%")
-        circle.cursor-pointer.moba-svg-circle(v-for="n in 11", r="3", :cx="(diagramDimensions.currentWidth / 10) * n", :cy="diagramDimensions.height / 2", fill="rgba( 255, 255, 255, 1)")
+      div.q-mb-xl(ref="diagramList")
+        svg(width="100%", :height="diagramDimensions.height")
+          defs
+            linearGradient(id="lgrad" x1="0%" y1="50%" x2="100%" y2="50%")
+              stop(offset="0%" style="stop-color:rgb(255,255,255);stop-opacity:.2")
+              stop(offset="100%" style="stop-color:rgb(255,255,255);stop-opacity:.025")
+          line(x1="0", x2="100%", :y1="diagramDimensions.height / 2", :y2="diagramDimensions.height / 2", style="stroke: rgba( 255, 255, 255, .25 ); stroke-width: 1;")
+          text.q-caption(v-for="n in 11",:x="(diagramDimensions.currentWidth / 10) * n - 2", :y="diagramDimensions.height / 2 - 10", fill="rgba( 255, 255, 255, .2)") {{ 1999 + n }}
+          svg(v-for="(dummy, i) in dummyData", :width="diagramDimensions.currentWidth - dummy.created", height="diagramDimensions.barHeight", :x="dummy.created")
+            line(x1="0", x2="0", y1="0", y2="100%", style="stroke: rgba( 255, 255, 255, .25 ); stroke-width: 1;")
+            rect.cursor-pointer.moba-hover-timeline(width="100%", height="100%")
+          circle.cursor-pointer.moba-svg-circle(v-for="n in 11", r="3", :cx="(diagramDimensions.currentWidth / 10) * n", :cy="diagramDimensions.height / 2", fill="rgba( 255, 255, 255, .5)")
+          // rect.moba-test(@click="testWidth = testWidth + 30", fill="red", :width="testWidth", height="30")
 
     data-table(:config="config", :title="'routes.piecemaker.timelines.list.title'", ref="listTable",
       path="maps", :query="query", base-path="timelines", :has-show="true")
@@ -26,7 +27,7 @@
 <script>
   import DataTable from '../../../components/shared/partials/DataTable'
   import FullScreen from '../../../components/shared/layouts/FullScreen'
-  import constants from '../../../lib/constants'
+  import constants from 'mbjs-data-models/src'
 
   export default {
     components: {
@@ -39,6 +40,7 @@
     data () {
       const _this = this
       return {
+        testWidth: 40,
         diagramDimensions: {
           activeId: null,
           barHeight: 50,
@@ -46,7 +48,7 @@
           height: 100,
           offsetY: 20
         },
-        dummyData: [
+        /* dummyData: [
           {
             author: 'ch',
             created: 0
@@ -67,7 +69,7 @@
             author: 'ch',
             created: 800
           }
-        ],
+        ], */
         query: { type: constants.MAP_TYPE_TIMELINE },
         config: {
           columns: [
@@ -115,7 +117,7 @@
               type: 'delete',
               title: 'buttons.delete',
               click: item => {
-                _this.$store.dispatch('annotations/find', { 'target.id': item.uuid }).then(async result => {
+                _this.$store.dispatch('annotations/find', { 'target.id': `${process.env.TIMELINE_BASE_URI}${item.uuid}` }).then(async result => {
                   for (let a of result.items) {
                     await _this.$store.dispatch('annotations/delete', a.uuid)
                   }
@@ -145,14 +147,18 @@
 
 <style lang="stylus">
   .moba-hover-timeline
-    fill: transparent
+    fill transparent
 
   .moba-hover-timeline:hover
     // fill: rgba(255, 255, 255, .25)
-    fill: url(#lgrad)
+    fill url(#lgrad)
 
+  /*
   .moba-svg-circle
-    transition: ease r 200ms
+    transition ease r 200ms
   .moba-svg-circle:hover
-    r: 10
+    r 10 */
+
+  /* .moba-test
+    transition width ease 200ms */
 </style>

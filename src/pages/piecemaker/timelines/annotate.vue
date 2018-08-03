@@ -18,11 +18,10 @@
 <script>
   import Full from '../../../components/shared/layouts/Full'
   import { ObjectUtil, Assert } from 'mbjs-utils'
+  import { DateTime } from 'luxon'
   import uuidValidate from 'uuid-validate'
-  import constants from '../../../lib/constants'
-  import annotations from '../../../lib/annotations'
-
-  const TimelineSelector = annotations.selectors.TimelineSelector
+  import constants from 'mbjs-data-models/src/constants'
+  import { Sorting } from 'mbjs-data-models/src/lib'
 
   export default {
     components: {
@@ -58,7 +57,7 @@
         }
         else {
           if (this.currentSelector.value === undefined) {
-            this.currentSelector.value = new TimelineSelector().isoString
+            this.currentSelector.value = DateTime.local().toISO()
           }
           this.prevKey = e.keyCode
         }
@@ -68,7 +67,7 @@
         const annotation = {
           body: ObjectUtil.merge({}, _this.currentBody),
           target: {
-            id: _this.$route.params.id,
+            id: `${process.env.TIMELINE_BASE_URI}${_this.$route.params.id}`,
             type: constants.MAP_TYPE_TIMELINE,
             selector: ObjectUtil.merge({}, _this.currentSelector)
           }
@@ -79,7 +78,7 @@
         return this.$store.dispatch('annotations/post', annotation)
           .then(annotation => {
             _this.annotations.push(annotation)
-            _this.annotations = _this.annotations.sort(annotations.Sorting.sortOnTarget)
+            _this.annotations = _this.annotations.sort(Sorting.sortOnTarget)
             _this.scrollToElement()
             // _this.scrollToElement(annotation.uuid)
           })
@@ -101,7 +100,7 @@
         }, 250)
       },
       formatSelectorForList (val) {
-        const selector = TimelineSelector.fromISOString(val)
+        const selector = DateTime.fromISO(val)
         return selector.toFormat(constants.TIMECODE_FORMAT)
       }
     }

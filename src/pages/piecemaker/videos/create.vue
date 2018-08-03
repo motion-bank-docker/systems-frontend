@@ -1,26 +1,36 @@
 <template lang="pug">
   full-screen
     q-btn(slot="backButton", @click="$router.push({ name: 'piecemaker.videos.list' })", icon="keyboard_backspace", round, small)
-    .q-pa-xl(style="min-width: 50vw;")
-      h5.caption(dark) {{ $t('routes.piecemaker.videos.create.title') }}
-      .row
-        .col-md-12
-          form-main(v-model="payload", :schema="schema")
+    h5.caption(dark).text-center {{ $t('routes.piecemaker.videos.create.title') }}
+    .row
+      .col-xs-12.offset-xs-none.col-xl-10.offset-xl-1
+        .row.q-mt-md
+          calender-time-main(@getTimeAndDate="getTimeAndDate")
+
+        form-main(v-model="payload", :schema="schema")
+
 </template>
 
 <script>
+  import CalenderTimeMain from '../../../components/shared/forms/CalenderTimeMain'
   import FormMain from '../../../components/shared/forms/FormMain'
   import FullScreen from '../../../components/shared/layouts/FullScreen'
 
   import { DateTime } from 'luxon'
   import { required } from 'vuelidate/lib/validators'
-  import { guessType } from '../../../lib/annotations/videos'
-  import constants from '../../../lib/constants'
+  import { guessType } from 'mbjs-media/src/util/metadata'
+  import constants from 'mbjs-data-models/src'
 
   export default {
     components: {
+      CalenderTimeMain,
       FormMain,
       FullScreen
+    },
+    methods: {
+      getTimeAndDate (val) {
+        console.log(val)
+      }
     },
     data () {
       const _this = this
@@ -52,7 +62,7 @@
                   purpose: 'linking'
                 },
                 target: {
-                  id: _this.$route.params.groupId,
+                  id: `${process.env.TIMELINE_BASE_URI}${_this.$route.params.groupId}`,
                   type: constants.MAP_TYPE_TIMELINE,
                   selector: {
                     type: 'Fragment',
@@ -69,3 +79,6 @@
     }
   }
 </script>
+
+<style lang="stylus">
+</style>
