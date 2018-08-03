@@ -11,7 +11,7 @@
     //
     q-collapsible.col-xs-12.col-lg-6.q-mb-lg(group="somegroup", icon="access_time",
     :label="formatDate(modelCalender, 'HH:mm:ss:SSS')")
-      slider-time(:resettime="modelCalender", @slide="handlerSlide", @timeReset="reset")
+      slider-time(:resettime="modelCalender", @sliderChange="sliderChange", @timeReset="reset")
 
 </template>
 
@@ -20,6 +20,7 @@
   import SliderTime from '../../../components/shared/forms/SliderTime'
 
   import { date } from 'quasar'
+  // import { DateTime } from 'luxon'
 
   export default {
     components: {
@@ -32,6 +33,13 @@
       }
     },
     methods: {
+      emitString (val) {
+        console.log(val)
+        // let valNew = DateTime.local().toISO()
+        // let valNew = DateTime.fromString(val).toISO()
+        // this.$emit('getTimeAndDate', val)
+        // this.$emit('getTimeAndDate', valNew)
+      },
       calenderChange (val) {
         this.modelCalender = date.adjustDate(this.modelCalender, {
           year: date.formatDate(val, 'YYYY'),
@@ -39,8 +47,9 @@
         // FIXME: days can't be adjusted. Bug in Quasar?
         /* this.modelCalender = date.adjustDate(this.modelCalender, {
           day: date.formatDate(val, 's') }) */
+        this.emitString(this.modelCalender)
       },
-      handlerSlide (val) {
+      sliderChange (val) {
         switch (val.target) {
         case 'hours':
           this.modelCalender = date.adjustDate(this.modelCalender, { hours: val.val })
@@ -55,6 +64,7 @@
           this.modelCalender = date.adjustDate(this.modelCalender, { milliseconds: val.val })
           break
         }
+        this.emitString(this.modelCalender)
       },
       formatDate (val, format) {
         if (val) return date.formatDate(val, format)

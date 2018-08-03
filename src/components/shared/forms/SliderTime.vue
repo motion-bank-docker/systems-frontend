@@ -1,7 +1,7 @@
 <template lang="pug">
   q-list.no-border.shadow-6
     slider-time-row.q-mx-lg(v-for="(row, i) in rows",
-    @slide="handlerSlide",
+    @sliderChange="sliderChange",
     :resettime="resettime", :key="i", :max="row.max", :suffix="row.suffix", :type="row.type")
     q-item
       q-item-main.text-center
@@ -16,8 +16,8 @@
       SliderTimeRow
     },
     methods: {
-      handlerSlide (val) {
-        this.$emit('slide', val)
+      sliderChange (val) {
+        this.$emit('sliderChange', val)
       },
       resetTime () {
         this.$emit('timeReset', 'time')

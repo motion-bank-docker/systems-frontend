@@ -64,7 +64,7 @@
           target = 'milliseconds'
           break
         }
-        this.$emit('slide', {target, val})
+        this.$emit('sliderChange', {target, val})
       }
     },
     methods: {

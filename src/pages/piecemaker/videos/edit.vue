@@ -6,7 +6,7 @@
       h5.caption(dark) {{ $t('routes.piecemaker.videos.edit.title') }}
       .row
         .col-md-12
-          calender-time-main
+          calender-time-main(@getTimeAndDate="getTimeAndDate")
           form-main(v-model="payload", :schema="schema")
 </template>
 
@@ -23,6 +23,11 @@
       CalenderTimeMain,
       FormMain,
       FullScreen
+    },
+    methods: {
+      getTimeAndDate (val) {
+        console.log(val)
+      }
     },
     data () {
       const context = this

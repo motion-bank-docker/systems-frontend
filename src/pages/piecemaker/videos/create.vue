@@ -5,7 +5,7 @@
     .row
       .col-xs-12.offset-xs-none.col-xl-10.offset-xl-1
         .row.q-mt-md
-          calender-time-main
+          calender-time-main(@getTimeAndDate="getTimeAndDate")
 
         form-main(v-model="payload", :schema="schema")
 
@@ -28,6 +28,9 @@
       FullScreen
     },
     methods: {
+      getTimeAndDate (val) {
+        console.log(val)
+      }
     },
     data () {
       const _this = this
