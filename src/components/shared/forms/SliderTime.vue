@@ -2,7 +2,10 @@
   q-list.no-border.q-px-lg.shadow-6
     slider-time-row(v-for="(row, i) in rows",
     @slide="handlerSlide",
-    :key="i", :max="row.max", :suffix="row.suffix", :type="row.type")
+    :resettime="resettime", :key="i", :max="row.max", :suffix="row.suffix", :type="row.type")
+    q-item
+      q-item-main.text-center
+        q-btn(@click="resetTime", label="reset")
 </template>
 
 <script>
@@ -15,8 +18,12 @@
     methods: {
       handlerSlide (val) {
         this.$emit('slide', val)
+      },
+      resetTime () {
+        this.$emit('timeReset', 'time')
       }
     },
+    props: ['resettime'],
     data () {
       return {
         rows: [{

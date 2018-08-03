@@ -9,16 +9,18 @@
           // CALENDER
           //
           q-collapsible.col-xs-12.col-lg-6.q-mb-lg(group="somegroup", icon="event_note", :label="formatDate(modelCalender, 'MMM Do, YYYY')")
-            q-datetime-picker.shadow-6.full-width(v-model="modelCalender", dark)
-            .text-center.q-mt-sm
-              q-btn(@click="handlerReset()", label="Reset")
+            .shadow-6
+              q-datetime-picker.full-width(v-model="modelCalender", dark)
+              .text-center.q-ma-md.q-py-md
+                q-btn.full-width(@click="reset('date')", label="Reset", no-caps)
 
-          // TIME SLIDERS
+          // TIME
           //
           q-collapsible.col-xs-12.col-lg-6.q-mb-lg(group="somegroup", icon="access_time", :label="formatDate(modelCalender, 'HH:mm:ss:SSS')")
-            slider-time(@slide="handlerSlide")
-            .text-center.q-mt-sm
-              q-btn(@click="handlerReset()", label="Reset")
+            slider-time(:resettime="modelCalender", @slide="handlerSlide", @timeReset="reset")
+            //
+              .text-center.q-mt-sm
+                q-btn(@click="handlerReset()", label="Reset")
 
         form-main(v-model="payload", :schema="schema")
 
@@ -66,8 +68,28 @@
       formatDate (val, format) {
         if (val) return date.formatDate(val, format)
       },
-      handlerReset () {
+      /* handlerReset () {
         this.modelCalender = Date.now()
+      }, */
+      reset (val) {
+        let dateNow = Date.now()
+        switch (val) {
+        case 'date':
+          this.modelCalender = date.adjustDate(this.modelCalender, {
+            year: date.formatDate(dateNow, 'YYYY'),
+            month: date.formatDate(dateNow, 'M') })
+          this.modelCalender = date.adjustDate(this.modelCalender, {
+            day: date.formatDate(dateNow, 'D') })
+          break
+        case 'time':
+          this.modelCalender = date.adjustDate(this.modelCalender, {
+            hours: date.formatDate(dateNow, 'H'),
+            minutes: date.formatDate(dateNow, 'm'),
+            seconds: date.formatDate(dateNow, 's'),
+            milliseconds: date.formatDate(dateNow, 'SSS') })
+          break
+        }
+        console.log(date.formatDate(dateNow, 'D'))
       }
     },
     data () {

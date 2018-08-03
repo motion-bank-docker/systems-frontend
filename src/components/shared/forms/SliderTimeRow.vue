@@ -1,5 +1,6 @@
 <template lang="pug">
   q-item.no-padding
+    // .bg-green {{ resettime }}
     q-item-side
       q-btn.no-shadow(@click="handlerButton('down')", round, size="sm", icon="remove", color="transparent")
     q-item-main
@@ -60,7 +61,7 @@
         else if (val === 'down' && _modelSlider > 0) this.modelSlider--
       }
     },
-    props: ['max', 'suffix', 'type'],
+    props: ['resettime', 'max', 'suffix', 'type'],
     data () {
       return {
         modelSlider: 0
