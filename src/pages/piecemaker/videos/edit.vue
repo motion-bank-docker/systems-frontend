@@ -6,10 +6,12 @@
       h5.caption(dark) {{ $t('routes.piecemaker.videos.edit.title') }}
       .row
         .col-md-12
+          calender-time-main
           form-main(v-model="payload", :schema="schema")
 </template>
 
 <script>
+  import CalenderTimeMain from '../../../components/shared/forms/CalenderTimeMain'
   import FormMain from '../../../components/shared/forms/FormMain'
   import FullScreen from '../../../components/shared/layouts/FullScreen'
 
@@ -18,6 +20,7 @@
 
   export default {
     components: {
+      CalenderTimeMain,
       FormMain,
       FullScreen
     },
