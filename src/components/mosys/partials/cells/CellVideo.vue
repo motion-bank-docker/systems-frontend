@@ -3,7 +3,7 @@
   div(:class="{'display-preview': preview, 'display-full': display}")
     template(v-if="display")
       video-player(
-        :src="video.body || fauxVideo",
+        :src="video.body || fauxVideo.source",
         @ready="handlePlayerReady",
         @play="handlePlayerPlaying",
         @time="handlePlayerTimeChange")
