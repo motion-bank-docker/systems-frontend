@@ -1,11 +1,11 @@
 <template lang="pug">
-  q-list.no-border.q-px-lg.shadow-6
-    slider-time-row(v-for="(row, i) in rows",
+  q-list.no-border.shadow-6
+    slider-time-row.q-mx-lg(v-for="(row, i) in rows",
     @slide="handlerSlide",
     :resettime="resettime", :key="i", :max="row.max", :suffix="row.suffix", :type="row.type")
     q-item
       q-item-main.text-center
-        q-btn(@click="resetTime", label="reset")
+        q-btn.full-width(@click="resetTime", label="Now", no-caps)
 </template>
 
 <script>
@@ -21,11 +21,13 @@
       },
       resetTime () {
         this.$emit('timeReset', 'time')
+        this.resettime = Date.now()
       }
     },
-    props: ['resettime'],
+    // props: ['resettime'],
     data () {
       return {
+        resettime: 123,
         rows: [{
           max: 23,
           suffix: 'h',

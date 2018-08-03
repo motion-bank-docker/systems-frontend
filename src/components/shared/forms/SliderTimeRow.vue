@@ -4,7 +4,7 @@
     q-item-side
       q-btn.no-shadow(@click="handlerButton('down')", round, size="sm", icon="remove", color="transparent")
     q-item-main
-      q-slider(v-model="modelSlider", :min="0", :max="max", :label-value="`${modelSlider}${suffix}`", label-always)
+      q-slider(v-model="modelSlider", :resettime="resettime", :min="0", :max="max", :label-value="`${modelSlider}${suffix}`", label-always)
     q-item-side
       q-btn.no-shadow(@click="handlerButton('up')", round, size="sm", icon="add", color="transparent")
 </template>
@@ -32,6 +32,22 @@
       this.modelSlider = parseInt(date.formatDate(Date.now(), timeUnit))
     },
     watch: {
+      resettime: function () {
+        switch (this.type) {
+        case 'hours':
+          this.modelSlider = date.formatDate(Date.now(), 'H')
+          break
+        case 'minutes':
+          this.modelSlider = date.formatDate(Date.now(), 'm')
+          break
+        case 'seconds':
+          this.modelSlider = date.formatDate(Date.now(), 's')
+          break
+        case 'milliseconds':
+          this.modelSlider = date.formatDate(Date.now(), 'SSS')
+          break
+        }
+      },
       modelSlider: function (val) {
         let target
         switch (this.type) {
@@ -64,7 +80,8 @@
     props: ['resettime', 'max', 'suffix', 'type'],
     data () {
       return {
-        modelSlider: 0
+        modelSlider: 0,
+        rtime: this.resettime
       }
     }
   }
