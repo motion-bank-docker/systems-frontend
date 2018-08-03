@@ -15,7 +15,7 @@
           q-item(
           v-for="action in gridContextMenuActions",
           :key="action.label",
-          @click="event => {action.handler(event), $refs.gridmenu.close()}")
+          @click.native="event => {action.handler(event), $refs.gridmenu.close()}")
             q-item-main(:label="action.label")
 
       template(v-for="(cell, index) in cells")
@@ -27,7 +27,7 @@
           @contextmenu="handleCellContextMenu",
           :style="getCellStyle(cell)",
           :title="cell.title",
-          @click.prevent="event => {handleCellClick(event, cell)}",
+          @click.prevent.native="event => {handleCellClick(event, cell)}",
           :class="{selected: cellUIStates[cell.uuid] ? cellUIStates[cell.uuid].selected : false}")
             cell(:cell="cell", preview)
             div.cell-item-resize-handle(
@@ -42,7 +42,7 @@
                 q-item(
                   v-for="action in cellContextMenuActions",
                   :key="action.label",
-                  @click="event => {action.handler(event, cell)}")
+                  @click.native="event => {action.handler(event, cell)}")
                     q-item-main(:label="action.label")
 
       template(v-for="(tmpCell, index) in tmpCells")
@@ -196,6 +196,7 @@
         // this.$store.commit('mosysGridEditorStore/setSourcesTab', 'tab-default-cells')
       },
       handleCellContextMenuDelete (event, cell, refId) {
+        console.log('delete action')
         const _this = this
         _this.cells = _this.cells.filter(c => c !== cell)
         this.$store.dispatch('annotations/delete', cell.uuid)
@@ -246,6 +247,7 @@
       },
       handleGridDrop (event) {
         let cellDropped = event.dataTransfer.getData('text/plain')
+        console.log(cellDropped)
         if (cellDropped) {
           cellDropped = JSON.parse(cellDropped)
           let cell = this.cells.find(c => c.uuid === cellDropped.uuid)
