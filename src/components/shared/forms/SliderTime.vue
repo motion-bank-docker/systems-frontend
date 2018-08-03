@@ -24,10 +24,9 @@
         this.resettime = Date.now()
       }
     },
-    // props: ['resettime'],
     data () {
       return {
-        resettime: 123,
+        resettime: null,
         rows: [{
           max: 23,
           suffix: 'h',

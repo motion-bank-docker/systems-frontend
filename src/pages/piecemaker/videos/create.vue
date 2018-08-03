@@ -6,17 +6,19 @@
       .col-xs-12.offset-xs-none.col-xl-10.offset-xl-1
         .row.q-mt-md
 
+          // calender-time-main
+
           // CALENDER
           //
-          q-collapsible.col-xs-12.col-lg-6.q-mb-lg(group="somegroup", icon="event_note", :label="formatDate(modelCalender, 'MMM Do, YYYY')")
-            .shadow-6
-              q-datetime-picker.full-width(v-model="modelCalender", dark)
-              .text-center.q-px-md
-                q-btn.full-width.q-ma-md(@click="reset('date')", label="Today", no-caps)
+          q-collapsible.col-xs-12.col-lg-6.q-mb-lg(group="somegroup", icon="event_note",
+          :label="formatDate(modelCalender, 'MMM Do, YYYY')")
+            // calender(@timeReset="reset", @calenderChange="calenderChange")
+            calender(@timeReset="reset", @calenderChange="calenderChange")
 
           // TIME
           //
-          q-collapsible.col-xs-12.col-lg-6.q-mb-lg(group="somegroup", icon="access_time", :label="formatDate(modelCalender, 'HH:mm:ss:SSS')")
+          q-collapsible.col-xs-12.col-lg-6.q-mb-lg(group="somegroup", icon="access_time",
+          :label="formatDate(modelCalender, 'HH:mm:ss:SSS')")
             slider-time(:resettime="modelCalender", @slide="handlerSlide", @timeReset="reset")
 
         form-main(v-model="payload", :schema="schema")
@@ -24,9 +26,11 @@
 </template>
 
 <script>
+  // import CalenderTimeMain from '../../../components/shared/forms/CalenderTimeMain'
+  import Calender from '../../../components/shared/forms/Calender'
   import FormMain from '../../../components/shared/forms/FormMain'
-  import SliderTime from '../../../components/shared/forms/SliderTime'
   import FullScreen from '../../../components/shared/layouts/FullScreen'
+  import SliderTime from '../../../components/shared/forms/SliderTime'
 
   import { date } from 'quasar'
   import { DateTime } from 'luxon'
@@ -36,6 +40,8 @@
 
   export default {
     components: {
+      Calender,
+      // CalenderTimeMain,
       FormMain,
       FullScreen,
       SliderTime
@@ -46,6 +52,14 @@
       }
     },
     methods: {
+      calenderChange (val) {
+        this.modelCalender = date.adjustDate(this.modelCalender, {
+          year: date.formatDate(val, 'YYYY'),
+          month: date.formatDate(val, 'M') })
+          // FIXME: days can't be adjusted. Bug in Quasar?
+        /* this.modelCalender = date.adjustDate(this.modelCalender, {
+          day: date.formatDate(val, 's') }) */
+      },
       handlerSlide (val) {
         switch (val.target) {
         case 'hours':
@@ -72,6 +86,7 @@
           this.modelCalender = date.adjustDate(this.modelCalender, {
             year: date.formatDate(dateNow, 'YYYY'),
             month: date.formatDate(dateNow, 'M') })
+            // FIXME: days can't be adjusted. Bug in Quasar?
           /* this.modelCalender = date.adjustDate(this.modelCalender, {
             day: date.formatDate(dateNow, 'D') }) */
           break
