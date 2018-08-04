@@ -196,16 +196,15 @@
         // this.$store.commit('mosysGridEditorStore/setSourcesTab', 'tab-default-cells')
       },
       handleCellContextMenuDelete (event, cell, refId) {
-        console.log('delete action')
         const _this = this
+        if (refId) {
+          this.$refs[refId].close()
+        }
         _this.cells = _this.cells.filter(c => c !== cell)
         this.$store.dispatch('annotations/delete', cell.uuid)
           .then(() => {
             _this.fetchCellAnnotations()
           })
-        if (refId) {
-          this.$refs[refId].close()
-        }
       },
       handleCellContextMenu (event) {
         this.contextMenuClickPosition = this.getGridPositionForEvent(event)
