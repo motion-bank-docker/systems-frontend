@@ -27,7 +27,7 @@
           @contextmenu="handleCellContextMenu",
           :style="getCellStyle(cell)",
           :title="cell.title",
-          @click.prevent="handleCellClick(event, cell)",
+          @click.prevent="event => {handleCellClick(event, cell)}",
           :class="{selected: cellUIStates[cell.uuid] ? cellUIStates[cell.uuid].selected : false}")
             cell(:cell="cell", preview)
             div.cell-item-resize-handle(
@@ -166,7 +166,6 @@
         else {
           event.dataTransfer.setData('text/plain', JSON.stringify(cell))
           event.dataTransfer.setDragImage(nullImage, 0, 0)
-          this.cellUIStates[cell.uuid].beingDragged = true
           let elContainerBoundingBox = this.$el.getBoundingClientRect()
           let elBoundingBox = event.srcElement.getBoundingClientRect()
           let offset = {
@@ -182,13 +181,12 @@
       handleCellDragEnd (event, cell) {
         this.cellUIStates[cell.uuid].beingDragged = false
       },
-
-      handleCellContextMenuClick () {
-      },
-      handleCellContextMenuEdit (/* event, cell */) {
-        // this.$store.commit('mosysGridEditorStore/showSources')
-        // this.$store.commit('mosysGridEditorStore/setSourcesTab', 'tab-default-cells')
-      },
+      // handleCellContextMenuClick () {
+      // },
+      // handleCellContextMenuEdit (/* event, cell */) {
+      //   // this.$store.commit('mosysGridEditorStore/showSources')
+      //   // this.$store.commit('mosysGridEditorStore/setSourcesTab', 'tab-default-cells')
+      // },
       handleCellContextMenuDelete (event, cell, refId) {
         const _this = this
         if (refId) {
@@ -356,6 +354,7 @@
           }
         })
         this.cellUIStates = newCellUIStates
+        this.updateSelectedCells()
       },
       getTmpCell (cell, type = 'UIFeedback') {
         return {
