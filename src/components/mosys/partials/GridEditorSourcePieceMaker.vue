@@ -5,9 +5,9 @@
       template(v-if="currentGroup")
         q-btn(flat, round, small, style="margin-right: 0.5em",
           @click="handleClickUnsetCurrentGroup", icon="keyboard backspace")
-        span Videos in Group #[strong {{currentGroup.title}}]
+        span Videos in Timeline #[strong {{currentGroup.title}}]
       template(v-else)
-        router-link(:to="{name: 'piecemaker.timelines.list'}") Piecemaker Groups
+        router-link(:to="{name: 'piecemaker.timelines.list'}") Piecemaker Timelines
 
     q-item-separator
 
@@ -32,13 +32,15 @@
           q-item.video-item
             q-item-side
               q-icon(
-                draggable="true", @dragstart="event => {handleVideoItemDragStart(event, video, 'Video')}",
+                draggable="true",
+                @dragstart.native="event => {handleItemDragStart(event, video, 'Video')}",
                 name="local movies", style="font-size: 1.8rem")
               q-icon(
-                draggable="true", @dragstart="event => {handleVideoItemDragStart(event, video, 'Annotation-List')}",
+                draggable="true",
+                @dragstart.native="event => {handleItemDragStart(event, video, 'Annotation-List')}",
                 name="comment", style="font-size: 1.8rem")
             q-item-main
-              a(@click.prevent="event => {handleVideoItemClick(event, video)}") {{video.title}}
+              a(@click.prevent="event => {handleVideoItemClick(event, video)}") {{video.title || video.uuid}}
 
     // timelines list
     template(v-else)
@@ -54,11 +56,11 @@
 
 <script>
   import constants from 'mbjs-data-models/src'
-  import Promise from 'bluebird'
-  import url from 'url'
-  import path from 'path'
-  import he from 'he'
-  import { ObjectUtil } from 'mbjs-utils'
+  // import Promise from 'bluebird'
+  // import url from 'url'
+  // import path from 'path'
+  // import he from 'he'
+  // import { ObjectUtil } from 'mbjs-utils'
 
   export default {
     data () {
@@ -73,7 +75,7 @@
       const _this = this
       this.$store.dispatch('maps/find', { type: constants.MAP_TYPE_TIMELINE })
         .then(maps => {
-          _this.timelines = maps
+          if (maps.items) _this.timelines = maps.items
         })
     },
     methods: {
@@ -83,30 +85,30 @@
         this.loadingVideos = true
         const _this = this
         this.$store.dispatch('annotations/find', { type: 'Annotation', 'body.purpose': 'linking', 'target.id': this.currentGroup.uuid })
-          .then(videos => {
-            return Promise.map(videos, entry => {
-              const newEntry = ObjectUtil.merge({}, entry)
-              newEntry.title = entry.body.source
-              return Promise.resolve()
-                .then(() => {
-                  if (entry.body.source.indexOf('http') !== 0) return
-                  if (path.extname(url.parse(entry.body.source).path) === '.mp4') return
-                  // TODO: check if change from superagent to axios plugin is breaking
-                  return _this.$axios.get(`${process.env.API_HOST}/proxy?url=${encodeURIComponent(entry.body.source)}`)
-                    .then(result => {
-                      let title = result.text.match(/<title[^>]*>([^<]+)<\/title>/)[1]
-                      newEntry.title = he.decode(title)
-                    })
-                    .catch(err => {
-                      console.warn(`Error getting title for ${entry.body.source}: ${err.message}`)
-                    })
-                })
-                .then(() => {
-                  return newEntry
-                })
-            })
-          })
-          .then(videos => {
+          // TODO: ask Anton about how to get metadata from transcoder
+          // .then(result => {
+          //   const videos = result.items
+          //   return Promise.map(videos, entry => {
+          //     const newEntry = ObjectUtil.merge({}, entry)
+          //     newEntry.title = _this.$t('labels.title_unknown')
+          //     return Promise.resolve()
+          //       .then(() => {
+          //         console.log(entry)
+          //         return _this.$store.dispatch('metadata/get', entry.uuid)
+          //           .then(result => {
+          //             console.log(result)
+          //           })
+          //           .catch(() => {
+          //             newEntry.title = _this.$t('labels.title_unknown')
+          //           })
+          //       })
+          //       .then(() => {
+          //         return newEntry
+          //       })
+          //   })
+          // })
+          .then(result => {
+            const videos = result.items
             _this.currentVideos = videos
             this.loadingVideos = false
           })
@@ -117,7 +119,7 @@
       },
       handleVideoItemClick () {
       },
-      handleVideoItemDragStart (event, video, type = 'Video') {
+      handleItemDragStart (event, item, type = 'Video') {
         let videoCell = {
           uuid: null,
           type: type,
@@ -125,8 +127,8 @@
           y: 1,
           width: 1,
           height: 1,
-          content: type === 'Video' ? video.body.source : video.uuid,
-          sourceUuid: video.uuid
+          content: type === 'Video' ? item.body.source.id : item.uuid,
+          sourceUuid: item.uuid
         }
         event.dataTransfer.setData('text/plain', JSON.stringify(videoCell))
       }
