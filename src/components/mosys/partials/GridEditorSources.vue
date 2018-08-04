@@ -2,7 +2,7 @@
 
   q-tabs.grid-editor-sources-tabs.shadow-11(v-model="selectedTab")
     q-tab(slot="title", name="tab-default-cells", default, icon="add")
-    q-tab(slot="title", name="tab-magic-box", icon="wb iridescent")
+    <!--q-tab(slot="title", name="tab-magic-box", icon="wb iridescent")-->
     q-tab(slot="title", name="tab-piecemaker") Piecemaker
     q-tab(slot="title", name="tab-vimeo") Vimeo
     q-tab(slot="title", name="tab-youtube") YouTube
@@ -16,8 +16,8 @@
       template(v-else)
         source-grid-editor-default
 
-    q-tab-pane(name="tab-magic-box")
-      source-grid-editor-magic
+    <!--q-tab-pane(name="tab-magic-box")-->
+      <!--source-grid-editor-magic-->
 
     q-tab-pane(name="tab-piecemaker")
       source-piecemaker-groups
