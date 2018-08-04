@@ -132,7 +132,6 @@
         event.dataTransfer.setData('text/plain', JSON.stringify(resourceCell))
       },
       handleItemChanged (value, item) {
-        console.log('item changed!')
         if (item.inputType !== 'url') {
           item.value = value
         }

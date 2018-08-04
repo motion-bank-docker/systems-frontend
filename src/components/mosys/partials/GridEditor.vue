@@ -432,11 +432,12 @@
         const _this = this,
           query = { 'body.type': '2DCell', 'target.id': this.gridUuid }
         this.$store.dispatch('annotations/find', query)
-          .then(annotations => {
-            _this.cells = annotations.items.map(annotation => {
+          .then(result => {
+            _this.cells = result.items.map(annotation => {
               let cell = JSON.parse(annotation.body.value)
               if (cell) {
                 cell.uuid = annotation.uuid
+                console.log(cell)
                 return cell
               }
               return null
@@ -449,8 +450,8 @@
         const query = { 'body.type': '2DGridMetadata', 'target.id': this.gridUuid }
         return new Promise((resolve, reject) => {
           this.$store.dispatch('annotations/find', query)
-            .then(annotations => {
-              let annotation = annotations.items.shift()
+            .then(result => {
+              let annotation = result.items.shift()
               if (annotation) {
                 let metadata = JSON.parse(annotation.body.value)
                 metadata.uuid = annotation.uuid
