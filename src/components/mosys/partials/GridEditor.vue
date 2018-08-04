@@ -157,14 +157,8 @@
         this.updateCellStore(cell)
       },
       handleCellClick (event, cell) {
-        const _this = this
         this.cellUIStates[cell.uuid].selected = !this.cellUIStates[cell.uuid].selected
-        let selectedCells = Object.keys(this.cellUIStates).filter(k => {
-          return _this.cellUIStates[k].selected
-        }).map(k => {
-          return _this.cells.find(c => c.uuid === k)
-        })
-        this.$store.commit('mosysGridEditorStore/setSelectedCells', selectedCells)
+        this.updateSelectedCells()
       },
       handleCellDragStart (event, cell) {
         if (this.cellUIStates[cell.uuid].beingResized) {
@@ -200,6 +194,8 @@
         if (refId) {
           this.$refs[refId].close()
         }
+        this.cellUIStates[cell.uuid].selected = false
+        this.updateSelectedCells()
         _this.cells = _this.cells.filter(c => c !== cell)
         this.$store.dispatch('annotations/delete', cell.uuid)
           .then(() => {
@@ -246,7 +242,6 @@
       },
       handleGridDrop (event) {
         let cellDropped = event.dataTransfer.getData('text/plain')
-        console.log(cellDropped)
         if (cellDropped) {
           cellDropped = JSON.parse(cellDropped)
           let cell = this.cells.find(c => c.uuid === cellDropped.uuid)
@@ -266,7 +261,6 @@
           event.preventDefault()
         }
       },
-
       handleGridContextMenu (event) {
         this.contextMenuClickPosition = this.getGridPositionForEvent(event)
       },
@@ -343,7 +337,15 @@
 
       handleGridKeyReleased () {
       },
-
+      updateSelectedCells () {
+        const _this = this
+        let selectedCells = Object.keys(this.cellUIStates).filter(k => {
+          return _this.cellUIStates[k].selected
+        }).map(k => {
+          return _this.cells.find(c => c.uuid === k)
+        })
+        this.$store.commit('mosysGridEditorStore/setSelectedCells', selectedCells)
+      },
       updateCellUIStates () {
         let newCellUIStates = {}
         this.cells.map(c => {
