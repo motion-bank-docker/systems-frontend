@@ -27,7 +27,7 @@
           @contextmenu="handleCellContextMenu",
           :style="getCellStyle(cell)",
           :title="cell.title",
-          @click.prevent.native="event => {handleCellClick(event, cell)}",
+          @click.prevent="handleCellClick(event, cell)",
           :class="{selected: cellUIStates[cell.uuid] ? cellUIStates[cell.uuid].selected : false}")
             cell(:cell="cell", preview)
             div.cell-item-resize-handle(
