@@ -437,7 +437,6 @@
               let cell = JSON.parse(annotation.body.value)
               if (cell) {
                 cell.uuid = annotation.uuid
-                console.log(cell)
                 return cell
               }
               return null
