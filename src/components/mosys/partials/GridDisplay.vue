@@ -64,7 +64,7 @@
     methods: {
       fetchCellAnnotations () {
         const _this = this,
-          query = { 'body.type': '2DCell', 'target.id': this.gridUuid }
+          query = { 'body.type': '2DCell', 'target.id': `${process.env.GRID_BASE_URI}${this.gridUuid}` }
         this.$store.dispatch('annotations/find', query)
           .then(annotations => {
             _this.annotations = annotations.items
@@ -80,7 +80,7 @@
       },
       fetchMetadataAnnotations () {
         const _this = this
-        const query = { 'body.type': '2DGridMetadata', 'target.id': this.gridUuid }
+        const query = { 'body.type': '2DGridMetadata', 'target.id': `${process.env.GRID_BASE_URI}${this.gridUuid}` }
         return new Promise((resolve, reject) => {
           this.$store.dispatch('annotations/find', query)
             .then(annotations => {

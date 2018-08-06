@@ -30,7 +30,7 @@
 <script>
   import Vue from 'vue'
   import Promise from 'bluebird'
-  import constants from '../../../lib/constants'
+  import constants from 'mbjs-data-models/src/constants'
   import CardFull from '../../../components/shared/layouts/CardFull'
 
   const tagsVideosMap = {
@@ -134,16 +134,15 @@
             if (videos.indexOf(url) === -1) videos.push(url)
           })
         })
+        // FIXME: needs ACL to work ...
         let grid, gridTemplate = {
             title: `Generated Grid for ${_this.studentName}`,
-            owner: authorUuid,
             type: [constants.MAP_TYPE_2D_GRID]
           }
         _this.$store.dispatch('maps/create', gridTemplate)
           .then(g => {
             grid = g
             let gridMetadata = {
-              autor: authorUuid,
               body: {
                 purpose: 'linking',
                 type: '2DGridMetadata',
@@ -154,7 +153,7 @@
                 })
               },
               target: {
-                id: grid.uuid,
+                id: `${process.env.GRID_BASE_URI}${grid.uuid}`,
                 type: constants.MAP_TYPE_2D_GRID
               }
             }
@@ -163,14 +162,13 @@
           .then(() => {
             return Promise.map(_this.selectedTags, (tag) => {
               let tagAnnotation = {
-                author: authorUuid,
                 body: {
                   purpose: 'tagging',
                   type: 'TextualBody',
                   value: tag
                 },
                 target: {
-                  id: grid.uuid,
+                  id: `${process.env.GRID_BASE_URI}${grid.uuid}`,
                   type: constants.MAP_TYPE_2D_GRID
                 }
               }
@@ -199,7 +197,7 @@
                   value: JSON.stringify(cell)
                 },
                 target: {
-                  id: grid.uuid,
+                  id: `${process.env.GRID_BASE_URI}${grid.uuid}`,
                   type: constants.MAP_TYPE_2D_GRID,
                   selector: {
                     type: '2DLocation',
