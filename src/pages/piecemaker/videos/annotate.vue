@@ -8,35 +8,54 @@
       //
       video-player(v-if="video", :annotation="video", @ready="playerReady($event)", @time="onPlayerTime($event)")
 
-      // BUTTONS
+      // BUTTON BACK
       //
-      div.absolute-top.q-mt-sm.q-ml-sm
-        q-btn(@click="$router.push(timelines + gtimelines + '/videos')",
-        color="grey", icon="keyboard_backspace", round, flat, small)
-        q-btn(v-if="!fullscreen", @click="toggleFullscreen(), fullscreenHandler()", icon="fullscreen", round, flat, small)
-        q-btn(v-if="fullscreen", @click="toggleFullscreen(), fullscreenHandler()", icon="fullscreen_exit", round, flat, small)
-
-      q-btn.absolute-bottom-right.q-mb-md.q-mr-md(v-if="!drawer", @click="drawer = true")
-        q-icon(name="keyboard_backspace")
+      // .absolute-top-left.q-mt-sm.q-ml-sm.bg-green
+      q-btn.absolute-top-left.q-mt-sm.q-ml-sm(v-if="!active", @click="$router.push(timelines + gtimelines + '/videos')",
+      color="grey", icon="keyboard_backspace", round, flat, small)
+        //
+          q-btn(v-if="!fullscreen", @click="toggleFullscreen(), fullscreenHandler()", icon="fullscreen", round, flat, small)
+          q-btn(v-if="fullscreen", @click="toggleFullscreen(), fullscreenHandler()", icon="fullscreen_exit", round, flat, small)
+      //
+        q-btn.absolute-bottom-right.q-mb-md.q-mr-md(v-if="!drawer", @click="drawer = true")
+          q-icon(name="keyboard_backspace")
 
       // POP-UP
       //
-      .absolute-top-right.q-ma-md.cursor-pointer(style="width: 33%;")
-        q-btn.q-mb-md.q-ml-md.float-right(v-if="!drawer", @click="drawer = true", color="dark", round)
+        .absolute-top-right.q-ma-md.cursor-pointer(style="width: 33%;")
+      .absolute-top-right.cursor-pointer.full-width
+        q-btn.q-mt-md.q-mr-md.float-right(v-if="!drawer", @click="drawer = true", color="dark", round)
           q-icon(name="keyboard_backspace")
-        q-btn.q-mb-md.q-ml-md.float-right(v-else, @click="drawer = false", color="dark", round)
+        q-btn.q-mt-md.q-mr-md.float-right(v-else, @click="drawer = false", color="dark", round)
           q-icon.flip-horizontal(name="keyboard_backspace")
-        div.bg-dark.q-pa-md.text-right.float-right(@click="toggleForm()", v-if="!active", color="primary", style="right: 0; opacity: .8;")
+        .bg-dark.q-pa-md.text-right.float-right.q-mt-md.q-mr-md(@click="toggleForm()", v-if="!active", color="primary", style="right: 0; opacity: .8;")
           | Start typing or click here
 
-        div.bg-dark.q-pa-md.float-right(v-if="active")
-          q-input(@keyup.enter="createAnnotation()", @keyup.esc="toggleForm(); closePopUp()",
-            v-model="currentBody.value", type="textarea", float-label="Start typing", autofocus, dark)
-          div.row
-            .col-6
-              q-btn(@click="toggleForm()", small) Esc
-            .col-6.text-right
-              q-btn(@click="createAnnotation()", small) Enter
+        .row.q-pa-md(v-if="active")
+          .col-10
+
+            // TEXT INPUT
+            //
+            .bg-dark.q-pa-md(v-if="inputStyle")
+              q-input(@keyup.enter="createAnnotation()", @keyup.esc="toggleForm(); closePopUp()",
+                v-model="currentBody.value", type="textarea", float-label="Start typing", autofocus, dark)
+              .row
+                .col-6
+                  q-btn(@click="toggleForm()", small) Esc
+                .col-6.text-right
+                  q-btn(@click="createAnnotation()", small) Enter
+
+            // VOCABULARIES
+            //
+            div(v-else)
+              q-btn.text-black.q-mr-xs.q-mb-xs(v-for="n in dummyVocabularies", color="white", size="sm", no-caps, rounded) {{ n }}
+
+          // BUTTONS
+          //
+          .col-2
+            q-btn.bg-white.cursor-pointer.q-mx-xs(@click="toggleInputStyle()", :class="{'bg-dark': inputStyle}") switch
+            q-btn.bg-white.cursor-pointer(@click="toggleForm()", round, :class="{'bg-dark': inputStyle}")
+              q-icon(name="clear")
 
     // ANNOTATIONS
     //
@@ -91,17 +110,9 @@
     },
     data () {
       return {
-        drawer: true,
-        fullscreen: false,
-        player: undefined,
-        playerTime: 0.0,
-        video: undefined,
-        timelineId: undefined,
-        selector: undefined,
-        baseSelector: undefined,
-        metadata: undefined,
         active: false,
         annotations: [],
+        baseSelector: undefined,
         currentBody: {
           value: undefined,
           purpose: 'commenting',
@@ -111,12 +122,33 @@
           type: 'Fragment',
           value: undefined
         },
+        drawer: true,
+        dummyVocabulariesTaxonomie: [
+          'movement direction', 'facial orientation', 'body/body part direction',
+          'weight engage. individual', 'weight engag. partner', 'weight regul. partner',
+          'sync rythm', 'sync phrase',
+          'still', 'mirroring', 'contingently responsive'
+        ],
+        dummyVocabularies: [
+          'movement direction', 'facial orientation', 'body/body part direction',
+          'weight engage. individual', 'weight engag. partner', 'weight regul. partner',
+          'sync rythm', 'sync phrase',
+          'still', 'mirroring', 'contingently responsive'
+        ],
+        fullscreen: false,
         filtertypes: [{
           title: 'Comment'
         }, {
           title: 'Marker'
         }
-        ]
+        ],
+        inputStyle: false,
+        metadata: undefined,
+        player: undefined,
+        playerTime: 0.0,
+        selector: undefined,
+        timelineId: undefined,
+        video: undefined
       }
     },
     computed: {
@@ -148,6 +180,9 @@
       },
       fullscreenHandler () {
         this.fullscreen = !this.fullscreen
+      },
+      toggleInputStyle () {
+        this.inputStyle = !this.inputStyle
       },
       async getVideo () {
         const result = await this.$store.dispatch('annotations/get', this.$route.params.id)
