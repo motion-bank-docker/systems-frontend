@@ -28,7 +28,8 @@
           q-icon(name="keyboard_backspace")
         q-btn.q-mt-md.q-mr-md.float-right(v-else, @click="drawer = false", color="dark", round)
           q-icon.flip-horizontal(name="keyboard_backspace")
-        .bg-dark.q-pa-md.text-right.float-right.q-mt-md.q-mr-md(@click="toggleForm()", v-if="!active", color="primary", style="right: 0; opacity: .8;")
+        .bg-dark.q-pa-md.text-right.float-right.q-mt-md.q-mr-md(
+        @click="toggleForm()", v-if="!active", color="primary", style="right: 0; opacity: .8;")
           | Start typing or click here
 
         .row.q-pa-md(v-if="active")
@@ -36,19 +37,27 @@
 
             // TEXT INPUT
             //
-            .bg-dark.q-pa-md(v-if="inputStyle")
-              q-input(@keyup.enter="createAnnotation()", @keyup.esc="toggleForm(); closePopUp()",
-                v-model="currentBody.value", type="textarea", float-label="Start typing", autofocus, dark)
+            div(v-if="inputStyle")
+              q-input.q-px-sm.q-mb-sm(
+              @keyup.enter="createAnnotation()", @keyup.esc="toggleForm(); closePopUp()",
+              v-model="currentBody.value", type="textarea", float-label="Start typing", autofocus, dark,
+              style="background-color: rgba( 0, 0, 0, .5 );", rounded,
+              :after="[{ icon: clear }]"
+              )
               .row
                 .col-6
-                  q-btn(@click="toggleForm()", small) Esc
+                  q-btn.bg-dark(@click="toggleForm()", small) Esc
                 .col-6.text-right
-                  q-btn(@click="createAnnotation()", small) Enter
+                  q-btn.bg-dark(@click="createAnnotation()", small) Enter
 
             // VOCABULARIES
             //
             div(v-else)
-              q-btn.text-black.q-mr-xs.q-mb-xs(v-for="n in dummyVocabularies", color="white", size="sm", no-caps, rounded) {{ n }}
+              q-btn.text-black.q-mr-xs.q-mb-xs(
+              v-for="n in dummyVocabularies", @click="",
+              color="white", size="sm", no-caps, rounded)
+                span.text-grey-6 [key]:&nbsp;
+                | {{ n }}
 
           // BUTTONS
           //
@@ -68,7 +77,10 @@
         q-item.bg-dark(dark, v-for="(annotation, i) in annotations", :key="annotation.uuid", :ref="annotation.uuid")
           q-item-main
             q-item-tile
-              q-btn(v-if="annotation.target.selector", :color="currentIndex === i ? 'primary' : 'dark'", @click="gotoSelector(annotation.target.selector.value), changeState()", size="sm") {{ formatSelectorForList(annotation.target.selector.value) }}
+              q-btn(
+              v-if="annotation.target.selector", :color="currentIndex === i ? 'primary' : 'dark'",
+              @click="gotoSelector(annotation.target.selector.value), changeState()", size="sm")
+                | {{ formatSelectorForList(annotation.target.selector.value) }}
               q-btn.float-right(@click="deleteAnnotation(annotation.uuid), changeState()", size="sm") {{ $t('buttons.delete') }}
               q-btn.float-right(@click="updateAnnotation(annotation), addKeypressListener()", size="sm") {{ $t('buttons.save') }}
             q-item-tile.q-caption.q-my-xs
@@ -142,7 +154,7 @@
           title: 'Marker'
         }
         ],
-        inputStyle: false,
+        inputStyle: true,
         metadata: undefined,
         player: undefined,
         playerTime: 0.0,
