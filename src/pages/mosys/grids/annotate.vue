@@ -24,7 +24,7 @@
   .grid-editor-container
     display flex
     width 100%
-    height 100%
+    height calc(100% - 50px) // FIXME: quick fix for issue #13, can we do without calc()?
     position absolute
     flex-direction row
 

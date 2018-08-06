@@ -2,19 +2,30 @@
 
   q-list
     template(v-for="(cell, index) in cells")
+
+      q-list-header
+        q-item
+          small Cell Content Editor
+
+      q-item-separator
+
       template(v-if="index > 0")
         q-item-separator
+
       q-item
         q-field(
-          :icon="typeToIconName[cell.type]", :helper="itemSpecs[cell.type].help",
+          :icon="typeToIconName[cell.type]",
+          :helper="itemSpecs[cell.type].help",
           :error="itemSpecs[cell.type].error",
-          :error-label="itemSpecs[cell.type].errorMessage", style="width: 100%")
+          :error-label="itemSpecs[cell.type].errorMessage",
+          style="width: 100%")
             q-input(
               :float-label="itemSpecs[cell.type].label",
               :type="itemSpecs[cell.type].inputType",
-              :min-rows="1", :max-height="500",
+              :min-rows="1",
+              :max-height="500",
               :value="cell.content",
-              @change="event => {handleItemChanged(event, cell)}")
+              @change="value => {handleItemChanged(value, cell)}")
 
 </template>
 
@@ -103,13 +114,17 @@
       },
       updateCellContent (value, cell) {
         const _this = this
-        if (cell.sourceUuid) {
-          this.$store.dispatch('annotations/find', {'uuid': cell.sourceUuid})
-            .then(a => {
-              a = a.shift()
+        // can't remember why the extra sourceUuid is needed …
+        // maybe if this is an annotation made in piecemaker (video),
+        // that is wrapped into a cell-annotation
+        const destUuid = cell.sourceUuid || cell.uuid
+        if (destUuid) {
+          this.$store.dispatch('annotations/find', {'uuid': destUuid})
+            .then(annotations => {
+              const a = annotations.items.shift()
               cell.content = value
               a.body.value = JSON.stringify(cell)
-              _this.$store.dispatch('annotations/patch', [a.uuid, a])
+              _this.$store.dispatch('annotations/patch', [destUuid, {body: a.body, target: a.target}])
             })
         }
       }
@@ -117,6 +132,4 @@
   }
 </script>
 
-<style scoped lang="stylus">
-
-</style>
+<style scoped lang="stylus"></style>

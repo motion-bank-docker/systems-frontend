@@ -3,7 +3,7 @@
   div(:class="{'display-preview': preview, 'display-full': display}")
     template(v-if="display")
       video-player(
-        :src="video.body || fauxVideo",
+        :src="video.body || fauxVideo.source",
         @ready="handlePlayerReady",
         @play="handlePlayerPlaying",
         @time="handlePlayerTimeChange")
@@ -46,8 +46,8 @@
       const _this = this
       if (this.cell.sourceUuid) {
         this.$store.dispatch('annotations/find', {query: {'uuid': this.cell.sourceUuid}})
-          .then(videos => {
-            const video = videos.shift()
+          .then(result => {
+            const video = result.items.shift()
             if (video) {
               _this.video = video
               _this.videoTime = Date.parse(video.target.selector.value)

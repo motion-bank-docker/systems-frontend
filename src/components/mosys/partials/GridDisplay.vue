@@ -7,9 +7,9 @@
         .cell-item(
           :style="getCellStyle(cell)",
           :title="cell.title")
-            cell(:cell="cell", display, :messenger="messenger")
+            cell(:cell="cell", display="display", :messenger="messenger")
 
-      q-fixed-position(corner="top-right", :offset="[18, 18]", v-if="$store.state.auth.user")
+      q-page-sticky(position="top-right", :offset="[18, 18]", v-if="$store.state.auth.user")
         q-btn(round, color="primary", small, @click="$router.push(`/mosys/grids/${$route.params.id}/annotate`)")
           q-icon(name="edit")
 
@@ -67,8 +67,8 @@
           query = { 'body.type': '2DCell', 'target.id': this.gridUuid }
         this.$store.dispatch('annotations/find', query)
           .then(annotations => {
-            _this.annotations = annotations
-            _this.cells = annotations.map(annotation => {
+            _this.annotations = annotations.items
+            _this.cells = _this.annotations.map(annotation => {
               let cell = JSON.parse(annotation.body.value)
               if (cell) {
                 cell.uuid = annotation.uuid
@@ -84,7 +84,7 @@
         return new Promise((resolve, reject) => {
           this.$store.dispatch('annotations/find', query)
             .then(annotations => {
-              let annotation = annotations.shift()
+              let annotation = annotations.items.shift()
               if (annotation) {
                 let metadata = JSON.parse(annotation.body.value)
                 metadata.uuid = annotation.uuid

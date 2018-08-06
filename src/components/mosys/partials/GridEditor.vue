@@ -15,7 +15,7 @@
           q-item(
           v-for="action in gridContextMenuActions",
           :key="action.label",
-          @click="event => {action.handler(event), $refs.gridmenu.close()}")
+          @click.native="event => {action.handler(event), $refs.gridmenu.close()}")
             q-item-main(:label="action.label")
 
       template(v-for="(cell, index) in cells")
@@ -42,7 +42,7 @@
                 q-item(
                   v-for="action in cellContextMenuActions",
                   :key="action.label",
-                  @click="event => {action.handler(event, cell)}")
+                  @click.native="event => {action.handler(event, cell)}")
                     q-item-main(:label="action.label")
 
       template(v-for="(tmpCell, index) in tmpCells")
@@ -157,14 +157,8 @@
         this.updateCellStore(cell)
       },
       handleCellClick (event, cell) {
-        const _this = this
         this.cellUIStates[cell.uuid].selected = !this.cellUIStates[cell.uuid].selected
-        let selectedCells = Object.keys(this.cellUIStates).filter(k => {
-          return _this.cellUIStates[k].selected
-        }).map(k => {
-          return _this.cells.find(c => c.uuid === k)
-        })
-        this.$store.commit('mosysGridEditorStore/setSelectedCells', selectedCells)
+        this.updateSelectedCells()
       },
       handleCellDragStart (event, cell) {
         if (this.cellUIStates[cell.uuid].beingResized) {
@@ -172,7 +166,6 @@
         else {
           event.dataTransfer.setData('text/plain', JSON.stringify(cell))
           event.dataTransfer.setDragImage(nullImage, 0, 0)
-          this.cellUIStates[cell.uuid].beingDragged = true
           let elContainerBoundingBox = this.$el.getBoundingClientRect()
           let elBoundingBox = event.srcElement.getBoundingClientRect()
           let offset = {
@@ -188,23 +181,24 @@
       handleCellDragEnd (event, cell) {
         this.cellUIStates[cell.uuid].beingDragged = false
       },
-
-      handleCellContextMenuClick () {
-      },
-      handleCellContextMenuEdit (/* event, cell */) {
-        // this.$store.commit('mosysGridEditorStore/showSources')
-        // this.$store.commit('mosysGridEditorStore/setSourcesTab', 'tab-default-cells')
-      },
+      // handleCellContextMenuClick () {
+      // },
+      // handleCellContextMenuEdit (/* event, cell */) {
+      //   // this.$store.commit('mosysGridEditorStore/showSources')
+      //   // this.$store.commit('mosysGridEditorStore/setSourcesTab', 'tab-default-cells')
+      // },
       handleCellContextMenuDelete (event, cell, refId) {
         const _this = this
+        if (refId) {
+          this.$refs[refId].close()
+        }
+        this.cellUIStates[cell.uuid].selected = false
+        this.updateSelectedCells()
         _this.cells = _this.cells.filter(c => c !== cell)
         this.$store.dispatch('annotations/delete', cell.uuid)
           .then(() => {
             _this.fetchCellAnnotations()
           })
-        if (refId) {
-          this.$refs[refId].close()
-        }
       },
       handleCellContextMenu (event) {
         this.contextMenuClickPosition = this.getGridPositionForEvent(event)
@@ -265,7 +259,6 @@
           event.preventDefault()
         }
       },
-
       handleGridContextMenu (event) {
         this.contextMenuClickPosition = this.getGridPositionForEvent(event)
       },
@@ -342,7 +335,15 @@
 
       handleGridKeyReleased () {
       },
-
+      updateSelectedCells () {
+        const _this = this
+        let selectedCells = Object.keys(this.cellUIStates).filter(k => {
+          return _this.cellUIStates[k].selected
+        }).map(k => {
+          return _this.cells.find(c => c.uuid === k)
+        })
+        this.$store.commit('mosysGridEditorStore/setSelectedCells', selectedCells)
+      },
       updateCellUIStates () {
         let newCellUIStates = {}
         this.cells.map(c => {
@@ -353,6 +354,7 @@
           }
         })
         this.cellUIStates = newCellUIStates
+        this.updateSelectedCells()
       },
       getTmpCell (cell, type = 'UIFeedback') {
         return {
@@ -430,11 +432,12 @@
         const _this = this,
           query = { 'body.type': '2DCell', 'target.id': this.gridUuid }
         this.$store.dispatch('annotations/find', query)
-          .then(annotations => {
-            _this.cells = annotations.items.map(annotation => {
+          .then(result => {
+            _this.cells = result.items.map(annotation => {
               let cell = JSON.parse(annotation.body.value)
               if (cell) {
                 cell.uuid = annotation.uuid
+                console.log(cell)
                 return cell
               }
               return null
@@ -447,8 +450,8 @@
         const query = { 'body.type': '2DGridMetadata', 'target.id': this.gridUuid }
         return new Promise((resolve, reject) => {
           this.$store.dispatch('annotations/find', query)
-            .then(annotations => {
-              let annotation = annotations.items.shift()
+            .then(result => {
+              let annotation = result.items.shift()
               if (annotation) {
                 let metadata = JSON.parse(annotation.body.value)
                 metadata.uuid = annotation.uuid

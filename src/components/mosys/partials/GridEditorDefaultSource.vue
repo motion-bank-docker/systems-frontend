@@ -13,19 +13,28 @@
       template(v-if="i > 0")
         q-item-separator
 
-      q-item(draggable="true", @dragstart.native="event => {handleItemDragStart(event, item)}")
+      q-item(
+        draggable="true",
+        @dragstart.native="event => {handleItemDragStart(event, item)}")
         q-field(
-          :icon="typeToIconName(item.type)", :helper="item.help", :error="item.error",
-          :error-label="item.errorMessage", style="width: 100%")
+          :icon="typeToIconName(item.type)",
+          :helper="item.help",
+          :error="item.error",
+          :error-label="item.errorMessage",
+          style="width: 100%")
           q-input(
-            :float-label="item.label", :type="item.inputType",
-            :min-rows="1", :max-height="500",
-            :model="item.value", :value="item.value",
-            @change="event => {handleItemChanged(event, item)}")
+            :float-label="item.label",
+            :type="item.inputType",
+            :min-rows="1",
+            :max-height="500",
+            :value="item.value",
+            :model="item.value",
+            @change="value => {handleItemChanged(value, item)}")
 
 </template>
 
 <script>
+
   const typeToIconName = {
     'image': 'photo',
     'iframe': 'picture in picture',
@@ -105,7 +114,13 @@
         return iconName
       },
       handleItemDragStart (event, item) {
-        let resourceCell = {
+        // FIXME: manually setting the item.value because data-binding fails for some reason and change is triggered too late (after drag started)
+        const inputField = event.target.querySelector('input')
+        if (inputField) {
+          inputField.blur()
+          this.handleItemChanged(inputField.value, item)
+        }
+        const resourceCell = {
           uuid: null,
           type: item.type,
           x: 1,

@@ -131,22 +131,22 @@
       fetchAnnotations () {
         const _this = this
         this.$store.dispatch('annotations/find', {query: {'uuid': this.videoUuid}})
-          .then(videoAnnotations => {
-            const videoAnnotation = videoAnnotations.shift()
+          .then(result => {
+            const videoAnnotation = result.items.shift()
             if (videoAnnotation) {
               _this.video = videoAnnotation
               _this.videoTime = Date.parse(_this.video.target.selector.value)
               _this.contextTime = _this.videoTime
               _this.$store.dispatch('maps/find', {query: {'uuid': videoAnnotation.target.id}})
-                .then(maps => {
-                  const map = maps.shift()
+                .then(result => {
+                  const map = result.items.shift()
                   if (map) {
                     _this.map = map
                   }
                 })
               _this.$store.dispatch('annotations/find', {query: {'target.id': videoAnnotation.target.id, 'body.purpose': 'commenting'}})
-                .then(annotations => {
-                  annotations = annotations.filter(a => {
+                .then(result => {
+                  let annotations = result.items.filter(a => {
                     return Date.parse(a.target.selector.value) >= _this.videoTime
                   })
                   annotations = annotations.sort((a, b) => {
