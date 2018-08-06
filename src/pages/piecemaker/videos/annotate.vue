@@ -22,10 +22,14 @@
       // POP-UP
       //
       .absolute-top-right.q-ma-md.cursor-pointer(style="width: 33%;")
-        div.bg-dark.q-pa-md.text-right.absolute(@click="toggleForm()", v-if="!active", color="primary", style="right: 0; opacity: .8;")
+        q-btn.q-mb-md.q-ml-md.float-right(v-if="!drawer", @click="drawer = true", color="dark", round)
+          q-icon(name="keyboard_backspace")
+        q-btn.q-mb-md.q-ml-md.float-right(v-else, @click="drawer = false", color="dark", round)
+          q-icon.flip-horizontal(name="keyboard_backspace")
+        div.bg-dark.q-pa-md.text-right.float-right(@click="toggleForm()", v-if="!active", color="primary", style="right: 0; opacity: .8;")
           | Start typing or click here
 
-        div.bg-dark.q-pa-md(v-if="active")
+        div.bg-dark.q-pa-md.float-right(v-if="active")
           q-input(@keyup.enter="createAnnotation()", @keyup.esc="toggleForm(); closePopUp()",
             v-model="currentBody.value", type="textarea", float-label="Start typing", autofocus, dark)
           div.row
@@ -36,9 +40,10 @@
 
     // ANNOTATIONS
     //
-    q-layout-drawer.bg-dark(dark, v-model="drawer", side="right")
+    q-layout-drawer.bg-dark(v-model="drawer", side="right")
+      .absolute.fit.bg-dark
       q-list.no-border.bg-dark(dark)
-        q-item
+        // q-item
           q-btn.full-width(@click="drawer = false")
             q-icon.flip-horizontal(name="keyboard_backspace")
         q-item.bg-dark(dark, v-for="(annotation, i) in annotations", :key="annotation.uuid", :ref="annotation.uuid")
