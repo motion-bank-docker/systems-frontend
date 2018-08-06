@@ -58,8 +58,6 @@
 </template>
 
 <script>
-  // import Vue from 'vue'
-  // import constants from '../../../lib/constants'
   import { ObjectUtil } from 'mbjs-utils'
   import Cell from './Cell'
 

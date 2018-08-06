@@ -18,12 +18,6 @@ export default {
       meta: {private: true}
     },
     {
-      path: 'grids/user',
-      component: () => import('pages/mosys/grids/user'),
-      name: 'mosys.grids.user',
-      meta: {private: true}
-    },
-    {
       path: 'grids/:id',
       component: () => import('pages/mosys/grids/show'),
       name: 'mosys.grids.show'
@@ -38,42 +32,6 @@ export default {
       path: 'grids/:id/annotate',
       component: () => import('pages/mosys/grids/annotate'),
       name: 'mosys.grids.annotate',
-      meta: {private: true}
-    },
-    //
-    //
-    // Overview
-    {
-      path: 'dashboard',
-      component: () => import('pages/mosys/dashboard'),
-      name: 'mosys.dashboard',
-      meta: {private: true}
-    },
-    //
-    //
-    // Set
-    {
-      path: 'set',
-      component: () => import('pages/mosys/Set'),
-      name: 'mosys.set',
-      meta: {private: true}
-    },
-    {
-      path: 'setPublic',
-      component: () => import('pages/mosys/setPublic'),
-      name: 'mosys.setPublic',
-      meta: {private: true}
-    },
-    {
-      path: 'setGridView',
-      component: () => import('pages/mosys/setGridView'),
-      name: 'mosys.setGridView',
-      meta: {private: true}
-    },
-    {
-      path: 'setListView',
-      component: () => import('pages/mosys/setListView'),
-      name: 'mosys.setListView',
       meta: {private: true}
     },
 

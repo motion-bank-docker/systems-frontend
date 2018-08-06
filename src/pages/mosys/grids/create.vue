@@ -13,7 +13,7 @@
   import FullScreen from '../../../components/shared/layouts/FullScreen'
 
   import { required } from 'vuelidate/lib/validators'
-  import constants from 'mbjs-data-models/src'
+  import constants from 'mbjs-data-models/src/constants'
 
   export default {
     components: {
