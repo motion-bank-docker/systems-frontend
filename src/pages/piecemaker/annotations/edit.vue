@@ -70,7 +70,7 @@
       },
       loadAnnotations () {
         const _this = this
-        this.$store.dispatch('annotations/find', { target: { id: `/maps/${this.$route.params.mapId}` } })
+        this.$store.dispatch('annotations/find', { target: { id: `${process.env.TIMELINE_BASE_URI}${this.$route.params.mapId}` } })
           .then(annotations => {
             _this.annotations = annotations.map(annotation => {
               annotation.object = JSON.parse(annotation.object)
@@ -126,8 +126,7 @@
           },
           submit: {
             handler () {
-              _this.payload.author = `/users/${_this.$store.state.auth.payload.userId}`
-              _this.payload.target = `/maps/${_this.$route.params.mapId}`
+              _this.payload.target = { id: `${process.env.TIMELINE_BASE_URI}${_this.$route.params.mapId}` }
               _this.payload.body = JSON.stringify({
                 url: _this.video.src,
                 sel: _this.annotationSelect

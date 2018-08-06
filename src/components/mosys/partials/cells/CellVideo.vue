@@ -45,7 +45,7 @@
     mounted () {
       const _this = this
       if (this.cell.sourceUuid) {
-        this.$store.dispatch('annotations/find', {query: {'uuid': this.cell.sourceUuid}})
+        this.$store.dispatch('annotations/find', { uuid: this.cell.sourceUuid })
           .then(result => {
             const video = result.items.shift()
             if (video) {

@@ -9,7 +9,7 @@
 </template>
 
 <script>
-  import constants from 'mbjs-data-models/src'
+  import constants from 'mbjs-data-models/src/constants'
 
   export default {
     props: ['targetUuid', 'targetType'],
@@ -76,14 +76,13 @@
         // console.log('add', tagsAdd)
         tagsAdd = tagsAdd.map(t => {
           let annotation = {
-            author: _this.$store.state.auth.payload.userId,
             body: {
               purpose: 'tagging',
               type: 'TextualBody',
               value: t
             },
             target: {
-              id: _this.targetUuid,
+              id: `${process.env.TIMELINE_BASE_URI}${_this.targetUuid}`,
               type: _this.targetType || _this.typeFromRoute()
             }
           }
@@ -112,7 +111,8 @@
       },
       loadTags () {
         const _this = this
-        this.$store.dispatch('annotations/find', { query: { 'target.id': _this.targetUuid, 'body.purpose': 'tagging' } })
+        const query = { 'target.id': `${process.env.TIMELINE_BASE_URI}${_this.targetUuid}`, 'body.purpose': 'tagging' }
+        this.$store.dispatch('annotations/find', query)
           .then(annotations => {
             _this.annotations = annotations.filter(a => a.target.id === _this.targetUuid) // TODO: Anton, why is target id ignored in the query?
             let newTags = annotations.map(a => {
