@@ -5,7 +5,7 @@
     .row
       .col-xs-12.offset-xs-none.col-xl-10.offset-xl-1
         .row.q-mt-md
-          calender-time-main(@getTimeAndDate="getTimeAndDate")
+          calender-time-main(v-if="staging", @getTimeAndDate="getTimeAndDate")
 
         form-main(v-model="payload", :schema="schema")
 
@@ -74,7 +74,8 @@
                 .then(() => _this.$router.push(`/piecemaker/timelines/${_this.$route.params.groupId}/videos`))
             }
           }
-        }
+        },
+        staging: process.env.IS_STAGING
       }
     }
   }
