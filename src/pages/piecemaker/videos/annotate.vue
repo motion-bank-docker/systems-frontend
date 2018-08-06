@@ -61,7 +61,7 @@
 
   import { ObjectUtil, Assert } from 'mbjs-utils'
   import constants from 'mbjs-data-models/src/constants'
-  import { parseURI, parseSelector, Sorting } from 'mbjs-data-models/src/lib'
+  import { parseURI, Sorting } from 'mbjs-data-models/src/lib'
 
   import VideoPlayer from '../../../components/shared/media/VideoPlayer'
   import Username from '../../../components/shared/partials/Username'
@@ -120,7 +120,7 @@
         let selector, baseMillis = this.baseSelector.toMillis() + this.playerTime * 1000
         for (let idx in this.annotations) {
           selector = this.annotations[idx].target.selector
-            ? parseSelector(this.annotations[idx].target.selector.value).start.toMillis() : 0
+            ? DateTime.fromISO(this.annotations[idx].target.selector.value).toMillis() : 0
           if (selector >= baseMillis) return parseInt(idx)
         }
       }
@@ -149,12 +149,9 @@
         if (result.body) {
           this.timelineId = parseURI(result.target.id).uuid
           this.video = result
-          this.selector = parseSelector(result.target.selector.value)
-          this.baseSelector = this.selector.start
+          this.selector = DateTime.fromISO(result.target.selector.value)
+          this.baseSelector = this.selector
           this.metadata = await this.$store.dispatch('metadata/get', result.uuid)
-          if (this.metadata.duration && !this.selector.end) {
-            this.selector.end = DateTime.fromISO(this.selector.start.toISO()).plus(this.metadata.duration * 1000)
-          }
         }
       },
       async getAnnotations () {
@@ -166,12 +163,8 @@
             'body.type': 'TextualBody',
             'target.selector.value': { $gte: this.baseSelector.toISO() }
           }
-        if (!this.selector.end && this.metadata.duration) {
-          this.selector.end = DateTime.fromISO(this.selector.start.toISO())
-          this.selector.end.add(this.metadata.duration * 1000)
-        }
-        if (this.selector.end) {
-          query['target.selector.value']['$lte'] = this.selector.end.toISO()
+        if (this.metadata.duration) {
+          query['target.selector.value']['$lte'] = this.selector.plus(this.metadata.duration * 1000).toISO()
         }
         const results = await this.$store.dispatch('annotations/find', query)
         if (results && Array.isArray(results.items)) {
@@ -233,14 +226,14 @@
           .then(() => this.getAnnotations())
       },
       gotoSelector (selector) {
-        const millis = parseSelector(selector).start.toMillis() - this.baseSelector.toMillis()
+        const millis = DateTime.fromISO(selector).toMillis() - this.baseSelector.toMillis()
         this.player.currentTime(millis * 0.001)
       },
       playerReady (player) {
         this.player = player
       },
       formatSelectorForList (val) {
-        const selector = parseSelector(val).start
+        const selector = DateTime.fromISO(val)
         return selector.toFormat(constants.TIMECODE_FORMAT)
       },
       onPlayerTime (seconds) {
