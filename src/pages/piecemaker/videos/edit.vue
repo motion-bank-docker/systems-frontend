@@ -6,7 +6,7 @@
       h5.caption(dark) {{ $t('routes.piecemaker.videos.edit.title') }}
       .row
         .col-md-12
-          calender-time-main(@getTimeAndDate="getTimeAndDate")
+          calender-time-main(v-if="staging", @getTimeAndDate="getTimeAndDate")
           form-main(v-model="payload", :schema="schema")
 </template>
 
@@ -73,7 +73,8 @@
                 }))
             }
           }
-        }
+        },
+        staging: process.env.IS_STAGING
       }
     }
   }
