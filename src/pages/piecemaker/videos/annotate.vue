@@ -9,7 +9,7 @@
       //
       video-player(v-if="video", :annotation="video", @ready="playerReady($event)", @time="onPlayerTime($event)")
 
-      // TOP LEFT (BUTTONS AND VOCABULARIES)
+      // TOP LEFT
       //
       //
       .absolute-top-left.q-ma-sm
@@ -24,16 +24,7 @@
         q-btn.bg-white.cursor-pointer.q-mx-xs(@click="toggleInputStyle()", :class="{'bg-dark': inputStyle}", round)
           q-icon(name="autorenew")
 
-        // VOCABULARIES
-
-        .column.no-border(v-if="!inputStyle")
-          q-btn.text-black.q-mr-xs.q-mt-xs.row(
-          v-for="n in dummyVocabularies", @click="",
-          color="white", size="sm", no-caps, rounded)
-            span.text-grey-6 [key]:&nbsp;
-            | {{ n }}
-
-      // TOP RIGHT (BUTTONS)
+      // TOP RIGHT
       //
       //
       .absolute-top-right.cursor-pointer.q-pa-md
@@ -54,12 +45,12 @@
       //
       //
         .absolute-top.fixed-center(style="top: 52px;")
-      .absolute-top.fixed-center(style="top: 40px;")
+      .absolute-top.fixed-center(style="top: 40px; width: 60%;")
 
         // INFO TEXT
 
         // .bg-dark.q-pa-md.q-mt-md.q-mr-md.text-center(
-        .text-center.cursor-pointer(
+        .bg-dark.q-pa-md.text-center.cursor-pointer(
         v-if="!active && inputStyle", @click="toggleForm()", color="primary", style="opacity: .8;")
           | Start typing or click here.
 
@@ -77,6 +68,16 @@
               q-btn.bg-dark(@click="toggleForm()", small) Esc
             .col-6.text-right
               q-btn.bg-dark(@click="createAnnotation()", small) Enter
+
+      // VOCABULARIES
+
+      div.q-pa-sm.moba-hover.absolute-top(v-if="!inputStyle", style="column-count: 3; width: 60%; left: 20%;")
+        q-btn.q-mr-xs.q-mt-xs.text-black.full-width(
+        v-for="n in dummyVocabularies", @click="",
+        size="sm", no-caps, rounded, flat)
+          // span.text-grey-6 [key]:&nbsp;
+          | {{ n }}
+          q-popover.bg-white.text-black.q-mt-xs.q-pa-sm.cursor-pointer(anchor="bottom middle", self="top middle") {{ n }}
 
     // ANNOTATIONS
     //
@@ -307,3 +308,20 @@
     }
   }
 </script>
+
+<style lang="stylus">
+  .moba-hover
+    background-color rgba( 255, 255, 255, .1 )
+    .q-btn
+      opacity .5
+      border 1px solid black
+  .moba-hover:hover
+    background-color rgba( 255, 255, 255, 0 )
+    .q-btn
+      opacity .5
+      background-color white
+      border 1px solid transparent!important
+    .q-btn:hover
+      opacity 1
+      border 1px solid transparent!important
+</style>
