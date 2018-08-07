@@ -12,7 +12,7 @@
       // TOP LEFT
       //
       //
-      .absolute-top-left.q-ma-sm
+      .absolute-top-left.q-ma-md
 
         // BUTTON: GO BACK
 
@@ -71,13 +71,16 @@
 
       // VOCABULARIES
 
-      div.q-pa-sm.moba-hover.absolute-top(v-if="!inputStyle", style="column-count: 3; width: 60%; left: 20%;")
-        q-btn.q-mr-xs.q-mt-xs.text-black.full-width(
-        v-for="n in dummyVocabularies", @click="",
-        size="sm", no-caps, rounded, flat)
-          // span.text-grey-6 [key]:&nbsp;
-          | {{ n }}
-          q-popover.bg-white.text-black.q-mt-xs.q-pa-sm.cursor-pointer(anchor="bottom middle", self="top middle") {{ n }}
+      q-collapsible.q-mt-md.absolute-top.moba-hover(
+      v-if="!inputStyle", style="width: 60%; left: 20%;", label="Vocabulary", opened)
+        div(style="column-count: 3;")
+          q-btn.q-mr-xs.q-mt-sm.text-black.full-width(
+          v-for="dummy in dummyVocabularies", @click="",
+          size="sm", no-caps, rounded, flat)
+            // span.text-grey-6 [key]:&nbsp;
+            | {{ dummy }}
+            q-popover.bg-dark.q-pa-sm.cursor-pointer.q-caption(anchor="bottom middle", self="top middle", dark)
+              div.q-pa-sm(v-for="n in 3") {{ dummy }}
 
     // ANNOTATIONS
     //
@@ -156,6 +159,14 @@
           'still', 'mirroring', 'contingently responsive'
         ],
         dummyVocabularies: [
+          'movement direction', 'facial orientation', 'body/body part direction',
+          'weight engage. individual', 'weight engag. partner', 'weight regul. partner',
+          'sync rythm', 'sync phrase',
+          'still', 'mirroring', 'contingently responsive',
+          'movement direction', 'facial orientation', 'body/body part direction',
+          'weight engage. individual', 'weight engag. partner', 'weight regul. partner',
+          'sync rythm', 'sync phrase',
+          'still', 'mirroring', 'contingently responsive',
           'movement direction', 'facial orientation', 'body/body part direction',
           'weight engage. individual', 'weight engag. partner', 'weight regul. partner',
           'sync rythm', 'sync phrase',
@@ -311,17 +322,21 @@
 
 <style lang="stylus">
   .moba-hover
-    background-color rgba( 255, 255, 255, .1 )
+    border 1px solid rgba( 255, 255, 255, .1 )
+    background-color rgba( 255, 255, 255, 0 )
     .q-btn
-      opacity .5
-      border 1px solid black
+      background-color white
+      opacity 0
+      border 0px solid black
   .moba-hover:hover
+    // border 1px solid rgba( 255, 255, 255, .1 )
     background-color rgba( 255, 255, 255, 0 )
     .q-btn
       opacity .5
       background-color white
-      border 1px solid transparent!important
+      border 0px solid transparent!important
     .q-btn:hover
       opacity 1
-      border 1px solid transparent!important
+      background-color white!important
+      border 0px solid transparent!important
 </style>
