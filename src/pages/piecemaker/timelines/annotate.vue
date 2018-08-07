@@ -25,7 +25,7 @@
       // VOCABULARIES
 
       // q-collapsible.fixed-top.q-mt-md.absolute-top.moba-hover(v-if="!inputStyle", style="width: 60%; left: 20%;", label="Vocabulary", opened)
-      vocabularies(v-if="!inputStyle", :parent='parent', style="border: 1px solid white;")
+      vocabularies(v-if="!inputStyle", :parent='parent')
 
       // TEXT INPUT
 
@@ -35,7 +35,7 @@
 
     // SHOW ANNOTATIONS
 
-    q-list(no-border)#list
+    q-list(v-if="inputStyle", no-border)#list
       q-item.annotation(v-for="(annotation, i) in annotations", :key="annotation.uuid", :id="annotation.uuid")
         q-item-side(v-if="annotation.target.selector") {{ formatSelectorForList(annotation.target.selector.value) }}
         q-item-main

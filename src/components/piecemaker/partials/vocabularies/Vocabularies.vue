@@ -2,7 +2,8 @@
   // q-collapsible.q-mt-md.absolute-top.moba-hover(style="width: 60%; left: 20%;", label="Vocabulary", opened)
   div(:class="[parent === 'post-annotate' ? 'moba-post' : '']", style="column-count: 3;")
     q-btn.q-mr-xs.q-mt-sm.full-width(
-    :class="[parent === 'post-annotate' ? 'q-caption text-black' : 'text-white']",
+    @click="emitVocabulary('hallo 123456')",
+    :class="[parent === 'post-annotate' ? 'q-caption text-black' : 'text-white bg-grey-10']",
     v-for="dummy in dummyVocabularies", no-caps, rounded, flat
     )
       // span.text-grey-6 [key]:&nbsp;
@@ -33,6 +34,18 @@
           'sync rythm', 'sync phrase',
           'still', 'mirroring', 'contingently responsive'
         ]
+      }
+    },
+    methods: {
+      emitVocabulary (val) {
+        // console.log(val, '--------')
+        // this.$emit('handlerClickVocabulary', val)
+        this.$q.notify({
+          message: val,
+          position: 'bottom-right',
+          color: 'white',
+          textColor: 'black'
+        })
       }
     }
   }
