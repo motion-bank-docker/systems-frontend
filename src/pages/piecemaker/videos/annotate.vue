@@ -1,72 +1,85 @@
 <template lang="pug">
 
-  div.bg-dark(style="height: calc(100vh - 52px); overflow: hidden;")
+  .bg-dark(style="height: calc(100vh - 52px); overflow: hidden;")
 
-    div.bg-dark(style="height: calc(100vh - 52px); overflow: hidden; position: relative;")
+    .bg-dark.relative-position(style="height: calc(100vh - 52px);")
 
       // VIDEO
       //
+      //
       video-player(v-if="video", :annotation="video", @ready="playerReady($event)", @time="onPlayerTime($event)")
 
-      // BUTTON BACK
+      // TOP LEFT (BUTTONS AND VOCABULARIES)
       //
-      // .absolute-top-left.q-mt-sm.q-ml-sm.bg-green
-      q-btn.absolute-top-left.q-mt-sm.q-ml-sm(v-if="!active", @click="$router.push(timelines + gtimelines + '/videos')",
-      color="grey", icon="keyboard_backspace", round, flat, small)
-        //
-          q-btn(v-if="!fullscreen", @click="toggleFullscreen(), fullscreenHandler()", icon="fullscreen", round, flat, small)
-          q-btn(v-if="fullscreen", @click="toggleFullscreen(), fullscreenHandler()", icon="fullscreen_exit", round, flat, small)
       //
-        q-btn.absolute-bottom-right.q-mb-md.q-mr-md(v-if="!drawer", @click="drawer = true")
-          q-icon(name="keyboard_backspace")
+      .absolute-top-left.q-ma-sm
 
-      // POP-UP
+        // BUTTON: GO BACK
+
+        q-btn(@click="$router.push(timelines + gtimelines + '/videos')",
+        color="grey", icon="keyboard_backspace", round, flat, small)
+
+        // BUTTON: SWITCH INPUT STYLE
+
+        q-btn.bg-white.cursor-pointer.q-mx-xs(@click="toggleInputStyle()", :class="{'bg-dark': inputStyle}", round)
+          q-icon(name="autorenew")
+
+        // VOCABULARIES
+
+        .column.no-border(v-if="!inputStyle")
+          q-btn.text-black.q-mr-xs.q-mt-xs.row(
+          v-for="n in dummyVocabularies", @click="",
+          color="white", size="sm", no-caps, rounded)
+            span.text-grey-6 [key]:&nbsp;
+            | {{ n }}
+
+      // TOP RIGHT (BUTTONS)
       //
-        .absolute-top-right.q-ma-md.cursor-pointer(style="width: 33%;")
-      .absolute-top-right.cursor-pointer.full-width
-        q-btn.q-mt-md.q-mr-md.float-right(v-if="!drawer", @click="drawer = true", color="dark", round)
+      //
+      .absolute-top-right.cursor-pointer.q-pa-md
+
+        // BUTTONS: SWITCH TO FULLSCREEN
+
+        q-btn(v-if="!fullscreen", @click="toggleFullscreen(), fullscreenHandler()", icon="fullscreen", round)
+        q-btn(v-if="fullscreen", @click="toggleFullscreen(), fullscreenHandler()", icon="fullscreen_exit", round)
+
+        // BUTTONS: SHOW/HIDE ANNOTATIONS
+
+        q-btn.q-ml-xs(v-if="!drawer", @click="drawer = true", color="dark", round)
           q-icon(name="keyboard_backspace")
-        q-btn.q-mt-md.q-mr-md.float-right(v-else, @click="drawer = false", color="dark", round)
+        q-btn.q-ml-xs(v-else, @click="drawer = false", color="dark", round)
           q-icon.flip-horizontal(name="keyboard_backspace")
-        .bg-dark.q-pa-md.text-right.float-right.q-mt-md.q-mr-md(
-        @click="toggleForm()", v-if="!active", color="primary", style="right: 0; opacity: .8;")
-          | Start typing or click here
 
-        .row.q-pa-md(v-if="active")
-          .col-10
+      // TOP CENTER
+      //
+      //
+        .absolute-top.fixed-center(style="top: 52px;")
+      .absolute-top.fixed-center(style="top: 40px;")
 
-            // TEXT INPUT
-            //
-            div(v-if="inputStyle")
-              q-input.q-px-sm.q-mb-sm(
-              @keyup.enter="createAnnotation()", @keyup.esc="toggleForm(); closePopUp()",
-              v-model="currentBody.value", type="textarea", float-label="Start typing", autofocus, dark,
-              style="background-color: rgba( 0, 0, 0, .5 );", rounded,
-              :after="[{ icon: clear }]"
-              )
-              .row
-                .col-6
-                  q-btn.bg-dark(@click="toggleForm()", small) Esc
-                .col-6.text-right
-                  q-btn.bg-dark(@click="createAnnotation()", small) Enter
+        // INFO TEXT
 
-            // VOCABULARIES
-            //
-            div(v-else)
-              q-btn.text-black.q-mr-xs.q-mb-xs(
-              v-for="n in dummyVocabularies", @click="",
-              color="white", size="sm", no-caps, rounded)
-                span.text-grey-6 [key]:&nbsp;
-                | {{ n }}
+        // .bg-dark.q-pa-md.q-mt-md.q-mr-md.text-center(
+        .text-center.cursor-pointer(
+        v-if="!active && inputStyle", @click="toggleForm()", color="primary", style="opacity: .8;")
+          | Start typing or click here.
 
-          // BUTTONS
-          //
-          .col-2
-            q-btn.bg-white.cursor-pointer.q-mx-xs(@click="toggleInputStyle()", :class="{'bg-dark': inputStyle}") switch
-            q-btn.bg-white.cursor-pointer(@click="toggleForm()", round, :class="{'bg-dark': inputStyle}")
-              q-icon(name="clear")
+        // TEXT INPUT
+
+        // .q-pa-md(v-if="active")
+        div(v-if="active && inputStyle")
+          q-input.q-px-sm(
+          @keyup.enter="createAnnotation()", @keyup.esc="toggleForm(); closePopUp()",
+          v-model="currentBody.value", type="textarea", float-label="Start typing", autofocus, dark,
+          style="background-color: rgba( 0, 0, 0, .5 );", rounded
+          )
+          // .row
+            .col-6
+              q-btn.bg-dark(@click="toggleForm()", small) Esc
+            .col-6.text-right
+              q-btn.bg-dark(@click="createAnnotation()", small) Enter
 
     // ANNOTATIONS
+    //
     //
     q-layout-drawer.bg-dark(v-model="drawer", side="right")
       .absolute.fit.bg-dark
