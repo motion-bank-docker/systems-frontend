@@ -1,15 +1,22 @@
 <template lang="pug">
-  q-collapsible.q-mt-md.absolute-top.moba-hover(style="width: 60%; left: 20%;", label="Vocabulary", opened)
-    div(style="column-count: 3;")
-      q-btn.q-mr-xs.q-mt-sm.text-black.full-width(v-for="dummy in dummyVocabularies", size="sm", no-caps, rounded, flat)
-        // span.text-grey-6 [key]:&nbsp;
-        | {{ dummy }}
-        q-popover.bg-dark.q-pa-sm.cursor-pointer.q-caption(anchor="bottom middle", self="top middle", dark)
-          div.q-pa-sm(v-for="n in 3") {{ dummy }}
+  // q-collapsible.q-mt-md.absolute-top.moba-hover(style="width: 60%; left: 20%;", label="Vocabulary", opened)
+  div(:class="[parent === 'post-annotate' ? 'moba-post' : '']", style="column-count: 3;")
+    q-btn.q-mr-xs.q-mt-sm.full-width(
+    :class="[parent === 'post-annotate' ? 'q-caption text-black' : 'text-white']",
+    v-for="dummy in dummyVocabularies", no-caps, rounded, flat
+    )
+      // span.text-grey-6 [key]:&nbsp;
+      | {{ dummy }}
+      q-popover.bg-dark.q-pa-sm.cursor-pointer.q-caption(
+      :class="[parent === 'post-annotate' ? 'q-caption' : '']",
+      anchor="bottom middle", self="top middle", dark
+      )
+        div.q-pa-sm(v-for="n in 3") {{ dummy }}
 </template>
 
 <script>
   export default {
+    props: ['parent'],
     data () {
       return {
         dummyVocabularies: [
@@ -34,14 +41,14 @@
 <style scoped lang="stylus">
   @import '~variables'
 
-  .moba-hover
+  .moba-post
     border 1px solid rgba( 255, 255, 255, .1 )
     background-color rgba( 255, 255, 255, 0 )
     .q-btn
       background-color white
       opacity 0
       border 0px solid black
-  .moba-hover:hover
+  .moba-post:hover
     // border 1px solid rgba( 255, 255, 255, .1 )
     background-color rgba( 255, 255, 255, 0 )
     .q-btn

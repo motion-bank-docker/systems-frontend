@@ -1,10 +1,40 @@
 <template lang="pug">
-  .wrapper
-    q-btn#button-back(slot="nav-button", icon="keyboard_backspace", @click="$router.push(`/piecemaker/timelines/show`)", round, small)
+
+  // LIVE ANNOTATE
+
+  .wrapper.relative-position
     span(slot="form-logo")
     span(slot="form-title")
 
-    q-input#input.bg-grey-10.text-white.q-pa-md(v-model="currentBody.value", @keyup="keyMonitor", type="textarea", autofocus, dark)
+    // TOP LEFT
+    //
+    //
+    .absolute-top-left.q-ma-md
+
+      // BUTTON: GO BACK
+
+      q-btn(slot="nav-button", icon="keyboard_backspace", @click="$router.push(`/piecemaker/timelines/show`)", round, small)
+
+      // BUTTON: SWITCH INPUT STYLE
+
+      q-btn.bg-white.cursor-pointer.q-mx-xs(@click="toggleInputStyle()", :class="{'bg-dark': inputStyle}", round)
+        q-icon(name="autorenew")
+
+    .fixed-top.q-mt-md.absolute-top(style="width: 60%; left: 20%; z-index: 2000;")
+
+      // VOCABULARIES
+
+      // q-collapsible.fixed-top.q-mt-md.absolute-top.moba-hover(v-if="!inputStyle", style="width: 60%; left: 20%;", label="Vocabulary", opened)
+      vocabularies(v-if="!inputStyle", :parent='parent', style="border: 1px solid white;")
+
+      // TEXT INPUT
+
+      // q-input#input.bg-grey-10.text-white.q-pa-md(v-else, v-model="currentBody.value", @keyup="keyMonitor", type="textarea", autofocus, dark)
+      q-input.bg-grey-10.text-white.q-pa-md(
+      v-else, v-model="currentBody.value", @keyup="keyMonitor", type="textarea", autofocus, dark)
+
+    // SHOW ANNOTATIONS
+
     q-list(no-border)#list
       q-item.annotation(v-for="(annotation, i) in annotations", :key="annotation.uuid", :id="annotation.uuid")
         q-item-side(v-if="annotation.target.selector") {{ formatSelectorForList(annotation.target.selector.value) }}
@@ -13,10 +43,12 @@
             q-input(type="textarea", v-model="annotation.body.value", dark)
         q-item-side.text-right
           q-btn(@click="deleteAnnotation(annotation.uuid, i)", icon="clear", round, small)
+
 </template>
 
 <script>
   import Full from '../../../components/shared/layouts/Full'
+  import Vocabularies from '../../../components/piecemaker/partials/vocabularies/Vocabularies'
   import { ObjectUtil, Assert } from 'mbjs-utils'
   import { DateTime } from 'luxon'
   import uuidValidate from 'uuid-validate'
@@ -25,11 +57,12 @@
 
   export default {
     components: {
-      Full
+      Full,
+      Vocabularies
     },
     data () {
       return {
-        prevKey: undefined,
+        annotations: [],
         currentBody: {
           value: undefined,
           purpose: 'commenting',
@@ -39,10 +72,15 @@
           type: 'Fragment',
           value: undefined
         },
-        annotations: []
+        inputStyle: true,
+        parent: 'live-annotate',
+        prevKey: undefined
       }
     },
     methods: {
+      toggleInputStyle () {
+        this.inputStyle = !this.inputStyle
+      },
       keyMonitor (e) {
         if (this.prevKey === 13 && e.keyCode === 13) {
           this.prevKey = undefined
@@ -108,18 +146,18 @@
 </script>
 
 <style scoped>
-  #button-back {
+  /* #button-back {
     position: fixed;
     left: 1em;
     top: calc(52px + 1em);
-  }
+  }*/
   .wrapper {
     border: 0px solid red;
     min-height: calc(100vh - 52px);
     overflow-y: scroll;
     padding-left: 5rem;
   }
-  #input {
+  /*#input {
     position: fixed;
     top: calc(52px + 2em);
     width: calc(100vw - 25rem);
@@ -128,7 +166,7 @@
     margin-bottom: 0;
     z-index: 1111;
     border: 1px solid rgba(255, 255, 255, .1);
-  }
+  }*/
   #list {
     /* background-color: #eee; */
     width: calc(100vw - 20rem);

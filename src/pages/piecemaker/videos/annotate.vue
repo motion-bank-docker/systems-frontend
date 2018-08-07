@@ -1,5 +1,7 @@
 <template lang="pug">
 
+  // POST ANNOTATIONS
+
   .bg-dark(style="height: calc(100vh - 52px); overflow: hidden;")
 
     .bg-dark.relative-position(style="height: calc(100vh - 52px);")
@@ -71,7 +73,10 @@
 
       // VOCABULARIES
 
-      vocabularies(v-if="!inputStyle")
+      q-collapsible.fixed-top.q-mt-md.absolute-top.moba-hover(
+      v-if="!inputStyle", style="width: 60%; left: 20%;", label="Hover the rectangle below to show vocabularies", opened
+      )
+        vocabularies(:parent='parent')
 
     // ANNOTATIONS
     //
@@ -154,6 +159,7 @@
         ],
         inputStyle: true,
         metadata: undefined,
+        parent: 'post-annotate',
         player: undefined,
         playerTime: 0.0,
         selector: undefined,
