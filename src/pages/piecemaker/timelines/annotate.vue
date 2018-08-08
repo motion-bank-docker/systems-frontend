@@ -112,7 +112,7 @@
           }
           this.prevKey = e.keyCode
         }
-        console.log(e.keyCode)
+        // console.log(e.keyCode)
       },
       createAnnotation () {
         const _this = this
