@@ -2,15 +2,17 @@
 
   div.annotation-list(:class="{'display-preview': preview, 'display-full': display}")
     template(v-if="display")
+      template(v-if="video && video.body")
+
         q-list-header
-          q-item
-            video-title(:source="video.body.source")
+          q-item {{videoMeta.title}}
+
         template(v-for="(annot, index) in annotations")
           q-item-separator
 
-          template(v-if="$store.state.auth.payload.userId && showAnnotationInput(index)")
+          template(v-if="$store.state.auth.user && showAnnotationInput(index)")
             q-item.annotation-input-container
-              q-input.annotation-input(type="textarea", max-height="200", min-rows="3"
+              q-input.annotation-input(type="textarea", :max-height="200", min-rows="3"
                 style="width:100%", v-model="newAnnotationText",
                 @keyup.enter="handleInputChanged", stack-label="Leave Comment")
             q-item-separator
@@ -22,7 +24,10 @@
               Username.author(:uuid="annot.author")
               span.content {{annot.body.value}}
 
-        q-item-separator
+      template(v-else)
+          strong Loading annotations
+
+      q-item-separator
 
     template(v-else)
       strong Annotation List
@@ -31,7 +36,7 @@
 
 <script>
   import { DateTime } from 'luxon'
-  import constants from 'mbjs-data-models/src'
+  import constants from 'mbjs-data-models/src/constants'
   import Username from '../../../shared/partials/Username'
   import VideoTitle from '../../../shared/partials/VideoTitle'
 
@@ -46,6 +51,7 @@
         videoUuid: '',
         video: {},
         videoTime: {},
+        videoMeta: {},
         contextTime: {},
         annotations: [],
         map: {},
@@ -54,9 +60,13 @@
         newAnnotationText: ''
       }
     },
-    mounted () {
+    async mounted () {
       const _this = this
       this.videoUuid = this.cell.content
+      const meta = await this.$store.dispatch('metadata/get', this.videoUuid)
+      if (meta && meta.title) {
+        this.videoMeta = meta
+      }
       if (this.messenger) {
         this.messenger.$on('video-time-changed', (time, globalTime, origin) => {
           if (origin.type === 'Video' &&
@@ -118,8 +128,7 @@
         return this.annotationTimes[index] - this.contextTime
       },
       formatDate (annot) {
-        return DateTime
-          .fromISO(annot.target.selector.value)
+        return DateTime.fromISO(annot.target.selector.value)
           .minus(this.videoTime)
           .toFormat(constants.TIMECODE_FORMAT)
       },
@@ -135,6 +144,7 @@
               _this.video = videoAnnotation
               _this.videoTime = Date.parse(_this.video.target.selector.value)
               _this.contextTime = _this.videoTime
+              // TODO: select only timelines here?
               _this.$store.dispatch('maps/find', { uuid: videoAnnotation.target.id })
                 .then(result => {
                   const map = result.items.shift()
