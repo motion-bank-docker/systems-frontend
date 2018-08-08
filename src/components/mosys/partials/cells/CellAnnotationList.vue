@@ -12,9 +12,13 @@
 
           template(v-if="$store.state.auth.user && showAnnotationInput(index)")
             q-item.annotation-input-container
-              q-input.annotation-input(type="textarea", :max-height="200", min-rows="3"
-                style="width:100%", v-model="newAnnotationText",
-                @keyup.enter="handleInputChanged", stack-label="Leave Comment")
+              q-input.annotation-input(type="textarea",
+                :max-height="200",
+                :min-rows="3"
+                style="width:100%",
+                v-model="newAnnotationText",
+                @keyup.native.enter="handleInputChanged",
+                stack-label="Leave Comment")
             q-item-separator
 
           q-item.annotation
@@ -102,7 +106,7 @@
               value: this.newAnnotationText
             },
             target: {
-              id: `${process.env.GRID_BASE_URI}${this.map.uuid}`,
+              id: `${process.env.TIMELINE_BASE_URI}${this.map.uuid}`,
               type: this.map.type,
               selector: {
                 type: 'Fragment',
@@ -110,7 +114,7 @@
               }
             }
           }
-          this.$store.dispatch('annotations/create', newAnnotation)
+          this.$store.dispatch('annotations/post', newAnnotation)
             .then(() => {
               _this.fetchAnnotations()
             })
@@ -144,8 +148,8 @@
               _this.video = videoAnnotation
               _this.videoTime = Date.parse(_this.video.target.selector.value)
               _this.contextTime = _this.videoTime
-              // TODO: select only timelines here?
-              _this.$store.dispatch('maps/find', { uuid: videoAnnotation.target.id })
+              // fetch the PM timeline (if any)
+              _this.$store.dispatch('maps/find', { type: constants.MAP_TYPE_TIMELINE, uuid: videoAnnotation.target.uuid })
                 .then(result => {
                   const map = result.items.shift()
                   if (map) {
