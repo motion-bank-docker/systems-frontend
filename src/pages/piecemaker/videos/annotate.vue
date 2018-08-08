@@ -1,5 +1,7 @@
 <template lang="pug">
 
+  // POST ANNOTATION
+
   .bg-dark(style="height: calc(100vh - 52px); overflow: hidden;")
 
     .bg-dark.relative-position(style="height: calc(100vh - 52px);")
@@ -9,10 +11,10 @@
       //
       video-player(v-if="video", :annotation="video", @ready="playerReady($event)", @time="onPlayerTime($event)")
 
-      // TOP LEFT (BUTTONS AND VOCABULARIES)
+      // TOP LEFT
       //
       //
-      .absolute-top-left.q-ma-sm
+      .absolute-top-left.q-ma-md
 
         // BUTTON: GO BACK
 
@@ -24,16 +26,7 @@
         q-btn.bg-white.cursor-pointer.q-mx-xs(@click="toggleInputStyle()", :class="{'bg-dark': inputStyle}", round)
           q-icon(name="autorenew")
 
-        // VOCABULARIES
-
-        .column.no-border(v-if="!inputStyle")
-          q-btn.text-black.q-mr-xs.q-mt-xs.row(
-          v-for="n in dummyVocabularies", @click="",
-          color="white", size="sm", no-caps, rounded)
-            span.text-grey-6 [key]:&nbsp;
-            | {{ n }}
-
-      // TOP RIGHT (BUTTONS)
+      // TOP RIGHT
       //
       //
       .absolute-top-right.cursor-pointer.q-pa-md
@@ -54,12 +47,12 @@
       //
       //
         .absolute-top.fixed-center(style="top: 52px;")
-      .absolute-top.fixed-center(style="top: 40px;")
+      .absolute-top.fixed-center(style="top: 40px; width: 60%;")
 
         // INFO TEXT
 
         // .bg-dark.q-pa-md.q-mt-md.q-mr-md.text-center(
-        .text-center.cursor-pointer(
+        .bg-dark.q-pa-md.cursor-pointer(
         v-if="!active && inputStyle", @click="toggleForm()", color="primary", style="opacity: .8;")
           | Start typing or click here.
 
@@ -77,6 +70,18 @@
               q-btn.bg-dark(@click="toggleForm()", small) Esc
             .col-6.text-right
               q-btn.bg-dark(@click="createAnnotation()", small) Enter
+
+      // VOCABULARIES
+
+      div.fixed-top.q-mt-md.absolute-top.moba-vocabs(v-if="!inputStyle", style="width: 60%; left: 20%;")
+        div.q-pa-md.text-white(style="background-color: rgba(255, 255, 255, .2);") Vocabularies
+        vocabularies(:parent='parent')
+
+      //
+        q-collapsible.fixed-top.q-mt-md.absolute-top.moba-hover(
+        v-if="!inputStyle", style="width: 60%; left: 20%;", label="Hover the rectangle below to show vocabularies", opened
+        )
+          vocabularies(:parent='parent')
 
     // ANNOTATIONS
     //
@@ -114,13 +119,15 @@
 
   import VideoPlayer from '../../../components/shared/media/VideoPlayer'
   import Username from '../../../components/shared/partials/Username'
+  import Vocabularies from '../../../components/piecemaker/partials/vocabularies/Vocabularies'
 
   const { getScrollTarget, setScrollPosition } = scroll
 
   export default {
     components: {
       VideoPlayer,
-      Username
+      Username,
+      Vocabularies
     },
     async mounted () {
       if (this.$route.params.id) {
@@ -148,18 +155,6 @@
           value: undefined
         },
         drawer: true,
-        dummyVocabulariesTaxonomie: [
-          'movement direction', 'facial orientation', 'body/body part direction',
-          'weight engage. individual', 'weight engag. partner', 'weight regul. partner',
-          'sync rythm', 'sync phrase',
-          'still', 'mirroring', 'contingently responsive'
-        ],
-        dummyVocabularies: [
-          'movement direction', 'facial orientation', 'body/body part direction',
-          'weight engage. individual', 'weight engag. partner', 'weight regul. partner',
-          'sync rythm', 'sync phrase',
-          'still', 'mirroring', 'contingently responsive'
-        ],
         fullscreen: false,
         filtertypes: [{
           title: 'Comment'
@@ -169,6 +164,7 @@
         ],
         inputStyle: true,
         metadata: undefined,
+        parent: 'post-annotate',
         player: undefined,
         playerTime: 0.0,
         selector: undefined,
@@ -307,3 +303,12 @@
     }
   }
 </script>
+
+<style lang="stylus">
+  .moba-vocabs div:last-of-type
+    display none
+  .moba-vocabs:hover div:first-of-type
+    display none
+  .moba-vocabs:hover div:last-of-type
+    display block
+</style>
