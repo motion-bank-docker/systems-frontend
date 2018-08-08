@@ -4,7 +4,7 @@
       div (most used)
     .row.bg-grey-10.q-pa-sm.float-left(v-for="dummy in dummyVocabularies", style="width: 100%;")
       .col-2
-        | {{ dummy.groupTitle }} | {{ str }}
+        | {{ dummy.groupTitle }}
 
       .col-10
         q-btn.q-mr-xs.q-mb-sm.full-width.text-left(
@@ -21,11 +21,21 @@
     props: ['parent', 'str'],
     watch: {
       str: function (val) {
-        console.log(val)
+        this.filterSearch(val)
       }
     },
     data () {
       return {
+        vocabs: [{
+          title: 'test'
+        }, {
+          title: 'hallo'
+        }, {
+          title: 'eins'
+        }, {
+          title: 'zwei'
+        }],
+        // vocabs: ['test', 'hallo', 'eins', 'zwei'],
         dummyVocabularies: [{
           groupTitle: 'space',
           vocabularies: [{
@@ -60,10 +70,26 @@
             longTitle: 'synchonisation in phrase'
           }]
         }
-        ]
+        ],
+        results: []
       }
     },
     methods: {
+      filterSearch (searchterm) {
+        let arr = this.vocabs
+        // console.log('hallo', searchterm)
+        return arr.filter(function (obj) {
+          // console.log(obj)
+          return Object.keys(obj).some(function (key) {
+            // console.log(obj[key])
+            console.log(obj[key].includes(searchterm))
+            // return obj[key].includes(searchterm)
+          })
+          /* return Object.keys(obj).some(function(key) {
+            return obj[key].includes(searchterm)
+          }) */
+        })
+      },
       emitVocabulary (val) {
         this.$emit('clickedVocabulary', val)
       },
