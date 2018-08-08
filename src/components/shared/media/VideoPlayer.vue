@@ -25,7 +25,7 @@
   // require('videojs-framebyframe')
 
   import { videoPlayer } from 'vue-video-player'
-  import { guessType } from 'mbjs-media/src/util/metadata'
+  import guessType from 'mbjs-media/src/util/guess-type'
 
   export default {
     components: {
