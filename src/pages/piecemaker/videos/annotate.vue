@@ -1,6 +1,6 @@
 <template lang="pug">
 
-  // POST ANNOTATIONS
+  // POST ANNOTATION
 
   .bg-dark(style="height: calc(100vh - 52px); overflow: hidden;")
 
@@ -73,10 +73,15 @@
 
       // VOCABULARIES
 
-      q-collapsible.fixed-top.q-mt-md.absolute-top.moba-hover(
-      v-if="!inputStyle", style="width: 60%; left: 20%;", label="Hover the rectangle below to show vocabularies", opened
-      )
+      div.fixed-top.q-mt-md.absolute-top.moba-vocabs(v-if="!inputStyle", style="width: 60%; left: 20%;")
+        div.q-pa-md.text-white(style="background-color: rgba(255, 255, 255, .2);") Vocabularies
         vocabularies(:parent='parent')
+
+      //
+        q-collapsible.fixed-top.q-mt-md.absolute-top.moba-hover(
+        v-if="!inputStyle", style="width: 60%; left: 20%;", label="Hover the rectangle below to show vocabularies", opened
+        )
+          vocabularies(:parent='parent')
 
     // ANNOTATIONS
     //
@@ -300,4 +305,10 @@
 </script>
 
 <style lang="stylus">
+  .moba-vocabs div:last-of-type
+    display none
+  .moba-vocabs:hover div:first-of-type
+    display none
+  .moba-vocabs:hover div:last-of-type
+    display block
 </style>

@@ -1,9 +1,9 @@
 <template lang="pug">
   div(:class="[parent === 'post-annotate' ? 'moba-post-annotate' : '']", style="column-count: 3;")
-    q-btn.q-mr-xs.q-mt-sm.full-width(
+    q-btn.q-mr-xs.q-mb-sm.full-width(
     @click="emitVocabulary(dummy)",
     :class="[parent === 'post-annotate' ? 'q-caption text-black' : 'text-white bg-grey-10']",
-    v-for="dummy in dummyVocabularies", no-caps, rounded, flat
+    v-for="dummy in dummyVocabularies", no-caps, flat
     )
       // span.text-grey-6 [key]:&nbsp;
       | {{ dummy }}
@@ -47,7 +47,7 @@
   @import '~variables'
 
   .moba-post-annotate
-    border 1px solid rgba( 255, 255, 255, .1 )
+    // border 1px solid rgba( 255, 255, 255, .1 )
     background-color rgba( 255, 255, 255, 0 )
     .q-btn
       background-color white
