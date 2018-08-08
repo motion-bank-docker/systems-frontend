@@ -86,15 +86,13 @@
         const _this = this
         if (this.newAnnotationText) {
           let newAnnotation = {
-            author: this.$store.state.auth.payload.userId,
-            type: 'Annotation',
             body: {
               type: 'TextualBody',
               purpose: 'commenting',
               value: this.newAnnotationText
             },
             target: {
-              id: this.map.uuid,
+              id: `${process.env.GRID_BASE_URI}${this.map.uuid}`,
               type: this.map.type,
               selector: {
                 type: 'Fragment',
@@ -130,21 +128,21 @@
       },
       fetchAnnotations () {
         const _this = this
-        this.$store.dispatch('annotations/find', {query: {'uuid': this.videoUuid}})
+        this.$store.dispatch('annotations/find', { uuid: this.videoUuid })
           .then(result => {
             const videoAnnotation = result.items.shift()
             if (videoAnnotation) {
               _this.video = videoAnnotation
               _this.videoTime = Date.parse(_this.video.target.selector.value)
               _this.contextTime = _this.videoTime
-              _this.$store.dispatch('maps/find', {query: {'uuid': videoAnnotation.target.id}})
+              _this.$store.dispatch('maps/find', { uuid: videoAnnotation.target.id })
                 .then(result => {
                   const map = result.items.shift()
                   if (map) {
                     _this.map = map
                   }
                 })
-              _this.$store.dispatch('annotations/find', {query: {'target.id': videoAnnotation.target.id, 'body.purpose': 'commenting'}})
+              _this.$store.dispatch('annotations/find', {'target.id': videoAnnotation.target.id, 'body.purpose': 'commenting'})
                 .then(result => {
                   let annotations = result.items.filter(a => {
                     return Date.parse(a.target.selector.value) >= _this.videoTime

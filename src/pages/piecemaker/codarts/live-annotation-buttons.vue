@@ -14,10 +14,8 @@
 
 <script>
   import CardFull from '../../../components/shared/layouts/CardFull'
-  import constants from '../../../lib/constants'
-  import annotations from '../../../lib/annotations'
-
-  const TimelineSelector = annotations.selectors.TimelineSelector
+  import constants from 'mbjs-data-models/src/constants'
+  import { DateTime } from 'luxon'
 
   export default {
     components: {
@@ -46,21 +44,19 @@
     },
     methods: {
       handleButtonClick (event, button) {
-        const _this = this
         const groupId = this.$route.params.groupId
         let annotation = {
-          author: _this.$store.state.auth.payload.userId,
           body: {
             value: button.label,
             purpose: 'commenting',
             type: 'TextualBody'
           },
           target: {
-            id: groupId,
+            id: `${process.env.TIMELINE_BASE_URI}${groupId}`,
             type: constants.MAP_TYPE_TIMELINE,
             selector: {
               type: 'Fragment',
-              value: TimelineSelector.fromMilliseconds(Date.now()).isoString
+              value: DateTime.local().toISO()
             }
           }
         }

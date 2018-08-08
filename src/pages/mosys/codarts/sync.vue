@@ -87,10 +87,10 @@
         .then(group => {
           _this.group = group
           const query = {
-            'target.id': group.uuid,
+            'target.id': `${process.env.TIMELINE_BASE_URI}${group.uuid}`,
             'body.purpose': 'linking'
           }
-          return _this.$store.dispatch('annotations/find', { query })
+          return _this.$store.dispatch('annotations/find', query)
         })
         .then(videos => {
           _this.refVideos = videos.filter(item => {

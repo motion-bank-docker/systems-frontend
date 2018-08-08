@@ -55,7 +55,7 @@
 </template>
 
 <script>
-  import constants from 'mbjs-data-models/src'
+  import constants from 'mbjs-data-models/src/constants'
   // import Promise from 'bluebird'
   // import url from 'url'
   // import path from 'path'
@@ -79,39 +79,43 @@
         })
     },
     methods: {
-      handleGroupItemClick (events, group) {
+      async handleGroupItemClick (events, group) {
         this.currentGroup = group
         this.currentVideos = []
         this.loadingVideos = true
-        const _this = this
-        this.$store.dispatch('annotations/find', { type: 'Annotation', 'body.purpose': 'linking', 'target.id': this.currentGroup.uuid })
+        const query = {
+          type: 'Annotation',
+          'body.purpose': 'linking',
+          // IMPORTANT: this is a URI now!
+          // There's process.env.TIMELINE_BASE_URI and process.env.GRID_BASE_URI to build it
+          // and if you do:
+          //
+          // import { parseURI } from 'mbjs-data-models/src/lib'
+          // parseURI(uri).uuid
+          //
+          // will give you the uuid from the URI
+          'target.id': `${process.env.TIMELINE_BASE_URI}${this.currentGroup.uuid}`
+        }
+        const result = await this.$store.dispatch('annotations/find', query)
           // TODO: ask Anton about how to get metadata from transcoder
-          // .then(result => {
-          //   const videos = result.items
-          //   return Promise.map(videos, entry => {
-          //     const newEntry = ObjectUtil.merge({}, entry)
-          //     newEntry.title = _this.$t('labels.title_unknown')
-          //     return Promise.resolve()
-          //       .then(() => {
-          //         console.log(entry)
-          //         return _this.$store.dispatch('metadata/get', entry.uuid)
-          //           .then(result => {
-          //             console.log(result)
-          //           })
-          //           .catch(() => {
-          //             newEntry.title = _this.$t('labels.title_unknown')
-          //           })
-          //       })
-          //       .then(() => {
-          //         return newEntry
-          //       })
-          //   })
-          // })
-          .then(result => {
-            const videos = result.items
-            _this.currentVideos = videos
-            this.loadingVideos = false
-          })
+          //
+          // anton says: https://www.youtube.com/watch?v=0hiUuL5uTKc
+          //
+        const videos = result.items
+        for (let entry of videos) {
+          try {
+            // passing the UUID of the annotation will give you metadata for its target
+            const metadata = await this.$store.dispatch('metadata/get', entry.uuid)
+            console.log(entry, metadata)
+            entry.title = metadata.title
+          }
+          catch (e) {
+            console.error(e.message, e.stack)
+            entry.title = this.$t('labels.title_unknown')
+          }
+        }
+        this.currentVideos = videos
+        this.loadingVideos = false
       },
       handleClickUnsetCurrentGroup () {
         this.currentGroup = null

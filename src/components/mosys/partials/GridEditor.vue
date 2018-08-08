@@ -58,8 +58,6 @@
 </template>
 
 <script>
-  // import Vue from 'vue'
-  // import constants from '../../../lib/constants'
   import { ObjectUtil } from 'mbjs-utils'
   import Cell from './Cell'
 
@@ -430,7 +428,7 @@
       },
       fetchCellAnnotations () {
         const _this = this,
-          query = { 'body.type': '2DCell', 'target.id': this.gridUuid }
+          query = { 'body.type': '2DCell', 'target.id': `${process.env.GRID_BASE_URI}${this.gridUuid}` }
         this.$store.dispatch('annotations/find', query)
           .then(result => {
             _this.cells = result.items.map(annotation => {
@@ -446,7 +444,7 @@
       },
       fetchMetadataAnnotations () {
         const _this = this
-        const query = { 'body.type': '2DGridMetadata', 'target.id': this.gridUuid }
+        const query = { 'body.type': '2DGridMetadata', 'target.id': `${process.env.GRID_BASE_URI}${this.gridUuid}` }
         return new Promise((resolve, reject) => {
           this.$store.dispatch('annotations/find', query)
             .then(result => {
@@ -479,7 +477,7 @@
             value: JSON.stringify(cell)
           },
           target: {
-            id: this.gridUuid,
+            id: `${process.env.GRID_BASE_URI}${this.gridUuid}`,
             type: 'Map',
             selector: {
               type: '2DLocation',
@@ -496,7 +494,7 @@
             value: JSON.stringify(metadata)
           },
           target: {
-            id: uuid,
+            id: `${process.env.GRID_BASE_URI}${uuid}`,
             type: 'Map'
           }
         }

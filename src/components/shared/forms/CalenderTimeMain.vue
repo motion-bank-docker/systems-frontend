@@ -34,7 +34,8 @@
     },
     methods: {
       emitString (val) {
-        console.log(val)
+        console.log(val, '--------')
+        // console.log(val, parseInt(this.formatDate(val, 'M')))
         // let valNew = DateTime.local().toISO()
         // let valNew = DateTime.fromString(val).toISO()
         // this.$emit('getTimeAndDate', val)
@@ -43,11 +44,28 @@
       calenderChange (val) {
         this.modelCalender = date.adjustDate(this.modelCalender, {
           year: date.formatDate(val, 'YYYY'),
-          month: date.formatDate(val, 'M') })
-        // FIXME: days can't be adjusted. Bug in Quasar?
+          month: date.formatDate(val, 'M')
+        })
+        // FIXME: days can't be adjusted. Bug in Quasar? Find workaround.
         /* this.modelCalender = date.adjustDate(this.modelCalender, {
           day: date.formatDate(val, 's') }) */
+        // console.log(this.formatDate(val, 'D'))
+        // let newDate = date.buildDate({year: 2010, day: 5, hours: 15, milliseconds: 123})
+        // const { addToDate } = date
+        // let newDate = addToDate(new Date(), { days: 7, months: 1 })
+        // console.log(newDate)
+        /*
+        let dt = DateTime.fromObject({
+          year: parseInt(this.formatDate(val, 'YYYY')),
+          month: parseInt(this.formatDate(val, 'M')),
+          day: parseInt(this.formatDate(val, 'D')),
+          hour: parseInt(this.formatDate(this.modelCalender, 'H')),
+          minute: parseInt(this.formatDate(this.modelCalender, 'm')),
+          second: parseInt(this.formatDate(this.modelCalender, 's'))
+        }) */
+        // console.log(dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second)
         this.emitString(this.modelCalender)
+        // this.emitString(dt)
       },
       sliderChange (val) {
         switch (val.target) {
