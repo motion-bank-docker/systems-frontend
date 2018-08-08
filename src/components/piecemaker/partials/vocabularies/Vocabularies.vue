@@ -19,7 +19,7 @@
     props: ['parent'],
     data () {
       return {
-        dummyVocabularies: [
+        /* dummyVocabularies: [
           'movement direction', 'facial orientation', 'body/body part direction',
           'weight engage. individual', 'weight engag. partner', 'weight regul. partner',
           'sync rythm', 'sync phrase',
@@ -32,6 +32,11 @@
           'weight engage. individual', 'weight engag. partner', 'weight regul. partner',
           'sync rythm', 'sync phrase',
           'still', 'mirroring', 'contingently responsive'
+        ] */
+        dummyVocabularies: [
+          'movement direction', 'facial orientation', 'body/body part direction',
+          'weight engage. individual', 'weight engag. partner', 'weight regul. partner',
+          'sync rythm', 'sync phrase'
         ]
       }
     },
@@ -50,18 +55,20 @@
     // border 1px solid rgba( 255, 255, 255, .1 )
     background-color rgba( 255, 255, 255, 0 )
     .q-btn
-      background-color white
-      opacity 0
-      border 0px solid black
+      // background-color rgba(255, 255, 255, .2)
+      color white!important
+      border 1px solid rgba(255, 255, 255, .2)
   .moba-post-annotate:hover
     // border 1px solid rgba( 255, 255, 255, .1 )
-    background-color rgba( 255, 255, 255, 0 )
+    // background-color rgba( 255, 255, 255, 0 )
+    background-color rgba( 0, 0, 0, .3 )
     .q-btn
-      opacity .5
-      background-color white
-      border 0px solid transparent!important
+      // background-color rgba(255, 255, 255, .2)
+      color white!important
+      border 1px solid rgba(255, 255, 255, .2)!important
     .q-btn:hover
       opacity 1
       background-color white!important
+      color black!important
       border 0px solid transparent!important
 </style>

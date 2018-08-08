@@ -53,7 +53,7 @@
 
         // .bg-dark.q-pa-md.q-mt-md.q-mr-md.text-center(
         .bg-dark.q-pa-md.cursor-pointer(
-        v-if="!active && inputStyle", @click="toggleForm()", color="primary", style="opacity: .8;")
+        v-if="!active && inputStyle", @click="toggleForm()", color="primary", style="opacity: .6;")
           | Start typing or click here.
 
         // TEXT INPUT
@@ -74,8 +74,8 @@
       // VOCABULARIES
 
       div.fixed-top.q-mt-md.absolute-top.moba-vocabs(v-if="!inputStyle", style="width: 60%; left: 20%;")
-        div.q-pa-md.text-white(style="background-color: rgba(255, 255, 255, .2);") Vocabularies
-        vocabularies(:parent='parent')
+        div.bg-dark.q-pa-md(style="opacity: .6;") Vocabularies
+        vocabularies.q-px-sm.q-pt-sm(:parent='parent')
 
       //
         q-collapsible.fixed-top.q-mt-md.absolute-top.moba-hover(
