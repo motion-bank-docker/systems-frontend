@@ -17,25 +17,24 @@
 
       // BUTTON: SWITCH INPUT STYLE
 
-      q-btn.bg-white.cursor-pointer.q-mx-xs(@click="toggleInputStyle()", :class="{'bg-dark': inputStyle}", round)
-        q-icon(name="autorenew")
+        q-btn.bg-white.cursor-pointer.q-mx-xs(@click="toggleInputStyle()", :class="{'bg-dark': inputStyle}", round)
+          q-icon(name="autorenew")
 
     // TOP CENTER
     //
     //
-      .fixed-top.q-mt-md.absolute-top(style="width: 60%; left: 20%; z-index: 2000;")
     .fixed-top.q-mt-md(style="width: 60%; left: 20%; z-index: 2000; top: 52px;")
-
-      // VOCABULARIES
-
-      // q-collapsible.fixed-top.q-mt-md.absolute-top.moba-hover(v-if="!inputStyle", style="width: 60%; left: 20%;", label="Vocabulary", opened)
-      vocabularies(v-if="!inputStyle", :parent='parent', @clickedVocabulary="clickedVocabulary")
 
       // TEXT INPUT
 
       // q-input#input.bg-grey-10.text-white.q-pa-md(v-else, v-model="currentBody.value", @keyup="keyMonitor", type="textarea", autofocus, dark)
       q-input.bg-grey-10.text-white.q-pa-md(
-      v-else, v-model="currentBody.value", @keyup="keyMonitor", type="textarea", autofocus, dark)
+      v-model="currentBody.value", @keyup="keyMonitor", type="textarea", autofocus, dark)
+
+      // TAG BOX
+
+      .bg-dark(v-if="tagBox")
+        vocabularies(:parent='parent', :str="currentBody.value")
 
     // RIGHT SIDE: SHOW ANNOTATIONS
     //
@@ -79,24 +78,18 @@
         },
         inputStyle: true,
         parent: 'live-annotate',
-        prevKey: undefined
+        prevKey: undefined,
+        tagBox: false
       }
     },
     methods: {
-      clickedVocabulary (val) {
-        this.$q.notify({
-          message: val,
-          position: 'bottom-right',
-          color: 'white',
-          textColor: 'black'
-        })
-      },
       toggleInputStyle () {
         this.inputStyle = !this.inputStyle
       },
       keyMonitor (e) {
         if (this.prevKey === 13 && e.keyCode === 13) {
           this.prevKey = undefined
+          this.tagBox = false
           const bodyLength = this.currentBody.value.length
           if (bodyLength > 2) {
             this.currentBody.value = this.currentBody.value.substr(0, bodyLength - 2)
@@ -106,12 +99,20 @@
             this.currentBody.value = undefined
           }
         }
+        else if (e.keyCode === 27) {
+          this.tagBox = false
+          this.currentBody.value = undefined
+        }
+        else if (e.keyCode === 220) {
+          this.tagBox = true
+        }
         else {
           if (this.currentSelector.value === undefined) {
             this.currentSelector.value = DateTime.local().toISO()
           }
           this.prevKey = e.keyCode
         }
+        console.log(e.keyCode)
       },
       createAnnotation () {
         const _this = this
@@ -159,27 +160,6 @@
 </script>
 
 <style scoped>
-  /* #button-back {
-    position: fixed;
-    left: 1em;
-    top: calc(52px + 1em);
-  }*/
-  .wrapper {
-    border: 0px solid red;
-    min-height: calc(100vh - 52px);
-    overflow-y: scroll;
-    padding-left: 5rem;
-  }
-  /*#input {
-    position: fixed;
-    top: calc(52px + 2em);
-    width: calc(100vw - 25rem);
-    margin-left: 7.5rem;
-    overflow: scroll;
-    margin-bottom: 0;
-    z-index: 1111;
-    border: 1px solid rgba(255, 255, 255, .1);
-  }*/
   #list {
     /* background-color: #eee; */
     width: calc(100vw - 20rem);
