@@ -38,14 +38,7 @@
     },
     methods: {
       emitVocabulary (val) {
-        // console.log(val, '--------')
-        // this.$emit('handlerClickVocabulary', val)
-        this.$q.notify({
-          message: val,
-          position: 'bottom-right',
-          color: 'white',
-          textColor: 'black'
-        })
+        this.$emit('clickedVocabulary', val)
       }
     }
   }
