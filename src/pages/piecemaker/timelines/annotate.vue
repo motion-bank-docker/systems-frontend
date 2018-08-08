@@ -25,7 +25,7 @@
       // VOCABULARIES
 
       // q-collapsible.fixed-top.q-mt-md.absolute-top.moba-hover(v-if="!inputStyle", style="width: 60%; left: 20%;", label="Vocabulary", opened)
-      vocabularies(v-if="!inputStyle", :parent='parent')
+      vocabularies(v-if="!inputStyle", :parent='parent', @clickedVocabulary="clickedVocabulary")
 
       // TEXT INPUT
 
@@ -78,6 +78,14 @@
       }
     },
     methods: {
+      clickedVocabulary (val) {
+        this.$q.notify({
+          message: val,
+          position: 'bottom-right',
+          color: 'white',
+          textColor: 'black'
+        })
+      },
       toggleInputStyle () {
         this.inputStyle = !this.inputStyle
       },
