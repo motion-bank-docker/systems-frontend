@@ -1,6 +1,5 @@
 <template lang="pug">
-  // q-collapsible.q-mt-md.absolute-top.moba-hover(style="width: 60%; left: 20%;", label="Vocabulary", opened)
-  div(:class="[parent === 'post-annotate' ? 'moba-post' : '']", style="column-count: 3;")
+  div(:class="[parent === 'post-annotate' ? 'moba-post-annotate' : '']", style="column-count: 3;")
     q-btn.q-mr-xs.q-mt-sm.full-width(
     @click="emitVocabulary(dummy)",
     :class="[parent === 'post-annotate' ? 'q-caption text-black' : 'text-white bg-grey-10']",
@@ -8,11 +7,11 @@
     )
       // span.text-grey-6 [key]:&nbsp;
       | {{ dummy }}
-      q-popover.bg-dark.q-pa-sm.cursor-pointer.q-caption(
-      :class="[parent === 'post-annotate' ? 'q-caption' : '']",
-      anchor="bottom middle", self="top middle", dark
-      )
-        div.q-pa-sm(v-for="n in 3") {{ dummy }}
+      //
+        q-popover.bg-dark.q-pa-sm.cursor-pointer.q-caption(:class="[parent === 'post-annotate' ? 'q-caption' : '']",
+        anchor="bottom middle", self="top middle", dark
+        )
+          div.q-pa-sm(v-for="n in 3") {{ dummy }}
 </template>
 
 <script>
@@ -47,14 +46,14 @@
 <style scoped lang="stylus">
   @import '~variables'
 
-  .moba-post
+  .moba-post-annotate
     border 1px solid rgba( 255, 255, 255, .1 )
     background-color rgba( 255, 255, 255, 0 )
     .q-btn
       background-color white
       opacity 0
       border 0px solid black
-  .moba-post:hover
+  .moba-post-annotate:hover
     // border 1px solid rgba( 255, 255, 255, .1 )
     background-color rgba( 255, 255, 255, 0 )
     .q-btn
