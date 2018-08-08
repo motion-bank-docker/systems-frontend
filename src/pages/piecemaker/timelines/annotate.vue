@@ -20,7 +20,11 @@
       q-btn.bg-white.cursor-pointer.q-mx-xs(@click="toggleInputStyle()", :class="{'bg-dark': inputStyle}", round)
         q-icon(name="autorenew")
 
-    .fixed-top.q-mt-md.absolute-top(style="width: 60%; left: 20%; z-index: 2000;")
+    // TOP CENTER
+    //
+    //
+      .fixed-top.q-mt-md.absolute-top(style="width: 60%; left: 20%; z-index: 2000;")
+    .fixed-top.q-mt-md(style="width: 60%; left: 20%; z-index: 2000; top: 52px;")
 
       // VOCABULARIES
 
@@ -33,8 +37,9 @@
       q-input.bg-grey-10.text-white.q-pa-md(
       v-else, v-model="currentBody.value", @keyup="keyMonitor", type="textarea", autofocus, dark)
 
-    // SHOW ANNOTATIONS
-
+    // RIGHT SIDE: SHOW ANNOTATIONS
+    //
+    //
     q-list(v-if="inputStyle", no-border)#list
       q-item.annotation(v-for="(annotation, i) in annotations", :key="annotation.uuid", :id="annotation.uuid")
         q-item-side(v-if="annotation.target.selector") {{ formatSelectorForList(annotation.target.selector.value) }}
