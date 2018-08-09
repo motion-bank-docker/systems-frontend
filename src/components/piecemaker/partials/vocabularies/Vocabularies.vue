@@ -10,8 +10,9 @@
             q-btn.full-width.text-white(@click="clickTag(tag)" , no-caps, flat, align="left") {{ tag }}
           q-item-side
             span.text-grey-6 alt + {{ getInitials(tag) }}
-        // q-item.text-italic(v-if="filteredTags.length <= 0")
-          | no matches
+        q-item(v-if="filteredTags.length <= 0")
+          q-item-main.text-italic.text-center
+            | no matches
 
 </template>
 

@@ -11,31 +11,32 @@
     //
     .absolute-top-left.q-ma-md
 
-      // BUTTON: GO BACK
+      // BUTTON - GO BACK
 
       q-btn(slot="nav-button", icon="keyboard_backspace", @click="$router.push(`/piecemaker/timelines/show`)", round, small)
 
     // TOP CENTER
     //
     //
-    .row.fixed-top.q-mt-md(style="width: 60%; left: 20%; z-index: 2000; top: 52px;")
+    .row.fixed-top.q-mt-md(style="z-index: 2000; top: 52px;")
 
-      // BUTTON: SWITCH INPUT STYLE
+      // BUTTON - SWITCH BETWEEN TEXT INPUT AND TAG BOX
 
-      .col-1.text-right.q-pa-sm.q-pr-md
-        q-btn.text-primary.bg-dark(v-if="!tagBox", @click="tagBox = true", round) #
-          q-tooltip.bg-dark.q-caption(:offset="[0,10]") Click here or type # to open the vocabulary dialog
-        // q-btn(v-else, @click="tagBox = false" ,icon="clear", round, flat)
-          q-tooltip.bg-dark.q-caption(:offset="[0,10]") Click here or press escape to close the vocabulary dialog
+      .col-xs-2.offset-xs-1.col-md-1.offset-md-1.col-lg-1.offset-lg-2.text-right.q-pa-sm.q-pr-md
+        q-btn.text-primary.bg-grey-10(v-if="!tagBox", @click="tagBox = true", round) #
+          // q-tooltip.bg-dark.q-caption(:offset="[0,10]") Click here or type # to open the vocabulary dialog
 
-      .col-10.relative-position(:class="[tagBox ? 'bg-grey-10' : 'bg-grey-10']")
+      .col-xs-8.col-md-8.col-lg-6.relative-position(:class="[tagBox ? 'bg-grey-10' : 'bg-grey-10']")
+
         // TEXT INPUT
 
         q-input.q-pa-md(
         v-model="currentBody.value", :class="[tagBox ? 'q-pl-xl text-primary' : 'text-white']",
         @keyup="keyMonitor", @keydown="handlerKeyPress", type="textarea", autofocus, dark)
-        span.absolute-top.q-ma-md.q-mr-none.text-primary.row(v-if="tagBox", style="padding-top: 2px; padding-left: 2px; width: 1rem;")
-          | #
+        .absolute-top.q-mt-sm
+          q-btn.q-ml-sm.q-mt-xs.q-mr-none.text-primary(
+          v-if="tagBox", @click="tagBox = false", round, flat, icon="clear", size="sm")
+            // | #
 
         // TAG BOX
 
@@ -46,9 +47,9 @@
     //
     //
     .row
-      .col-8.offset-2
+      .col-xs-12.offset-xs-none.col-md-10.offset-md-1.col-lg-8.offset-lg-2
         q-list(v-if="inputStyle", no-border, style="margin-top: 8rem;")
-          q-item.moba-annotation(v-for="(annotation, i) in annotations", :key="annotation.uuid", :id="annotation.uuid")
+          q-item(v-for="(annotation, i) in annotations", :key="annotation.uuid", :id="annotation.uuid")
             q-item-side(v-if="annotation.target.selector")
               | {{ formatSelectorForList(annotation.target.selector.value) }}
             q-item-main
@@ -173,10 +174,4 @@
 </script>
 
 <style scoped>
-  .moba-annotation {
-    padding: .75em 1em;
-  }
-    .moba-annotation:hover {
-      background-color: rgba( 255, 255, 255, .05 );
-    }
 </style>
