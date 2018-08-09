@@ -69,6 +69,12 @@ export default {
       component: () => import('pages/piecemaker/videos/edit'),
       name: 'piecemaker.videos.edit',
       meta: {private: true}
+    },
+    {
+      path: '/piecemaker/videos/:id/sync',
+      component: () => import('pages/piecemaker/videos/sync'),
+      name: 'piecemaker.videos.sync',
+      meta: {private: true}
     }
   ]
 }
