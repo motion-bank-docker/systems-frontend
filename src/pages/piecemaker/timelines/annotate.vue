@@ -15,34 +15,46 @@
 
       q-btn(slot="nav-button", icon="keyboard_backspace", @click="$router.push(`/piecemaker/timelines/show`)", round, small)
 
+    // TOP CENTER
+    //
+    //
+    .row.fixed-top.q-mt-md(style="width: 60%; left: 20%; z-index: 2000; top: 52px;")
+
       // BUTTON: SWITCH INPUT STYLE
 
-      q-btn.bg-white.cursor-pointer.q-mx-xs(@click="toggleInputStyle()", :class="{'bg-dark': inputStyle}", round)
-        q-icon(name="autorenew")
+      .col-1.text-right.q-pa-sm.q-pr-md
+        q-btn.text-primary.bg-dark(v-if="!tagBox", @click="tagBox = true", round) #
+          q-tooltip.bg-dark.q-caption(:offset="[0,10]") Click here or type # to open the vocabulary dialog
+        // q-btn(v-else, @click="tagBox = false" ,icon="clear", round, flat)
+          q-tooltip.bg-dark.q-caption(:offset="[0,10]") Click here or press escape to close the vocabulary dialog
 
-    .fixed-top.q-mt-md.absolute-top(style="width: 60%; left: 20%; z-index: 2000;")
+      .col-10.relative-position(:class="[tagBox ? 'bg-grey-10' : 'bg-grey-10']")
+        // TEXT INPUT
 
-      // VOCABULARIES
+        q-input.q-pa-md(
+        v-model="currentBody.value", :class="[tagBox ? 'q-pl-xl text-primary' : 'text-white']",
+        @keyup="keyMonitor", @keydown="handlerKeyPress", type="textarea", autofocus, dark)
+        span.absolute-top.q-ma-md.q-mr-none.text-primary.row(v-if="tagBox", style="padding-top: 2px; padding-left: 2px; width: 1rem;")
+          | #
 
-      // q-collapsible.fixed-top.q-mt-md.absolute-top.moba-hover(v-if="!inputStyle", style="width: 60%; left: 20%;", label="Vocabulary", opened)
-      vocabularies(v-if="!inputStyle", :parent='parent', @clickedVocabulary="clickedVocabulary")
+        // TAG BOX
 
-      // TEXT INPUT
+        div(v-if="tagBox")
+          vocabularies(:parent='parent', :pressedKey="pressedKey", :str="currentBody.value")
 
-      // q-input#input.bg-grey-10.text-white.q-pa-md(v-else, v-model="currentBody.value", @keyup="keyMonitor", type="textarea", autofocus, dark)
-      q-input.bg-grey-10.text-white.q-pa-md(
-      v-else, v-model="currentBody.value", @keyup="keyMonitor", type="textarea", autofocus, dark)
-
-    // SHOW ANNOTATIONS
-
-    q-list(v-if="inputStyle", no-border)#list
-      q-item.annotation(v-for="(annotation, i) in annotations", :key="annotation.uuid", :id="annotation.uuid")
-        q-item-side(v-if="annotation.target.selector") {{ formatSelectorForList(annotation.target.selector.value) }}
-        q-item-main
-          q-item-tile.text-left
-            q-input(type="textarea", v-model="annotation.body.value", dark)
-        q-item-side.text-right
-          q-btn(@click="deleteAnnotation(annotation.uuid, i)", icon="clear", round, small)
+    // CENTER: SHOW ANNOTATIONS
+    //
+    //
+    .row
+      .col-8.offset-2
+        q-list(v-if="inputStyle", no-border, style="margin-top: 8rem;")
+          q-item.moba-annotation(v-for="(annotation, i) in annotations", :key="annotation.uuid", :id="annotation.uuid")
+            q-item-side(v-if="annotation.target.selector")
+              | {{ formatSelectorForList(annotation.target.selector.value) }}
+            q-item-main
+              q-input(type="textarea", v-model="annotation.body.value", dark)
+            q-item-side.text-right
+              q-btn(@click="deleteAnnotation(annotation.uuid, i)", icon="clear", round, small)
 
 </template>
 
@@ -74,24 +86,22 @@
         },
         inputStyle: true,
         parent: 'live-annotate',
-        prevKey: undefined
+        pressedKey: '',
+        prevKey: undefined,
+        tagBox: false
       }
     },
     methods: {
-      clickedVocabulary (val) {
-        this.$q.notify({
-          message: val,
-          position: 'bottom-right',
-          color: 'white',
-          textColor: 'black'
-        })
-      },
-      toggleInputStyle () {
+      /* toggleInputStyle () {
         this.inputStyle = !this.inputStyle
+      }, */
+      handlerKeyPress (e) {
+        this.pressedKey = e.keyCode
       },
       keyMonitor (e) {
-        if (this.prevKey === 13 && e.keyCode === 13) {
+        if (this.prevKey === 13 && e.keyCode === 13) { // enter
           this.prevKey = undefined
+          this.tagBox = false
           const bodyLength = this.currentBody.value.length
           if (bodyLength > 2) {
             this.currentBody.value = this.currentBody.value.substr(0, bodyLength - 2)
@@ -101,12 +111,21 @@
             this.currentBody.value = undefined
           }
         }
+        else if (e.keyCode === 27) { // escape
+          this.tagBox = false
+          this.currentBody.value = undefined
+        }
+        else if (e.keyCode === 220) { // hashtag
+          this.tagBox = true
+          this.currentBody.value = undefined
+        }
         else {
           if (this.currentSelector.value === undefined) {
             this.currentSelector.value = DateTime.local().toISO()
           }
           this.prevKey = e.keyCode
         }
+        // console.log(e.keyCode)
       },
       createAnnotation () {
         const _this = this
@@ -154,51 +173,10 @@
 </script>
 
 <style scoped>
-  /* #button-back {
-    position: fixed;
-    left: 1em;
-    top: calc(52px + 1em);
-  }*/
-  .wrapper {
-    border: 0px solid red;
-    min-height: calc(100vh - 52px);
-    overflow-y: scroll;
-    padding-left: 5rem;
-  }
-  /*#input {
-    position: fixed;
-    top: calc(52px + 2em);
-    width: calc(100vw - 25rem);
-    margin-left: 7.5rem;
-    overflow: scroll;
-    margin-bottom: 0;
-    z-index: 1111;
-    border: 1px solid rgba(255, 255, 255, .1);
-  }*/
-  #list {
-    /* background-color: #eee; */
-    width: calc(100vw - 20rem);
-    min-height: calc(100vh - 52px - 2rem);
-    margin-left: 5rem;
-    overflow-y: scroll;
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-    padding: 0;
-    padding-top: 8em;
-    border: 0px solid red!important;
-    position: relative;
-  }
-  .annotation {
+  .moba-annotation {
     padding: .75em 1em;
   }
-    .annotation:hover {
+    .moba-annotation:hover {
       background-color: rgba( 255, 255, 255, .05 );
     }
-  .q-item-side {
-    padding: 0 1.5em;
-    vertical-align: top;
-  }
-  .color {
-    color: white!important;
-  }
 </style>

@@ -1,43 +1,105 @@
 <template lang="pug">
-  div(:class="[parent === 'post-annotate' ? 'moba-post-annotate' : '']", style="column-count: 3;")
-    q-btn.q-mr-xs.q-mb-sm.full-width(
-    @click="emitVocabulary(dummy)",
-    :class="[parent === 'post-annotate' ? 'q-caption text-black' : 'text-white bg-grey-10']",
-    v-for="dummy in dummyVocabularies", no-caps, flat
-    )
-      // span.text-grey-6 [key]:&nbsp;
-      | {{ dummy }}
-      //
-        q-popover.bg-dark.q-pa-sm.cursor-pointer.q-caption(:class="[parent === 'post-annotate' ? 'q-caption' : '']",
-        anchor="bottom middle", self="top middle", dark
-        )
-          div.q-pa-sm(v-for="n in 3") {{ dummy }}
+  div(:class="[parent === 'post-annotate' ? 'moba-post-annotate' : '']", style="max-height: 50vh; overflow-y: scroll;")
+    .q-pa-sm
+      // (TODO: most used)
+      q-list.no-border.no-margin.no-padding
+        q-item.cursor-pointer(v-for="(tag, i) in filteredTags", :key="i", :class="[i == tagHighlight ? 'bg-grey-9' : '']")
+          q-item-side
+            span.text-grey-6 {{ getInitials(tag) }}
+          q-item-main
+            q-btn.full-width.text-white(@click="clickTag(tag)" , no-caps, flat, align="left") {{ tag }}
+          q-item-side
+            span.text-grey-6 alt + {{ getInitials(tag) }}
+        // q-item.text-italic(v-if="filteredTags.length <= 0")
+          | no matches
+
 </template>
 
 <script>
   export default {
-    props: ['parent'],
+    props: ['parent', 'pressedKey', 'str'],
+    watch: {
+      str: function (val) {
+        // console.log('--------')
+        this.tagHighlight = -1
+        const filterItems = (val) => {
+          return this.vocabs.filter((el) =>
+            el.toLowerCase().indexOf(val.toLowerCase()) > -1
+          )
+        }
+        console.log(filterItems(val))
+        console.log(filterItems(val).length)
+        this.filteredTags = filterItems(val).sort()
+      }
+    },
+    mounted () {
+      window.addEventListener('keydown', this.tagHightlighting)
+      this.filteredTags = this.vocabs
+    },
+    beforeDestroy () {
+      window.removeEventListener('keydown', this.tagHightlighting)
+    },
     data () {
       return {
-        dummyVocabularies: [
-          'movement direction', 'facial orientation', 'body/body part direction',
-          'weight engage. individual', 'weight engag. partner', 'weight regul. partner',
-          'sync rythm', 'sync phrase',
-          'still', 'mirroring', 'contingently responsive',
-          'movement direction', 'facial orientation', 'body/body part direction',
-          'weight engage. individual', 'weight engag. partner', 'weight regul. partner',
-          'sync rythm', 'sync phrase',
-          'still', 'mirroring', 'contingently responsive',
-          'movement direction', 'facial orientation', 'body/body part direction',
-          'weight engage. individual', 'weight engag. partner', 'weight regul. partner',
-          'sync rythm', 'sync phrase',
-          'still', 'mirroring', 'contingently responsive'
-        ]
+        vocabs: ['movement direction', 'facial orientation', 'direction body/body parts', 'weight engagement individual', 'weight engagement with partner', 'weight regulation with partner', 'synchronisation in rythm', 'synchonisation in phrase'],
+        filteredTags: [],
+        tagHighlight: -1,
+        /* dummyVocabularies: [{
+          groupTitle: 'space',
+          vocabularies: [{
+            shortTitle: 'aaa',
+            longTitle: 'movement direction'
+          }, {
+            shortTitle: 'bbb',
+            longTitle: 'facial orientation'
+          }, {
+            shortTitle: 'bbb',
+            longTitle: 'direction body/body parts'
+          }]
+        }, {
+          groupTitle: 'weight',
+          vocabularies: [{
+            shortTitle: 'xxx',
+            longTitle: 'weight engagement individual'
+          }, {
+            shortTitle: 'yyy',
+            longTitle: 'weight engagement with partner'
+          }, {
+            shortTitle: 'yyy',
+            longTitle: 'weight regulation with partner'
+          }]
+        }, {
+          groupTitle: 'time',
+          vocabularies: [{
+            shortTitle: 'xxx',
+            longTitle: 'synchronisation in rythm'
+          }, {
+            shortTitle: 'yyy',
+            longTitle: 'synchonisation in phrase'
+          }]
+        }
+        ], */
+        results: []
       }
     },
     methods: {
-      emitVocabulary (val) {
+      clickTag (val) {
+        console.log(val)
+      },
+      tagHightlighting (e) {
+        // console.log(e.keyCode, this.vocabs.length)
+        if (e.keyCode === 40 && this.tagHighlight < this.filteredTags.length - 1) {
+          this.tagHighlight++
+        }
+        else if (e.keyCode === 38 && this.tagHighlight > 0) {
+          this.tagHighlight--
+        }
+      },
+      emitVocabulary (val) { // unused
         this.$emit('clickedVocabulary', val)
+      },
+      getInitials (val) {
+        return val.split(' ').map((n) => n[0]).join('').toUpperCase()
       }
     }
   }
@@ -46,22 +108,19 @@
 <style scoped lang="stylus">
   @import '~variables'
 
-  .moba-post-annotate
-    // border 1px solid rgba( 255, 255, 255, .1 )
+  /* .moba-post-annotate
     background-color rgba( 255, 255, 255, 0 )
     .q-btn
-      background-color white
-      opacity 0
-      border 0px solid black
+      color white!important
+      border 1px solid rgba(255, 255, 255, .2)
   .moba-post-annotate:hover
-    // border 1px solid rgba( 255, 255, 255, .1 )
-    background-color rgba( 255, 255, 255, 0 )
+    background-color rgba( 0, 0, 0, .3 )
     .q-btn
-      opacity .5
-      background-color white
-      border 0px solid transparent!important
+      color white!important
+      border 1px solid rgba(255, 255, 255, .2)!important
     .q-btn:hover
       opacity 1
       background-color white!important
-      border 0px solid transparent!important
+      color black!important
+      border 0px solid transparent!important */
 </style>
