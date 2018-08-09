@@ -23,7 +23,7 @@
       // BUTTON - SWITCH BETWEEN TEXT INPUT AND TAG BOX
 
       .col-xs-2.offset-xs-1.col-md-1.offset-md-1.col-lg-1.offset-lg-2.text-right.q-pa-sm.q-pr-md
-        q-btn.text-primary.bg-grey-10(v-if="!tagBox", @click="tagBox = true", round) #
+        q-btn.text-primary.bg-grey-10(v-if="!tagBox && staging", @click="tagBox = true", round) #
           // q-tooltip.bg-dark.q-caption(:offset="[0,10]") Click here or type # to open the vocabulary dialog
 
       .col-xs-8.col-md-8.col-lg-6.relative-position(:class="[tagBox ? 'bg-grey-10' : 'bg-grey-10']")
@@ -33,14 +33,14 @@
         q-input.q-pa-md(
         v-model="currentBody.value", :class="[tagBox ? 'q-pl-xl text-primary' : 'text-white']",
         @keyup="keyMonitor", @keydown="handlerKeyPress", type="textarea", autofocus, dark)
-        .absolute-top.q-mt-sm
+        .absolute-top.q-mt-sm(v-if="staging", style="width: 3rem;")
           q-btn.q-ml-sm.q-mt-xs.q-mr-none.text-primary(
           v-if="tagBox", @click="tagBox = false", round, flat, icon="clear", size="sm")
             // | #
 
         // TAG BOX
 
-        div(v-if="tagBox")
+        div(v-if="tagBox && staging")
           vocabularies(:parent='parent', :pressedKey="pressedKey", :str="currentBody.value")
 
     // CENTER: SHOW ANNOTATIONS
@@ -55,6 +55,9 @@
             q-item-main
               q-input(type="textarea", v-model="annotation.body.value", dark)
             q-item-side.text-right
+              // button below ("re-use"):
+              // appears only on tag types
+              q-btn.q-mr-sm(@click="", small, rounded) re-use
               q-btn(@click="deleteAnnotation(annotation.uuid, i)", icon="clear", round, small)
 
 </template>
@@ -89,6 +92,7 @@
         parent: 'live-annotate',
         pressedKey: '',
         prevKey: undefined,
+        staging: process.env.IS_STAGING,
         tagBox: false
       }
     },
@@ -100,7 +104,7 @@
         this.pressedKey = e.keyCode
       },
       keyMonitor (e) {
-        if (this.prevKey === 13 && e.keyCode === 13) { // enter
+        if (this.prevKey === 13 && e.keyCode === 13 && !this.tagBox) { // enter
           this.prevKey = undefined
           this.tagBox = false
           const bodyLength = this.currentBody.value.length

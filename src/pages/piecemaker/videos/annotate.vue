@@ -23,7 +23,7 @@
 
         // BUTTON: SWITCH INPUT STYLE
 
-        q-btn.bg-white.cursor-pointer.q-mx-xs(@click="toggleInputStyle()", :class="{'bg-dark': inputStyle}", round)
+        q-btn.bg-white.cursor-pointer.q-mx-xs(v-if="staging", @click="toggleInputStyle()", :class="{'bg-dark': inputStyle}", round)
           q-icon(name="autorenew")
 
       // TOP RIGHT
@@ -168,6 +168,7 @@
         player: undefined,
         playerTime: 0.0,
         selector: undefined,
+        staging: process.env.IS_STAGING,
         timelineId: undefined,
         video: undefined
       }
