@@ -108,9 +108,14 @@
         if (!Array.isArray(sources)) {
           sources = [sources]
         }
-        this.player.src(sources)
         if (poster) this.playerOptions.poster = poster
-        this.player.load()
+        if (!this.playerOptions.sources) {
+          this.playerOptions.sources = sources
+        }
+        else {
+          this.player.src(sources)
+          this.player.load()
+        }
       }
     }
   }
