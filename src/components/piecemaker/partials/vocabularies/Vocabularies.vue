@@ -21,20 +21,35 @@
     props: ['parent', 'str'],
     watch: {
       str: function (val) {
-        this.filterSearch(val)
+        // this.filterSearch(val)
+        // console.log(this.vocabs)
+        console.log('--------')
+        const filterItems = (val) => {
+          return this.vocabs.filter((el) =>
+            // el.toLowerCase().indexOf(val.toLowerCase()) > -1
+            console.log(el.toLowerCase().indexOf(val.toLowerCase()) > -1)
+          )
+        }
+        // console.log(filterItems(val))
+        filterItems(val)
       }
     },
     data () {
       return {
-        vocabs: [{
+        /* vocabs: [{
           title: 'test'
         }, {
           title: 'hallo'
         }, {
           title: 'eins'
         }, {
+          title: 'hundertzehn'
+        }, {
+          title: 'zwanzigtausenzweihundert'
+        }, {
           title: 'zwei'
-        }],
+        }], */
+        vocabs: ['test', 'hallo', 'EINS', 'hundertzehn', 'zwanzigtausenzweihundert', 'zwei'],
         // vocabs: ['test', 'hallo', 'eins', 'zwei'],
         dummyVocabularies: [{
           groupTitle: 'space',
@@ -78,11 +93,15 @@
       filterSearch (searchterm) {
         let arr = this.vocabs
         // console.log('hallo', searchterm)
+        const result = arr.filter(arrNew => arrNew.title.length > 6)
+        console.log(result)
         return arr.filter(function (obj) {
           // console.log(obj)
           return Object.keys(obj).some(function (key) {
             // console.log(obj[key])
-            console.log(obj[key].includes(searchterm))
+            // console.log(obj[key].includes(searchterm))
+            if (obj[key].includes(searchterm)) console.log('drin')
+            else console.log('nicht drin')
             // return obj[key].includes(searchterm)
           })
           /* return Object.keys(obj).some(function(key) {

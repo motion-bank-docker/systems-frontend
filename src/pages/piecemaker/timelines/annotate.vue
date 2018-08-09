@@ -23,18 +23,25 @@
     // TOP CENTER
     //
     //
-    .fixed-top.q-mt-md(style="width: 60%; left: 20%; z-index: 2000; top: 52px;")
+    .row.fixed-top.q-mt-md(style="width: 60%; left: 20%; z-index: 2000; top: 52px;")
 
-      // TEXT INPUT
+      .col-1.text-right.q-pa-sm.q-pr-md
+        q-btn(v-if="!tagBox", @click="tagBox = true", round) #
+          q-tooltip.bg-dark.q-caption(:offset="[0,10]") Click here or type # to open the vocabulary dialog
+        q-btn(v-else, @click="tagBox = false" ,icon="clear", round)
+          q-tooltip.bg-dark.q-caption(:offset="[0,10]") Click here or press escape to close the vocabulary dialog
 
-      // q-input#input.bg-grey-10.text-white.q-pa-md(v-else, v-model="currentBody.value", @keyup="keyMonitor", type="textarea", autofocus, dark)
-      q-input.bg-grey-10.text-white.q-pa-md(
-      v-model="currentBody.value", @keyup="keyMonitor", type="textarea", autofocus, dark)
+      .col-10
+        // TEXT INPUT
 
-      // TAG BOX
+        // q-input#input.bg-grey-10.text-white.q-pa-md(v-else, v-model="currentBody.value", @keyup="keyMonitor", type="textarea", autofocus, dark)
+        q-input.bg-grey-10.text-white.q-pa-md(
+        v-model="currentBody.value", @keyup="keyMonitor", type="textarea", autofocus, dark)
 
-      .bg-dark(v-if="tagBox")
-        vocabularies(:parent='parent', :str="currentBody.value")
+        // TAG BOX
+
+        .bg-dark(v-if="tagBox")
+          vocabularies(:parent='parent', :str="currentBody.value")
 
     // RIGHT SIDE: SHOW ANNOTATIONS
     //
