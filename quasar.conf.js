@@ -8,7 +8,8 @@ module.exports = function (ctx) {
       'auth',
       'axios',
       'i18n',
-      'notifications'
+      'notifications',
+      'window'
     ],
     css: [
       'app.styl'
