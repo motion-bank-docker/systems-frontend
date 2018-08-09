@@ -33,7 +33,7 @@ export default {
       component: () => import('pages/mosys/grids/annotate'),
       name: 'mosys.grids.annotate',
       meta: {private: true}
-    },
+    }
 
     //
     //
@@ -46,11 +46,5 @@ export default {
       meta: {private: true}
     },
     */
-    {
-      path: '/mosys/codarts/sync/:groupId/:videoId',
-      component: () => import('pages/mosys/codarts/sync'),
-      name: 'mosys.codarts.sync',
-      meta: {private: true}
-    }
   ]
 }

@@ -72,6 +72,16 @@
               click: (item) => _this.$router.push({ name: 'piecemaker.videos.edit', params: { id: item.uuid } })
             },
             {
+              type: 'sync',
+              title: 'buttons.synchronize',
+              click: (item) => {
+                _this.$router.push({
+                  name: 'piecemaker.videos.sync',
+                  params: { id: item.uuid }
+                })
+              }
+            },
+            {
               type: 'delete',
               title: 'buttons.delete'
             }
