@@ -15,18 +15,15 @@
 
       q-btn(slot="nav-button", icon="keyboard_backspace", @click="$router.push(`/piecemaker/timelines/show`)", round, small)
 
-      // BUTTON: SWITCH INPUT STYLE
-
-        q-btn.bg-white.cursor-pointer.q-mx-xs(@click="toggleInputStyle()", :class="{'bg-dark': inputStyle}", round)
-          q-icon(name="autorenew")
-
     // TOP CENTER
     //
     //
     .row.fixed-top.q-mt-md(style="width: 60%; left: 20%; z-index: 2000; top: 52px;")
 
+      // BUTTON: SWITCH INPUT STYLE
+
       .col-1.text-right.q-pa-sm.q-pr-md
-        q-btn.text-primary(v-if="!tagBox", @click="tagBox = true", round, flat) #
+        q-btn.text-primary.bg-dark(v-if="!tagBox", @click="tagBox = true", round) #
           q-tooltip.bg-dark.q-caption(:offset="[0,10]") Click here or type # to open the vocabulary dialog
         // q-btn(v-else, @click="tagBox = false" ,icon="clear", round, flat)
           q-tooltip.bg-dark.q-caption(:offset="[0,10]") Click here or press escape to close the vocabulary dialog
@@ -34,28 +31,30 @@
       .col-10.relative-position(:class="[tagBox ? 'bg-grey-10' : 'bg-grey-10']")
         // TEXT INPUT
 
-        // q-input#input.bg-grey-10.text-white.q-pa-md(v-else, v-model="currentBody.value", @keyup="keyMonitor", type="textarea", autofocus, dark)
         q-input.q-pa-md(
         v-model="currentBody.value", :class="[tagBox ? 'q-pl-xl text-primary' : 'text-white']",
         @keyup="keyMonitor", @keydown="handlerKeyPress", type="textarea", autofocus, dark)
-        span.absolute-top.q-ma-md.q-mr-none.text-primary.row(v-if="tagBox", style="padding-top: 2px; padding-left: 2px; width: 1rem;") #
+        span.absolute-top.q-ma-md.q-mr-none.text-primary.row(v-if="tagBox", style="padding-top: 2px; padding-left: 2px; width: 1rem;")
+          | #
 
         // TAG BOX
 
         div(v-if="tagBox")
           vocabularies(:parent='parent', :pressedKey="pressedKey", :str="currentBody.value")
 
-    // RIGHT SIDE: SHOW ANNOTATIONS
+    // CENTER: SHOW ANNOTATIONS
     //
     //
-    q-list(v-if="inputStyle", no-border)#list
-      q-item.annotation(v-for="(annotation, i) in annotations", :key="annotation.uuid", :id="annotation.uuid")
-        q-item-side(v-if="annotation.target.selector") {{ formatSelectorForList(annotation.target.selector.value) }}
-        q-item-main
-          q-item-tile.text-left
-            q-input(type="textarea", v-model="annotation.body.value", dark)
-        q-item-side.text-right
-          q-btn(@click="deleteAnnotation(annotation.uuid, i)", icon="clear", round, small)
+    .row
+      .col-8.offset-2
+        q-list(v-if="inputStyle", no-border, style="margin-top: 8rem;")
+          q-item.moba-annotation(v-for="(annotation, i) in annotations", :key="annotation.uuid", :id="annotation.uuid")
+            q-item-side(v-if="annotation.target.selector")
+              | {{ formatSelectorForList(annotation.target.selector.value) }}
+            q-item-main
+              q-input(type="textarea", v-model="annotation.body.value", dark)
+            q-item-side.text-right
+              q-btn(@click="deleteAnnotation(annotation.uuid, i)", icon="clear", round, small)
 
 </template>
 
@@ -174,30 +173,10 @@
 </script>
 
 <style scoped>
-  #list {
-    /* background-color: #eee; */
-    width: calc(100vw - 20rem);
-    min-height: calc(100vh - 52px - 2rem);
-    margin-left: 5rem;
-    overflow-y: scroll;
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-    padding: 0;
-    padding-top: 8em;
-    border: 0px solid red!important;
-    position: relative;
-  }
-  .annotation {
+  .moba-annotation {
     padding: .75em 1em;
   }
-    .annotation:hover {
+    .moba-annotation:hover {
       background-color: rgba( 255, 255, 255, .05 );
     }
-  .q-item-side {
-    padding: 0 1.5em;
-    vertical-align: top;
-  }
-  .color {
-    color: white!important;
-  }
 </style>
