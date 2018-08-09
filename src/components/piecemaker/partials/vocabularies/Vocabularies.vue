@@ -1,19 +1,29 @@
 <template lang="pug">
   div(:class="[parent === 'post-annotate' ? 'moba-post-annotate' : '']", style="max-height: 50vh; overflow-y: scroll;")
     .bg-grey-10.q-pa-sm
-      div (most used)
-    .row.bg-grey-10.q-pa-sm.float-left(v-for="dummy in dummyVocabularies", style="width: 100%;")
-      .col-2
-        | {{ dummy.groupTitle }}
+      // div (most used)
+      q-list.no-border.no-margin.no-padding
+        q-item(v-for="tag in filteredTags")
+          q-item-side
+            span.text-grey-8 {{ getInitials(tag) }}
+          q-item-main
+            q-btn.full-width(no-caps, flat, align="left")
+              | {{ tag }}
+          q-item-side
+            span.text-grey-8 alt + {{ getInitials(tag) }}
+    //
+      .row.bg-grey-10.q-pa-sm.float-left(v-for="dummy in dummyVocabularies", style="width: 100%;")
+        .col-2
+          | {{ dummy.groupTitle }}
 
-      .col-10
-        q-btn.q-mr-xs.q-mb-sm.full-width.text-left(
-        @click="emitVocabulary(dummy)",
-        :class="[parent === 'post-annotate' ? 'q-caption text-black' : 'text-white bg-grey-10']",
-        v-for="entry in dummy.vocabularies", no-caps, flat, align="left"
-        )
-          span.text-grey-9 {{ getInitials(entry.longTitle) }}
-          .q-ml-sm {{ entry.longTitle }}
+        .col-10
+          q-btn.q-mr-xs.q-mb-sm.full-width.text-left(
+          @click="emitVocabulary(dummy)",
+          // :class="[parent === 'post-annotate' ? 'q-caption text-black' : 'text-white bg-grey-10']",
+          v-for="entry in dummy.vocabularies", no-caps, flat, align="left"
+          )
+            span.text-grey-9 {{ getInitials(entry.longTitle) }}
+            .q-ml-sm {{ entry.longTitle }}
 </template>
 
 <script>
@@ -21,17 +31,20 @@
     props: ['parent', 'str'],
     watch: {
       str: function (val) {
-        // this.filterSearch(val)
-        // console.log(this.vocabs)
+        // var newArray = []
         console.log('--------')
         const filterItems = (val) => {
           return this.vocabs.filter((el) =>
             // el.toLowerCase().indexOf(val.toLowerCase()) > -1
-            console.log(el.toLowerCase().indexOf(val.toLowerCase()) > -1)
+            // console.log(el.toLowerCase().indexOf(val.toLowerCase()) > -1)
+            el.toLowerCase().indexOf(val.toLowerCase()) > -1
+            // console.log(el.toLowerCase().indexOf(val.toLowerCase()) > -1, val, el, '-----', this.vocabs[this.vocabs.indexOf(el)])
+            // newArray.push()
           )
         }
         // console.log(filterItems(val))
-        filterItems(val)
+        console.log(filterItems(val))
+        this.filteredTags = filterItems(val)
       }
     },
     data () {
@@ -49,8 +62,9 @@
         }, {
           title: 'zwei'
         }], */
-        vocabs: ['test', 'hallo', 'EINS', 'hundertzehn', 'zwanzigtausenzweihundert', 'zwei'],
+        vocabs: ['test', 'hallo was geht', 'EINS', 'hundertzehn', 'zwanzigtausenzweihundert', 'zwei', 'was?'],
         // vocabs: ['test', 'hallo', 'eins', 'zwei'],
+        filteredTags: [],
         dummyVocabularies: [{
           groupTitle: 'space',
           vocabularies: [{
