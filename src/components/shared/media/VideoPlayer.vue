@@ -109,7 +109,7 @@
           sources = [sources]
         }
         if (poster) this.playerOptions.poster = poster
-        if (!this.playerOptions.sources) {
+        if (!this.playerOptions.sources || !this.playerOptions.sources.length) {
           this.playerOptions.sources = sources
         }
         else {
