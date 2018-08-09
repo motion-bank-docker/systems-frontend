@@ -26,17 +26,19 @@
     .row.fixed-top.q-mt-md(style="width: 60%; left: 20%; z-index: 2000; top: 52px;")
 
       .col-1.text-right.q-pa-sm.q-pr-md
-        q-btn(v-if="!tagBox", @click="tagBox = true", round) #
+        q-btn.text-primary(v-if="!tagBox", @click="tagBox = true", round, flat) #
           q-tooltip.bg-dark.q-caption(:offset="[0,10]") Click here or type # to open the vocabulary dialog
-        q-btn(v-else, @click="tagBox = false" ,icon="clear", round)
+        // q-btn(v-else, @click="tagBox = false" ,icon="clear", round, flat)
           q-tooltip.bg-dark.q-caption(:offset="[0,10]") Click here or press escape to close the vocabulary dialog
 
-      .col-10(:class="[tagBox ? 'bg-grey-10' : 'bg-grey-10']")
+      .col-10.relative-position(:class="[tagBox ? 'bg-grey-10' : 'bg-grey-10']")
         // TEXT INPUT
 
         // q-input#input.bg-grey-10.text-white.q-pa-md(v-else, v-model="currentBody.value", @keyup="keyMonitor", type="textarea", autofocus, dark)
-        q-input.text-white.q-pa-md(
-        v-model="currentBody.value", @keyup="keyMonitor", @keydown="handlerKeyPress", type="textarea", autofocus, dark)
+        q-input.q-pa-md(
+        v-model="currentBody.value", :class="[tagBox ? 'q-pl-xl text-primary' : 'text-white']",
+        @keyup="keyMonitor", @keydown="handlerKeyPress", type="textarea", autofocus, dark)
+        span.absolute-top.q-ma-md.q-mr-none.text-primary.row(v-if="tagBox", style="padding-top: 2px; padding-left: 2px; width: 1rem;") #
 
         // TAG BOX
 
@@ -91,14 +93,14 @@
       }
     },
     methods: {
-      toggleInputStyle () {
+      /* toggleInputStyle () {
         this.inputStyle = !this.inputStyle
-      },
+      }, */
       handlerKeyPress (e) {
         this.pressedKey = e.keyCode
       },
       keyMonitor (e) {
-        if (this.prevKey === 13 && e.keyCode === 13) {
+        if (this.prevKey === 13 && e.keyCode === 13) { // enter
           this.prevKey = undefined
           this.tagBox = false
           const bodyLength = this.currentBody.value.length
@@ -110,12 +112,13 @@
             this.currentBody.value = undefined
           }
         }
-        else if (e.keyCode === 27) {
+        else if (e.keyCode === 27) { // escape
           this.tagBox = false
           this.currentBody.value = undefined
         }
-        else if (e.keyCode === 220) {
+        else if (e.keyCode === 220) { // hashtag
           this.tagBox = true
+          this.currentBody.value = undefined
         }
         else {
           if (this.currentSelector.value === undefined) {

@@ -1,28 +1,18 @@
 <template lang="pug">
   div(:class="[parent === 'post-annotate' ? 'moba-post-annotate' : '']", style="max-height: 50vh; overflow-y: scroll;")
     .q-pa-sm
-      // TODO: most used
+      // (TODO: most used)
       q-list.no-border.no-margin.no-padding
-        q-item(v-for="(tag, i) in filteredTags", :key="i", :class="[i == tagHighlight ? 'bg-primary' : '']")
+        q-item.cursor-pointer(v-for="(tag, i) in filteredTags", :key="i", :class="[i == tagHighlight ? 'bg-grey-9' : '']")
           q-item-side
             span.text-grey-6 {{ getInitials(tag) }}
           q-item-main
-            q-btn.full-width.text-white(no-caps, flat, align="left") {{ tag }}
+            q-btn.full-width.text-white(@click="clickTag(tag)" , no-caps, flat, align="left") {{ tag }}
           q-item-side
             span.text-grey-6 alt + {{ getInitials(tag) }}
-    //
-      .row.bg-grey-10.q-pa-sm.float-left(v-for="dummy in dummyVocabularies", style="width: 100%;")
-        .col-2
-          | {{ dummy.groupTitle }}
+        // q-item.text-italic(v-if="filteredTags.length <= 0")
+          | no matches
 
-        .col-10
-          q-btn.q-mr-xs.q-mb-sm.full-width.text-left(
-          @click="emitVocabulary(dummy)",
-          // :class="[parent === 'post-annotate' ? 'q-caption text-black' : 'text-white bg-grey-10']",
-          v-for="entry in dummy.vocabularies", no-caps, flat, align="left"
-          )
-            span.text-grey-9 {{ getInitials(entry.longTitle) }}
-            .q-ml-sm {{ entry.longTitle }}
 </template>
 
 <script>
@@ -30,48 +20,31 @@
     props: ['parent', 'pressedKey', 'str'],
     watch: {
       str: function (val) {
-        // var newArray = []
-        console.log('--------')
+        // console.log('--------')
+        this.tagHighlight = -1
         const filterItems = (val) => {
           return this.vocabs.filter((el) =>
-            // el.toLowerCase().indexOf(val.toLowerCase()) > -1
-            // console.log(el.toLowerCase().indexOf(val.toLowerCase()) > -1)
             el.toLowerCase().indexOf(val.toLowerCase()) > -1
-            // console.log(el.toLowerCase().indexOf(val.toLowerCase()) > -1, val, el, '-----', this.vocabs[this.vocabs.indexOf(el)])
-            // newArray.push()
           )
         }
-        // console.log(filterItems(val))
         console.log(filterItems(val))
-        // this.keyMonitor()
-        this.filteredTags = filterItems(val)
+        console.log(filterItems(val).length)
+        this.filteredTags = filterItems(val).sort()
       }
     },
     mounted () {
       window.addEventListener('keydown', this.tagHightlighting)
+      this.filteredTags = this.vocabs
     },
     beforeDestroy () {
       window.removeEventListener('keydown', this.tagHightlighting)
     },
     data () {
       return {
-        /* vocabs: [{
-          title: 'test'
-        }, {
-          title: 'hallo'
-        }, {
-          title: 'eins'
-        }, {
-          title: 'hundertzehn'
-        }, {
-          title: 'zwanzigtausenzweihundert'
-        }, {
-          title: 'zwei'
-        }], */
-        vocabs: ['test', 'hallo was geht', 'EINS', 'hundertzehn', 'zwanzigtausenzweihundert', 'zwei', 'was?'],
+        vocabs: ['movement direction', 'facial orientation', 'direction body/body parts', 'weight engagement individual', 'weight engagement with partner', 'weight regulation with partner', 'synchronisation in rythm', 'synchonisation in phrase'],
         filteredTags: [],
-        tagHighlight: 0,
-        dummyVocabularies: [{
+        tagHighlight: -1,
+        /* dummyVocabularies: [{
           groupTitle: 'space',
           vocabularies: [{
             shortTitle: 'aaa',
@@ -105,36 +78,24 @@
             longTitle: 'synchonisation in phrase'
           }]
         }
-        ],
+        ], */
         results: []
       }
     },
     methods: {
+      clickTag (val) {
+        console.log(val)
+      },
       tagHightlighting (e) {
-        console.log(e.keyCode)
-        if (e.keyCode === 40 && this.tagHighlight < this.vocabs.length - 1) this.tagHighlight++
-        else if (e.keyCode === 38 && this.tagHighlight > 0) this.tagHighlight--
+        // console.log(e.keyCode, this.vocabs.length)
+        if (e.keyCode === 40 && this.tagHighlight < this.filteredTags.length - 1) {
+          this.tagHighlight++
+        }
+        else if (e.keyCode === 38 && this.tagHighlight > 0) {
+          this.tagHighlight--
+        }
       },
-      filterSearch (searchterm) { // UNUSED
-        let arr = this.vocabs
-        // console.log('hallo', searchterm)
-        const result = arr.filter(arrNew => arrNew.title.length > 6)
-        console.log(result)
-        return arr.filter(function (obj) {
-          // console.log(obj)
-          return Object.keys(obj).some(function (key) {
-            // console.log(obj[key])
-            // console.log(obj[key].includes(searchterm))
-            if (obj[key].includes(searchterm)) console.log('drin')
-            else console.log('nicht drin')
-            // return obj[key].includes(searchterm)
-          })
-          /* return Object.keys(obj).some(function(key) {
-            return obj[key].includes(searchterm)
-          }) */
-        })
-      },
-      emitVocabulary (val) {
+      emitVocabulary (val) { // unused
         this.$emit('clickedVocabulary', val)
       },
       getInitials (val) {
