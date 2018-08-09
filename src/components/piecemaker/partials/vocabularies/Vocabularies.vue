@@ -1,16 +1,15 @@
 <template lang="pug">
   div(:class="[parent === 'post-annotate' ? 'moba-post-annotate' : '']", style="max-height: 50vh; overflow-y: scroll;")
-    .bg-grey-10.q-pa-sm
-      // div (most used)
+    .q-pa-sm
+      // TODO: most used
       q-list.no-border.no-margin.no-padding
-        q-item(v-for="tag in filteredTags")
+        q-item(v-for="(tag, i) in filteredTags", :key="i", :class="[i == tagHighlight ? 'bg-primary' : '']")
           q-item-side
-            span.text-grey-8 {{ getInitials(tag) }}
+            span.text-grey-6 {{ getInitials(tag) }}
           q-item-main
-            q-btn.full-width(no-caps, flat, align="left")
-              | {{ tag }}
+            q-btn.full-width.text-white(no-caps, flat, align="left") {{ tag }}
           q-item-side
-            span.text-grey-8 alt + {{ getInitials(tag) }}
+            span.text-grey-6 alt + {{ getInitials(tag) }}
     //
       .row.bg-grey-10.q-pa-sm.float-left(v-for="dummy in dummyVocabularies", style="width: 100%;")
         .col-2
@@ -28,7 +27,7 @@
 
 <script>
   export default {
-    props: ['parent', 'str'],
+    props: ['parent', 'pressedKey', 'str'],
     watch: {
       str: function (val) {
         // var newArray = []
@@ -44,8 +43,15 @@
         }
         // console.log(filterItems(val))
         console.log(filterItems(val))
+        // this.keyMonitor()
         this.filteredTags = filterItems(val)
       }
+    },
+    mounted () {
+      window.addEventListener('keydown', this.tagHightlighting)
+    },
+    beforeDestroy () {
+      window.removeEventListener('keydown', this.tagHightlighting)
     },
     data () {
       return {
@@ -63,8 +69,8 @@
           title: 'zwei'
         }], */
         vocabs: ['test', 'hallo was geht', 'EINS', 'hundertzehn', 'zwanzigtausenzweihundert', 'zwei', 'was?'],
-        // vocabs: ['test', 'hallo', 'eins', 'zwei'],
         filteredTags: [],
+        tagHighlight: 0,
         dummyVocabularies: [{
           groupTitle: 'space',
           vocabularies: [{
@@ -104,7 +110,12 @@
       }
     },
     methods: {
-      filterSearch (searchterm) {
+      tagHightlighting (e) {
+        console.log(e.keyCode)
+        if (e.keyCode === 40 && this.tagHighlight < this.vocabs.length - 1) this.tagHighlight++
+        else if (e.keyCode === 38 && this.tagHighlight > 0) this.tagHighlight--
+      },
+      filterSearch (searchterm) { // UNUSED
         let arr = this.vocabs
         // console.log('hallo', searchterm)
         const result = arr.filter(arrNew => arrNew.title.length > 6)

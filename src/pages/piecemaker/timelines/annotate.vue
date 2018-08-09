@@ -31,17 +31,17 @@
         q-btn(v-else, @click="tagBox = false" ,icon="clear", round)
           q-tooltip.bg-dark.q-caption(:offset="[0,10]") Click here or press escape to close the vocabulary dialog
 
-      .col-10
+      .col-10(:class="[tagBox ? 'bg-grey-10' : 'bg-grey-10']")
         // TEXT INPUT
 
         // q-input#input.bg-grey-10.text-white.q-pa-md(v-else, v-model="currentBody.value", @keyup="keyMonitor", type="textarea", autofocus, dark)
-        q-input.bg-grey-10.text-white.q-pa-md(
-        v-model="currentBody.value", @keyup="keyMonitor", type="textarea", autofocus, dark)
+        q-input.text-white.q-pa-md(
+        v-model="currentBody.value", @keyup="keyMonitor", @keydown="handlerKeyPress", type="textarea", autofocus, dark)
 
         // TAG BOX
 
-        .bg-dark(v-if="tagBox")
-          vocabularies(:parent='parent', :str="currentBody.value")
+        div(v-if="tagBox")
+          vocabularies(:parent='parent', :pressedKey="pressedKey", :str="currentBody.value")
 
     // RIGHT SIDE: SHOW ANNOTATIONS
     //
@@ -85,6 +85,7 @@
         },
         inputStyle: true,
         parent: 'live-annotate',
+        pressedKey: '',
         prevKey: undefined,
         tagBox: false
       }
@@ -92,6 +93,9 @@
     methods: {
       toggleInputStyle () {
         this.inputStyle = !this.inputStyle
+      },
+      handlerKeyPress (e) {
+        this.pressedKey = e.keyCode
       },
       keyMonitor (e) {
         if (this.prevKey === 13 && e.keyCode === 13) {
