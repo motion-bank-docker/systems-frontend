@@ -29,6 +29,7 @@
             :max-height="500",
             :value="item.value",
             :model="item.value",
+            @input="value => {handleItemChanged(value, item)}",
             @change="value => {handleItemChanged(value, item)}")
 
 </template>

@@ -21,11 +21,11 @@
   require('video.js/dist/video-js.css')
   require('vue-video-player/src/custom-theme.css')
   require('videojs-youtube')
-  require('videojs-vimeo/src/Vimeo')
   // require('videojs-framebyframe')
 
+  require('videojs-vimeo/src/Vimeo')
   import { videoPlayer } from 'vue-video-player'
-  import { guessType } from 'mbjs-media/src/util/metadata'
+  import guessType from 'mbjs-media/src/util/guess-type'
 
   export default {
     components: {
