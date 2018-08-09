@@ -3,12 +3,12 @@
     .q-pa-sm
       // (TODO: most used)
       q-list.no-border.no-margin.no-padding
-        q-item.cursor-pointer(v-for="(tag, i) in filteredTags", :key="i", :class="[i == tagHighlight ? 'bg-grey-9' : '']")
-          q-item-side
+        q-item.cursor-pointer.no-padding(v-for="(tag, i) in filteredTags", :key="i", :class="[i == tagHighlight ? 'bg-grey-9' : '']")
+          q-item-side.q-pa-sm
             span.text-grey-6 {{ getInitials(tag) }}
           q-item-main
             q-btn.full-width.text-white(@click="clickTag(tag)" , no-caps, flat, align="left") {{ tag }}
-          q-item-side
+          q-item-side.q-pa-sm
             span.text-grey-6 alt + {{ getInitials(tag) }}
         q-item(v-if="filteredTags.length <= 0")
           q-item-main.text-italic.text-center
@@ -28,8 +28,8 @@
             el.toLowerCase().indexOf(val.toLowerCase()) > -1
           )
         }
-        console.log(filterItems(val))
-        console.log(filterItems(val).length)
+        // console.log(filterItems(val))
+        // console.log(filterItems(val).length)
         this.filteredTags = filterItems(val).sort()
       }
     },
@@ -42,45 +42,10 @@
     },
     data () {
       return {
-        vocabs: ['movement direction', 'facial orientation', 'direction body/body parts', 'weight engagement individual', 'weight engagement with partner', 'weight regulation with partner', 'synchronisation in rythm', 'synchonisation in phrase'],
         filteredTags: [],
+        results: [],
         tagHighlight: -1,
-        /* dummyVocabularies: [{
-          groupTitle: 'space',
-          vocabularies: [{
-            shortTitle: 'aaa',
-            longTitle: 'movement direction'
-          }, {
-            shortTitle: 'bbb',
-            longTitle: 'facial orientation'
-          }, {
-            shortTitle: 'bbb',
-            longTitle: 'direction body/body parts'
-          }]
-        }, {
-          groupTitle: 'weight',
-          vocabularies: [{
-            shortTitle: 'xxx',
-            longTitle: 'weight engagement individual'
-          }, {
-            shortTitle: 'yyy',
-            longTitle: 'weight engagement with partner'
-          }, {
-            shortTitle: 'yyy',
-            longTitle: 'weight regulation with partner'
-          }]
-        }, {
-          groupTitle: 'time',
-          vocabularies: [{
-            shortTitle: 'xxx',
-            longTitle: 'synchronisation in rythm'
-          }, {
-            shortTitle: 'yyy',
-            longTitle: 'synchonisation in phrase'
-          }]
-        }
-        ], */
-        results: []
+        vocabs: ['movement direction', 'facial orientation', 'direction body/body parts', 'weight engagement individual', 'weight engagement with partner', 'weight regulation with partner', 'synchronisation in rythm', 'synchonisation in phrase']
       }
     },
     methods: {
@@ -95,6 +60,7 @@
         else if (e.keyCode === 38 && this.tagHighlight > 0) {
           this.tagHighlight--
         }
+        console.log(this.filteredTags[this.tagHighlight])
       },
       emitVocabulary (val) { // unused
         this.$emit('clickedVocabulary', val)
