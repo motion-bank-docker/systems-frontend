@@ -1,20 +1,20 @@
 <template lang="pug">
   video-player(class="video-player-box vjs-big-play-centered",
-   ref="videoPlayer",
-   :options="playerOptions",
-   :playsinline="true",
-   customEventName="customstatechangedeventname",
-   @play="onPlayerEvent('play', $event)",
-   @pause="onPlayerEvent('pause', $event)",
-   @ended="onPlayerEvent('ended', $event)",
-   @waiting="onPlayerEvent('waiting', $event)",
-   @playing="onPlayerEvent('playing', $event)",
-   @loadeddata="onPlayerEvent('data', $event)",
-   @timeupdate="onPlayerEvent('time', $event.currentTime())",
-   @canplay="onPlayerEvent('canplay', $event)",
-   @canplaythrough="onPlayerEvent('canplaythrough', $event)",
-   @statechanged="playerStateChange($event)",
-   @ready="onPlayerReady")
+  ref="videoPlayer",
+  :options="playerOptions",
+  :playsinline="true",
+  customEventName="customstatechangedeventname",
+  @play="onPlayerEvent('play', $event)",
+  @pause="onPlayerEvent('pause', $event)",
+  @ended="onPlayerEvent('ended', $event)",
+  @waiting="onPlayerEvent('waiting', $event)",
+  @playing="onPlayerEvent('playing', $event)",
+  @loadeddata="onPlayerEvent('data', $event)",
+  @timeupdate="onPlayerEvent('time', $event.currentTime())",
+  @canplay="onPlayerEvent('canplay', $event)",
+  @canplaythrough="onPlayerEvent('canplaythrough', $event)",
+  @statechanged="playerStateChange($event)",
+  @ready="onPlayerReady")
 </template>
 
 <script>
@@ -108,8 +108,9 @@
         if (!Array.isArray(sources)) {
           sources = [sources]
         }
-        this.playerOptions.sources = sources
-        this.playerOptions.poster = poster
+        this.player.src(sources)
+        if (poster) this.playerOptions.poster = poster
+        this.player.load()
       }
     }
   }
