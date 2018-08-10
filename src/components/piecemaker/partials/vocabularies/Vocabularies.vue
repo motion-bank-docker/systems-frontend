@@ -56,12 +56,13 @@
         // console.log(e.keyCode, this.vocabs.length)
         if (e.keyCode === 40 && this.tagHighlight < this.filteredTags.length - 1) {
           this.tagHighlight++
+          this.$emit('selectedVocab', this.filteredTags[this.tagHighlight])
         }
         else if (e.keyCode === 38 && this.tagHighlight > 0) {
           this.tagHighlight--
+          this.$emit('selectedVocab', this.filteredTags[this.tagHighlight])
         }
-        console.log(this.filteredTags[this.tagHighlight])
-        this.$emit('selectedVocab', this.filteredTags[this.tagHighlight])
+        // console.log(this.filteredTags[this.tagHighlight])
       },
       emitVocabulary (val) { // unused
         this.$emit('clickedVocabulary', val)

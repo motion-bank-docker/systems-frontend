@@ -32,7 +32,7 @@
 
         q-input.q-pa-md(
         v-model="currentBody.value", :class="[tagBox ? 'q-pl-xl text-primary' : 'text-white']",
-        @keyup="keyMonitor", @keydown="handlerKeyPress", type="textarea", autofocus, dark)
+        @keyup="keyMonitor", @keydown.enter="handlerKeyPress", type="textarea", autofocus, dark)
         .absolute-top.q-mt-sm(v-if="staging", style="width: 3rem;")
           q-btn.q-ml-sm.q-mt-xs.q-mr-none.text-primary(
           v-if="tagBox", @click="tagBox = false", round, flat, icon="clear", size="sm")
@@ -89,6 +89,7 @@
           type: 'Fragment',
           value: undefined
         },
+        highlightedTag: undefined,
         inputStyle: true,
         parent: 'live-annotate',
         pressedKey: '',
@@ -101,11 +102,14 @@
       /* toggleInputStyle () {
         this.inputStyle = !this.inputStyle
       }, */
+      selectedV (val) {
+        this.highlightedTag = val
+      },
       handlerKeyPress (e) {
         this.pressedKey = e.keyCode
       },
       keyMonitor (e) {
-        if (this.prevKey === 13 && e.keyCode === 13 && !this.tagBox) { // enter
+        if (this.prevKey === 13 && e.keyCode === 13 && !this.tagBox) { // enter text input
           this.prevKey = undefined
           this.tagBox = false
           const bodyLength = this.currentBody.value.length
@@ -116,6 +120,13 @@
           else {
             this.currentBody.value = undefined
           }
+        }
+        else if (e.keyCode === 13 && this.tagBox) { // enter vocabulary
+          this.currentBody.value = this.highlightedTag
+          this.createAnnotation()
+          this.tagBox = false
+          this.currentBody.value = undefined
+          // console.log(this.highlightedTag)
         }
         else if (e.keyCode === 27) { // escape
           this.tagBox = false
