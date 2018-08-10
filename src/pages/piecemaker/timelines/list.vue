@@ -35,7 +35,7 @@
       FullScreen
     },
     mounted () {
-      this.diagramDimensions.currentWidth = this.$refs['diagramList'].offsetWidth
+      // this.diagramDimensions.currentWidth = this.$refs['diagramList'].offsetWidth
     },
     data () {
       const _this = this
