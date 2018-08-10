@@ -61,6 +61,7 @@
           this.tagHighlight--
         }
         console.log(this.filteredTags[this.tagHighlight])
+        this.$emit('selectedVocab', this.filteredTags[this.tagHighlight])
       },
       emitVocabulary (val) { // unused
         this.$emit('clickedVocabulary', val)

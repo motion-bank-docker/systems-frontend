@@ -41,7 +41,7 @@
         // TAG BOX
 
         div(v-if="tagBox && staging")
-          vocabularies(:parent='parent', :pressedKey="pressedKey", :str="currentBody.value")
+          vocabularies(:parent='parent', :pressedKey="pressedKey", :str="currentBody.value", @selectedVocab="selectedV")
 
     // CENTER: SHOW ANNOTATIONS
     //
@@ -58,6 +58,7 @@
               // button below ("re-use"):
               // appears only on tag types
               q-btn.q-mr-sm(@click="", small, rounded) re-use
+                q-tooltip.q-caption.bg-dark(:offset="[0,5]") alt + e
               q-btn(@click="deleteAnnotation(annotation.uuid, i)", icon="clear", round, small)
 
 </template>
