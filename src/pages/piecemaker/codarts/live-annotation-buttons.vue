@@ -44,7 +44,7 @@
     },
     methods: {
       handleButtonClick (event, button) {
-        const groupId = this.$route.params.groupId
+        const timelineId = this.$route.params.timelineId
         let annotation = {
           body: {
             value: button.label,
@@ -52,7 +52,7 @@
             type: 'TextualBody'
           },
           target: {
-            id: `${process.env.TIMELINE_BASE_URI}${groupId}`,
+            id: `${process.env.TIMELINE_BASE_URI}${timelineId}`,
             type: constants.MAP_TYPE_TIMELINE,
             selector: {
               type: 'Fragment',

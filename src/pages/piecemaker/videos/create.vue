@@ -62,7 +62,7 @@
                   purpose: 'linking'
                 },
                 target: {
-                  id: `${process.env.TIMELINE_BASE_URI}${_this.$route.params.groupId}`,
+                  id: `${process.env.TIMELINE_BASE_URI}${_this.$route.params.timelineId}`,
                   type: constants.MAP_TYPE_TIMELINE,
                   selector: {
                     type: 'Fragment',
@@ -71,7 +71,7 @@
                 }
               }
               return _this.$store.dispatch('annotations/post', _this.apiPayload)
-                .then(() => _this.$router.push(`/piecemaker/timelines/${_this.$route.params.groupId}/videos`))
+                .then(() => _this.$router.push(`/piecemaker/timelines/${_this.$route.params.timelineId}/videos`))
             }
           }
         },

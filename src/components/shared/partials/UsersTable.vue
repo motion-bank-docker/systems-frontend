@@ -162,7 +162,7 @@
             return _this.$router.push({ name: 'mosys.grids.user' })
           }
           else if (scope === 'timeline') {
-            return _this.$router.push({ name: 'piecemaker.groups.user' })
+            return _this.$router.push({ name: 'piecemaker.timelines.user' })
           }
         }
       },

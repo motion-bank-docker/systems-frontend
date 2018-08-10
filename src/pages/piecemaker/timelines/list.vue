@@ -105,7 +105,7 @@
               type: 'videos',
               title: 'buttons.videos',
               color: 'primary',
-              click: (item) => _this.$router.push({ name: 'piecemaker.videos.list', params: { groupId: item.uuid } })
+              click: (item) => _this.$router.push({ name: 'piecemaker.videos.list', params: { timelineId: item.uuid } })
             },
             {
               type: 'edit',
