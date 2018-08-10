@@ -1,31 +1,24 @@
 <template lang="pug">
 
   card-full
-    q-btn(v-if="timeline", slot="backButton",
+    q-btn(v-if="timeline",
+          slot="backButton",
           @click="$router.push(`/piecemaker/timelines/${timeline.uuid}/videos`)",
-      icon="keyboard_backspace", small, round)
+          icon="keyboard_backspace",
+          small, round)
     div(slot="form-logo")
     div(v-if="timeline", slot="form-title")
 
-    div.row(style="margin-top: -2em;")
+    // titles
+    .video-titles.row
 
-      // video to be sync'd
-      div.col-6.row
-        p.col-12(style="min-height: 5em;", title="Applying the synchronisation will move this video in time")
-          | Target video to be synchronized:
+      .col-6.row
+        .col-12(title="Applying the synchronisation will move this video in time") Target video to be synchronized:
           br
-          span {{video.uuid}}
-        div.video.col-12(v-if="video")
-          video-player(:src="video.body.source.id",
-                       @ready="onVidPlayerReady($event)")
-          div.col-12
-          q-btn(@click="setMarker(vidPlayer)") {{ $t('buttons.set_marker') }}
-          br
-          q-btn(v-if="vidMarkerTimecode") {{ vidMarkerTimecode }}
+          span {{(videoMetadata && videoMetadata.title) || video.uuid}}
 
-      // video used as reference
-      div.col-6.row
-        p.col-12.text-right(style="min-height: 5em;", title="This video is used as source reference and will not be changed")
+      .col-6.row
+        .col-12.text-right(title="This video is used as source reference and will not be changed")
           | Synchronize with reference video:
           br
           template(v-if="refIndex >= 0")
@@ -34,26 +27,44 @@
           template(v-else)
             span Select video from list below
 
-        div.video.col-12
-          video-player(v-if="video && refIndex > -1",
-                       :src="refVideos[refIndex].body.source.id",
-                       @ready="onTargetPlayerReady($event)")
-          q-list(v-if="video && refIndex === -1").no-border
-            q-item
-            | Please select a video from the list below
-            q-item(v-for="(vid, i) in refVideos",
-                   highlight, :key="vid.uuid",
-                   @click.native="refIndex = i")
-              span {{(refVideosMetadata[vid.uuid] && refVideosMetadata[vid.uuid].title) || vid.uuid}}
+    // video players
+    .video-player.row
 
-        div.col-12.text-right(v-if="video && refIndex > -1")
+      // video to be sync'd
+      .target-video.col-6.row
+        .video.col-12(v-if="video")
+          video-player(:src="video.body.source.id",
+                       @ready="onVidPlayerReady($event)")
+
+      // video used as reference
+      .reference-video.col-6.row
+        template(v-if="video && refIndex > -1")
+          .video.col-12
+            video-player(:annotation="refVideos[refIndex]",
+                         @ready="onTargetPlayerReady($event)")
+        template(v-else)
+          .video-list.col-12
+            q-list(v-if="refVideos && refIndex === -1").no-border
+              q-item(v-for="(vid, i) in refVideos",
+                     highlight,
+                     :key="vid.uuid",
+                     @click.native="refIndex = i")
+                span {{(refVideosMetadata[vid.uuid] && refVideosMetadata[vid.uuid].title) || vid.uuid}}
+
+    .row
+      .col-6
+        q-btn(@click="setMarker(vidPlayer)") {{ $t('buttons.set_marker') }}
+        template(v-if="vidMarkerTimecode") {{ vidMarkerTimecode }}
+
+      .col-6
+        .text-right(v-if="video && refIndex > -1")
+          template(v-if="refVidMarkerTimecode") {{ refVidMarkerTimecode }}
           q-btn(@click="setMarker(refVidPlayer, 1)") {{ $t('buttons.set_marker') }}
-          br
-          q-btn(v-if="refVidMarkerTimecode") {{ refVidMarkerTimecode }}
 
-    div.text-center
-      q-btn(color="primary",
-            @click="applySync()") {{ $t('buttons.apply_synchronisation') }}
+    .row
+      .col-12.text-center
+        q-btn(color="primary",
+              @click="applySync()") {{ $t('buttons.apply_synchronisation') }}
 
 </template>
 
@@ -79,6 +90,7 @@
         timeline: undefined,
         timelineUuid: undefined,
         video: undefined,
+        videoMetadata: undefined,
         refVideos: [],
         refVideosMetadata: {}, // video uuids are keys
         refIndex: -1,
@@ -99,6 +111,7 @@
       this.$store.dispatch('annotations/get', this.$route.params.id)
         .then(video => {
           _this.video = video
+          _this.fetchVideoMetadata()
           const timelineUuid = parseURI(video.target.id).uuid
           return _this.$store.dispatch('maps/get', timelineUuid)
         })
@@ -115,6 +128,7 @@
             if (item.uuid !== _this.$route.params.id) return true
             return false
           })
+          console.log('ref videos loaded')
           _this.fetchRefVideoMetadata()
         })
     },
@@ -124,16 +138,28 @@
       }
     },
     methods: {
+      async fetchVideoMetadata () {
+        const _this = this
+        const videoMeta = await _this.$store.dispatch('metadata/get', this.video.uuid)
+        if (videoMeta) {
+          _this.videoMetadata = videoMeta
+        }
+      },
       async fetchRefVideoMetadata () {
         const _this = this
         if (_this.refVideos && _this.refVideos.length > 0) {
           for (const v of _this.refVideos) {
-            const refVideoMeta = await _this.$store.dispatch('metadata/get', v.uuid)
+            let refVideoMeta
+            try {
+              refVideoMeta = await _this.$store.dispatch('metadata/get', v.uuid)
+            }
+            catch (e) {}
             if (refVideoMeta) {
               Vue.set(_this.refVideosMetadata, v.uuid, refVideoMeta)
             }
           }
         }
+        console.log('ref videos metadata loaded')
       },
       onVidPlayerReady (player) {
         this.vidPlayer = player
@@ -191,9 +217,21 @@
   }
 </script>
 
-<style>
-  /* .layout-padding {
-    padding-top: 0!important;
-    margin-top: 0!important;
-  } */
+<style lang="stylus">
+  .q-card-main:first-child
+    border 3px solid green
+    display none
+
+  .video-titles
+    margin-bottom 1em
+
+  .video-player
+    .video-list
+      q-list
+        position absolute
+        width 100%
+
+    .reference-video
+      position relative
+      overflow scroll
 </style>
