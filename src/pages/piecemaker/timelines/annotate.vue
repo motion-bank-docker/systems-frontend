@@ -13,7 +13,7 @@
 
       // BUTTON - GO BACK
 
-      q-btn(slot="nav-button", icon="keyboard_backspace", @click="$router.push(`/piecemaker/timelines/show`)", round, small)
+      q-btn(slot="nav-button", icon="keyboard_backspace", @click="$router.push({name: 'piecemaker.timelines.show', params: {id: $route.params.id}})", round, small)
 
     // TOP CENTER
     //
