@@ -27,7 +27,7 @@
         q-btn.text-primary.bg-grey-10(v-if="!tagBox && staging", @click="tagBox = true", round) #
           // q-tooltip.bg-dark.q-caption(:offset="[0,10]") Click here or type # to open the vocabulary dialog
 
-      .col-xs-8.col-md-8.col-lg-6.relative-position(:class="[tagBox ? 'bg-grey-10' : 'bg-grey-10']")
+      .col-xs-8.col-md-8.col-lg-6.bg-grey-10.relative-position(:class="[tagBox ? 'shadow-4' : '']")
 
         // TEXT INPUT
 
@@ -57,8 +57,8 @@
             q-item-side.text-right
               // button below ("re-use"):
               // appears only on tag types
-                q-btn.q-mr-sm(@click="", small, rounded) re-use
-                  q-tooltip.q-caption.bg-dark(:offset="[0,5]") alt + e
+              q-btn.q-mr-sm(@click="", small, rounded) re-use
+                // q-tooltip.q-caption.bg-dark(:offset="[0,5]") alt + e
               q-btn(@click="deleteAnnotation(annotation.uuid, i)", icon="clear", round, small)
 
 </template>

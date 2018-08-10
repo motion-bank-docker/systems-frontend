@@ -1,17 +1,26 @@
 <template lang="pug">
   div(:class="[parent === 'post-annotate' ? 'moba-post-annotate' : '']", style="max-height: 50vh; overflow-y: scroll;")
+    q-modal(v-model="activeShortcutFeature", minimized)
+      .bg-grey-8.text-white.q-pa-lg.text-center Press key
+      // q-input(autofocus) bla
     .q-pa-sm
       // (TODO: most used)
       q-list.no-border.no-margin.no-padding
-        q-item.cursor-pointer.no-padding.moba-tag-hover(
-        v-for="(tag, i) in filteredTags", v-on:mouseover="hoverTag('test')",
-        :key="i", :class="[i == tagHighlight ? 'bg-grey-9' : '']")
-          q-item-side.q-pa-sm
-            span.text-grey-6 {{ getInitials(tag) }}
-          q-item-main
-            q-btn.full-width.text-white(@click="clickTag(tag)" , no-caps, flat, align="left") {{ tag }}
-          q-item-side.q-pa-sm
-            span.text-grey-6 alt + {{ getInitials(tag) }}
+
+        // workaround, because q-items don't accept mouse events (bug)
+        div(v-for="(tag, i) in filteredTags", @mouseenter="hoverTag(i)")
+
+          q-item.no-padding.moba-tag-hover(
+          :key="i", :class="[i == tagHighlight ? 'bg-grey-9' : '']")
+            q-item-side.q-px-sm
+              span.text-grey-6 {{ getInitials(tag) }}
+            q-item-main
+              q-btn.full-width.text-white(@click="clickTag(tag)" , no-caps, flat, align="left") {{ tag }}
+            q-item-side.q-px-sm.q-py-xs
+              q-btn(v-if="i === 1", @click="activeShortcutFeature = true", no-caps) {{ dummyShortcut }}
+              q-btn.text-grey-8.cursor-pointer.no-margin(v-else, round, @click="activeShortcutFeature = true")
+                q-icon(name="keyboard")
+                // | alt + {{ getInitials(tag) }}
         q-item(v-if="filteredTags.length <= 0")
           q-item-main.text-italic.text-center
             | no matches
@@ -23,37 +32,46 @@
     props: ['parent', 'pressedKey', 'str'],
     watch: {
       str: function (val) {
-        // console.log('--------')
         this.tagHighlight = -1
         const filterItems = (val) => {
           return this.vocabs.filter((el) =>
             el.toLowerCase().indexOf(val.toLowerCase()) > -1
           )
         }
-        // console.log(filterItems(val))
-        // console.log(filterItems(val).length)
         this.filteredTags = filterItems(val).sort()
       }
     },
     mounted () {
       window.addEventListener('keydown', this.tagHightlighting)
+      window.addEventListener('keydown', this.setShortcut)
       this.filteredTags = this.vocabs
     },
     beforeDestroy () {
       window.removeEventListener('keydown', this.tagHightlighting)
+      window.removeEventListener('keydown', this.setShortcut)
     },
     data () {
       return {
+        dummyShortcut: 'alt + t',
         filteredTags: [],
+        activeShortcutFeature: false,
         results: [],
         tagHighlight: -1,
         vocabs: ['movement direction', 'facial orientation', 'direction body/body parts', 'weight engagement individual', 'weight engagement with partner', 'weight regulation with partner', 'synchronisation in rythm', 'synchonisation in phrase']
       }
     },
     methods: {
+      setShortcut (e) {
+        console.log('--------', e.keyCode)
+        if (this.activeShortcutFeature) {
+          this.dummyShortcut = 'alt + ' + e.key
+          this.activeShortcutFeature = false
+        }
+      },
       hoverTag (val) {
         console.log(val)
-        alert('hallo')
+        this.tagHighlight = val
+        // alert('hallo')
         // this.$emit('selectedVocab', val)
       },
       clickTag (val) {
@@ -81,8 +99,9 @@
 <style scoped lang="stylus">
   @import '~variables'
 
-  .moba-tag-hover:hover
-    background-color $primary
+  /* .moba-tag-hover:hover
+    background-color $primary */
+
   /* .moba-post-annotate
     background-color rgba( 255, 255, 255, 0 )
     .q-btn
