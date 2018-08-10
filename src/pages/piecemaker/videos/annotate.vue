@@ -18,7 +18,7 @@
 
         // BUTTON: GO BACK
 
-        q-btn(@click="$router.push(timelines + gtimelines + '/videos')",
+        q-btn(@click="$router.push({name: 'piecemaker.videos.list', params: {groupId: timelineId}})",
         color="grey", icon="keyboard_backspace", round, flat, small)
 
         // BUTTON: SWITCH INPUT STYLE
