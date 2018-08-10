@@ -22,7 +22,7 @@
           | Synchronize with reference video:
           br
           template(v-if="refIndex >= 0")
-            span {{(refVideos[refIndex] && refVideosMetadata[refVideos[refIndex].uuid] && refVideosMetadata[refVideos[refIndex].uuid].title) || refVideos[refIndex].uuid}}
+            span {{ getRefVideoTitle(refIndex) }}
             q-btn(small, @click="refIndex = -1") {{ $t('buttons.change') }}
           template(v-else)
             span Select video from list below
@@ -49,7 +49,7 @@
                      highlight,
                      :key="vid.uuid",
                      @click.native="refIndex = i")
-                span {{(refVideosMetadata[vid.uuid] && refVideosMetadata[vid.uuid].title) || vid.uuid}}
+                span {{ getRefVideoTitle(i) }}
 
     .row
       .col-6
@@ -61,7 +61,7 @@
           template(v-if="refVidMarkerTimecode") {{ refVidMarkerTimecode }}
           q-btn(@click="setMarker(refVidPlayer, 1)") {{ $t('buttons.set_marker') }}
 
-    .row
+    .row(v-if="vidMarkerSelector && refVidMarkerSelector")
       .col-12.text-center
         q-btn(color="primary",
               @click="applySync()") {{ $t('buttons.apply_synchronisation') }}
@@ -87,19 +87,20 @@
     data () {
       return {
         tcformat: constants.TIMECODE_FORMAT,
+
         timeline: undefined,
         timelineUuid: undefined,
+
         video: undefined,
         videoMetadata: undefined,
-        refVideos: [],
-        refVideosMetadata: {}, // video uuids are keys
-        refIndex: -1,
-
         vidPlayer: undefined,
         vidTime: undefined,
         vidMarkerTimecode: undefined,
         vidMarkerSelector: undefined,
 
+        refVideos: [],
+        refVideosMetadata: {}, // video uuids are keys
+        refIndex: -1,
         refVidPlayer: undefined,
         refVidTime: undefined,
         refVidMarkerTimecode: undefined,
@@ -137,6 +138,20 @@
       }
     },
     methods: {
+      getRefVideoTitle (index) {
+        if (index >= 0 && this.refVideos[index]) {
+          const refVideo = this.refVideos[index]
+          if (this.refVideosMetadata[refVideo.uuid]) {
+            return this.refVideosMetadata[refVideo.uuid].title || 'Unknown Title'
+          }
+          else {
+            return refVideo.uuid
+          }
+        }
+        else {
+          return 'Unknown Title'
+        }
+      },
       async fetchVideoMetadata () {
         const _this = this
         const videoMeta = await _this.$store.dispatch('metadata/get', this.video.uuid)
@@ -168,17 +183,18 @@
       setMarker (player, target = 0) {
         if (!player) return
         const markerSelector = DateTime.fromMillis(player.currentTime() * 1000.0)
-        switch (target) {
-        case 1:
+        if (target === 1) {
           this.refVidMarkerSelector = markerSelector
           this.refVidMarkerTimecode = markerSelector.toFormat(constants.TIMECODE_FORMAT)
-          break
-        default:
+        }
+        else {
           this.vidMarkerSelector = markerSelector
           this.vidMarkerTimecode = markerSelector.toFormat(constants.TIMECODE_FORMAT)
         }
       },
       async applySync () {
+        // calculate the relative difference between video and reference video:
+        // diff = (reference_annotation - reference_marker) - (video_annotation + video_marker)
         const
           _this = this,
           vidSelector = DateTime.fromISO(_this.video.target.selector.value),
@@ -187,6 +203,8 @@
           refVideoMarkerGlobalTime = refVideoSelector.plus(this.refVidMarkerSelector.toMillis()),
           videoMarkerGlobalTime = vidSelector.plus(this.vidMarkerSelector.toMillis()),
           markerDiff = refVideoMarkerGlobalTime.toMillis() - videoMarkerGlobalTime.toMillis()
+        // apply difference to video annotation:
+        // new_video_annotation = video_annotation + diff
         const selectorUpdated = vidSelector.plus(markerDiff)
         const update = {
           target: ObjectUtil.merge({}, _this.video.target, {
@@ -208,6 +226,10 @@
             //   refVideoSelector.toMillis() - vidSelector.toMillis(),
             //   _this.video.uuid
             // )
+            _this.$store.commit('notifications/addMessage', {
+              type: 'success',
+              body: `Synchronized video “${_this.videoMetadata.title}”`
+            })
             _this.$router.push(`/piecemaker/timelines/${_this.timeline.uuid}/videos`)
           })
       }
