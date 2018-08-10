@@ -1,26 +1,47 @@
 <template lang="pug">
   div(:class="[parent === 'post-annotate' ? 'moba-post-annotate' : '']", style="max-height: 50vh; overflow-y: scroll;")
+
+    // SHORTCUT MODAL
+    //
     q-modal(v-model="activeShortcutFeature", minimized)
-      .bg-grey-8.text-white.q-pa-lg.text-center Press key
-      // q-input(autofocus) bla
+      .bg-dark
+        .text-white.q-pa-lg.text-center {{ currentTag.title }}
+        .text-white.q-pa-lg.text-center
+          | Setting new shortcut,
+          br
+          | press a new key now
+          br
+          | or escape to abort
+          br
+          | Current shortcut is&nbsp;
+          span.text-grey-8 [{{ currentTag.key }}]
+
+    // LIST RESULTS
+    //
     .q-pa-sm
-      // (TODO: most used)
+      // (TODO: most used?)
       q-list.no-border.no-margin.no-padding
 
-        // workaround, because q-items don't accept mouse events (bug)
+        // WORKARAOUND, because q-items don't accept mouse events (quasar bug)
         div(v-for="(tag, i) in filteredTags", @mouseenter="hoverTag(i)")
 
           q-item.no-padding.moba-tag-hover(
           :key="i", :class="[i == tagHighlight ? 'bg-grey-9' : '']")
-            q-item-side.q-px-sm
-              span.text-grey-6 {{ getInitials(tag) }}
+
+            q-item-side.q-px-sm(style="min-width: 5rem;")
+              span.text-grey-6 {{ getInitials(tag.title) }}
+
             q-item-main
-              q-btn.full-width.text-white(@click="clickTag(tag)" , no-caps, flat, align="left") {{ tag }}
+              q-btn.full-width.text-white(@click="clickTag(tag)" , no-caps, flat, align="left") {{ tag.title }}
+
             q-item-side.q-px-sm.q-py-xs
-              q-btn(v-if="i === 1", @click="activeShortcutFeature = true", no-caps) {{ dummyShortcut }}
-              q-btn.text-grey-8.cursor-pointer.no-margin(v-else, round, @click="activeShortcutFeature = true")
+              q-btn(v-if="tag.shortcutKey != undefined",
+              @click="activeShortcutFeature = true, currentTag.title = tag",
+              no-caps) alt + {{ tag.shortcutKey }}
+              q-btn.text-grey-8.cursor-pointer.no-margin(v-else, round, flat,
+              @click="activeShortcutFeature = true, currentTag.title = tag")
                 q-icon(name="keyboard")
-                // | alt + {{ getInitials(tag) }}
+
         q-item(v-if="filteredTags.length <= 0")
           q-item-main.text-italic.text-center
             | no matches
@@ -35,9 +56,10 @@
         this.tagHighlight = -1
         const filterItems = (val) => {
           return this.vocabs.filter((el) =>
-            el.toLowerCase().indexOf(val.toLowerCase()) > -1
+            el.title.toLowerCase().indexOf(val.toLowerCase()) > -1
           )
         }
+        // console.log(val)
         this.filteredTags = filterItems(val).sort()
       }
     },
@@ -52,45 +74,73 @@
     },
     data () {
       return {
+        currentTag: {
+          title: ''
+        },
         dummyShortcut: 'alt + t',
         filteredTags: [],
         activeShortcutFeature: false,
         results: [],
         tagHighlight: -1,
-        vocabs: ['movement direction', 'facial orientation', 'direction body/body parts', 'weight engagement individual', 'weight engagement with partner', 'weight regulation with partner', 'synchronisation in rythm', 'synchonisation in phrase']
+        // vocabs: ['movement direction', 'facial orientation', 'direction body/body parts', 'weight engagement individual', 'weight engagement with partner', 'weight regulation with partner', 'synchronisation in rythm', 'synchonisation in phrase']
+        vocabs: [{
+          shortcutKey: undefined,
+          title: 'movement direction'
+        }, {
+          shortcutKey: undefined,
+          title: 'facial orientation'
+        }, {
+          shortcutKey: 'a',
+          title: 'direction body/body parts'
+        }, {
+          shortcutKey: 'w',
+          title: 'weight engagement individual'
+        }, {
+          shortcutKey: undefined,
+          title: 'weight engagement with partner'
+        }, {
+          shortcutKey: 's',
+          title: 'weight regulation with partner'
+        }, {
+          shortcutKey: 'k',
+          title: 'synchronisation in rythm'
+        }, {
+          shortcutKey: 'h',
+          title: 'synchonisation in phrase'
+        }]
       }
     },
     methods: {
       setShortcut (e) {
-        console.log('--------', e.keyCode)
+        // console.log('--------', e.keyCode)
         if (this.activeShortcutFeature) {
           this.dummyShortcut = 'alt + ' + e.key
           this.activeShortcutFeature = false
         }
       },
       hoverTag (val) {
-        console.log(val)
+        // console.log(val)
         this.tagHighlight = val
-        // alert('hallo')
         // this.$emit('selectedVocab', val)
       },
       clickTag (val) {
-        console.log(val)
+        // console.log(val)
         this.$emit('selectedVocab', val)
       },
       tagHightlighting (e) {
         if (e.keyCode === 40 && this.tagHighlight < this.filteredTags.length - 1) {
           this.tagHighlight++
-          this.$emit('selectedVocab', this.filteredTags[this.tagHighlight])
+          this.$emit('selectedVocab', this.filteredTags[this.tagHighlight].title)
         }
         else if (e.keyCode === 38 && this.tagHighlight > 0) {
           this.tagHighlight--
-          this.$emit('selectedVocab', this.filteredTags[this.tagHighlight])
+          this.$emit('selectedVocab', this.filteredTags[this.tagHighlight].title)
         }
         // console.log(this.filteredTags[this.tagHighlight])
       },
       getInitials (val) {
         return val.split(' ').map((n) => n[0]).join('').toUpperCase()
+        // console.log(val)
       }
     }
   }
