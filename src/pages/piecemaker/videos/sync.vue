@@ -128,7 +128,6 @@
             if (item.uuid !== _this.$route.params.id) return true
             return false
           })
-          console.log('ref videos loaded')
           _this.fetchRefVideoMetadata()
         })
     },
@@ -159,7 +158,6 @@
             }
           }
         }
-        console.log('ref videos metadata loaded')
       },
       onVidPlayerReady (player) {
         this.vidPlayer = player
