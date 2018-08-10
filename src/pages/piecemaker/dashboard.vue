@@ -9,10 +9,10 @@
         q-list(highlight, no-border)
           q-list-header
             .row.justify-between.items-between
-              h4 Groups
+              h4 Timelines
               div
-                q-btn(@click="$router.push('/piecemaker/timelines')", flat, color="primary") All Groups
-                q-btn(@click="$router.push('/piecemaker/timelines/create')", flat, color="primary") New Group
+                q-btn(@click="$router.push('/piecemaker/timelines')", flat, color="primary") All Timelines
+                q-btn(@click="$router.push('/piecemaker/timelines/create')", flat, color="primary") New Timeline
           q-item(v-for="item in timelines", :key="item.uuid", link, exact, :to="'/piecemaker/timelines/' + item.uuid")
             q-item-main
               q-item-tile(label) {{ item.title }}

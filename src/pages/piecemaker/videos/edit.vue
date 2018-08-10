@@ -69,7 +69,7 @@
               return context.$store.dispatch('annotations/patch', [context.payload.uuid, context.apiPayload])
                 .then(() => context.$router.push({
                   name: 'piecemaker.videos.list',
-                  params: { groupId: context.$route.params.groupId }
+                  params: { timelineId: context.$route.params.timelineId }
                 }))
             }
           }

@@ -65,7 +65,7 @@ export default {
     email: 'Email',
     embedded: 'Embedded in',
     elements_length: 'Used Elements',
-    // timeline_title: 'Group title',
+    // timeline_title: 'Timeline title',
     timeline_title: 'Timeline title',
     grid_title: 'Grid title',
     last_annotation: 'Last annotated',

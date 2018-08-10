@@ -2,17 +2,17 @@
   q-list.piecemaker-source-container
 
     q-list-header
-      template(v-if="currentGroup")
+      template(v-if="currentTimeline")
         q-btn(flat, round, small, style="margin-right: 0.5em",
-          @click="handleClickUnsetCurrentGroup", icon="keyboard backspace")
-        span Videos in Timeline #[strong {{currentGroup.title}}]
+          @click="handleClickUnsetCurrentTimeline", icon="keyboard backspace")
+        span Videos in Timeline #[strong {{currentTimeline.title}}]
       template(v-else)
         router-link(:to="{name: 'piecemaker.timelines.list'}") Piecemaker Timelines
 
     q-item-separator
 
-    // group
-    template(v-if="currentGroup")
+    // timeline
+    template(v-if="currentTimeline")
 
       // loading, nothing here
       template(v-if="currentVideos.length === 0")
@@ -44,14 +44,14 @@
 
     // timelines list
     template(v-else)
-      template(v-for="(group, i) in timelines")
+      template(v-for="(timeline, i) in timelines")
         template(v-if="i > 0")
           q-item-separator
         q-item
           q-item-side
             q-icon(name="list", style="font-size: 1.8rem")
           q-item-main
-            a(@click.prevent="event => {handleGroupItemClick(event, group)}") {{group.title}}
+            a(@click.prevent="event => {handleTimelineItemClick(event, timeline)}") {{timeline.title}}
 </template>
 
 <script>
@@ -66,7 +66,7 @@
     data () {
       return {
         timelines: [],
-        currentGroup: null,
+        currentTimeline: null,
         currentVideos: [],
         loadingVideos: false
       }
@@ -79,8 +79,8 @@
         })
     },
     methods: {
-      async handleGroupItemClick (events, group) {
-        this.currentGroup = group
+      async handleTimelineItemClick (events, timeline) {
+        this.currentTimeline = timeline
         this.currentVideos = []
         this.loadingVideos = true
         const query = {
@@ -94,7 +94,7 @@
           // parseURI(uri).uuid
           //
           // will give you the uuid from the URI
-          'target.id': `${process.env.TIMELINE_BASE_URI}${this.currentGroup.uuid}`
+          'target.id': `${process.env.TIMELINE_BASE_URI}${this.currentTimeline.uuid}`
         }
         const result = await this.$store.dispatch('annotations/find', query)
           // TODO: ask Anton about how to get metadata from transcoder
@@ -117,8 +117,8 @@
         this.currentVideos = videos
         this.loadingVideos = false
       },
-      handleClickUnsetCurrentGroup () {
-        this.currentGroup = null
+      handleClickUnsetCurrentTimeline () {
+        this.currentTimeline = null
         this.currentVideos = []
       },
       handleVideoItemClick () {

@@ -14,38 +14,38 @@
       template(v-if="this.selectedCells.length > 0")
         cell-editor(:cells="selectedCells")
       template(v-else)
-        source-grid-editor-default
+        grid-editor-default-source
 
     <!--q-tab-pane(name="tab-magic-box")-->
-      <!--source-grid-editor-magic-->
+      <!--grid-editor-magic-source-->
 
     q-tab-pane(name="tab-piecemaker")
-      source-piecemaker-groups
+      grid-editor-source-piece-maker
 
     q-tab-pane(name="tab-vimeo")
-      source-vimeo
+      grid-editor-source-vimeo
 
     q-tab-pane(name="tab-youtube")
-      source-you-tube
+      grid-editor-source-you-tube
 
 </template>
 
 <script>
   import CellEditor from './CellEditor'
-  import SourceGridEditorDefault from './GridEditorDefaultSource'
-  import SourceGridEditorMagic from './GridEditorMagicSource'
-  import SourcePiecemakerGroups from './GridEditorSourcePieceMaker'
-  import SourceVimeo from './GridEditorSourceVimeo'
-  import SourceYouTube from './GridEditorSourceYouTube'
+  import GridEditorDefaultSource from './GridEditorDefaultSource'
+  import GridEditorMagicSource from './GridEditorMagicSource'
+  import GridEditorSourcePieceMaker from './GridEditorSourcePieceMaker'
+  import GridEditorSourceVimeo from './GridEditorSourceVimeo'
+  import GridEditorSourceYouTube from './GridEditorSourceYouTube'
 
   export default {
     components: {
       CellEditor,
-      SourceGridEditorDefault,
-      SourceGridEditorMagic,
-      SourcePiecemakerGroups,
-      SourceVimeo,
-      SourceYouTube
+      GridEditorDefaultSource,
+      GridEditorMagicSource,
+      GridEditorSourcePieceMaker,
+      GridEditorSourceVimeo,
+      GridEditorSourceYouTube
     },
     data () {
       return {

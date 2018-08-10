@@ -40,13 +40,13 @@ export default {
       meta: {private: true}
     },
     {
-      path: '/piecemaker/timelines/:groupId/videos',
+      path: '/piecemaker/timelines/:timelineId/videos',
       component: () => import('pages/piecemaker/videos/list'),
       name: 'piecemaker.videos.list',
       meta: {private: true}
     },
     {
-      path: '/piecemaker/timelines/:groupId/videos/create',
+      path: '/piecemaker/timelines/:timelineId/videos/create',
       component: () => import('pages/piecemaker/videos/create'),
       name: 'piecemaker.videos.create',
       meta: {private: true}

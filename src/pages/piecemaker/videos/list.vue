@@ -6,7 +6,7 @@
     data-table(:config="config", :title="'routes.piecemaker.videos.list.title'",
       path="annotations", :query="query", base-path="videos")
       template(slot="buttons-left")
-        q-btn(@click="$router.push({ name: 'piecemaker.videos.create', params: { groupId: $route.params.groupId } })",
+        q-btn(@click="$router.push({ name: 'piecemaker.videos.create', params: { timelineId: $route.params.timelineId } })",
           color="primary") {{ $t('buttons.add_video') }}
 </template>
 
@@ -21,7 +21,7 @@
     data () {
       const _this = this
       return {
-        query: { 'body.purpose': 'linking', 'target.id': `${process.env.TIMELINE_BASE_URI}${this.$route.params.groupId}` },
+        query: { 'body.purpose': 'linking', 'target.id': `${process.env.TIMELINE_BASE_URI}${this.$route.params.timelineId}` },
         config: {
           columns: [
             {
