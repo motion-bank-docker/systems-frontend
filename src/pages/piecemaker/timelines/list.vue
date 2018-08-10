@@ -25,8 +25,7 @@
 </template>
 
 <script>
-  import DataTable from '../../../components/shared/partials/DataTable'
-  import FullScreen from '../../../components/shared/layouts/FullScreen'
+  import { DataTable, FullScreen } from 'mbjs-quasar/src/components'
   import constants from 'mbjs-data-models/src/constants'
 
   export default {
@@ -35,7 +34,7 @@
       FullScreen
     },
     mounted () {
-      this.diagramDimensions.currentWidth = this.$refs['diagramList'].offsetWidth
+      // this.diagramDimensions.currentWidth = this.$refs['diagramList'].offsetWidth
     },
     data () {
       const _this = this

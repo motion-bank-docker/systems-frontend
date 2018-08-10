@@ -16,7 +16,7 @@
 
 <script>
   import { openURL } from 'quasar'
-  import SiteFooter from '../../../components/shared/partials/SiteFooter'
+  import { SiteFooter } from 'mbjs-quasar/src/components'
   export default {
     name: 'PageWelcome',
     components: {

@@ -7,8 +7,8 @@
 </template>
 
 <script>
-  import CenterCardThreeQuarter from '../../../components/shared/layouts/CenterCardThreeQuarter'
-  import CardFull from '../../../components/shared/layouts/CardFull'
+  import CenterCardThreeQuarter from 'mbjs-quasar/src/components/layouts/CenterCardThreeQuarter'
+  import CardFull from 'mbjs-quasar/src/components/layouts/CardFull'
   import { FormMain } from '../../../components/shared/forms'
   import { required, sameAs, minLength, email } from 'vuelidate/lib/validators'
   export default {

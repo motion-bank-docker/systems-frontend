@@ -9,6 +9,7 @@ module.exports = function (ctx) {
       'axios',
       'i18n',
       'notifications',
+      'pkg',
       'window'
     ],
     css: [

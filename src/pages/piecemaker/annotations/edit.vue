@@ -23,8 +23,8 @@
 </template>
 
 <script>
-  import CenterCardFull from '../../../components/shared/layouts/CenterCardFull'
-  import VideoPlayer from '../../../components/shared/media/VideoPlayer'
+  import CenterCardFull from 'mbjs-quasar/src/components/layouts/CenterCardFull'
+  import { VideoPlayer } from 'mbjs-quasar/src/components'
   import { FormMain } from '../../../components/shared/forms/index'
   import { required } from 'vuelidate/lib/validators'
   export default {

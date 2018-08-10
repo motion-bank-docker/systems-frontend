@@ -13,7 +13,7 @@
 <script>
   import Tags from '../../../components/shared/partials/Tags'
   import FormMain from '../../../components/shared/forms/FormMain'
-  import FullScreen from '../../../components/shared/layouts/FullScreen'
+  import { FullScreen } from 'mbjs-quasar/src/components'
 
   import { required } from 'vuelidate/lib/validators'
   import constants from 'mbjs-data-models/src/constants'

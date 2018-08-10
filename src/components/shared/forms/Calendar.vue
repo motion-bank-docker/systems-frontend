@@ -1,6 +1,6 @@
 <template lang="pug">
   .shadow-6
-    q-datetime-picker.full-width(v-model="modelCalender", dark)
+    q-datetime-picker.full-width(v-model="modelCalendar", dark)
     .text-center.q-px-md
       q-btn.full-width.q-ma-md(@click="resetTime", label="Today", no-caps)
 </template>
@@ -8,19 +8,19 @@
 <script>
   export default {
     watch: {
-      modelCalender: function () {
-        this.$emit('calenderChange', this.modelCalender)
+      modelCalendar: function () {
+        this.$emit('calendarChange', this.modelCalendar)
       }
     },
     methods: {
       resetTime () {
         this.$emit('timeReset', 'date')
-        this.modelCalender = Date.now()
+        this.modelCalendar = Date.now()
       }
     },
     data () {
       return {
-        modelCalender: null
+        modelCalendar: null
       }
     }
   }

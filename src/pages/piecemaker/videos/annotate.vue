@@ -18,7 +18,7 @@
 
         // BUTTON: GO BACK
 
-        q-btn(@click="$router.push(timelines + gtimelines + '/videos')",
+        q-btn(@click="$router.push({name: 'piecemaker.videos.list', params: {groupId: timelineId}})",
         color="grey", icon="keyboard_backspace", round, flat, small)
 
         // BUTTON: SWITCH INPUT STYLE
@@ -117,8 +117,7 @@
   import constants from 'mbjs-data-models/src/constants'
   import { parseURI, Sorting } from 'mbjs-data-models/src/lib'
 
-  import VideoPlayer from '../../../components/shared/media/VideoPlayer'
-  import Username from '../../../components/shared/partials/Username'
+  import { VideoPlayer, Username } from 'mbjs-quasar/src/components'
   import Vocabularies from '../../../components/piecemaker/partials/vocabularies/Vocabularies'
 
   const { getScrollTarget, setScrollPosition } = scroll

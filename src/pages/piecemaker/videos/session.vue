@@ -35,7 +35,7 @@
 
           //
           // titel
-          // calender
+          // calendar
           //
           .col-6
             div.q-mb-sm Titel: Session von dann und dann
@@ -209,8 +209,8 @@
 </template>
 
 <script>
-  import DataTable from '../../../components/shared/partials/DataTable'
-  import CardFull from '../../../components/shared/layouts/CardFull'
+  import { DataTable } from 'mbjs-quasar/src/components'
+  import CardFull from 'mbjs-quasar/src/components/layouts/CardFull'
 
   export default {
     components: {
@@ -455,11 +455,11 @@
 
 <style>
 /*
-  .moba-calender-item {
+  .moba-calendar-item {
     opacity: .2;
   }
 
-  .moba-calender-item:hover {
+  .moba-calendar-item:hover {
     opacity: 1;
   }
 */
