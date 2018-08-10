@@ -16,7 +16,7 @@
 </template>
 
 <script>
-  import Calender from '../../../components/shared/forms/Calender'
+  import Calender from './Calendar'
   import SliderTime from '../../../components/shared/forms/SliderTime'
 
   import { date } from 'quasar'

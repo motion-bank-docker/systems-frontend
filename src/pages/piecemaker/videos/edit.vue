@@ -11,16 +11,16 @@
 </template>
 
 <script>
-  import CalenderTimeMain from '../../../components/shared/forms/CalenderTimeMain'
+  import CalendarTimeMain from '../../../components/shared/forms/CalendarTimeMain'
   import FormMain from '../../../components/shared/forms/FormMain'
-  import FullScreen from '../../../components/shared/layouts/FullScreen'
+  import { FullScreen } from 'mbjs-quasar/src/components'
 
   import { required } from 'vuelidate/lib/validators'
   import guessType from 'mbjs-media/src/util/guess-type'
 
   export default {
     components: {
-      CalenderTimeMain,
+      CalendarTimeMain,
       FormMain,
       FullScreen
     },

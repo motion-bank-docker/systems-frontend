@@ -209,8 +209,8 @@
 </template>
 
 <script>
-  import DataTable from '../../../components/shared/partials/DataTable'
-  import CardFull from '../../../components/shared/layouts/CardFull'
+  import { DataTable } from 'mbjs-quasar/src/components'
+  import CardFull from 'mbjs-quasar/src/components/layouts/CardFull'
 
   export default {
     components: {

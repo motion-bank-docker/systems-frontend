@@ -5,7 +5,7 @@
 </template>
 
 <script>
-  import CenterCardThreeQuarter from '../../../components/shared/layouts/CenterCardThreeQuarter'
+  import CenterCardThreeQuarter from 'mbjs-quasar/src/components/layouts/CenterCardThreeQuarter'
   export default {
     components: {
       CenterCardThreeQuarter: CenterCardThreeQuarter

@@ -41,8 +41,8 @@
 <script>
   import { DateTime } from 'luxon'
   import constants from 'mbjs-data-models/src/constants'
-  import Username from '../../../shared/partials/Username'
-  import VideoTitle from '../../../shared/partials/VideoTitle'
+  import Username from 'mbjs-quasar/src/components/partials/Username'
+  import VideoTitle from 'mbjs-quasar/src/components/partials/VideoTitle'
 
   export default {
     components: {

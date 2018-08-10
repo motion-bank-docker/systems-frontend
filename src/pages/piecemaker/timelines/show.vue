@@ -40,7 +40,7 @@
 </template>
 
 <script>
-  import FullScreen from '../../../components/shared/layouts/FullScreen'
+  import { FullScreen } from 'mbjs-quasar/src/components'
   import { DateTime } from 'luxon'
   import {
     SessionDiagram,

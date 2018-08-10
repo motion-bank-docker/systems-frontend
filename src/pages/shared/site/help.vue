@@ -7,7 +7,7 @@
 </template>
 
 <script>
-  import CardFull from '../../../components/shared/layouts/CardFull'
+  import CardFull from 'mbjs-quasar/src/components/layouts/CardFull'
   export default {
     components: {
       CardFull

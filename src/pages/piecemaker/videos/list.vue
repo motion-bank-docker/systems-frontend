@@ -11,8 +11,7 @@
 </template>
 
 <script>
-  import DataTable from '../../../components/shared/partials/DataTable'
-  import FullScreen from '../../../components/shared/layouts/FullScreen'
+  import { DataTable, FullScreen } from 'mbjs-quasar/src/components'
 
   export default {
     components: {

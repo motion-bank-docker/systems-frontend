@@ -31,7 +31,7 @@
   import Vue from 'vue'
   import Promise from 'bluebird'
   import constants from 'mbjs-data-models/src/constants'
-  import CardFull from '../../../components/shared/layouts/CardFull'
+  import CardFull from 'mbjs-quasar/src/components/layouts/CardFull'
 
   const tagsVideosMap = {
     'achilles': {

@@ -63,7 +63,7 @@
 </template>
 
 <script>
-  import Full from '../../../components/shared/layouts/Full'
+  import Full from 'mbjs-quasar/src/components/layouts/Full'
   import Vocabularies from '../../../components/piecemaker/partials/vocabularies/Vocabularies'
   import { ObjectUtil, Assert } from 'mbjs-utils'
   import { DateTime } from 'luxon'

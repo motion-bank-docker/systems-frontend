@@ -14,7 +14,7 @@
 </template>
 
 <script>
-  import VideoPlayer from '../../../shared/media/VideoPlayer'
+  import { VideoPlayer } from 'mbjs-quasar/src/components'
 
   export default {
     components: {
