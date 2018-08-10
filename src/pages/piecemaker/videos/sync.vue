@@ -120,7 +120,7 @@
     },
     watch: {
       refIndex () {
-        console.log(this.refVideos[this.refIndex])
+        // console.log(this.refVideos[this.refIndex])
       }
     },
     methods: {
@@ -163,7 +163,6 @@
           refVideoMarkerGlobalTime = refVideoSelector.plus(this.refVidMarkerSelector.toMillis()),
           videoMarkerGlobalTime = vidSelector.plus(this.vidMarkerSelector.toMillis()),
           markerDiff = refVideoMarkerGlobalTime.toMillis() - videoMarkerGlobalTime.toMillis()
-        console.log(markerDiff)
         const selectorUpdated = vidSelector.plus(markerDiff)
         const update = {
           target: ObjectUtil.merge({}, _this.video.target, {
