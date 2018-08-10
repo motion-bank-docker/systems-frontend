@@ -35,7 +35,7 @@
 
           //
           // titel
-          // calender
+          // calendar
           //
           .col-6
             div.q-mb-sm Titel: Session von dann und dann
@@ -455,11 +455,11 @@
 
 <style>
 /*
-  .moba-calender-item {
+  .moba-calendar-item {
     opacity: .2;
   }
 
-  .moba-calender-item:hover {
+  .moba-calendar-item:hover {
     opacity: 1;
   }
 */

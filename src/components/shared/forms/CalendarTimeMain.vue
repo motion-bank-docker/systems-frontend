@@ -1,22 +1,22 @@
 <template lang="pug">
   .row.col-12
 
-    // CALENDER
+    // CALENDAR
     //
     q-collapsible.col-xs-12.col-lg-6.q-mb-lg(group="somegroup", icon="event_note",
-    :label="formatDate(modelCalender, 'MMM Do, YYYY')")
-      calender(@timeReset="reset", @calenderChange="calenderChange")
+    :label="formatDate(modelCalendar, 'MMM Do, YYYY')")
+      calendar(@timeReset="reset", @calendarChange="calendarChange")
 
     // TIME
     //
     q-collapsible.col-xs-12.col-lg-6.q-mb-lg(group="somegroup", icon="access_time",
-    :label="formatDate(modelCalender, 'HH:mm:ss:SSS')")
-      slider-time(:resettime="modelCalender", @sliderChange="sliderChange", @timeReset="reset")
+    :label="formatDate(modelCalendar, 'HH:mm:ss:SSS')")
+      slider-time(:resettime="modelCalendar", @sliderChange="sliderChange", @timeReset="reset")
 
 </template>
 
 <script>
-  import Calender from './Calendar'
+  import Calendar from './Calendar'
   import SliderTime from '../../../components/shared/forms/SliderTime'
 
   import { date } from 'quasar'
@@ -24,12 +24,12 @@
 
   export default {
     components: {
-      Calender,
+      Calendar,
       SliderTime
     },
     watch: {
-      modelCalender: function (val) {
-        if (val == null) this.modelCalender = Date.now()
+      modelCalendar: function (val) {
+        if (val == null) this.modelCalendar = Date.now()
       }
     },
     methods: {
@@ -41,13 +41,13 @@
         // this.$emit('getTimeAndDate', val)
         // this.$emit('getTimeAndDate', valNew)
       },
-      calenderChange (val) {
-        this.modelCalender = date.adjustDate(this.modelCalender, {
+      calendarChange (val) {
+        this.modelCalendar = date.adjustDate(this.modelCalendar, {
           year: date.formatDate(val, 'YYYY'),
           month: date.formatDate(val, 'M')
         })
         // FIXME: days can't be adjusted. Bug in Quasar? Find workaround.
-        /* this.modelCalender = date.adjustDate(this.modelCalender, {
+        /* this.modelCalendar = date.adjustDate(this.modelCalendar, {
           day: date.formatDate(val, 's') }) */
         // console.log(this.formatDate(val, 'D'))
         // let newDate = date.buildDate({year: 2010, day: 5, hours: 15, milliseconds: 123})
@@ -59,30 +59,30 @@
           year: parseInt(this.formatDate(val, 'YYYY')),
           month: parseInt(this.formatDate(val, 'M')),
           day: parseInt(this.formatDate(val, 'D')),
-          hour: parseInt(this.formatDate(this.modelCalender, 'H')),
-          minute: parseInt(this.formatDate(this.modelCalender, 'm')),
-          second: parseInt(this.formatDate(this.modelCalender, 's'))
+          hour: parseInt(this.formatDate(this.modelCalendar, 'H')),
+          minute: parseInt(this.formatDate(this.modelCalendar, 'm')),
+          second: parseInt(this.formatDate(this.modelCalendar, 's'))
         }) */
         // console.log(dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second)
-        this.emitString(this.modelCalender)
+        this.emitString(this.modelCalendar)
         // this.emitString(dt)
       },
       sliderChange (val) {
         switch (val.target) {
         case 'hours':
-          this.modelCalender = date.adjustDate(this.modelCalender, { hours: val.val })
+          this.modelCalendar = date.adjustDate(this.modelCalendar, { hours: val.val })
           break
         case 'minutes':
-          this.modelCalender = date.adjustDate(this.modelCalender, { minutes: val.val })
+          this.modelCalendar = date.adjustDate(this.modelCalendar, { minutes: val.val })
           break
         case 'seconds':
-          this.modelCalender = date.adjustDate(this.modelCalender, { seconds: val.val })
+          this.modelCalendar = date.adjustDate(this.modelCalendar, { seconds: val.val })
           break
         case 'milliseconds':
-          this.modelCalender = date.adjustDate(this.modelCalender, { milliseconds: val.val })
+          this.modelCalendar = date.adjustDate(this.modelCalendar, { milliseconds: val.val })
           break
         }
-        this.emitString(this.modelCalender)
+        this.emitString(this.modelCalendar)
       },
       formatDate (val, format) {
         if (val) return date.formatDate(val, format)
@@ -91,15 +91,15 @@
         let dateNow = Date.now()
         switch (val) {
         case 'date':
-          this.modelCalender = date.adjustDate(this.modelCalender, {
+          this.modelCalendar = date.adjustDate(this.modelCalendar, {
             year: date.formatDate(dateNow, 'YYYY'),
             month: date.formatDate(dateNow, 'M') })
           // FIXME: days can't be adjusted. Bug in Quasar?
-          /* this.modelCalender = date.adjustDate(this.modelCalender, {
+          /* this.modelCalendar = date.adjustDate(this.modelCalendar, {
             day: date.formatDate(dateNow, 'D') }) */
           break
         case 'time':
-          this.modelCalender = date.adjustDate(this.modelCalender, {
+          this.modelCalendar = date.adjustDate(this.modelCalendar, {
             hours: date.formatDate(dateNow, 'H'),
             minutes: date.formatDate(dateNow, 'm'),
             seconds: date.formatDate(dateNow, 's'),
@@ -111,7 +111,7 @@
     },
     data () {
       return {
-        modelCalender: Date.now()
+        modelCalendar: Date.now()
       }
     }
   }

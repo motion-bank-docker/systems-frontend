@@ -6,7 +6,7 @@
       h5.caption(dark) {{ $t('routes.piecemaker.videos.edit.title') }}
       .row
         .col-md-12
-          calender-time-main(v-if="staging", @getTimeAndDate="getTimeAndDate")
+          calendar-time-main(v-if="staging", @getTimeAndDate="getTimeAndDate")
           form-main(v-model="payload", :schema="schema")
 </template>
 
