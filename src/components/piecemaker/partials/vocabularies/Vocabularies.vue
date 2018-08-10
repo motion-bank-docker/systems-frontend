@@ -3,7 +3,9 @@
     .q-pa-sm
       // (TODO: most used)
       q-list.no-border.no-margin.no-padding
-        q-item.cursor-pointer.no-padding(v-for="(tag, i) in filteredTags", :key="i", :class="[i == tagHighlight ? 'bg-grey-9' : '']")
+        q-item.cursor-pointer.no-padding.moba-tag-hover(
+        v-for="(tag, i) in filteredTags", v-on:mouseover="hoverTag('test')",
+        :key="i", :class="[i == tagHighlight ? 'bg-grey-9' : '']")
           q-item-side.q-pa-sm
             span.text-grey-6 {{ getInitials(tag) }}
           q-item-main
@@ -49,11 +51,16 @@
       }
     },
     methods: {
+      hoverTag (val) {
+        console.log(val)
+        alert('hallo')
+        // this.$emit('selectedVocab', val)
+      },
       clickTag (val) {
         console.log(val)
+        this.$emit('selectedVocab', val)
       },
       tagHightlighting (e) {
-        // console.log(e.keyCode, this.vocabs.length)
         if (e.keyCode === 40 && this.tagHighlight < this.filteredTags.length - 1) {
           this.tagHighlight++
           this.$emit('selectedVocab', this.filteredTags[this.tagHighlight])
@@ -63,9 +70,6 @@
           this.$emit('selectedVocab', this.filteredTags[this.tagHighlight])
         }
         // console.log(this.filteredTags[this.tagHighlight])
-      },
-      emitVocabulary (val) { // unused
-        this.$emit('clickedVocabulary', val)
       },
       getInitials (val) {
         return val.split(' ').map((n) => n[0]).join('').toUpperCase()
@@ -77,6 +81,8 @@
 <style scoped lang="stylus">
   @import '~variables'
 
+  .moba-tag-hover:hover
+    background-color $primary
   /* .moba-post-annotate
     background-color rgba( 255, 255, 255, 0 )
     .q-btn

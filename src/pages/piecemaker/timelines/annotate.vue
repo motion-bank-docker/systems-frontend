@@ -13,7 +13,8 @@
 
       // BUTTON - GO BACK
 
-      q-btn(slot="nav-button", icon="keyboard_backspace", @click="$router.push({name: 'piecemaker.timelines.show', params: {id: $route.params.id}})", round, small)
+      q-btn(slot="nav-button", icon="keyboard_backspace",
+      @click="$router.push({name: 'piecemaker.timelines.show', params: {id: $route.params.id}})", round, small)
 
     // TOP CENTER
     //
@@ -36,7 +37,6 @@
         .absolute-top.q-mt-sm(v-if="staging", style="width: 3rem;")
           q-btn.q-ml-sm.q-mt-xs.q-mr-none.text-primary(
           v-if="tagBox", @click="tagBox = false", round, flat, icon="clear", size="sm")
-            // | #
 
         // TAG BOX
 
@@ -57,8 +57,8 @@
             q-item-side.text-right
               // button below ("re-use"):
               // appears only on tag types
-              q-btn.q-mr-sm(@click="", small, rounded) re-use
-                q-tooltip.q-caption.bg-dark(:offset="[0,5]") alt + e
+                q-btn.q-mr-sm(@click="", small, rounded) re-use
+                  q-tooltip.q-caption.bg-dark(:offset="[0,5]") alt + e
               q-btn(@click="deleteAnnotation(annotation.uuid, i)", icon="clear", round, small)
 
 </template>
@@ -132,9 +132,10 @@
           this.tagBox = false
           this.currentBody.value = undefined
         }
-        else if (e.keyCode === 220) { // hashtag
+        else if (e.keyCode === 220 || e.keyCode === 40) { // hashtag or arrow down
+          this.currentSelector.value = DateTime.local().toISO()
           this.tagBox = true
-          this.currentBody.value = undefined
+          if (e.keyCode === 220) this.currentBody.value = undefined
         }
         else {
           if (this.currentSelector.value === undefined) {
