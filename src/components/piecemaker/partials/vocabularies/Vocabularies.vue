@@ -14,7 +14,8 @@
           | or escape to abort
           br
           | Current shortcut is&nbsp;
-          span.text-grey-8 [{{ currentTag.key }}]
+          span.text-grey-8 {{ currentTag.shortcutKey }}
+          div (target-ID: {{ currentTag.targetId }})
 
     // LIST RESULTS
     //
@@ -35,11 +36,12 @@
               q-btn.full-width.text-white(@click="clickTag(tag)" , no-caps, flat, align="left") {{ tag.title }}
 
             q-item-side.q-px-sm.q-py-xs
-              q-btn(v-if="tag.shortcutKey != undefined",
-              @click="activeShortcutFeature = true, currentTag.title = tag",
-              no-caps) alt + {{ tag.shortcutKey }}
+              q-btn.text-primary(v-if="tag.shortcutKey.value != undefined",
+              @click="activeShortcutFeature = true, currentTag.title = tag.title, currentTag.shortcutKey = tag.shortcutKey.value, currentTag.targetId = tag.id",
+              no-caps, round) {{ tag.shortcutKey.value }}
+
               q-btn.text-grey-8.cursor-pointer.no-margin(v-else, round, flat,
-              @click="activeShortcutFeature = true, currentTag.title = tag")
+              @click="activeShortcutFeature = true, currentTag.title = tag.title, currentTag.shortcutKey = tag.shortcutKey.value, currentTag.targetId = tag.id")
                 q-icon(name="keyboard")
 
         q-item(v-if="filteredTags.length <= 0")
@@ -75,46 +77,88 @@
     data () {
       return {
         currentTag: {
+          shortcutKey: '',
+          targetId: '',
           title: ''
         },
-        dummyShortcut: 'alt + t',
         filteredTags: [],
         activeShortcutFeature: false,
         results: [],
         tagHighlight: -1,
         // vocabs: ['movement direction', 'facial orientation', 'direction body/body parts', 'weight engagement individual', 'weight engagement with partner', 'weight regulation with partner', 'synchronisation in rythm', 'synchonisation in phrase']
         vocabs: [{
-          shortcutKey: undefined,
+          id: 1,
+          shortcutKey: {
+            code: undefined,
+            value: undefined
+          },
           title: 'movement direction'
         }, {
-          shortcutKey: undefined,
+          id: 2,
+          shortcutKey: {
+            code: undefined,
+            value: undefined
+          },
           title: 'facial orientation'
         }, {
-          shortcutKey: 'a',
+          id: 3,
+          shortcutKey: {
+            code: undefined,
+            value: undefined
+          },
           title: 'direction body/body parts'
         }, {
-          shortcutKey: 'w',
+          id: 4,
+          shortcutKey: {
+            code: undefined,
+            value: undefined
+          },
           title: 'weight engagement individual'
         }, {
-          shortcutKey: undefined,
+          id: 5,
+          shortcutKey: {
+            code: undefined,
+            value: undefined
+          },
           title: 'weight engagement with partner'
         }, {
-          shortcutKey: 's',
+          id: 6,
+          shortcutKey: {
+            code: undefined,
+            value: undefined
+          },
           title: 'weight regulation with partner'
         }, {
-          shortcutKey: 'k',
+          id: 7,
+          shortcutKey: {
+            code: undefined,
+            value: undefined
+          },
           title: 'synchronisation in rythm'
         }, {
-          shortcutKey: 'h',
+          id: 8,
+          shortcutKey: {
+            code: undefined,
+            value: undefined
+          },
           title: 'synchonisation in phrase'
         }]
       }
     },
     methods: {
       setShortcut (e) {
-        // console.log('--------', e.keyCode)
+        console.log('--------', e.keyCode)
         if (this.activeShortcutFeature) {
-          this.dummyShortcut = 'alt + ' + e.key
+          if (e.keyCode !== 8) {
+            // console.log(this.currentTag.targetId)
+            // console.log(this.vocabs[this.currentTag.targetId].shortcutKey)
+            this.vocabs[this.currentTag.targetId - 1].shortcutKey.code = e.keyCode
+            this.vocabs[this.currentTag.targetId - 1].shortcutKey.value = e.key
+          }
+          else if (e.keyCode === 8) { // backspace
+            this.vocabs[this.currentTag.targetId - 1].shortcutKey.code = ''
+            this.vocabs[this.currentTag.targetId - 1].shortcutKey.value = ''
+          }
           this.activeShortcutFeature = false
         }
       },
