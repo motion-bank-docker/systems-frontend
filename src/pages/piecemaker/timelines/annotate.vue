@@ -13,7 +13,8 @@
 
       // BUTTON - GO BACK
 
-      q-btn(slot="nav-button", icon="keyboard_backspace", @click="$router.push({name: 'piecemaker.timelines.show', params: {id: $route.params.id}})", round, small)
+      q-btn(slot="nav-button", icon="keyboard_backspace",
+      @click="$router.push({name: 'piecemaker.timelines.show', params: {id: $route.params.id}})", round, small)
 
     // TOP CENTER
     //
@@ -26,17 +27,16 @@
         q-btn.text-primary.bg-grey-10(v-if="!tagBox && staging", @click="tagBox = true", round) #
           // q-tooltip.bg-dark.q-caption(:offset="[0,10]") Click here or type # to open the vocabulary dialog
 
-      .col-xs-8.col-md-8.col-lg-6.relative-position(:class="[tagBox ? 'bg-grey-10' : 'bg-grey-10']")
+      .col-xs-8.col-md-8.col-lg-6.bg-grey-10.relative-position(:class="[tagBox ? 'shadow-4' : '']")
 
         // TEXT INPUT
 
         q-input.q-pa-md(
         v-model="currentBody.value", :class="[tagBox ? 'q-pl-xl text-primary' : 'text-white']",
-        @keyup="keyMonitor", @keydown="handlerKeyPress", type="textarea", autofocus, dark)
+        @keyup="keyMonitor", @keydown.enter="handlerKeyPress", type="textarea", autofocus, dark)
         .absolute-top.q-mt-sm(v-if="staging", style="width: 3rem;")
           q-btn.q-ml-sm.q-mt-xs.q-mr-none.text-primary(
           v-if="tagBox", @click="tagBox = false", round, flat, icon="clear", size="sm")
-            // | #
 
         // TAG BOX
 
@@ -58,7 +58,7 @@
               // button below ("re-use"):
               // appears only on tag types
               q-btn.q-mr-sm(@click="", small, rounded) re-use
-                q-tooltip.q-caption.bg-dark(:offset="[0,5]") alt + e
+                // q-tooltip.q-caption.bg-dark(:offset="[0,5]") alt + e
               q-btn(@click="deleteAnnotation(annotation.uuid, i)", icon="clear", round, small)
 
 </template>
@@ -89,6 +89,7 @@
           type: 'Fragment',
           value: undefined
         },
+        highlightedTag: undefined,
         inputStyle: true,
         parent: 'live-annotate',
         pressedKey: '',
@@ -101,11 +102,14 @@
       /* toggleInputStyle () {
         this.inputStyle = !this.inputStyle
       }, */
+      selectedV (val) {
+        this.highlightedTag = val
+      },
       handlerKeyPress (e) {
         this.pressedKey = e.keyCode
       },
       keyMonitor (e) {
-        if (this.prevKey === 13 && e.keyCode === 13 && !this.tagBox) { // enter
+        if (this.prevKey === 13 && e.keyCode === 13 && !this.tagBox) { // enter text input
           this.prevKey = undefined
           this.tagBox = false
           const bodyLength = this.currentBody.value.length
@@ -117,13 +121,21 @@
             this.currentBody.value = undefined
           }
         }
+        else if (e.keyCode === 13 && this.tagBox) { // enter vocabulary
+          this.currentBody.value = this.highlightedTag
+          this.createAnnotation()
+          this.tagBox = false
+          this.currentBody.value = undefined
+          // console.log(this.highlightedTag)
+        }
         else if (e.keyCode === 27) { // escape
           this.tagBox = false
           this.currentBody.value = undefined
         }
-        else if (e.keyCode === 220) { // hashtag
+        else if (e.keyCode === 220 || e.keyCode === 40) { // hashtag or arrow down
+          this.currentSelector.value = DateTime.local().toISO()
           this.tagBox = true
-          this.currentBody.value = undefined
+          if (e.keyCode === 220) this.currentBody.value = undefined
         }
         else {
           if (this.currentSelector.value === undefined) {
