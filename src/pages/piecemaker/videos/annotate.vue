@@ -14,22 +14,17 @@
       // TOP LEFT
       //
       //
-      .absolute-top-left.q-ma-md
+      .absolute-top-left.q-ma-md(style="z-index: 2100;")
 
         // BUTTON: GO BACK
 
         q-btn(@click="$router.push({name: 'piecemaker.videos.list', params: {timelineId: timelineId}})",
         color="grey", icon="keyboard_backspace", round, flat, small)
 
-        // BUTTON: SWITCH INPUT STYLE
-
-        q-btn.bg-white.cursor-pointer.q-mx-xs(v-if="staging", @click="toggleInputStyle()", :class="{'bg-dark': inputStyle}", round)
-          q-icon(name="autorenew")
-
       // TOP RIGHT
       //
       //
-      .absolute-top-right.cursor-pointer.q-pa-md
+      .absolute-top-right.cursor-pointer.q-pa-md(style="z-index: 2100;")
 
         // BUTTONS: SWITCH TO FULLSCREEN
 
@@ -47,24 +42,25 @@
       //
       //
         .absolute-top.fixed-center(style="top: 52px;")
-      .absolute-top.fixed-center(style="top: 40px; width: 60%;")
+      .absolute-top.fixed-center(style="top: 0px; width: 100%;")
+        vocabularies-main(@currentString="currentString")
 
         // INFO TEXT
 
         // .bg-dark.q-pa-md.q-mt-md.q-mr-md.text-center(
-        .bg-dark.q-pa-md.cursor-pointer(
-        v-if="!active && inputStyle", @click="toggleForm()", color="primary", style="opacity: .6;")
-          | Start typing or click here.
+          .bg-dark.q-pa-md.cursor-pointer(
+          v-if="!active && inputStyle", @click="toggleForm()", color="primary", style="opacity: .6;")
+            | Start typing or click here.
 
         // TEXT INPUT
 
         // .q-pa-md(v-if="active")
-        div(v-if="active && inputStyle")
-          q-input.q-px-sm(
-          @keyup.enter="createAnnotation()", @keyup.esc="toggleForm(); closePopUp()",
-          v-model="currentBody.value", type="textarea", float-label="Start typing", autofocus, dark,
-          style="background-color: rgba( 0, 0, 0, .5 );", rounded
-          )
+          div(v-if="active && inputStyle")
+            q-input.q-px-sm(
+            @keyup.enter="createAnnotation()", @keyup.esc="toggleForm(); closePopUp()",
+            v-model="currentBody.value", type="textarea", float-label="Start typing", autofocus, dark,
+            style="background-color: rgba( 0, 0, 0, .5 );", rounded
+            )
           // .row
             .col-6
               q-btn.bg-dark(@click="toggleForm()", small) Esc
@@ -73,9 +69,9 @@
 
       // VOCABULARIES
 
-      div.fixed-top.q-mt-md.absolute-top.moba-vocabs(v-if="!inputStyle", style="width: 60%; left: 20%;")
-        div.bg-dark.q-pa-md(style="opacity: .6;") Vocabularies
-        vocabularies.q-px-sm.q-pt-sm(:parent='parent')
+        div.fixed-top.q-mt-md.absolute-top.moba-vocabs(v-if="!inputStyle", style="width: 60%; left: 20%;")
+          div.bg-dark.q-pa-md(style="opacity: .6;") Vocabularies
+          vocabularies.q-px-sm.q-pt-sm(:parent='parent')
 
       //
         q-collapsible.fixed-top.q-mt-md.absolute-top.moba-hover(
@@ -118,7 +114,8 @@
   import { parseURI, Sorting } from 'mbjs-data-models/src/lib'
 
   import { VideoPlayer, Username } from 'mbjs-quasar/src/components'
-  import Vocabularies from '../../../components/piecemaker/partials/vocabularies/Vocabularies'
+  // import Vocabularies from '../../../components/piecemaker/partials/vocabularies/Vocabularies'
+  import VocabulariesMain from '../../../components/piecemaker/partials/vocabularies/VocabulariesMain'
 
   const { getScrollTarget, setScrollPosition } = scroll
 
@@ -126,7 +123,8 @@
     components: {
       VideoPlayer,
       Username,
-      Vocabularies
+      // Vocabularies,
+      VocabulariesMain
     },
     async mounted () {
       if (this.$route.params.id) {
@@ -202,9 +200,9 @@
       fullscreenHandler () {
         this.fullscreen = !this.fullscreen
       },
-      toggleInputStyle () {
+      /* toggleInputStyle () {
         this.inputStyle = !this.inputStyle
-      },
+      }, */
       async getVideo () {
         const result = await this.$store.dispatch('annotations/get', this.$route.params.id)
         if (result.body) {
@@ -249,6 +247,20 @@
           this.active = true
         }
       },
+      currentString (val) {
+        // console.log(val, '------')
+        // alert(val)
+        const bodyLength = val.string.length
+        if (bodyLength > 2) {
+          // this.currentBody.value = val.string.substr(0, bodyLength - 2)
+          this.currentBody.value = val.string
+          this.currentSelector.value = val.time
+          this.createAnnotation()
+        }
+        else {
+          this.currentBody.value = undefined
+        }
+      },
       createAnnotation () {
         const _this = this
         const annotation = {
@@ -260,6 +272,8 @@
           }
         }
         annotation.body.value = annotation.body.value.trim()
+        this.currentBody.value = undefined
+        this.currentSelector.value = undefined
         return this.$store.dispatch('annotations/post', annotation)
           .then(res => {
             _this.getAnnotations().then(() => {

@@ -3,7 +3,7 @@
   // TOP CENTER
   //
   //
-  .row.fixed-top.q-mt-md.bg-dark(style="z-index: 2000; top: 52px;")
+  .row.fixed-top.q-mt-md(style="z-index: 2000;")
 
     // BUTTON - SWITCH BETWEEN TEXT INPUT AND TAG BOX
 
@@ -69,9 +69,6 @@
       }
     },
     methods: {
-      /* toggleInputStyle () {
-        this.inputStyle = !this.inputStyle
-      }, */
       selectedV (val) {
         this.highlightedTag = val
       },
@@ -82,17 +79,15 @@
         if (this.prevKey === 13 && e.keyCode === 13 && !this.tagBox) { // enter text input
           this.currentVal.string = this.currentBody.value
           this.currentVal.time = this.currentSelector.value
-          console.log(this.currentVal)
+          // console.log(this.currentVal)
           this.prevKey = undefined
           this.tagBox = false
           const bodyLength = this.currentBody.value.length
           if (bodyLength > 2) {
             this.currentBody.value = this.currentVal.string.substr(0, bodyLength - 2)
             this.$emit('currentString', this.currentVal)
-            // this.$emit('currentTime', this.currentSelector.value)
             this.currentBody.value = undefined
             this.currentSelector.value = undefined
-            // this.createAnnotation()
           }
           else {
             this.currentBody.value = undefined
@@ -101,11 +96,9 @@
         else if (e.keyCode === 13 && this.tagBox) { // enter vocabulary
           this.currentVal.string = this.highlightedTag
           this.currentVal.time = this.currentSelector.value
-          // this.createAnnotation()
           this.$emit('currentString', this.currentVal)
           this.tagBox = false
           this.currentBody.value = undefined
-          // console.log(this.highlightedTag)
         }
         else if (e.keyCode === 27) { // escape
           this.tagBox = false

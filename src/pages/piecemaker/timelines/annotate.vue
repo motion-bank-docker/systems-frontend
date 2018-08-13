@@ -16,35 +16,11 @@
       q-btn(slot="nav-button", icon="keyboard_backspace",
       @click="$router.push({name: 'piecemaker.timelines.show', params: {id: $route.params.id}})", round, small)
 
-    // TEST
-    vocabularies-main(@currentString="currentString")
-
-    // TOP CENTER
+    // TOP CENTER: INPUT AREA
     //
     //
-      .row.fixed-top.q-mt-md(style="z-index: 2000; top: 52px;")
-
-        // BUTTON - SWITCH BETWEEN TEXT INPUT AND TAG BOX
-
-        .col-xs-2.offset-xs-1.col-md-1.offset-md-1.col-lg-1.offset-lg-2.text-right.q-pa-sm.q-pr-md
-          q-btn.text-primary.bg-grey-10(v-if="!tagBox && staging", @click="tagBox = true", round) #
-            // q-tooltip.bg-dark.q-caption(:offset="[0,10]") Click here or type # to open the vocabulary dialog
-
-        .col-xs-8.col-md-8.col-lg-6.bg-grey-10.relative-position(:class="[tagBox ? 'shadow-4' : '']")
-
-          // TEXT INPUT
-
-          q-input.q-pa-md(
-          v-model="currentBody.value", :class="[tagBox ? 'q-pl-xl text-primary' : 'text-white']",
-          @keyup="keyMonitor", @keydown.enter="handlerKeyPress", type="textarea", autofocus, dark)
-          .absolute-top.q-mt-sm(v-if="staging", style="width: 3rem;")
-            q-btn.q-ml-sm.q-mt-xs.q-mr-none.text-primary(
-            v-if="tagBox", @click="tagBox = false", round, flat, icon="clear", size="sm")
-
-          // TAG BOX
-
-          div(v-if="tagBox && staging")
-            vocabularies(:parent='parent', :pressedKey="pressedKey", :str="currentBody.value", @selectedVocab="selectedV")
+    .absolute-top.fixed-center(style="top: 0px; width: 100%;")
+      vocabularies-main(@currentString="currentString")
 
     // CENTER: SHOW ANNOTATIONS
     //
@@ -68,7 +44,7 @@
 
 <script>
   // import Full from 'mbjs-quasar/src/components/layouts/Full'
-  import Vocabularies from '../../../components/piecemaker/partials/vocabularies/Vocabularies'
+  // import Vocabularies from '../../../components/piecemaker/partials/vocabularies/Vocabularies'
   import VocabulariesMain from '../../../components/piecemaker/partials/vocabularies/VocabulariesMain'
   import { ObjectUtil, Assert } from 'mbjs-utils'
   import { DateTime } from 'luxon'
@@ -79,7 +55,7 @@
   export default {
     components: {
       // Full,
-      Vocabularies,
+      // Vocabularies,
       VocabulariesMain
     },
     data () {
@@ -105,11 +81,9 @@
     },
     methods: {
       currentString (val) {
-        console.log(val, '------')
-        // alert(val)
+        // console.log(val, '------')
         const bodyLength = val.string.length
         if (bodyLength > 2) {
-          // this.currentBody.value = val.string.substr(0, bodyLength - 2)
           this.currentBody.value = val.string
           this.currentSelector.value = val.time
           this.createAnnotation()
@@ -118,52 +92,12 @@
           this.currentBody.value = undefined
         }
       },
-      /* toggleInputStyle () {
-        this.inputStyle = !this.inputStyle
-      }, */
       selectedV (val) {
         this.highlightedTag = val
       },
       handlerKeyPress (e) {
         this.pressedKey = e.keyCode
       },
-      /* keyMonitor (e) {
-        if (this.prevKey === 13 && e.keyCode === 13 && !this.tagBox) { // enter text input
-          this.prevKey = undefined
-          this.tagBox = false
-          const bodyLength = this.currentBody.value.length
-          if (bodyLength > 2) {
-            this.currentBody.value = this.currentBody.value.substr(0, bodyLength - 2)
-            this.createAnnotation()
-          }
-          else {
-            this.currentBody.value = undefined
-          }
-        }
-        else if (e.keyCode === 13 && this.tagBox) { // enter vocabulary
-          this.currentBody.value = this.highlightedTag
-          this.createAnnotation()
-          this.tagBox = false
-          this.currentBody.value = undefined
-          // console.log(this.highlightedTag)
-        }
-        else if (e.keyCode === 27) { // escape
-          this.tagBox = false
-          this.currentBody.value = undefined
-        }
-        else if (e.keyCode === 220 || e.keyCode === 40) { // hashtag or arrow down
-          this.currentSelector.value = DateTime.local().toISO()
-          this.tagBox = true
-          if (e.keyCode === 220) this.currentBody.value = undefined
-        }
-        else {
-          if (this.currentSelector.value === undefined) {
-            this.currentSelector.value = DateTime.local().toISO()
-          }
-          this.prevKey = e.keyCode
-        }
-        // console.log(e.keyCode)
-      }, */
       createAnnotation () {
         const _this = this
         const annotation = {
