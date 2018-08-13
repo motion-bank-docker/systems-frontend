@@ -75,14 +75,14 @@
         vocabs: [{
           id: 1,
           shortcutKey: {
-            code: '65',
+            code: 65,
             value: 'a'
           },
           title: 'movement direction'
         }, {
           id: 2,
           shortcutKey: {
-            code: '66',
+            code: 66,
             value: 'b'
           },
           title: 'facial orientation'
@@ -170,14 +170,26 @@
       highlightTag (val) {
         this.highlightedTag = val
       },
+      shortcutTest (e) {
+        // console.log(e.keyCode, '++++++')
+        // console.log(this.vocabs[0].shortcutKey.value)
+        // alert(this.vocabs.shortcutKey.code.match(e.keyCode))
+        var obj = this.vocabs.find(function (obj) { return obj.shortcutKey.code === e.keyCode })
+        // console.log(e.keyCode, obj.title)
+        this.currentVal.string = obj.title
+        this.$emit('currentString', this.currentVal)
+        console.log(obj.title)
+      },
       keyPressAlt (val) {
         this.currentVal.string = this.highlightedTag
         this.currentVal.time = this.currentSelector.value
         if (val === 'down') {
           this.shortcutsActivated = true
+          window.addEventListener('keydown', this.shortcutTest)
         }
         else {
           this.shortcutsActivated = false
+          window.removeEventListener('keydown', this.shortcutTest)
         }
         if (this.currentVal.string !== undefined && val === 'up') this.$emit('currentString', this.currentVal)
         this.tagBox = !this.tagBox
@@ -231,7 +243,7 @@
         }
         // console.log(e.keyCode)
         if (this.shortcutsActivated) {
-          console.log(this.vocabs[1].shortcutKey.code, this.vocabs[1].shortcutKey.value)
+          // console.log(this.vocabs[1].shortcutKey.code, this.vocabs[1].shortcutKey.value)
         }
       } /*,
       createAnnotation () {
