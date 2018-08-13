@@ -3,7 +3,7 @@
   // TOP CENTER
   //
   //
-  .row.fixed-top.q-mt-md(style="z-index: 2000;")
+  .row.q-mt-md
 
     // BUTTON - SWITCH BETWEEN TEXT INPUT AND TAG BOX
 
@@ -16,7 +16,7 @@
 
       q-input.q-pa-md(
       v-model="currentBody.value", :class="[tagBox ? 'q-pl-xl text-primary' : 'text-white']",
-      @keyup="keyMonitor", @keydown.enter="handlerKeyPress", type="textarea", autofocus, dark)
+      @keyup="keyMonitor", @keydown.18="keyPressAlt('down')", @keyup.18="keyPressAlt('up')", @keydown.enter="handlerKeyPress", type="textarea", autofocus, dark)
 
       .absolute-top.q-mt-sm(v-if="staging", style="width: 3rem;")
         q-btn.q-ml-sm.q-mt-xs.q-mr-none.text-primary(
@@ -32,11 +32,11 @@
 <script>
   // import Full from 'mbjs-quasar/src/components/layouts/Full'
   import Vocabularies from './Vocabularies'
-  import { ObjectUtil, Assert } from 'mbjs-utils'
+  // import { ObjectUtil, Assert } from 'mbjs-utils'
   import { DateTime } from 'luxon'
-  import uuidValidate from 'uuid-validate'
-  import constants from 'mbjs-data-models/src/constants'
-  import { Sorting } from 'mbjs-data-models/src/lib'
+  // import uuidValidate from 'uuid-validate'
+  // import constants from 'mbjs-data-models/src/constants'
+  // import { Sorting } from 'mbjs-data-models/src/lib'
 
   export default {
     components: {
@@ -75,6 +75,14 @@
       handlerKeyPress (e) {
         this.pressedKey = e.keyCode
       },
+      keyPressAlt (val) {
+        this.currentVal.string = this.highlightedTag
+        this.currentVal.time = this.currentSelector.value
+        if (this.currentVal.string !== undefined && val === 'up') this.$emit('currentString', this.currentVal)
+        this.tagBox = !this.tagBox
+        this.currentVal.string = undefined
+        this.highlightedTag = undefined
+      },
       keyMonitor (e) {
         if (this.prevKey === 13 && e.keyCode === 13 && !this.tagBox) { // enter text input
           this.currentVal.string = this.currentBody.value
@@ -104,6 +112,8 @@
           this.tagBox = false
           this.currentBody.value = undefined
         }
+        else if (e.keyCode === 18) { // alt
+        }
         else if (e.keyCode === 220 || e.keyCode === 40) { // hashtag or arrow down
           this.currentSelector.value = DateTime.local().toISO()
           this.tagBox = true
@@ -116,7 +126,7 @@
           this.prevKey = e.keyCode
         }
         // console.log(e.keyCode)
-      },
+      } /*,
       createAnnotation () {
         const _this = this
         const annotation = {
@@ -157,7 +167,7 @@
       formatSelectorForList (val) {
         const selector = DateTime.fromISO(val)
         return selector.toFormat(constants.TIMECODE_FORMAT)
-      }
+      } */
     }
   }
 </script>

@@ -13,13 +13,15 @@
 
       // BUTTON - GO BACK
 
-      q-btn(slot="nav-button", icon="keyboard_backspace",
-      @click="$router.push({name: 'piecemaker.timelines.show', params: {id: $route.params.id}})", round, small)
+      q-btn.fixed-top-left.q-ma-md(slot="nav-button", icon="keyboard_backspace",
+      @click="$router.push({name: 'piecemaker.timelines.show', params: {id: $route.params.id}})", round, small,
+      style="top: 50px; z-index: 2100;")
 
     // TOP CENTER: INPUT AREA
     //
     //
-    .absolute-top.fixed-center(style="top: 0px; width: 100%;")
+    // .absolute-top.fixed-center(style="top: 0px; width: 100%; z-index: 1000;")
+    .fixed-top(style="top: 50px; width: 100%; z-index: 1000;")
       vocabularies-main(@currentString="currentString")
 
     // CENTER: SHOW ANNOTATIONS

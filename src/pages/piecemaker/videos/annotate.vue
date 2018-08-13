@@ -41,8 +41,8 @@
       // TOP CENTER
       //
       //
-        .absolute-top.fixed-center(style="top: 52px;")
-      .absolute-top.fixed-center(style="top: 0px; width: 100%;")
+      // .fixed-top(style="top: 50px; width: 100%; z-index: 1000;")
+      .absolute-top(style="width: 100%;")
         vocabularies-main(@currentString="currentString")
 
         // INFO TEXT
