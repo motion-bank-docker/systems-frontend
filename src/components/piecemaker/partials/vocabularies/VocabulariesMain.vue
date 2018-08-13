@@ -1,71 +1,37 @@
 <template lang="pug">
 
-  // LIVE ANNOTATE
+  // TOP CENTER
+  //
+  //
+  .row.fixed-top.q-mt-md(style="z-index: 2000; top: 52px;")
 
-  .wrapper.relative-position
-    span(slot="form-logo")
-    span(slot="form-title")
+    // BUTTON - SWITCH BETWEEN TEXT INPUT AND TAG BOX
 
-    // TOP LEFT
-    //
-    //
-    .absolute-top-left.q-ma-md
+    .col-xs-2.offset-xs-1.col-md-1.offset-md-1.col-lg-1.offset-lg-2.text-right.q-pa-sm.q-pr-md
+      q-btn.text-primary.bg-grey-10(v-if="!tagBox && staging", @click="tagBox = true", round) #
 
-      // BUTTON - GO BACK
+    .col-xs-8.col-md-8.col-lg-6.bg-grey-10.relative-position(:class="[tagBox ? 'shadow-4' : '']")
 
-      q-btn(slot="nav-button", icon="keyboard_backspace",
-      @click="$router.push({name: 'piecemaker.timelines.show', params: {id: $route.params.id}})", round, small)
+      // TEXT INPUT
 
-    // TOP CENTER
-    //
-    //
-    .row.fixed-top.q-mt-md(style="z-index: 2000; top: 52px;")
+      q-input.q-pa-md(
+      v-model="currentBody.value", :class="[tagBox ? 'q-pl-xl text-primary' : 'text-white']",
+      @keyup="keyMonitor", @keydown.enter="handlerKeyPress", type="textarea", autofocus, dark)
 
-      // BUTTON - SWITCH BETWEEN TEXT INPUT AND TAG BOX
+      .absolute-top.q-mt-sm(v-if="staging", style="width: 3rem;")
+        q-btn.q-ml-sm.q-mt-xs.q-mr-none.text-primary(
+        v-if="tagBox", @click="tagBox = false", round, flat, icon="clear", size="sm")
 
-      .col-xs-2.offset-xs-1.col-md-1.offset-md-1.col-lg-1.offset-lg-2.text-right.q-pa-sm.q-pr-md
-        q-btn.text-primary.bg-grey-10(v-if="!tagBox && staging", @click="tagBox = true", round) #
-          // q-tooltip.bg-dark.q-caption(:offset="[0,10]") Click here or type # to open the vocabulary dialog
+      // TAG BOX
 
-      .col-xs-8.col-md-8.col-lg-6.bg-grey-10.relative-position(:class="[tagBox ? 'shadow-4' : '']")
-
-        // TEXT INPUT
-
-        q-input.q-pa-md(
-        v-model="currentBody.value", :class="[tagBox ? 'q-pl-xl text-primary' : 'text-white']",
-        @keyup="keyMonitor", @keydown.enter="handlerKeyPress", type="textarea", autofocus, dark)
-        .absolute-top.q-mt-sm(v-if="staging", style="width: 3rem;")
-          q-btn.q-ml-sm.q-mt-xs.q-mr-none.text-primary(
-          v-if="tagBox", @click="tagBox = false", round, flat, icon="clear", size="sm")
-
-        // TAG BOX
-
-        div(v-if="tagBox && staging")
-          vocabularies(:parent='parent', :pressedKey="pressedKey", :str="currentBody.value", @selectedVocab="selectedV")
-
-    // CENTER: SHOW ANNOTATIONS
-    //
-    //
-    .row
-      .col-xs-12.offset-xs-none.col-md-10.offset-md-1.col-lg-8.offset-lg-2
-        q-list(v-if="inputStyle", no-border, style="margin-top: 8rem;")
-          q-item(v-for="(annotation, i) in annotations", :key="annotation.uuid", :id="annotation.uuid")
-            q-item-side(v-if="annotation.target.selector")
-              | {{ formatSelectorForList(annotation.target.selector.value) }}
-            q-item-main
-              q-input(type="textarea", v-model="annotation.body.value", dark)
-            q-item-side.text-right
-              // button below ("re-use"):
-              // appears only on tag types
-              q-btn.q-mr-sm(@click="", small, rounded) re-use
-                // q-tooltip.q-caption.bg-dark(:offset="[0,5]") alt + e
-              q-btn(@click="deleteAnnotation(annotation.uuid, i)", icon="clear", round, small)
+      div(v-if="tagBox && staging")
+        vocabularies(:parent='parent', :pressedKey="pressedKey", :str="currentBody.value", @selectedVocab="selectedV")
 
 </template>
 
 <script>
   // import Full from 'mbjs-quasar/src/components/layouts/Full'
-  import Vocabularies from '../../../components/piecemaker/partials/vocabularies/Vocabularies'
+  import Vocabularies from './Vocabularies'
   import { ObjectUtil, Assert } from 'mbjs-utils'
   import { DateTime } from 'luxon'
   import uuidValidate from 'uuid-validate'
@@ -165,7 +131,7 @@
             _this.scrollToElement()
             // _this.scrollToElement(annotation.uuid)
           })
-      },
+      } /*,
       deleteAnnotation (uuid, index) {
         Assert.ok(uuidValidate(uuid))
         Assert.isType(index, 'number')
@@ -185,7 +151,7 @@
       formatSelectorForList (val) {
         const selector = DateTime.fromISO(val)
         return selector.toFormat(constants.TIMECODE_FORMAT)
-      }
+      } */
     }
   }
 </script>
