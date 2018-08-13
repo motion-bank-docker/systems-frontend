@@ -3,19 +3,19 @@
 
     // SHORTCUT MODAL
     //
-    q-modal(v-model="activeShortcutFeature", minimized)
-      .bg-dark
-        .text-white.q-pa-lg.text-center {{ currentTag.title }}
-        .text-white.q-pa-lg.text-center
-          | Setting new shortcut,
-          br
-          | press a new key now
-          br
-          | or escape to abort
-          br
-          | Current shortcut is&nbsp;
-          span.text-grey-8 {{ currentTag.shortcutKey }}
-          div (target-ID: {{ currentTag.targetId }})
+      q-modal(v-model="activeShortcutFeature", minimized)
+        .bg-dark
+          .text-white.q-pa-lg.text-center {{ currentTag.title }}
+          .text-white.q-pa-lg.text-center
+            | Setting new shortcut,
+            br
+            | press a new key now
+            br
+            | or escape to abort
+            br
+            | Current shortcut is&nbsp;
+            span.text-grey-8 {{ currentTag.shortcutKey }}
+            div (target-ID: {{ currentTag.targetId }})
 
     // LIST RESULTS
     //
@@ -37,11 +37,11 @@
 
             q-item-side.q-px-sm.q-py-xs
               q-btn.text-primary(v-if="tag.shortcutKey.value != undefined",
-              @click="activeShortcutFeature = true, currentTag.title = tag.title, currentTag.shortcutKey = tag.shortcutKey.value, currentTag.targetId = tag.id",
+              @click="emitId(tag.id), currentTag.title = tag.title, currentTag.shortcutKey = tag.shortcutKey.value, currentTag.targetId = tag.id",
               no-caps, round) {{ tag.shortcutKey.value }}
 
               q-btn.text-grey-8.cursor-pointer.no-margin(v-else, round, flat,
-              @click="activeShortcutFeature = true, currentTag.title = tag.title, currentTag.shortcutKey = tag.shortcutKey.value, currentTag.targetId = tag.id")
+              @click="emitId(tag.id), currentTag.title = tag.title, currentTag.shortcutKey = tag.shortcutKey.value, currentTag.targetId = tag.id")
                 q-icon(name="keyboard")
 
         q-item(v-if="filteredTags.length <= 0")
@@ -52,7 +52,7 @@
 
 <script>
   export default {
-    props: ['parent', 'pressedKey', 'str'],
+    props: ['parent', 'str', 'vocabulary'],
     watch: {
       str: function (val) {
         this.tagHighlight = -1
@@ -67,87 +67,31 @@
     },
     mounted () {
       window.addEventListener('keydown', this.tagHightlighting)
-      window.addEventListener('keydown', this.setShortcut)
+      // window.addEventListener('keydown', this.setShortcut)
       this.filteredTags = this.vocabs
     },
     beforeDestroy () {
       window.removeEventListener('keydown', this.tagHightlighting)
-      window.removeEventListener('keydown', this.setShortcut)
+      // window.removeEventListener('keydown', this.setShortcut)
     },
     data () {
       return {
+        // activeShortcutFeature: false,
         currentTag: {
           shortcutKey: '',
           targetId: '',
           title: ''
         },
         filteredTags: [],
-        activeShortcutFeature: false,
         results: [],
         tagHighlight: -1,
         // vocabs: ['movement direction', 'facial orientation', 'direction body/body parts', 'weight engagement individual', 'weight engagement with partner', 'weight regulation with partner', 'synchronisation in rythm', 'synchonisation in phrase']
-        vocabs: [{
-          id: 1,
-          shortcutKey: {
-            code: undefined,
-            value: undefined
-          },
-          title: 'movement direction'
-        }, {
-          id: 2,
-          shortcutKey: {
-            code: undefined,
-            value: undefined
-          },
-          title: 'facial orientation'
-        }, {
-          id: 3,
-          shortcutKey: {
-            code: undefined,
-            value: undefined
-          },
-          title: 'direction body/body parts'
-        }, {
-          id: 4,
-          shortcutKey: {
-            code: undefined,
-            value: undefined
-          },
-          title: 'weight engagement individual'
-        }, {
-          id: 5,
-          shortcutKey: {
-            code: undefined,
-            value: undefined
-          },
-          title: 'weight engagement with partner'
-        }, {
-          id: 6,
-          shortcutKey: {
-            code: undefined,
-            value: undefined
-          },
-          title: 'weight regulation with partner'
-        }, {
-          id: 7,
-          shortcutKey: {
-            code: undefined,
-            value: undefined
-          },
-          title: 'synchronisation in rythm'
-        }, {
-          id: 8,
-          shortcutKey: {
-            code: undefined,
-            value: undefined
-          },
-          title: 'synchonisation in phrase'
-        }]
+        vocabs: this.vocabulary
       }
     },
     methods: {
-      setShortcut (e) {
-        console.log('--------', e.keyCode)
+      /* setShortcut (e) {
+        // console.log('--------', e.keyCode)
         if (this.activeShortcutFeature) {
           if (e.keyCode !== 8) {
             // console.log(this.currentTag.targetId)
@@ -161,24 +105,27 @@
           }
           this.activeShortcutFeature = false
         }
+      }, */
+      emitId (val) {
+        this.$emit('openShortcut', val)
       },
       hoverTag (val) {
         // console.log(val)
         this.tagHighlight = val
-        // this.$emit('selectedVocab', val)
+        // this.$emit('highlightedTag', val)
       },
       clickTag (val) {
         // console.log(val)
-        this.$emit('selectedVocab', val)
+        this.$emit('highlightedTag', val)
       },
       tagHightlighting (e) {
         if (e.keyCode === 40 && this.tagHighlight < this.filteredTags.length - 1) {
           this.tagHighlight++
-          this.$emit('selectedVocab', this.filteredTags[this.tagHighlight].title)
+          this.$emit('highlightedTag', this.filteredTags[this.tagHighlight].title)
         }
         else if (e.keyCode === 38 && this.tagHighlight > 0) {
           this.tagHighlight--
-          this.$emit('selectedVocab', this.filteredTags[this.tagHighlight].title)
+          this.$emit('highlightedTag', this.filteredTags[this.tagHighlight].title)
         }
         // console.log(this.filteredTags[this.tagHighlight])
       },
