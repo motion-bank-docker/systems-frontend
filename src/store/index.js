@@ -3,6 +3,7 @@ import notifications from './modules/notifications'
 import forms from './modules/forms'
 import makeResourceModule from './modules/make-resource-module'
 import auth from './modules/auth'
+import acl from './modules/acl'
 
 import WebAuth from 'mbjs-api-client/src/web'
 import Vue from 'vue'
@@ -27,6 +28,7 @@ const apiClient = new WebAuth({
  */
 const store = new Vuex.Store({
   modules: {
+    acl,
     notifications,
     forms,
     mosysGridEditorStore,
