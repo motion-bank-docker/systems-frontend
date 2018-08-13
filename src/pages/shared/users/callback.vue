@@ -14,7 +14,12 @@
           body: _this.$t('messages.login_success'),
           type: 'success'
         })
-        if (first) _this.$router.replace({ name: 'users.manage', params: { isFirst: true } })
+        const redirect = _this.$store.state.auth.redirectUri
+        if (redirect && !first) {
+          _this.$store.commit('auth/clearRedirect')
+          _this.$router.replace(redirect)
+        }
+        else if (first) _this.$router.replace({ name: 'users.manage', params: { isFirst: true } })
         else _this.$router.replace({ name: 'site.welcome' })
       }).catch(err => {
         console.error('Auth0 callback error:', err.error || err.message, err.error_description)
