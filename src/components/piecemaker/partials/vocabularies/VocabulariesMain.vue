@@ -5,6 +5,18 @@
   //
   .row.q-mt-md
 
+    // SET SHORTCUT
+    q-modal(v-model="showShortcutModal", minimized)
+      .bg-dark
+        .text-white.q-pa-lg.text-center
+          | Setting new shortcut,
+          br
+          | press a new key now
+          br
+          | or escape to abort
+          br
+          | Current shortcut is&nbsp;
+
     // BUTTON - SWITCH BETWEEN TEXT INPUT AND TAG BOX
 
     .col-xs-2.offset-xs-1.col-md-1.offset-md-1.col-lg-1.offset-lg-2.text-right.q-pa-sm.q-pr-md
@@ -16,7 +28,7 @@
 
       q-input.q-pa-md(
       v-model="currentBody.value", :class="[tagBox ? 'q-pl-xl text-primary' : 'text-white']",
-      @keyup="keyMonitor", @keydown.18="keyPressAlt('down')", @keyup.18="keyPressAlt('up')", @keydown.enter="handlerKeyPress", type="textarea", autofocus, dark)
+      @keyup="keyMonitor", @keydown.18="keyPressAlt('down')", @keyup.18="keyPressAlt('up')", type="textarea", autofocus, dark)
 
       .absolute-top.q-mt-sm(v-if="staging", style="width: 3rem;")
         q-btn.q-ml-sm.q-mt-xs.q-mr-none.text-primary(
@@ -25,7 +37,7 @@
       // TAG BOX
 
       div(v-if="tagBox && staging")
-        vocabularies(:parent='parent', :pressedKey="pressedKey", :str="currentBody.value", @selectedVocab="selectedV")
+        vocabularies(:parent='parent', :str="currentBody.value", :vocabulary="vocabs", @highlightedTag="highlightTag", @openShortcut="openShortcut")
 
 </template>
 
@@ -45,6 +57,7 @@
     },
     data () {
       return {
+        // activeShortcutFeature: false,
         annotations: [],
         currentBody: {
           value: undefined,
@@ -59,29 +72,120 @@
           time: undefined,
           string: undefined
         },
+        vocabs: [{
+          id: 1,
+          shortcutKey: {
+            code: '65',
+            value: 'a'
+          },
+          title: 'movement direction'
+        }, {
+          id: 2,
+          shortcutKey: {
+            code: '66',
+            value: 'b'
+          },
+          title: 'facial orientation'
+        }, {
+          id: 3,
+          shortcutKey: {
+            code: undefined,
+            value: undefined
+          },
+          title: 'direction body/body parts'
+        }, {
+          id: 4,
+          shortcutKey: {
+            code: undefined,
+            value: undefined
+          },
+          title: 'weight engagement individual'
+        }, {
+          id: 5,
+          shortcutKey: {
+            code: undefined,
+            value: undefined
+          },
+          title: 'weight engagement with partner'
+        }, {
+          id: 6,
+          shortcutKey: {
+            code: undefined,
+            value: undefined
+          },
+          title: 'weight regulation with partner'
+        }, {
+          id: 7,
+          shortcutKey: {
+            code: undefined,
+            value: undefined
+          },
+          title: 'synchronisation in rythm'
+        }, {
+          id: 8,
+          shortcutKey: {
+            code: undefined,
+            value: undefined
+          },
+          title: 'synchonisation in phrase'
+        }],
+        currentTag: undefined,
         highlightedTag: undefined,
         inputStyle: true,
         parent: 'live-annotate',
-        pressedKey: '',
         prevKey: undefined,
+        shortcutsActivated: false,
+        showShortcutModal: false,
         staging: process.env.IS_STAGING,
         tagBox: false
       }
     },
+    mounted () {
+      window.addEventListener('keydown', this.setShortcut)
+    },
+    beforeDestroy () {
+      window.removeEventListener('keydown', this.setShortcut)
+    },
     methods: {
-      selectedV (val) {
-        this.highlightedTag = val
+      openShortcut (val) {
+        console.log(val)
+        this.showShortcutModal = true
+        this.currentTag = val
       },
-      handlerKeyPress (e) {
-        this.pressedKey = e.keyCode
+      setShortcut (e) {
+        // console.log('--------', e.keyCode)
+        if (this.showShortcutModal) {
+          if (e.keyCode !== 8) {
+            this.vocabs[this.currentTag - 1].shortcutKey.code = e.keyCode
+            this.vocabs[this.currentTag - 1].shortcutKey.value = e.key
+          }
+          else if (e.keyCode === 8) { // backspace
+            this.vocabs[this.currentTag - 1].shortcutKey.code = undefined
+            this.vocabs[this.currentTag - 1].shortcutKey.value = undefined
+          }
+          // this.activeShortcutFeature = false
+          this.showShortcutModal = false
+        }
+      },
+      highlightTag (val) {
+        this.highlightedTag = val
       },
       keyPressAlt (val) {
         this.currentVal.string = this.highlightedTag
         this.currentVal.time = this.currentSelector.value
+        if (val === 'down') {
+          this.shortcutsActivated = true
+        }
+        else {
+          this.shortcutsActivated = false
+        }
         if (this.currentVal.string !== undefined && val === 'up') this.$emit('currentString', this.currentVal)
         this.tagBox = !this.tagBox
         this.currentVal.string = undefined
         this.highlightedTag = undefined
+      },
+      useShortcut (val) {
+        console.log(val, '<<<<<<<<')
       },
       keyMonitor (e) {
         if (this.prevKey === 13 && e.keyCode === 13 && !this.tagBox) { // enter text input
@@ -126,6 +230,9 @@
           this.prevKey = e.keyCode
         }
         // console.log(e.keyCode)
+        if (this.shortcutsActivated) {
+          console.log(this.vocabs[1].shortcutKey.code, this.vocabs[1].shortcutKey.value)
+        }
       } /*,
       createAnnotation () {
         const _this = this
