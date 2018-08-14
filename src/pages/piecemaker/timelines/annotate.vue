@@ -38,7 +38,8 @@
             q-item-side.text-right
               // button below ("re-use"):
               // appears only on tag types
-              q-btn.q-mr-sm(@click="", small, rounded) re-use
+              q-btn.q-mr-sm.rotate-180(@click="cloneEntry(annotation.body.value)", small, round, icon="filter_none")
+              q-btn.q-mr-sm(@click="", small, round, icon="playlist_add")
                 // q-tooltip.q-caption.bg-dark(:offset="[0,5]") alt + e
               q-btn(@click="deleteAnnotation(annotation.uuid, i)", icon="clear", round, small)
 
@@ -82,24 +83,32 @@
       }
     },
     methods: {
+      cloneEntry (val) {
+        this.currentBody.value = val
+        this.currentSelector.value = this.formatSelectorForList(DateTime.local().toISO())
+        this.createAnnotation()
+      },
       currentString (val) {
         // console.log(val, '------')
-        const bodyLength = val.string.length
-        if (bodyLength > 2) {
-          this.currentBody.value = val.string
-          this.currentSelector.value = val.time
-          this.createAnnotation()
-        }
-        else {
-          this.currentBody.value = undefined
+        if (val.string !== undefined) {
+          const bodyLength = val.string.length
+          if (bodyLength > 2) {
+            this.currentBody.value = val.string
+            this.currentSelector.value = val.time
+            this.createAnnotation()
+            this.currentBody.value = undefined
+          }
+          else {
+            this.currentBody.value = undefined
+          }
         }
       },
-      selectedV (val) {
+      /* selectedV (val) {
         this.highlightedTag = val
       },
       handlerKeyPress (e) {
         this.pressedKey = e.keyCode
-      },
+      }, */
       createAnnotation () {
         const _this = this
         const annotation = {
