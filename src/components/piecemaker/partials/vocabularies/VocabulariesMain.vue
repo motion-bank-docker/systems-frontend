@@ -8,14 +8,11 @@
     // SET SHORTCUT
     q-modal(v-model="showShortcutModal", minimized)
       .bg-dark
-        .text-white.q-pa-lg.text-center
-          | Setting new shortcut,
-          br
-          | press a new key now
-          br
-          | or escape to abort
-          br
-          | Current shortcut is&nbsp;
+        ul.text-white.bg-dark
+          li
+            | Press a new key now to define a new shortcut.
+          li
+            | Press escape to abort.
 
     // BUTTON - SWITCH BETWEEN TEXT INPUT AND TAG BOX
 
@@ -148,12 +145,10 @@
     },
     methods: {
       openShortcut (val) {
-        console.log(val)
         this.showShortcutModal = true
         this.currentTag = val
       },
       setShortcut (e) {
-        // console.log('--------', e.keyCode)
         if (this.showShortcutModal) {
           if (e.keyCode !== 8) {
             this.vocabs[this.currentTag - 1].shortcutKey.code = e.keyCode
@@ -163,7 +158,6 @@
             this.vocabs[this.currentTag - 1].shortcutKey.code = undefined
             this.vocabs[this.currentTag - 1].shortcutKey.value = undefined
           }
-          // this.activeShortcutFeature = false
           this.showShortcutModal = false
         }
       },
@@ -171,14 +165,12 @@
         this.highlightedTag = val
       },
       shortcutTest (e) {
-        // console.log(e.keyCode, '++++++')
-        // console.log(this.vocabs[0].shortcutKey.value)
-        // alert(this.vocabs.shortcutKey.code.match(e.keyCode))
         var obj = this.vocabs.find(function (obj) { return obj.shortcutKey.code === e.keyCode })
-        // console.log(e.keyCode, obj.title)
-        this.currentVal.string = obj.title
+        if (obj !== undefined) {
+          this.currentVal.string = obj.title
+          this.currentVal.time = this.currentSelector.value
+        }
         this.$emit('currentString', this.currentVal)
-        console.log(obj.title)
       },
       keyPressAlt (val) {
         this.currentVal.string = this.highlightedTag
@@ -190,14 +182,12 @@
         else {
           this.shortcutsActivated = false
           window.removeEventListener('keydown', this.shortcutTest)
+          this.currentBody.value = ''
         }
         if (this.currentVal.string !== undefined && val === 'up') this.$emit('currentString', this.currentVal)
         this.tagBox = !this.tagBox
         this.currentVal.string = undefined
         this.highlightedTag = undefined
-      },
-      useShortcut (val) {
-        console.log(val, '<<<<<<<<')
       },
       keyMonitor (e) {
         if (this.prevKey === 13 && e.keyCode === 13 && !this.tagBox) { // enter text input
@@ -241,9 +231,8 @@
           }
           this.prevKey = e.keyCode
         }
-        // console.log(e.keyCode)
         if (this.shortcutsActivated) {
-          // console.log(this.vocabs[1].shortcutKey.code, this.vocabs[1].shortcutKey.value)
+          this.currentBody.value = ''
         }
       } /*,
       createAnnotation () {
