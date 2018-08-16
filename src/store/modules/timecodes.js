@@ -40,6 +40,20 @@ const timecodes = {
       }
       const result = await axios.get(`${process.env.TRANSCODER_HOST}/timecodes/signals/ltc`, {headers})
       return result.data
+    },
+    async post ({ commit }, { extraction, detail }) {
+      const result = await axios.post(`${process.env.TRANSCODER_HOST}/timecodes`, extraction)
+      console.debug('extraction job added', extraction, result.data)
+      if (result.data.jobId) {
+        commit('addJobDetail', { jobId: result.data.jobId, detail })
+        commit('addJobId', result.data.jobId)
+      }
+      else throw new Error('Missing job id')
+      return result.data.jobId
+    },
+    async get (context, jobId) {
+      const result = await axios.get(`${process.env.TRANSCODER_HOST}/timecodes/${jobId}`)
+      return result.data
     }
   }
 }

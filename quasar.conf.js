@@ -7,6 +7,8 @@ module.exports = function (ctx) {
       'api',
       'auth',
       'axios',
+      'conversions',
+      'extractions',
       'i18n',
       'notifications',
       'pkg',

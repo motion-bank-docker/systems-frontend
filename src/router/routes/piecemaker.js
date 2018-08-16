@@ -65,6 +65,12 @@ export default {
     },
 
     {
+      path: '/piecemaker/videos/ingest',
+      component: () => import('pages/piecemaker/videos/ingest'),
+      name: 'piecemaker.videos.ingest',
+      meta: {private: true}
+    },
+    {
       path: '/piecemaker/videos/:id/annotate',
       component: () => import('pages/piecemaker/videos/annotate'),
       name: 'piecemaker.videos.annotate',
