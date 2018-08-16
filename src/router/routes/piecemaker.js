@@ -28,6 +28,12 @@ export default {
       meta: {private: true}
     },
     {
+      path: '/piecemaker/timelines/timecode',
+      component: () => import('pages/piecemaker/timelines/timecode'),
+      name: 'piecemaker.timelines.timecode',
+      meta: {private: true}
+    },
+    {
       path: '/piecemaker/timelines/:id',
       component: () => import('pages/piecemaker/timelines/show'),
       name: 'piecemaker.timelines.show',

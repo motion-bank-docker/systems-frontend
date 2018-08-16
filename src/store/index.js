@@ -4,6 +4,7 @@ import forms from './modules/forms'
 import makeResourceModule from './modules/make-resource-module'
 import auth from './modules/auth'
 import acl from './modules/acl'
+import timecodes from './modules/timecodes'
 
 import WebAuth from 'mbjs-api-client/src/web'
 import Vue from 'vue'
@@ -31,6 +32,7 @@ const store = new Vuex.Store({
     acl,
     notifications,
     forms,
+    timecodes,
     mosysGridEditorStore,
     annotations: makeResourceModule(apiClient, 'annotation'),
     maps: makeResourceModule(apiClient, 'map'),
