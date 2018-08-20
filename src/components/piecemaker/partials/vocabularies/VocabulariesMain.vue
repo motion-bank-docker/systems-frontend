@@ -8,10 +8,14 @@
     // SET SHORTCUT
 
     q-modal(v-model="showShortcutModal", minimized)
-      .bg-dark
-        q-list.no-paddin.no-border.text-white.bg-dark
-          q-item – Press a new key now to define a new shortcut.
-          q-item – Press escape to abort.
+      .bg-dark.position-relative.q-pa-xl
+        | Press a key between
+        span.text-primary.q-mx-sm a
+        | and
+        span.text-primary.q-mx-sm z
+        | to define a new shortcut.
+
+        q-btn.q-ml-lg(@click="showShortcutModal = false", icon="clear", round)
 
     // BUTTON - SWITCH BETWEEN TEXT INPUT AND TAG BOX
 
@@ -43,6 +47,12 @@
 <script>
   import Vocabularies from './Vocabularies'
   import { DateTime } from 'luxon'
+  // import { Notify } from 'quasar'
+
+  const alerts = [
+    { color: 'negative', message: 'Error', icon: 'clear' },
+    { color: 'blue', message: 'Accepted', icon: 'thumb_up' }
+  ]
 
   export default {
     components: {
@@ -162,10 +172,12 @@
             this.vocabs[this.currentTag - 1].shortcutKey.code = e.keyCode
             this.vocabs[this.currentTag - 1].shortcutKey.value = e.key
             this.showShortcutModal = false
+            this.$q.notify({ color: alerts[1]['color'], message: alerts[1]['message'], position: 'bottom-right' })
           }
           else {
             this.vocabs[this.currentTag - 1].shortcutKey.code = undefined
             this.vocabs[this.currentTag - 1].shortcutKey.value = undefined
+            this.$q.notify({ color: alerts[0]['color'], message: alerts[0]['message'], position: 'bottom-right' })
           }
         }
       },
