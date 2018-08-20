@@ -24,7 +24,7 @@
       // TEXT INPUT
 
       q-input.q-pa-md(
-      v-model="currentBody.value", :class="[tagBox ? 'q-pl-xl text-primary' : 'text-white']",
+      v-model="currentBody.value", ref="vocabInput", :class="[tagBox ? 'q-pl-xl text-primary' : 'text-white']",
       @keyup="keyMonitor", @keydown.18="keyPressAlt('down')", @keyup.18="keyPressAlt('up')", type="textarea", autofocus, dark)
 
       .absolute-top.q-mt-sm(v-if="staging", style="width: 3rem;")

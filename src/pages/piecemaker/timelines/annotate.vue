@@ -84,6 +84,7 @@
     },
     methods: {
       cloneEntry (val) {
+        this.$refs.vocabInput.$el[0].focus()
         this.currentBody.value = val
         this.currentSelector.value = this.formatSelectorForList(DateTime.local().toISO())
         this.createAnnotation()
