@@ -20,7 +20,6 @@
     // TOP CENTER: INPUT AREA
     //
     //
-    // .absolute-top.fixed-center(style="top: 0px; width: 100%; z-index: 1000;")
     .fixed-top(style="top: 50px; width: 100%; z-index: 1000;")
       vocabularies-main(@currentString="currentString")
 
@@ -36,9 +35,7 @@
             q-item-main
               q-input(type="textarea", v-model="annotation.body.value", dark)
             q-item-side.text-right
-              // button below ("re-use"):
-              // appears only on tag types
-              q-btn.q-mr-sm.rotate-180(@click="cloneEntry(annotation.body.value)", small, round, icon="filter_none")
+              q-btn.q-mr-sm(@click="cloneEntry(annotation.body.value)", small, round, icon="filter_none")
               q-btn.q-mr-sm(@click="", small, round, icon="playlist_add")
                 // q-tooltip.q-caption.bg-dark(:offset="[0,5]") alt + e
               q-btn(@click="deleteAnnotation(annotation.uuid, i)", icon="clear", round, small)
@@ -84,7 +81,7 @@
     },
     methods: {
       cloneEntry (val) {
-        this.$refs.vocabInput.$el[0].focus()
+        // this.$refs.vocabInput.$el[0].focus()
         this.currentBody.value = val
         this.currentSelector.value = this.formatSelectorForList(DateTime.local().toISO())
         this.createAnnotation()

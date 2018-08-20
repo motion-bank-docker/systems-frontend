@@ -1,29 +1,13 @@
 <template lang="pug">
   div(:class="[parent === 'post-annotate' ? 'moba-post-annotate' : '']", style="max-height: 50vh; overflow-y: scroll;")
 
-    // SHORTCUT MODAL
-    //
-      q-modal(v-model="activeShortcutFeature", minimized)
-        .bg-dark
-          .text-white.q-pa-lg.text-center {{ currentTag.title }}
-          .text-white.q-pa-lg.text-center
-            | Setting new shortcut,
-            br
-            | press a new key now
-            br
-            | or escape to abort
-            br
-            | Current shortcut is&nbsp;
-            span.text-grey-8 {{ currentTag.shortcutKey }}
-            div (target-ID: {{ currentTag.targetId }})
-
     // LIST RESULTS
     //
     .q-pa-sm
       // (TODO: most used?)
       q-list.no-border.no-margin.no-padding
 
-        // WORKARAOUND, because q-items don't accept mouse events (quasar bug)
+        // WORKARAOUND – q-items don't accept mouse events (quasar bug)
         div(v-for="(tag, i) in filteredTags", @mouseenter="hoverTag(i)")
 
           q-item.no-padding.moba-tag-hover(
@@ -33,7 +17,8 @@
               span.text-grey-6 {{ getInitials(tag.title) }}
 
             q-item-main
-              q-btn.full-width.text-white(@click="clickTag(tag)" , no-caps, flat, align="left") {{ tag.title }}
+              q-btn.full-width(@click="clickTag(tag), emitFocus()" , no-caps, flat, align="left", color="transparent")
+                .text-white {{ tag.title }}
 
             q-item-side.q-px-sm.q-py-xs
               q-btn.text-primary(v-if="tag.shortcutKey.value != undefined",
@@ -90,22 +75,10 @@
       }
     },
     methods: {
-      /* setShortcut (e) {
-        // console.log('--------', e.keyCode)
-        if (this.activeShortcutFeature) {
-          if (e.keyCode !== 8) {
-            // console.log(this.currentTag.targetId)
-            // console.log(this.vocabs[this.currentTag.targetId].shortcutKey)
-            this.vocabs[this.currentTag.targetId - 1].shortcutKey.code = e.keyCode
-            this.vocabs[this.currentTag.targetId - 1].shortcutKey.value = e.key
-          }
-          else if (e.keyCode === 8) { // backspace
-            this.vocabs[this.currentTag.targetId - 1].shortcutKey.code = ''
-            this.vocabs[this.currentTag.targetId - 1].shortcutKey.value = ''
-          }
-          this.activeShortcutFeature = false
-        }
-      }, */
+      emitFocus () {
+        // alert('emit focus')
+        this.$emit('emitFocus')
+      },
       emitId (val) {
         this.$emit('openShortcut', val)
       },
@@ -139,23 +112,4 @@
 
 <style scoped lang="stylus">
   @import '~variables'
-
-  /* .moba-tag-hover:hover
-    background-color $primary */
-
-  /* .moba-post-annotate
-    background-color rgba( 255, 255, 255, 0 )
-    .q-btn
-      color white!important
-      border 1px solid rgba(255, 255, 255, .2)
-  .moba-post-annotate:hover
-    background-color rgba( 0, 0, 0, .3 )
-    .q-btn
-      color white!important
-      border 1px solid rgba(255, 255, 255, .2)!important
-    .q-btn:hover
-      opacity 1
-      background-color white!important
-      color black!important
-      border 0px solid transparent!important */
 </style>
