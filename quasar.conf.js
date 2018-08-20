@@ -52,7 +52,8 @@ module.exports = function (ctx) {
         AUTH0_CLIENT_ID: JSON.stringify(process.env.AUTH0_CLIENT_ID || 'lyVRrHYxUCOosFip40Ws5BRJyfHWSWTi'),
         AUTH0_REDIRECT_URL: JSON.stringify(process.env.AUTH0_REDIRECT_URL || 'https://app.motionbank.org/users/callback'),
         AUTH0_AUDIENCE: JSON.stringify(process.env.AUTH0_AUDIENCE || 'https://api.motionbank.org'),
-        IS_STAGING: JSON.stringify(process.env.IS_STAGING || false)
+        IS_STAGING: JSON.stringify(process.env.IS_STAGING || false),
+        UI_VERSION: JSON.stringify(process.env.UI_VERSION || require('./package.json').version)
       }
     },
     devServer: {
