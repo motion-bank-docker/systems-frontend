@@ -50,7 +50,7 @@
   // import { Notify } from 'quasar'
 
   const alerts = [
-    { color: 'negative', message: 'Error', icon: 'clear' },
+    { color: 'negative', message: 'Invalid', icon: 'clear' },
     { color: 'blue', message: 'Accepted', icon: 'thumb_up' }
   ]
 
@@ -168,16 +168,17 @@
           this.setFocusOnInput()
         }
         if (this.showShortcutModal) {
-          if (e.keyCode >= 65 && e.keyCode <= 90) { // [a] - [z] only
+          // [a] - [z] only
+          if (e.keyCode >= 65 && e.keyCode <= 90 && this.vocabs[this.currentTag - 1].shortcutKey.code !== e.keyCode) {
             this.vocabs[this.currentTag - 1].shortcutKey.code = e.keyCode
             this.vocabs[this.currentTag - 1].shortcutKey.value = e.key
             this.showShortcutModal = false
-            this.$q.notify({ color: alerts[1]['color'], message: alerts[1]['message'], position: 'bottom-right' })
+            this.$q.notify({ color: alerts[1]['color'], message: alerts[1]['message'] })
           }
           else {
             this.vocabs[this.currentTag - 1].shortcutKey.code = undefined
             this.vocabs[this.currentTag - 1].shortcutKey.value = undefined
-            this.$q.notify({ color: alerts[0]['color'], message: alerts[0]['message'], position: 'bottom-right' })
+            this.$q.notify({ color: alerts[0]['color'], message: alerts[0]['message'] })
           }
         }
       },
@@ -210,7 +211,8 @@
         this.highlightedTag = undefined
       },
       keyMonitor (e) {
-        if (this.prevKey === 13 && e.keyCode === 13 && !this.showTagBox) { // [enter] text input
+        // [enter] text input
+        if (this.prevKey === 13 && e.keyCode === 13 && !this.showTagBox) {
           this.currentVal.string = this.currentBody.value
           this.currentVal.time = this.currentSelector.value
           this.prevKey = undefined
@@ -226,20 +228,24 @@
             this.currentBody.value = undefined
           }
         }
-        else if (e.keyCode === 13 && this.showTagBox) { // [enter] vocabulary
+        // [enter] vocabulary
+        else if (e.keyCode === 13 && this.showTagBox) {
           this.currentVal.string = this.highlightedTag
           this.currentVal.time = this.currentSelector.value
           this.$emit('currentString', this.currentVal)
           this.showTagBox = false
           this.currentBody.value = undefined
         }
-        else if (e.keyCode === 27) { // [escape]
+        // [escape]
+        else if (e.keyCode === 27) {
           this.showTagBox = false
           this.currentBody.value = undefined
         }
-        else if (e.keyCode === 18) { // [alt]
+        // [alt]
+        else if (e.keyCode === 18) {
         }
-        else if (e.keyCode === 220 || e.keyCode === 40) { // [#] or [arrow down]
+        // [#] or [arrow down]
+        else if (e.keyCode === 220 || e.keyCode === 40) {
           this.currentSelector.value = DateTime.local().toISO()
           this.showTagBox = true
           if (e.keyCode === 220) this.currentBody.value = undefined

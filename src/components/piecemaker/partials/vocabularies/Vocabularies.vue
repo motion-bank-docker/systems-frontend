@@ -1,5 +1,5 @@
 <template lang="pug">
-  div(:class="[parent === 'post-annotate' ? 'moba-post-annotate' : '']", style="max-height: 50vh; overflow-y: scroll;")
+  div(ref="tagList",  :class="[parent === 'post-annotate' ? 'moba-post-annotate' : '']", style="max-height: 66vh; overflow-y: scroll;")
 
     // LIST RESULTS
     //
@@ -13,21 +13,21 @@
           q-item.no-padding.moba-tag-hover(
           :key="i", :class="[i == tagHighlight ? 'bg-grey-9' : '']")
 
-            q-item-side.q-px-sm(style="min-width: 5rem;")
+            q-item-side.q-px-sm.q-caption(style="min-width: 5rem;")
               span.text-grey-6 {{ getInitials(tag.title) }}
+
+            q-item-side.q-px-sm.q-py
+              q-btn.text-primary(v-if="tag.shortcutKey.value != undefined",
+              @click="emitId(tag.id), currentTag.title = tag.title, currentTag.shortcutKey = tag.shortcutKey.value, currentTag.targetId = tag.id",
+              no-caps, round, size="sm") {{ tag.shortcutKey.value }}
+
+              q-btn.text-grey-8.cursor-pointer.no-margin(v-else, round, size="sm",
+              @click="emitId(tag.id), currentTag.title = tag.title, currentTag.shortcutKey = tag.shortcutKey.value, currentTag.targetId = tag.id")
+                q-icon(name="keyboard")
 
             q-item-main
               q-btn.full-width(@click="clickTag(tag), emitFocus()" , no-caps, flat, align="left", color="transparent")
                 .text-white {{ tag.title }}
-
-            q-item-side.q-px-sm.q-py-xs
-              q-btn.text-primary(v-if="tag.shortcutKey.value != undefined",
-              @click="emitId(tag.id), currentTag.title = tag.title, currentTag.shortcutKey = tag.shortcutKey.value, currentTag.targetId = tag.id",
-              no-caps, round) {{ tag.shortcutKey.value }}
-
-              q-btn.text-grey-8.cursor-pointer.no-margin(v-else, round, flat,
-              @click="emitId(tag.id), currentTag.title = tag.title, currentTag.shortcutKey = tag.shortcutKey.value, currentTag.targetId = tag.id")
-                q-icon(name="keyboard")
 
         q-item(v-if="filteredTags.length <= 0")
           q-item-main.text-italic.text-center
@@ -70,6 +70,9 @@
       }
     },
     methods: {
+      setFocusOnTaglist () {
+        this.$refs.tagList.focus()
+      },
       emitFocus () {
         this.$emit('emitFocus')
       },
@@ -95,6 +98,7 @@
           this.tagHighlight--
           this.$emit('highlightedTag', this.filteredTags[this.tagHighlight].title)
         }
+        this.setFocusOnTaglist()
         // console.log(this.filteredTags[this.tagHighlight])
       },
       getInitials (val) {
