@@ -1,7 +1,7 @@
 <template lang="pug">
   // .row.layout-padding.full-height.items-center.justify-center
   full-screen
-    .text-center.fit.relative-position
+    .text-center.fit.relative-position(style="padding-bottom: 120px;")
       a(@click="openURL('http://www.motionbank.org')")
         img.responsive(src="~assets/motionbank-logo.png")
       h3.caption.light-paragraph {{ $t('site.title') }}
