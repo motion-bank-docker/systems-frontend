@@ -28,6 +28,12 @@ export default {
       meta: {private: true}
     },
     {
+      path: '/piecemaker/timelines/timecode',
+      component: () => import('pages/piecemaker/timelines/timecode'),
+      name: 'piecemaker.timelines.timecode',
+      meta: {private: true}
+    },
+    {
       path: '/piecemaker/timelines/:id',
       component: () => import('pages/piecemaker/timelines/show'),
       name: 'piecemaker.timelines.show',
@@ -58,6 +64,12 @@ export default {
       meta: {private: true}
     },
 
+    {
+      path: '/piecemaker/videos/ingest',
+      component: () => import('pages/piecemaker/videos/ingest'),
+      name: 'piecemaker.videos.ingest',
+      meta: {private: true}
+    },
     {
       path: '/piecemaker/videos/:id/annotate',
       component: () => import('pages/piecemaker/videos/annotate'),

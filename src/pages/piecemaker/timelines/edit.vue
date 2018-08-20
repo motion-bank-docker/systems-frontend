@@ -8,6 +8,11 @@
         .col-md-12
           form-main(v-model="payload", :schema="schema")
             q-btn.q-mr-md.bg-grey-9(q-if="$route.params.id", slot="form-buttons-add", :label="exportLabel", @click="exportTimeline")
+      .row(v-if="env.IS_STAGING")
+        .col-md-12
+          p {{ $t('labels.access_control') }}
+          q-checkbox(v-model="acl.public", :label="$t('labels.access_control_public')")
+          q-btn.q-mr-md.bg-grey-9(:label="$t('buttons.update_access_control')", @click="updateACL")
       // .row
       //   .col-md-12
       //     tags(v-if="payload", :targetUuid="payload.uuid", fullWidth)
@@ -32,10 +37,14 @@
     data () {
       const _this = this
       return {
+        env: process.env,
         downloadURL: undefined,
         exportLabel: this.$t('buttons.export_timeline'),
         type: constants.MAP_TYPE_TIMELINE,
         payload: this.$route.params.id ? _this.$store.dispatch('maps/get', _this.$route.params.id) : undefined,
+        acl: {
+          public: false
+        },
         schema: {
           fields: {
             title: {
@@ -57,6 +66,13 @@
         }
       }
     },
+    async mounted () {
+      if (process.env.IS_STAGING) {
+        const aclQuery = {role: 'public', uuid: this.$route.params.id, permission: 'get'}
+        const permissions = await this.$store.dispatch('acl/isRoleAllowed', aclQuery)
+        this.acl.public = permissions.get === true
+      }
+    },
     methods: {
       exportTimeline () {
         const _this = this
@@ -72,6 +88,19 @@
         ).then(result => {
           _this.downloadURL = `${process.env.API_HOST}/archives/maps/${result.data}`
           _this.exportLabel = _this.$t('buttons.download_archive')
+        })
+      },
+      async updateACL () {
+        console.debug('setting acl...', this.acl)
+        if (this.acl.public) {
+          await this.$store.dispatch('acl/set', {role: 'public', uuid: this.$route.params.id, permissions: ['get']})
+        }
+        else {
+          await this.$store.dispatch('acl/remove', {role: 'public', uuid: this.$route.params.id, permission: 'get'})
+        }
+        this.$store.commit('notifications/addMessage', {
+          body: 'messages.acl_updated',
+          type: 'success'
         })
       }
     }

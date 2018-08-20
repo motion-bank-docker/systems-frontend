@@ -1,0 +1,69 @@
+<template lang="pug">
+  full-screen
+    h4 Add signal annotation to timeline
+    .row
+      q-select.col-md-12(v-model="selectedTimeline", :options="timelines", dark)
+    .row
+      q-select.col-md-12(v-model="selectedSignal", :options="signals", dark)
+      audio(ref="audio", v-if="selectedSignal", :src="selectedSignal", preload="auto")
+    .row
+      q-btn(@click="addSignalStart", v-if="!isPlaying && selectedSignal && selectedTimeline", color="primary") Add Signal
+      q-btn(@click="stop", v-if="isPlaying", color="primary") Stop Signal
+</template>
+
+<script>
+  import { DateTime } from 'luxon'
+  import { FullScreen } from 'mbjs-quasar/src/components'
+  import path from 'path'
+  export default {
+    components: {
+      FullScreen
+    },
+    data () {
+      return {
+        isPlaying: false,
+        signals: [],
+        timelines: [],
+        selectedTimeline: undefined,
+        selectedSignal: undefined
+      }
+    },
+    async mounted () {
+      let result = await this.$store.dispatch('maps/find', {type: 'Timeline'})
+      this.timelines = result.items.map(timeline => { return { label: timeline.title, value: timeline.uuid } })
+      result = await this.$store.dispatch('timecodes/listSignals')
+      this.signals = result.map(signal => { return { label: path.basename(signal), value: signal } })
+    },
+    methods: {
+      async addSignalStart () {
+        this.isPlaying = true
+        this.$refs.audio.play()
+        const annotation = {
+          target: {
+            type: 'Timeline',
+            id: `${process.env.TIMELINE_BASE_URI}${this.selectedTimeline}`,
+            selector: {
+              type: 'Fragment',
+              value: DateTime.local().toISO()
+            }
+          },
+          body: {
+            type: 'Audio',
+            purpose: 'linking',
+            source: {
+              id: this.selectedSignal,
+              type: 'audio/wav'
+            }
+          }
+        }
+        await this.$store.dispatch('annotations/post', annotation)
+      },
+      stop () {
+        this.isPlaying = false
+        this.$refs.audio.pause()
+        this.selectedTimeline = undefined
+        this.selectedSignal = undefined
+      }
+    }
+  }
+</script>

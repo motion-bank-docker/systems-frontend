@@ -278,7 +278,7 @@
           .then(res => {
             _this.getAnnotations().then(() => {
               const targets = this.$refs[res.uuid]
-              if (targets && targets.length) _this.scrollToElement(targets[0])
+              if (targets && targets.length) _this.scrollToElement(targets[0].$el)
             })
           })
           .then(() => _this.toggleForm())
