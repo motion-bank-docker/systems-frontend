@@ -4,10 +4,10 @@
     // LIST RESULTS
     //
     .q-pa-sm
-      // (TODO: most used?)
+      // (todo: most used?)
       q-list.no-border.no-margin.no-padding
 
-        // WORKARAOUND – q-items don't accept mouse events (quasar bug)
+        // (workaround -- q-items don't accept mouse events (quasar bug))
         div(v-for="(tag, i) in filteredTags", @mouseenter="hoverTag(i)")
 
           q-item.no-padding.moba-tag-hover(
@@ -46,22 +46,18 @@
             el.title.toLowerCase().indexOf(val.toLowerCase()) > -1
           )
         }
-        // console.log(val)
         this.filteredTags = filterItems(val).sort()
       }
     },
     mounted () {
       window.addEventListener('keydown', this.tagHightlighting)
-      // window.addEventListener('keydown', this.setShortcut)
       this.filteredTags = this.vocabs
     },
     beforeDestroy () {
       window.removeEventListener('keydown', this.tagHightlighting)
-      // window.removeEventListener('keydown', this.setShortcut)
     },
     data () {
       return {
-        // activeShortcutFeature: false,
         currentTag: {
           shortcutKey: '',
           targetId: '',
@@ -70,33 +66,32 @@
         filteredTags: [],
         results: [],
         tagHighlight: -1,
-        // vocabs: ['movement direction', 'facial orientation', 'direction body/body parts', 'weight engagement individual', 'weight engagement with partner', 'weight regulation with partner', 'synchronisation in rythm', 'synchonisation in phrase']
         vocabs: this.vocabulary
       }
     },
     methods: {
       emitFocus () {
-        // alert('emit focus')
         this.$emit('emitFocus')
       },
       emitId (val) {
         this.$emit('openShortcut', val)
       },
       hoverTag (val) {
-        // console.log(val)
         this.tagHighlight = val
         // this.$emit('highlightedTag', val)
       },
       clickTag (val) {
-        // console.log(val)
-        this.$emit('highlightedTag', val)
+        // console.log(this.filteredTags, val.title)
+        console.log(this.filteredTags)
+        console.log(val.title)
+        this.$emit('clickTag', val.title)
       },
       tagHightlighting (e) {
-        if (e.keyCode === 40 && this.tagHighlight < this.filteredTags.length - 1) {
+        if (e.keyCode === 40 && this.tagHighlight < this.filteredTags.length - 1) { // [down]
           this.tagHighlight++
           this.$emit('highlightedTag', this.filteredTags[this.tagHighlight].title)
         }
-        else if (e.keyCode === 38 && this.tagHighlight > 0) {
+        else if (e.keyCode === 38 && this.tagHighlight > 0) { // [up]
           this.tagHighlight--
           this.$emit('highlightedTag', this.filteredTags[this.tagHighlight].title)
         }

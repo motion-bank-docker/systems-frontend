@@ -43,8 +43,6 @@
 </template>
 
 <script>
-  // import Full from 'mbjs-quasar/src/components/layouts/Full'
-  // import Vocabularies from '../../../components/piecemaker/partials/vocabularies/Vocabularies'
   import VocabulariesMain from '../../../components/piecemaker/partials/vocabularies/VocabulariesMain'
   import { ObjectUtil, Assert } from 'mbjs-utils'
   import { DateTime } from 'luxon'
@@ -54,8 +52,6 @@
 
   export default {
     components: {
-      // Full,
-      // Vocabularies,
       VocabulariesMain
     },
     data () {
@@ -83,7 +79,8 @@
       cloneEntry (val) {
         // this.$refs.vocabInput.$el[0].focus()
         this.currentBody.value = val
-        this.currentSelector.value = this.formatSelectorForList(DateTime.local().toISO())
+        this.currentSelector.value = DateTime.local().toISO()
+        // this.currentSelector.value = this.formatSelectorForList(DateTime.local().toISO())
         this.createAnnotation()
       },
       currentString (val) {
@@ -101,12 +98,6 @@
           }
         }
       },
-      /* selectedV (val) {
-        this.highlightedTag = val
-      },
-      handlerKeyPress (e) {
-        this.pressedKey = e.keyCode
-      }, */
       createAnnotation () {
         const _this = this
         const annotation = {
@@ -137,12 +128,14 @@
           })
       },
       scrollToElement () {
+        // let delay = 250
+        let delay = 1
         // alert(uuid)
         // window.location.href = '#' + uuid
         // window.scrollTo(0, document.body.scrollHeight)
         setTimeout(function () {
           window.scrollTo(0, document.body.scrollHeight)
-        }, 250)
+        }, delay)
       },
       formatSelectorForList (val) {
         const selector = DateTime.fromISO(val)
