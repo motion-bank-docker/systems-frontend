@@ -26,7 +26,7 @@
     // CENTER: SHOW ANNOTATIONS
     //
     //
-    .row
+    .row.q-pb-xl
       .col-xs-12.offset-xs-none.col-md-10.offset-md-1.col-lg-8.offset-lg-2
         q-list(v-if="inputStyle", no-border, style="margin-top: 8rem;")
           q-item(v-for="(annotation, i) in annotations", :key="annotation.uuid", :id="annotation.uuid")
