@@ -20,8 +20,8 @@
     // TOP CENTER: INPUT AREA
     //
     //
-    .fixed-top(style="top: 50px; width: 100%; z-index: 1000;")
-      vocabularies-main(@currentString="currentString")
+    .fixed-top.bg-dark.q-pb-md(style="top: 50px; width: 100%; z-index: 1000;")
+      vocabularies-main(@currentString="currentString", :newVocabulary="newVocabulary")
 
     // CENTER: SHOW ANNOTATIONS
     //
@@ -36,7 +36,7 @@
               q-input(type="textarea", v-model="annotation.body.value", dark)
             q-item-side.text-right
               q-btn.q-mr-sm(@click="cloneEntry(annotation.body.value)", small, round, icon="filter_none")
-              q-btn.q-mr-sm(@click="", small, round, icon="playlist_add")
+              q-btn.q-mr-sm(@click="newVocab(annotation.body.value)", small, round, icon="playlist_add")
                 // q-tooltip.q-caption.bg-dark(:offset="[0,5]") alt + e
               q-btn(@click="deleteAnnotation(annotation.uuid, i)", icon="clear", round, small)
 
@@ -68,6 +68,7 @@
         },
         highlightedTag: undefined,
         inputStyle: true,
+        newVocabulary: '',
         parent: 'live-annotate',
         pressedKey: '',
         prevKey: undefined,
@@ -76,6 +77,10 @@
       }
     },
     methods: {
+      newVocab (val) {
+        this.newVocabulary = val
+        // alert(this.newVocabulary)
+      },
       cloneEntry (val) {
         // this.$refs.vocabInput.$el[0].focus()
         this.currentBody.value = val

@@ -17,10 +17,22 @@
 
         q-btn.q-ml-lg(@click="showShortcutModal = false", icon="clear", round)
 
+    // SET NEW VOCABULARY
+
+    q-modal(v-model="showVocabularyModal", minimized)
+      .bg-dark.position-relative.q-pa-xl
+        | Do you want to include
+        br
+        span.text-primary.q-mx-sm ...
+        br
+        | in the vocabularies?
+
+        q-btn.q-ml-lg(@click="showShortcutModal = false", icon="clear", round)
+
     // BUTTON - SWITCH BETWEEN TEXT INPUT AND TAG BOX
 
     .col-xs-2.offset-xs-1.col-md-1.offset-md-1.col-lg-1.offset-lg-2.text-right.q-pa-sm.q-pr-md
-      q-btn.text-primary.bg-grey-10(v-if="!showTagBox && staging", @click="showTagBox = true, setFocusOnInput()", round) #
+      q-btn.text-primary.bg-grey-10(v-if="!showTagBox && staging", @click="showTagBox = true, setFocusOnInput()", round, icon="local_offer")
 
     .col-xs-8.col-md-8.col-lg-6.bg-grey-10.relative-position(:class="[showTagBox ? 'shadow-4' : '']")
 
@@ -138,6 +150,7 @@
         prevKey: undefined,
         shortcutsActivated: false,
         showShortcutModal: false,
+        showVocabularyModal: false,
         staging: process.env.IS_STAGING,
         showTagBox: false
       }
@@ -148,7 +161,23 @@
     beforeDestroy () {
       window.removeEventListener('keydown', this.setShortcut)
     },
+    watch: {
+      newVocabulary: function (val) {
+        // console.log('watch newVocabulary: ' + val)
+        this.showVocabularyModal = true
+        this.extendVocabulary(val)
+      }
+    },
+    props: ['newVocabulary'],
     methods: {
+      extendVocabulary (val) {
+        // console.log('extendVocabulary: ' + val)
+        let countId = this.vocabs.length + 1
+        this.vocabs.push({ id: countId, shortcutKey: { code: undefined, value: undefined }, title: val })
+        /* this.vocabs.sort(function (a, b) {
+          return a[2] - b[2]
+        }) */
+      },
       clickTag (val) {
         this.currentVal.string = val
         this.currentVal.time = this.currentSelector.value
@@ -240,6 +269,9 @@
         else if (e.keyCode === 27) {
           this.showTagBox = false
           this.currentBody.value = undefined
+        }
+        // [tab]
+        else if (e.keyCode === 9) {
         }
         // [alt]
         else if (e.keyCode === 18) {

@@ -13,7 +13,7 @@
           q-item.no-padding.moba-tag-hover(
           :key="i", :class="[i == tagHighlight ? 'bg-grey-9' : '']")
 
-            q-item-side.q-px-sm.q-caption(style="min-width: 5rem;")
+            // q-item-side.q-px-sm.q-caption(style="min-width: 5rem;")
               span.text-grey-6 {{ getInitials(tag.title) }}
 
             q-item-side.q-px-sm.q-py
@@ -27,7 +27,7 @@
 
             q-item-main
               q-btn.full-width(@click="clickTag(tag), emitFocus()" , no-caps, flat, align="left", color="transparent")
-                .text-white {{ tag.title }}
+                .text-white.text-weight-regular {{ tag.title }}
 
         q-item(v-if="filteredTags.length <= 0")
           q-item-main.text-italic.text-center
