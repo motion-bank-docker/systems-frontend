@@ -56,10 +56,10 @@
 
       div(v-if="showTagBox && staging", ref="tagbox")
         .q-pa-md
-          q-btn.q-px-lg.q-mr-sm(@click="changeVocabularies(vocabsNull)", size="sm") 0
-          q-btn.q-px-lg.q-mr-sm(@click="changeVocabularies(vocabsOne)", size="sm") I
-          q-btn.q-px-lg.q-mr-sm(@click="changeVocabularies(vocabsTwo)", size="sm") II
-          q-btn.q-px-lg(@click="changeVocabularies(vocabsThree)", size="sm") III
+          q-btn.q-px-lg.q-mr-sm(@click="changeVocabularies(vocabsNull)", size="sm") SEAM
+          q-btn.q-px-lg.q-mr-sm(@click="changeVocabularies(vocabsOne)", size="sm") shortterms
+          q-btn.q-px-lg.q-mr-sm(@click="changeVocabularies(vocabsTwo)", size="sm") selected categories
+          q-btn.q-px-lg(@click="changeVocabularies(vocabsThree)", size="sm") all terms
         vocabularies(:parent="parent", :str="currentBody.value", :vocabulary="vocabs", :pressedAlt="altIsPressed",
         @clickTag="clickTag", @emitFocus="setFocusOnInput", @highlightedTag="highlightTag", @openShortcut="openShortcut")
 
