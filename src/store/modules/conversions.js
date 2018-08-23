@@ -36,7 +36,7 @@ const conversions = {
   actions: {
     async post ({ commit }, { conversion, detail }) {
       const result = await axios.post(`${process.env.TRANSCODER_HOST}/conversions`, conversion)
-      console.debug('conversionn job added', conversion, result)
+      console.debug('conversion job added', conversion, result)
       if (result.data.jobId) {
         commit('addJobDetail', { jobId: result.data.jobId, detail })
         commit('addJobId', result.data.jobId)

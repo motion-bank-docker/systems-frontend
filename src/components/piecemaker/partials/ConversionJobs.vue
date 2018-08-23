@@ -81,13 +81,6 @@
               await this.$store.dispatch('acl/set', {uuid: annotation.uuid, role: 'public', permissions: ['get']})
             }
             this.$store.commit('conversions/removeJobDetail', jobId)
-            const message = {
-              video: job.result.video,
-              detail,
-              annotation: annotation.uuid,
-              user: this.user.uuid
-            }
-            await this.$store.dispatch('logging/log', { action: 'convert', message })
             this.$root.$emit('updateVideos')
             this.$root.$emit('jobResult', { annotation, jobId, detail })
             this.$store.commit('notifications/addMessage', {

@@ -45,11 +45,10 @@
             const detail = this.$store.state.timecodes.jobDetails[jobId]
             this.$store.commit('timecodes/removeJobDetail', jobId)
             const message = {
-              result: job.result,
+              result: job.result ? job.result.data : undefined,
               detail,
               user: this.user.uuid
             }
-            await this.$store.dispatch('logging/log', { action: 'convert', message })
             this.$root.$emit('extraction-complete', message)
             this.$store.commit('notifications/addMessage', {
               body: 'messages.timecode_extraction_successful',
