@@ -15,12 +15,17 @@
   "homepage": "https://gitlab.rlp.net/motionbank/systems-frontend#readme",
   "scripts": {
     "build": "cross-env NODE_ENV=production quasar build",
+    "build-staging": "cross-env NODE_ENV=production IS_STAGING=true quasar build",
     "clean": "quasar clean",
     "dev": "cross-env NODE_ENV=production quasar dev",
     "lint": "eslint --ext .js,.vue src",
     "metapak": "metapak",
     "start": "node ./",
-    "test": "echo \"No test specified\" && exit 0"
+    "test": "echo \"No test specified\" && exit 0",
+    "docker-build": "docker build -t motionbank/systems-frontend:latest .",
+    "docker-release": "npm run docker-build && docker push motionbank/systems-frontend:latest",
+    "docker-build-staging": "docker build -t motionbank/systems-frontend:staging .",
+    "docker-release-staging": "npm run docker-build-staging && docker push motionbank/systems-frontend:staging"
   },
   "metapak": {
     "configs": [
@@ -46,9 +51,10 @@
     "mbjs-api-client": "^1.0.5",
     "mbjs-data-models": "0.0.8",
     "mbjs-media": "0.0.18",
-    "mbjs-quasar": "0.0.6",
+    "mbjs-quasar": "0.0.12",
     "mbjs-utils": "^0.0.6",
     "pug": "^2.0.3",
+    "raven-js": "^3.26.4",
     "sift": "^5.1.0",
     "tiny-emitter": "^2.0.2",
     "uuid-validate": "0.0.2",
@@ -75,7 +81,7 @@
     "metapak": "^1.0.3",
     "metapak-motionbank": "^1.11.8",
     "pug-plain-loader": "^1.0.0",
-    "quasar-cli": "^0.17.7",
+    "quasar-cli": "^0.17.11",
     "static-server": "^2.2.1",
     "strip-ansi": "^3.0.1"
   },

@@ -3,6 +3,8 @@
     h4 Add signal annotation to timeline
     .row
       q-select.col-md-12(v-model="selectedTimeline", :options="timelines", dark)
+    <!--.row-->
+      <!--q-slider(v-model="volume", :min="0.0", :max="1.0", :step="0.01", label, dark)-->
     .row
       q-select.col-md-12(v-model="selectedSignal", :options="signals", dark)
       audio(ref="audio", v-if="selectedSignal", :src="selectedSignal", preload="auto")
@@ -22,6 +24,7 @@
     data () {
       return {
         isPlaying: false,
+        // volume: 0.8,
         signals: [],
         timelines: [],
         selectedTimeline: undefined,

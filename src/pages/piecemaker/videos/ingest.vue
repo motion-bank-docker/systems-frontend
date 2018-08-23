@@ -8,7 +8,8 @@
 </template>
 
 <script>
-  // import { DateTime } from 'luxon'
+  import { DateTime } from 'luxon'
+  import path from 'path'
   import { FullScreen, Uploader } from 'mbjs-quasar/src/components'
   export default {
     components: {
@@ -29,33 +30,89 @@
     },
     async mounted () {
       const _this = this
-      this.$root.$on('extraction-result', result => {
-        _this.extractResults.push(result)
-        console.log('result', _this.extractResults, result)
+      this.$root.$on('extraction-complete', message => {
+        _this.extractResults.push(message)
+        console.debug('extraction-complete', _this.extractResults, _this.extractJobs, message)
         _this.checkResults()
       })
       let result = await this.$store.dispatch('maps/find', {type: 'Timeline'})
       this.timelines = result.items.map(timeline => { return { label: timeline.title, value: timeline.uuid } })
     },
+    watch: {
+      async selectedTimeline (val) {
+        if (val) await this.getTimecodeAnnotations()
+      }
+    },
     methods: {
+      async getTimecodeAnnotations () {
+        const result = await this.$store.dispatch('annotations/find', {
+          'target.id': `${process.env.TIMELINE_BASE_URI}${this.selectedTimeline}`,
+          'body.type': 'Audio',
+          'body.purpose': 'linking'
+        })
+        this.timecodeAnnotations = result.items
+        console.debug('timecode annotations', this.timecodeAnnotations)
+      },
       async onFinish (responses) {
-        console.log(this.selectedTimeline, responses)
+        console.debug('upload responses', this.selectedTimeline, responses)
         const responseKeys = Object.keys(responses)
         for (let key of responseKeys) {
           const detail = {
-            source: responses[key].file
+            source: responses[key].file,
+            timeline: `${process.env.TIMELINE_BASE_URI}${this.selectedTimeline}`,
+            title: path.basename(responses[key].originalName, path.extname(responses[key].originalName))
           }
           const payload = {
-            extraction: { source: responses[key].file, detail }
+            extraction: { source: responses[key].file },
+            detail
           }
           const job = await this.$store.dispatch('timecodes/post', payload)
-          console.log(job)
+          console.debug('created extraction job', job)
           this.extractJobs.push(job)
         }
       },
-      checkResults () {
+      timecodeToMillis (timecode, fps = 25) {
+        const parts = timecode.split(':').map(val => parseInt(val))
+        const frameTime = 1000 / fps
+        let millis = 0
+        millis += parts[0] * 60 * 60 * 1000
+        millis += parts[1] * 60 * 1000
+        millis += parts[2] * 1000
+        millis += parts[3] * frameTime
+        return millis
+      },
+      async checkResults () {
         if (this.extractResults.length === this.extractJobs.length) {
           console.log('extraction complete', this.extractResults)
+          const rootTime = DateTime.fromISO(this.timecodeAnnotations[0].target.selector.value)
+          for (let message of this.extractResults) {
+            const frameTime = this.timecodeToMillis(message.result[0][2])
+            const refDate = rootTime.plus(frameTime).minus(message.result[0][0] * 1000)
+            console.debug('sync data', refDate.toISO(), rootTime.toISO(), message.result[0][2], message.result[0][0])
+            const conversion = {
+              source: message.detail.source,
+              scale: {
+                width: 1280,
+                height: 720
+              },
+              metadata: {
+                title: message.detail.title
+              }
+            }
+            const detail = {
+              deleteOriginal: true,
+              target: {
+                type: 'Timeline',
+                id: message.detail.timeline,
+                selector: {
+                  type: 'Fragment',
+                  value: refDate.toISO()
+                }
+              }
+            }
+            const job = await this.$store.dispatch('conversions/post', { conversion, detail })
+            console.debug('created conversion job', job)
+          }
         }
       }
     }
