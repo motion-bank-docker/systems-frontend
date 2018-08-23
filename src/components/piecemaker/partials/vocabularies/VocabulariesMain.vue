@@ -21,13 +21,14 @@
 
     q-modal(v-model="showVocabularyModal", minimized)
       .bg-dark.position-relative.q-pa-xl
-        | Do you want to include
-        br
-        span.text-primary.q-mx-sm ...
-        br
-        | in the vocabularies?
+        .text-center
+          div Do you want to include
+          div.text-primary {{ newVocabulary }}
+          div into your vocabularies?
 
-        q-btn.q-ml-lg(@click="showShortcutModal = false", icon="clear", round)
+        .q-mt-md.text-center
+          q-btn.q-mx-sm(@click="showVocabularyModal = false, extendVocabulary(newVocabulary)") yes
+          q-btn.q-mx-sm(@click="showVocabularyModal = false") no
 
     // BUTTON - SWITCH BETWEEN TEXT INPUT AND TAG BOX
 
@@ -87,61 +88,95 @@
           string: undefined
         },
         vocabs: [{
-          id: 1,
-          shortcutKey: {
-            code: 65,
-            value: 'a'
-          },
-          title: 'movement direction'
-        }, {
-          id: 2,
-          shortcutKey: {
-            code: 66,
-            value: 'b'
-          },
-          title: 'facial orientation'
-        }, {
-          id: 3,
-          shortcutKey: {
-            code: undefined,
-            value: undefined
-          },
-          title: 'direction body/body parts'
-        }, {
-          id: 4,
-          shortcutKey: {
-            code: undefined,
-            value: undefined
-          },
-          title: 'weight engagement individual'
-        }, {
-          id: 5,
-          shortcutKey: {
-            code: undefined,
-            value: undefined
-          },
-          title: 'weight engagement with partner'
-        }, {
-          id: 6,
-          shortcutKey: {
-            code: undefined,
-            value: undefined
-          },
-          title: 'weight regulation with partner'
-        }, {
-          id: 7,
-          shortcutKey: {
-            code: undefined,
-            value: undefined
-          },
-          title: 'synchronisation in rythm'
-        }, {
-          id: 8,
-          shortcutKey: {
-            code: undefined,
-            value: undefined
-          },
-          title: 'synchonisation in phrase'
+          id: 1, shortcutKey: {code: 65, value: 'a'}, title: 'movement direction'
+        }, { id: 2, shortcutKey: {code: 66, value: 'b'}, title: 'facial orientation'
+        }, { id: 3, shortcutKey: {code: undefined, value: undefined}, title: 'direction body/body parts'
+        }, { id: 4, shortcutKey: {code: undefined, value: undefined}, title: 'weight engagement individual'
+        }, { id: 5, shortcutKey: {code: undefined, value: undefined}, title: 'weight engagement with partner'
+        }, { id: 6, shortcutKey: {code: undefined, value: undefined}, title: 'weight regulation with partner'
+        }, { id: 7, shortcutKey: {code: undefined, value: undefined}, title: 'synchronisation in rythm'
+        }, { id: 8, shortcutKey: {code: undefined, value: undefined}, title: 'synchonisation in phrase'
+        }],
+        vocabsOne: [{
+          id: 1, shortcutKey: {code: 65, value: 'a'}, title: 'individual coloring'
+        }, { id: 2, shortcutKey: {code: 66, value: 'b'}, title: 'approach'
+        }, { id: 3, shortcutKey: {code: undefined, value: undefined}, title: 'technique'
+        }, { id: 4, shortcutKey: {code: undefined, value: undefined}, title: 'physical/physicality'
+        }],
+        vocabsTwo: [{
+          id: 1, shortcutKey: {code: 65, value: 'a'}, title: 'Agency'
+        }, { id: 2, shortcutKey: {code: 66, value: 'b'}, title: 'Attention to detail'
+        }, { id: 3, shortcutKey: {code: undefined, value: undefined}, title: 'Awareness of the space'
+        }, { id: 4, shortcutKey: {code: undefined, value: undefined}, title: 'Sensibility'
+        }, { id: 5, shortcutKey: {code: undefined, value: undefined}, title: 'Creativity'
+        }, { id: 6, shortcutKey: {code: undefined, value: undefined}, title: 'Differentiation/unity'
+        }, { id: 7, shortcutKey: {code: undefined, value: undefined}, title: 'Focus'
+        }, { id: 8, shortcutKey: {code: undefined, value: undefined}, title: 'Consequent'
+        }, { id: 9, shortcutKey: {code: undefined, value: undefined}, title: 'Control'
+        }, { id: 10, shortcutKey: {code: undefined, value: undefined}, title: 'Authenticity in movement and presence'
+        }, { id: 11, shortcutKey: {code: undefined, value: undefined}, title: 'Freedom/correctness balance'
+        }, { id: 12, shortcutKey: {code: undefined, value: undefined}, title: 'Ability to connect and make contact'
+        }],
+        vocabsThree: [{
+          id: 1, shortcutKey: {code: 65, value: 'a'}, title: 'Awareness of the space'
+        }, { id: 2, shortcutKey: {code: 66, value: 'b'}, title: 'Ability to adapt'
+        }, { id: 3, shortcutKey: {code: undefined, value: undefined}, title: 'Ability to communicate'
+        }, { id: 4, shortcutKey: {code: undefined, value: undefined}, title: 'Ability to connect'
+        }, { id: 5, shortcutKey: {code: undefined, value: undefined}, title: 'Ability to apply tools'
+        }, { id: 6, shortcutKey: {code: undefined, value: undefined}, title: 'Ability to fully immerse'
+        }, { id: 7, shortcutKey: {code: undefined, value: undefined}, title: 'Ability to systematically unravel complexity'
+        }, { id: 8, shortcutKey: {code: undefined, value: undefined}, title: 'Agency'
+        }, { id: 9, shortcutKey: {code: undefined, value: undefined}, title: 'Approach'
+        }, { id: 10, shortcutKey: {code: undefined, value: undefined}, title: 'Sensibility'
+        }, { id: 11, shortcutKey: {code: undefined, value: undefined}, title: 'Attention to detail'
+        }, { id: 12, shortcutKey: {code: undefined, value: undefined}, title: 'Ability to communicate'
+        }, { id: 13, shortcutKey: {code: undefined, value: undefined}, title: 'Aesthetic'
+        }, { id: 14, shortcutKey: {code: undefined, value: undefined}, title: 'Confidence'
+        }, { id: 15, shortcutKey: {code: undefined, value: undefined}, title: 'Consequent'
+        }, { id: 16, shortcutKey: {code: undefined, value: undefined}, title: 'Control'
+        }, { id: 17, shortcutKey: {code: undefined, value: undefined}, title: 'Creativity'
+        }, { id: 18, shortcutKey: {code: undefined, value: undefined}, title: 'Curiosity'
+        }, { id: 19, shortcutKey: {code: undefined, value: undefined}, title: 'Deepening'
+        }, { id: 20, shortcutKey: {code: undefined, value: undefined}, title: 'Definition'
+        }, { id: 21, shortcutKey: {code: undefined, value: undefined}, title: 'Devotion'
+        }, { id: 22, shortcutKey: {code: undefined, value: undefined}, title: 'Determination'
+        }, { id: 23, shortcutKey: {code: undefined, value: undefined}, title: 'Differentiation / unity'
+        }, { id: 24, shortcutKey: {code: undefined, value: undefined}, title: 'Discipline'
+        }, { id: 25, shortcutKey: {code: undefined, value: undefined}, title: 'Dignity'
+        }, { id: 26, shortcutKey: {code: undefined, value: undefined}, title: 'Dynamics'
+        }, { id: 27, shortcutKey: {code: undefined, value: undefined}, title: 'Eagerness'
+        }, { id: 28, shortcutKey: {code: undefined, value: undefined}, title: 'Emotional awareness'
+        }, { id: 29, shortcutKey: {code: undefined, value: undefined}, title: 'Expressivity'
+        }, { id: 30, shortcutKey: {code: undefined, value: undefined}, title: 'Focus'
+        }, { id: 31, shortcutKey: {code: undefined, value: undefined}, title: 'Freedom'
+        }, { id: 32, shortcutKey: {code: undefined, value: undefined}, title: 'Genuine quality'
+        }, { id: 33, shortcutKey: {code: undefined, value: undefined}, title: 'Grace'
+        }, { id: 34, shortcutKey: {code: undefined, value: undefined}, title: 'Guts/courage/fearlessness'
+        }, { id: 35, shortcutKey: {code: undefined, value: undefined}, title: 'Individual coloring'
+        }, { id: 36, shortcutKey: {code: undefined, value: undefined}, title: 'Initiative'
+        }, { id: 37, shortcutKey: {code: undefined, value: undefined}, title: 'Inner rest/quiet eye'
+        }, { id: 38, shortcutKey: {code: undefined, value: undefined}, title: 'Inner mind/outer mind'
+        }, { id: 39, shortcutKey: {code: undefined, value: undefined}, title: 'Innovation'
+        }, { id: 40, shortcutKey: {code: undefined, value: undefined}, title: 'Intensity'
+        }, { id: 41, shortcutKey: {code: undefined, value: undefined}, title: 'Investigative'
+        }, { id: 42, shortcutKey: {code: undefined, value: undefined}, title: 'Kinesthetic awareness and imagination'
+        }, { id: 43, shortcutKey: {code: undefined, value: undefined}, title: 'Lack of fear'
+        }, { id: 44, shortcutKey: {code: undefined, value: undefined}, title: 'Meaningful'
+        }, { id: 45, shortcutKey: {code: undefined, value: undefined}, title: 'Musicality'
+        }, { id: 46, shortcutKey: {code: undefined, value: undefined}, title: 'Open mindedness'
+        }, { id: 47, shortcutKey: {code: undefined, value: undefined}, title: 'Open awareness'
+        }, { id: 48, shortcutKey: {code: undefined, value: undefined}, title: 'Physical appearance'
+        }, { id: 49, shortcutKey: {code: undefined, value: undefined}, title: 'Physical control'
+        }, { id: 50, shortcutKey: {code: undefined, value: undefined}, title: 'Physical drive'
+        }, { id: 51, shortcutKey: {code: undefined, value: undefined}, title: 'Physicality'
+        }, { id: 52, shortcutKey: {code: undefined, value: undefined}, title: 'Physical \'state\'/condition'
+        }, { id: 53, shortcutKey: {code: undefined, value: undefined}, title: 'Posture'
+        }, { id: 54, shortcutKey: {code: undefined, value: undefined}, title: 'Pride'
+        }, { id: 55, shortcutKey: {code: undefined, value: undefined}, title: 'Readiness'
+        }, { id: 56, shortcutKey: {code: undefined, value: undefined}, title: 'Refinement'
+        }, { id: 57, shortcutKey: {code: undefined, value: undefined}, title: 'Reflection'
+        }, { id: 58, shortcutKey: {code: undefined, value: undefined}, title: 'Respect'
+        }, { id: 59, shortcutKey: {code: undefined, value: undefined}, title: 'Conscious risk taking'
         }],
         currentTag: undefined,
         highlightedTag: undefined,
@@ -163,14 +198,16 @@
     },
     watch: {
       newVocabulary: function (val) {
+        console.log(val)
         // console.log('watch newVocabulary: ' + val)
         this.showVocabularyModal = true
-        this.extendVocabulary(val)
+        // this.extendVocabulary(val)
       }
     },
     props: ['newVocabulary'],
     methods: {
       extendVocabulary (val) {
+        alert(val)
         // console.log('extendVocabulary: ' + val)
         let countId = this.vocabs.length + 1
         this.vocabs.push({ id: countId, shortcutKey: { code: undefined, value: undefined }, title: val })
