@@ -5,6 +5,8 @@
   //
   .row.q-mt-md
 
+    // q-btn.fixed-bottom-left.q-ma-md(color="primary", outline) alt
+
     // SET SHORTCUT
 
     q-modal(v-model="showShortcutModal", minimized)
@@ -40,7 +42,8 @@
       // TEXT INPUT
 
       q-input.q-pa-md(
-      v-model="currentBody.value", ref="textInput", :class="[showTagBox ? 'q-pl-xl text-primary' : 'text-white']",
+      v-model="currentBody.value", ref="textInput",
+      :class="[showTagBox ? 'q-pl-xl text-primary' : 'text-white']",
       @keyup="keyMonitor", @keydown.18="keyPressAlt('down')", @keyup.18="keyPressAlt('up')", type="textarea", autofocus, dark)
 
       // CLOSE BUTTON
@@ -52,7 +55,12 @@
       // TAG BOX
 
       div(v-if="showTagBox && staging", ref="tagbox")
-        vocabularies(:parent="parent", :str="currentBody.value", :vocabulary="vocabs",
+        .q-pa-md
+          q-btn.q-px-lg.q-mr-sm(@click="changeVocabularies(vocabsNull)", size="sm") 0
+          q-btn.q-px-lg.q-mr-sm(@click="changeVocabularies(vocabsOne)", size="sm") I
+          q-btn.q-px-lg.q-mr-sm(@click="changeVocabularies(vocabsTwo)", size="sm") II
+          q-btn.q-px-lg(@click="changeVocabularies(vocabsThree)", size="sm") III
+        vocabularies(:parent="parent", :str="currentBody.value", :vocabulary="vocabs", :pressedAlt="altIsPressed",
         @clickTag="clickTag", @emitFocus="setFocusOnInput", @highlightedTag="highlightTag", @openShortcut="openShortcut")
 
 </template>
@@ -74,6 +82,14 @@
     data () {
       return {
         annotations: [],
+        altIsPressed: false,
+        buttonsVocabularies: [{
+          title: '2',
+          target: 'vocabTwo'
+        }, {
+          title: '3',
+          target: 'vocabThree'
+        }],
         currentBody: {
           value: undefined,
           purpose: 'commenting',
@@ -87,7 +103,8 @@
           time: undefined,
           string: undefined
         },
-        vocabs: [{
+        vocabs: [],
+        vocabsNull: [{
           id: 1, shortcutKey: {code: 65, value: 'a'}, title: 'movement direction'
         }, { id: 2, shortcutKey: {code: 66, value: 'b'}, title: 'facial orientation'
         }, { id: 3, shortcutKey: {code: undefined, value: undefined}, title: 'direction body/body parts'
@@ -98,14 +115,14 @@
         }, { id: 8, shortcutKey: {code: undefined, value: undefined}, title: 'synchonisation in phrase'
         }],
         vocabsOne: [{
-          id: 1, shortcutKey: {code: 65, value: 'a'}, title: 'individual coloring'
-        }, { id: 2, shortcutKey: {code: 66, value: 'b'}, title: 'approach'
+          id: 1, shortcutKey: {code: undefined, value: undefined}, title: 'individual coloring'
+        }, { id: 2, shortcutKey: {code: undefined, value: undefined}, title: 'approach'
         }, { id: 3, shortcutKey: {code: undefined, value: undefined}, title: 'technique'
         }, { id: 4, shortcutKey: {code: undefined, value: undefined}, title: 'physical/physicality'
         }],
         vocabsTwo: [{
-          id: 1, shortcutKey: {code: 65, value: 'a'}, title: 'Agency'
-        }, { id: 2, shortcutKey: {code: 66, value: 'b'}, title: 'Attention to detail'
+          id: 1, shortcutKey: {code: undefined, value: undefined}, title: 'Agency'
+        }, { id: 2, shortcutKey: {code: undefined, value: undefined}, title: 'Attention to detail'
         }, { id: 3, shortcutKey: {code: undefined, value: undefined}, title: 'Awareness of the space'
         }, { id: 4, shortcutKey: {code: undefined, value: undefined}, title: 'Sensibility'
         }, { id: 5, shortcutKey: {code: undefined, value: undefined}, title: 'Creativity'
@@ -118,8 +135,8 @@
         }, { id: 12, shortcutKey: {code: undefined, value: undefined}, title: 'Ability to connect and make contact'
         }],
         vocabsThree: [{
-          id: 1, shortcutKey: {code: 65, value: 'a'}, title: 'Awareness of the space'
-        }, { id: 2, shortcutKey: {code: 66, value: 'b'}, title: 'Ability to adapt'
+          id: 1, shortcutKey: {code: undefined, value: undefined}, title: 'Awareness of the space'
+        }, { id: 2, shortcutKey: {code: undefined, value: undefined}, title: 'Ability to adapt'
         }, { id: 3, shortcutKey: {code: undefined, value: undefined}, title: 'Ability to communicate'
         }, { id: 4, shortcutKey: {code: undefined, value: undefined}, title: 'Ability to connect'
         }, { id: 5, shortcutKey: {code: undefined, value: undefined}, title: 'Ability to apply tools'
@@ -191,6 +208,7 @@
       }
     },
     mounted () {
+      this.vocabs = this.vocabsNull
       window.addEventListener('keydown', this.setShortcut)
     },
     beforeDestroy () {
@@ -206,14 +224,12 @@
     },
     props: ['newVocabulary'],
     methods: {
+      changeVocabularies (val) {
+        this.vocabs = val
+      },
       extendVocabulary (val) {
-        alert(val)
-        // console.log('extendVocabulary: ' + val)
         let countId = this.vocabs.length + 1
         this.vocabs.push({ id: countId, shortcutKey: { code: undefined, value: undefined }, title: val })
-        /* this.vocabs.sort(function (a, b) {
-          return a[2] - b[2]
-        }) */
       },
       clickTag (val) {
         this.currentVal.string = val
@@ -264,10 +280,12 @@
         this.currentVal.time = this.currentSelector.value
         if (val === 'down') {
           this.shortcutsActivated = true
+          this.altIsPressed = true
           window.addEventListener('keydown', this.applyQuickShortcut)
         }
         else {
           this.shortcutsActivated = false
+          this.altIsPressed = false
           window.removeEventListener('keydown', this.applyQuickShortcut)
           this.currentBody.value = ''
         }
@@ -306,6 +324,9 @@
         else if (e.keyCode === 27) {
           this.showTagBox = false
           this.currentBody.value = undefined
+          this.shortcutsActivated = false
+          this.altIsPressed = false
+          window.removeEventListener('keydown', this.applyQuickShortcut)
         }
         // [tab]
         else if (e.keyCode === 9) {

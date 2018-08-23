@@ -17,13 +17,17 @@
               span.text-grey-6 {{ getInitials(tag.title) }}
 
             q-item-side.q-px-sm.q-py
-              q-btn.text-primary(v-if="tag.shortcutKey.value != undefined",
-              @click="emitId(tag.id), currentTag.title = tag.title, currentTag.shortcutKey = tag.shortcutKey.value, currentTag.targetId = tag.id",
-              no-caps, round, size="sm") {{ tag.shortcutKey.value }}
+              // div(v-if="!pressedAlt")
+              div
+                q-btn.text-primary(v-if="tag.shortcutKey.value != undefined",
+                @click="emitId(tag.id), currentTag.title = tag.title, currentTag.shortcutKey = tag.shortcutKey.value, currentTag.targetId = tag.id",
+                no-caps, round, size="sm") {{ tag.shortcutKey.value }}
 
-              q-btn.text-grey-8.cursor-pointer.no-margin(v-else, round, size="sm",
-              @click="emitId(tag.id), currentTag.title = tag.title, currentTag.shortcutKey = tag.shortcutKey.value, currentTag.targetId = tag.id")
-                q-icon(name="keyboard")
+                q-btn.text-grey-8.cursor-pointer.no-margin(v-else, round, size="sm",
+                @click="emitId(tag.id), currentTag.title = tag.title, currentTag.shortcutKey = tag.shortcutKey.value, currentTag.targetId = tag.id")
+                  q-icon(name="keyboard")
+              // div(v-else)
+                .text-primary {{ tag.shortcutKey.value }}
 
             q-item-main
               q-btn.full-width(@click="clickTag(tag), emitFocus()" , no-caps, flat, align="left", color="transparent")
@@ -37,7 +41,7 @@
 
 <script>
   export default {
-    props: ['parent', 'str', 'vocabulary'],
+    props: ['parent', 'pressedAlt', 'str', 'vocabulary'],
     watch: {
       str: function (val) {
         this.tagHighlight = -1
@@ -47,6 +51,9 @@
           )
         }
         this.filteredTags = filterItems(val).sort()
+      },
+      vocabulary: function (val) {
+        this.filteredTags = val
       }
     },
     mounted () {
@@ -85,8 +92,8 @@
       },
       clickTag (val) {
         // console.log(this.filteredTags, val.title)
-        console.log(this.filteredTags)
-        console.log(val.title)
+        // console.log(this.filteredTags)
+        // console.log(val.title)
         this.$emit('clickTag', val.title)
       },
       tagHightlighting (e) {
