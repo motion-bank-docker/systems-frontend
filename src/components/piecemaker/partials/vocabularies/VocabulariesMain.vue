@@ -9,28 +9,22 @@
 
     // SET SHORTCUT
 
-    q-modal(v-model="showShortcutModal", minimized)
-      .bg-dark.position-relative.q-pa-xl
+    modal(ref="shortcutModal", close-icon="clear")
+      template(slot="content")
         | Press a key between
         span.text-primary.q-mx-sm a
         | and
         span.text-primary.q-mx-sm z
         | to define a new shortcut.
 
-        q-btn.q-ml-lg(@click="showShortcutModal = false", icon="clear", round)
-
     // SET NEW VOCABULARY
 
-    q-modal(v-model="showVocabularyModal", minimized)
-      .bg-dark.position-relative.q-pa-xl
+    modal-confirm(ref="vocabularyModal", close-icon="clear", @confirm="extendVocabulary(newVocabulary)")
+      template(slot="content")
         .text-center
           div Do you want to include
           div.text-primary {{ newVocabulary }}
           div into your vocabularies?
-
-        .q-mt-md.text-center
-          q-btn.q-mx-sm(@click="showVocabularyModal = false, extendVocabulary(newVocabulary)") yes
-          q-btn.q-mx-sm(@click="showVocabularyModal = false") no
 
     // BUTTON - SWITCH BETWEEN TEXT INPUT AND TAG BOX
 
@@ -66,8 +60,11 @@
 </template>
 
 <script>
-  import Vocabularies from './Vocabularies'
   import { DateTime } from 'luxon'
+
+  import Modal from '../../../shared/partials/Modal'
+  import ModalConfirm from '../../../shared/partials/ModalConfirm'
+  import Vocabularies from './Vocabularies'
   // import { Notify } from 'quasar'
 
   const alerts = [
@@ -77,6 +74,8 @@
 
   export default {
     components: {
+      Modal,
+      ModalConfirm,
       Vocabularies
     },
     data () {
@@ -201,8 +200,6 @@
         parent: 'live-annotate',
         prevKey: undefined,
         shortcutsActivated: false,
-        showShortcutModal: false,
-        showVocabularyModal: false,
         staging: process.env.IS_STAGING,
         showTagBox: false
       }
@@ -218,7 +215,7 @@
       newVocabulary: function (val) {
         console.log(val)
         // console.log('watch newVocabulary: ' + val)
-        this.showVocabularyModal = true
+        this.$refs.vocabularyModal.show()
         // this.extendVocabulary(val)
       }
     },
@@ -242,19 +239,19 @@
         this.$refs.textInput.focus()
       },
       openShortcut (val) {
-        this.showShortcutModal = true
+        this.$refs.shortcutModal.show()
         this.currentTag = val
       },
       setShortcut (e) {
-        if (e.keyCode === 27) {
+        if (e.key === 27) {
           this.setFocusOnInput()
         }
-        if (this.showShortcutModal) {
+        if (this.$refs.shortcutModal.showModal) {
           // [a] - [z] only
-          if (e.keyCode >= 65 && e.keyCode <= 90 && this.vocabs[this.currentTag - 1].shortcutKey.code !== e.keyCode) {
-            this.vocabs[this.currentTag - 1].shortcutKey.code = e.keyCode
+          if (e.key >= 65 && e.key <= 90 && this.vocabs[this.currentTag - 1].shortcutKey.code !== e.key) {
+            this.vocabs[this.currentTag - 1].shortcutKey.code = e.key
             this.vocabs[this.currentTag - 1].shortcutKey.value = e.key
-            this.showShortcutModal = false
+            this.$refs.shortcutModal.close()
             this.$q.notify({ color: alerts[1]['color'], message: alerts[1]['message'] })
           }
           else {
@@ -268,7 +265,7 @@
         this.highlightedTag = val
       },
       applyQuickShortcut (e) {
-        var obj = this.vocabs.find(function (obj) { return obj.shortcutKey.code === e.keyCode })
+        var obj = this.vocabs.find(function (obj) { return obj.shortcutKey.code === e.key })
         if (obj !== undefined) {
           this.currentVal.string = obj.title
           this.currentVal.time = this.currentSelector.value
@@ -296,7 +293,7 @@
       },
       keyMonitor (e) {
         // [enter] text input
-        if (this.prevKey === 13 && e.keyCode === 13 && !this.showTagBox) {
+        if (this.prevKey === 13 && e.key === 13 && !this.showTagBox) {
           this.currentVal.string = this.currentBody.value
           this.currentVal.time = this.currentSelector.value
           this.prevKey = undefined
@@ -313,7 +310,7 @@
           }
         }
         // [enter] vocabulary
-        else if (e.keyCode === 13 && this.showTagBox) {
+        else if (e.key === 13 && this.showTagBox) {
           this.currentVal.string = this.highlightedTag
           this.currentVal.time = this.currentSelector.value
           this.$emit('currentString', this.currentVal)
@@ -321,7 +318,7 @@
           this.currentBody.value = undefined
         }
         // [escape]
-        else if (e.keyCode === 27) {
+        else if (e.key === 27) {
           this.showTagBox = false
           this.currentBody.value = undefined
           this.shortcutsActivated = false
@@ -329,22 +326,22 @@
           window.removeEventListener('keydown', this.applyQuickShortcut)
         }
         // [tab]
-        else if (e.keyCode === 9) {
+        else if (e.key === 9) {
         }
         // [alt]
-        else if (e.keyCode === 18) {
+        else if (e.key === 18) {
         }
         // [#] or [arrow down]
-        else if (e.keyCode === 220 || e.keyCode === 40) {
+        else if (e.key === 220 || e.key === 40) {
           this.currentSelector.value = DateTime.local().toISO()
           this.showTagBox = true
-          if (e.keyCode === 220) this.currentBody.value = undefined
+          if (e.key === 220) this.currentBody.value = undefined
         }
         else {
           if (this.currentSelector.value === undefined) {
             this.currentSelector.value = DateTime.local().toISO()
           }
-          this.prevKey = e.keyCode
+          this.prevKey = e.key
         }
         if (this.shortcutsActivated) {
           this.currentBody.value = ''
@@ -353,6 +350,3 @@
     }
   }
 </script>
-
-<style scoped>
-</style>

@@ -23,13 +23,15 @@ export default {
     live_annotate_timeline: 'Live Annotate this timeline',
     login: 'Sign In',
     more_info: 'More info',
+    no: 'No',
     request_reset_pass: 'Request Password Reset',
     save_changes: 'Save changes',
     save: 'Save',
     set_marker: 'Set Marker',
     submit: 'Submit',
     synchronize: 'Sync',
-    videos: 'Videos'
+    videos: 'Videos',
+    yes: 'Yes'
   },
   forms: {
     timelines: {
