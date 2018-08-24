@@ -63,6 +63,7 @@
     "videojs-vimeo": "git+https://github.com/PieceMeta/videojs-vimeo.git",
     "videojs-youtube": "^2.4.1",
     "vue-i18n": "^7.7.0",
+    "vue-shortkey": "^3.1.6",
     "vue-video-player": "^5.0.2",
     "vuelidate": "^0.7.2"
   },
