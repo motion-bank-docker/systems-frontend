@@ -6,7 +6,7 @@ class Vocabulary {
     this._namespace = data.namespace || ObjectUtil.uuidNamespaces.NULL
     this._uuid = data.uuid || ObjectUtil.uuid5(ObjectUtil.uuid4(), this._namespace)
     this._title = data.title
-    this._entries = [].concat(data._entries) || []
+    this._entries = data._entries ? [].concat(data._entries) : []
 
     for (let entry of this._entries) {
       if (!entry.uuid) entry.uuid = ObjectUtil.uuid5(entry.value, this._uuid)
