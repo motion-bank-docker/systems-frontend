@@ -1,0 +1,14 @@
+{
+  "uuid": "9e86a0e2-56d5-4888-92d7-222fa917a436",
+  "namespace": "d829b99c-d608-43db-a147-0614558eb915",
+  "title": "Codarts: Vocabulary 1",
+  "entries": [
+    { "value": "movement direction", "shortcut": ["a"] },
+    { "value": "direction body/body parts", "shortcut": ["b"] },
+    { "value": "weight engagement individual" },
+    { "value": "weight engagement with partner" },
+    { "value": "weight regulation with partner" },
+    { "value": "synchronisation in rhythm" },
+    { "value": "synchronisation in phrase" }
+  ]
+}

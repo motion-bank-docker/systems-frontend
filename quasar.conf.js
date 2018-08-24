@@ -14,6 +14,7 @@ module.exports = function (ctx) {
       'notifications',
       'pkg',
       'shortkey',
+      'vocabularies',
       'window'
     ],
     css: [
@@ -55,6 +56,7 @@ module.exports = function (ctx) {
         //
         TIMELINE_BASE_URI: JSON.stringify(process.env.TIMELINE_BASE_URI || 'https://app.motionbank.org/piecemaker/timelines/'),
         GRID_BASE_URI: JSON.stringify(process.env.GRID_BASE_URI || 'https://app.motionbank.org/mosys/grids/'),
+        VOCABULARY_BASE_URI: JSON.stringify(process.env.VOCABULARY_BASE_URI || 'https://app.motionbank.org/piecemaker/vocabularies/'),
         ID_FIELD: JSON.stringify(process.env.ID_FIELD || 'uuid'),
         //
         // Auth0
