@@ -19,37 +19,49 @@
             @click.native="event => {action.handler(event)}")
               q-item-main(:label="action.label")
 
-      template(v-for="(cell, index) in cells")
-        .cell-item(
-          v-if="cellUIStates[cell.uuid] && !cellUIStates[cell.uuid].beingDragged",
-          draggable="true",
-          @dragstart="event => {handleCellDragStart(event, cell)}",
-          @dragend="event => {handleCellDragEnd(event, cell)}",
-          @contextmenu="handleCellContextMenu",
-          :style="getCellStyle(cell)",
-          :title="cell.title",
-          @click.prevent="event => {handleCellClick(event, cell)}",
-          :class="{selected: cellUIStates[cell.uuid] ? cellUIStates[cell.uuid].selected : false}")
-            cell(:cell="cell", preview)
-            div.cell-item-resize-handle(
-              draggable="true",
-              @dragstart="event => {handleCellResizerDragStart(event, cell)}",
-              @dragend="event => {handleCellResizerDragEnd(event, cell)}",
-              @dragexit="event => {handleCellResizerDragEnd(event, cell)}")
-                q-icon(name="network cell")
+      template(v-if="!resizingGrid")
 
-            q-context-menu
-              q-list(link, separator, no-border, style="min-width: 150px; max-height: 300px;")
-                q-item(
-                  v-for="action in cellContextMenuActions",
-                  :key="action.label",
-                  v-close-overlay,
-                  @click.native="event => {action.handler(event, cell)}")
-                    q-item-main(:label="action.label")
+        template(v-for="(cell, index) in cells")
+          .cell-item(
+            v-if="cellUIStates[cell.uuid] && !cellUIStates[cell.uuid].beingDragged",
+            draggable="true",
+            @dragstart="event => {handleCellDragStart(event, cell)}",
+            @dragend="event => {handleCellDragEnd(event, cell)}",
+            @contextmenu="handleCellContextMenu",
+            :style="getCellStyle(cell)",
+            :title="cell.title",
+            @click.prevent="event => {handleCellClick(event, cell)}",
+            :class="{selected: cellUIStates[cell.uuid] ? cellUIStates[cell.uuid].selected : false}",
+            :key="`cell-${index}`")
+              cell(:cell="cell", preview)
+              div.cell-item-resize-handle(
+                draggable="true",
+                @dragstart="event => {handleCellResizerDragStart(event, cell)}",
+                @dragend="event => {handleCellResizerDragEnd(event, cell)}",
+                @dragexit="event => {handleCellResizerDragEnd(event, cell)}")
+                  q-icon(name="network cell")
 
-      template(v-for="(tmpCell, index) in tmpCells")
-        .cell-item.cell-item-tmp(:style="getCellStyle(tmpCell)")
-          cell(:cell="tmpCell")
+              q-context-menu
+                q-list(link, separator, no-border, style="min-width: 150px; max-height: 300px;")
+                  q-item(
+                    v-for="action in cellContextMenuActions",
+                    :key="action.label",
+                    v-close-overlay,
+                    @click.native="event => {action.handler(event, cell)}")
+                      q-item-main(:label="action.label")
+
+        template(v-for="(tmpCell, index) in tmpCells")
+          .cell-item.cell-item-tmp(:style="getCellStyle(tmpCell)", :key="`cell-tmp-${index}`")
+            cell(:cell="tmpCell")
+
+      template(v-else)
+        .cell-item(:style="getCellStyle({x:0,y:0,width:1,height:1})", key="cell-grid-resizer")
+          div.cell-item-resize-handle(
+            draggable="true",
+            @dragstart="event => {handleGridResizerDragStart(event)}",
+            @dragend="event => {handleGridResizerDragEnd(event)}",
+            @dragexit="event => {handleGridResizerDragEnd(event)}")
+              q-icon(name="network cell")
 
       div.fixed-top-right(style="right:18px; top:68px", v-if="!$store.state.mosysGridEditorStore.showSources")
         q-btn(round, color="primary", small, @click="handleGridButtonClickEdit", style="margin-right: 0.5em")
@@ -103,6 +115,10 @@
           insert_row_above: {
             label: 'Insert Row Above',
             handler: this.handleGridContextMenuInsertRowAbove
+          },
+          edit_grid_dimensions: {
+            label: 'Change Grid',
+            handler: () => { this.resizingGrid = !this.resizingGrid }
           }
         },
         gridMetadata: {},
@@ -111,10 +127,8 @@
         cellUIStates: {},
         gridDimensions: {gridWidth: 0, gridHeight: 0, cellWidth: 0, cellHeight: 0},
         gridStyle: {},
-        contextMenuClickPosition: {}
-        // dragCell: {},
-        // gridContainerStyle: {},
-        // renderFull: true,
+        contextMenuClickPosition: {},
+        resizingGrid: false
       }
     },
     async mounted () {
@@ -136,6 +150,12 @@
       }
     },
     methods: {
+      handleGridResizerDragStart (event) {
+        event.dataTransfer.setDragImage(nullImage, 0, 0)
+      },
+      handleGridResizerDragEnd () {
+        this.updateGridMetadataStore()
+      },
       handleCellResizerDragStart (event, cell) {
         event.dataTransfer.setDragImage(nullImage, 0, 0)
         this.cellUIStates[cell.uuid].beingResized = true
@@ -197,33 +217,40 @@
 
       handleGridDragOver (event) {
         let _this = this
-        let cell = Object.keys(this.cellUIStates).filter(uuid => {
-          return _this.cellUIStates[uuid].beginDragged || _this.cellUIStates[uuid].beingResized
-        }).map(uuid => {
-          return _this.cellUIStates[uuid].cell
-        }).shift()
-        let offset, position
-        if (!cell) {
-          cell = {uuid: null, x: 1, y: 1, width: 1, height: 1}
-          position = this.getGridPositionForEvent(event)
+        if (this.resizingGrid) {
+          const position = this.getGridPositionForEvent(event)
+          this.gridMetadata.ratio = position.ox / (position.oy * 1.0)
+          this.updateGridDimensions()
         }
         else {
-          offset = this.cellUIStates[cell.uuid].draggingOffset
-          position = this.getGridPositionForEvent(event, offset)
-        }
-        let tmpCell = this.tmpCells[0]
-        if (!tmpCell && this.tmpCells.length === 0) {
-          tmpCell = this.getTmpCell(cell)
-          this.tmpCells.push(tmpCell)
-        }
-        if (event.dataTransfer.types.includes('text/plain')) {
-          tmpCell.x = position.x
-          tmpCell.y = position.y
-          event.preventDefault()
-        }
-        else {
-          tmpCell.width = Math.max(1, 1 + position.x - tmpCell.x)
-          tmpCell.height = Math.max(1, 1 + position.y - tmpCell.y)
+          let cell = Object.keys(this.cellUIStates).filter(uuid => {
+            return _this.cellUIStates[uuid].beginDragged || _this.cellUIStates[uuid].beingResized
+          }).map(uuid => {
+            return _this.cellUIStates[uuid].cell
+          }).shift()
+          let offset, position
+          if (!cell) {
+            cell = {uuid: null, x: 1, y: 1, width: 1, height: 1}
+            position = this.getGridPositionForEvent(event)
+          }
+          else {
+            offset = this.cellUIStates[cell.uuid].draggingOffset
+            position = this.getGridPositionForEvent(event, offset)
+          }
+          let tmpCell = this.tmpCells[0]
+          if (!tmpCell && this.tmpCells.length === 0) {
+            tmpCell = this.getTmpCell(cell)
+            this.tmpCells.push(tmpCell)
+          }
+          if (event.dataTransfer.types.includes('text/plain')) {
+            tmpCell.x = position.x
+            tmpCell.y = position.y
+            event.preventDefault()
+          }
+          else {
+            tmpCell.width = Math.max(1, 1 + position.x - tmpCell.x)
+            tmpCell.height = Math.max(1, 1 + position.y - tmpCell.y)
+          }
         }
       },
       handleGridDragEnd () {
@@ -353,12 +380,12 @@
       },
       getGridPositionForEvent (event, offset = {x: 0, y: 0}) {
         offset = {x: 0, y: 0} // TODO: remove quick fix
-        let elContainerBoundingBox = this.$el.getBoundingClientRect()
-        let x = event.clientX + this.$el.scrollLeft - elContainerBoundingBox.x - offset.x
-        let y = event.clientY + this.$el.scrollTop - elContainerBoundingBox.y - offset.y
-        x = Math.ceil(x / this.gridDimensions.full.cell.width)
-        y = Math.ceil(y / this.gridDimensions.full.cell.height)
-        return {x: x, y: y}
+        const elContainerBoundingBox = this.$el.getBoundingClientRect()
+        const ox = event.clientX + this.$el.scrollLeft - elContainerBoundingBox.x - offset.x
+        const oy = event.clientY + this.$el.scrollTop - elContainerBoundingBox.y - offset.y
+        const x = Math.ceil(ox / this.gridDimensions.full.cell.width)
+        const y = Math.ceil(oy / this.gridDimensions.full.cell.height)
+        return {x: x, y: y, ox: ox, oy: oy}
       },
       updateGridDimensions () {
         let elWidth = this.$el.offsetWidth
