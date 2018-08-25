@@ -92,7 +92,7 @@
       }
     },
     methods: {
-      handleInputChanged () {
+      async handleInputChanged () {
         const _this = this
         if (this.newAnnotationText) {
           let newAnnotation = {
@@ -102,18 +102,17 @@
               value: this.newAnnotationText
             },
             target: {
-              id: `${process.env.TIMELINE_BASE_URI}${this.map.uuid}`,
-              type: this.map.type,
+              id: this.video.target.id,
+              type: this.video.target.type,
               selector: {
                 type: 'Fragment',
                 value: DateTime.fromMillis(_this.contextTime).toISO()
               }
             }
           }
-          this.$store.dispatch('annotations/post', newAnnotation)
-            .then(() => {
-              _this.fetchAnnotations()
-            })
+          const annotation = await this.$store.dispatch('annotations/post', newAnnotation)
+          console.log(annotation)
+          _this.fetchAnnotations()
         }
         this.newAnnotationText = ''
       },
@@ -159,7 +158,6 @@
               const startDate = Date.parse(selectorValue)
               const endDate = DateTime.fromMillis(startDate + (_this.videoMeta.duration * 1000))
               const endDateISO = endDate.toISO()
-              console.log(selectorValue, endDateISO)
               const annotationsQuery = {
                 'target.id': videoAnnotation.target.id,
                 'target.type': constants.MAP_TYPE_TIMELINE,
