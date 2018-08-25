@@ -17,8 +17,8 @@ const makeResourceModule = function (client, resourceName, resourceNamePluralise
       return client[action](namePlural, args[0],
         args.length > 1 ? args[1] : overrideHost, args.length > 1 ? overrideHost : undefined).then(response => {
           if (response) {
-            if (args.length > 1) context.commit(action, [response.uuid, response])
-            else context.commit(action, response)
+            // if (args.length > 1) context.commit(action, [response.uuid, response])
+            // else context.commit(action, response)
             context.commit('setPending', action, false)
             return response
           }
