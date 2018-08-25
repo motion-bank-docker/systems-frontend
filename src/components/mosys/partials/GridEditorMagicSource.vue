@@ -30,7 +30,7 @@
       template(v-for="(result, i) in results")
         template(v-if="i > 0")
           q-item-separator
-        q-item(draggable="true", @dragstart="event => {handleItemDragStart(event, result)}")
+        q-item(draggable="true", @dragstart.native="event => {handleItemDragStart(event, result)}")
           q-item-side
             q-icon(:name="typeToIconName(result.body.type)", style="font-size: 1.8rem")
           q-item-main
