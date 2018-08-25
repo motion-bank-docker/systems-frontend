@@ -13,10 +13,11 @@
       q-context-menu(ref="gridmenu")
         q-list(link, separator, no-border, style="min-width: 150px; max-height: 300px;")
           q-item(
-          v-for="action in gridContextMenuActions",
-          :key="action.label",
-          @click.native="event => {action.handler(event), $refs.gridmenu.close()}")
-            q-item-main(:label="action.label")
+            v-for="action in gridContextMenuActions",
+            :key="action.label",
+            v-close-overlay,
+            @click.native="event => {action.handler(event)}")
+              q-item-main(:label="action.label")
 
       template(v-for="(cell, index) in cells")
         .cell-item(
@@ -42,6 +43,7 @@
                 q-item(
                   v-for="action in cellContextMenuActions",
                   :key="action.label",
+                  v-close-overlay,
                   @click.native="event => {action.handler(event, cell)}")
                     q-item-main(:label="action.label")
 
@@ -185,11 +187,8 @@
       //   // this.$store.commit('mosysGridEditorStore/showSources')
       //   // this.$store.commit('mosysGridEditorStore/setSourcesTab', 'tab-default-cells')
       // },
-      handleCellContextMenuDelete (event, cell, refId) {
+      handleCellContextMenuDelete (event, cell) {
         const _this = this
-        if (refId) {
-          this.$refs[refId].close()
-        }
         this.cellUIStates[cell.uuid].selected = false
         this.updateSelectedCells()
         _this.cells = _this.cells.filter(c => c !== cell)
