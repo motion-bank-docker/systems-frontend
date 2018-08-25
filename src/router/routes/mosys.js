@@ -34,17 +34,5 @@ export default {
       name: 'mosys.grids.annotate',
       meta: {private: true}
     }
-
-    //
-    //
-    // Codarts
-    /*
-    {
-      path: '/mosys/codarts/tagging',
-      component: () => import('pages/mosys/codarts/tagging'),
-      name: 'mosys.codarts.tagging',
-      meta: {private: true}
-    },
-    */
   ]
 }
