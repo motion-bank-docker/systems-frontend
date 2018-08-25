@@ -56,7 +56,6 @@
 
 <script>
   import constants from 'mbjs-data-models/src/constants'
-  import { ObjectUtil } from 'mbjs-utils'
 
   export default {
     data () {
@@ -85,10 +84,7 @@
           'target.id': `${process.env.TIMELINE_BASE_URI}${this.currentTimeline.uuid}`
         }
         const result = await this.$store.dispatch('annotations/find', query)
-        // TODO: Anton, »result.items« is being manipulated elsewhere causing problems here
-        const videos = result.items.map(v => {
-          return ObjectUtil.merge({}, v)
-        })
+        const videos = result.items
         for (let entry of videos) {
           try {
             const metadata = await this.$store.dispatch('metadata/get', entry.uuid)
