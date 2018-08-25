@@ -56,11 +56,7 @@
 
 <script>
   import constants from 'mbjs-data-models/src/constants'
-  // import Promise from 'bluebird'
-  // import url from 'url'
-  // import path from 'path'
-  // import he from 'he'
-  // import { ObjectUtil } from 'mbjs-utils'
+  import { ObjectUtil } from 'mbjs-utils'
 
   export default {
     data () {
@@ -86,27 +82,16 @@
         const query = {
           type: 'Annotation',
           'body.purpose': 'linking',
-          // IMPORTANT: this is a URI now!
-          // There's process.env.TIMELINE_BASE_URI and process.env.GRID_BASE_URI to build it
-          // and if you do:
-          //
-          // import { parseURI } from 'mbjs-data-models/src/lib'
-          // parseURI(uri).uuid
-          //
-          // will give you the uuid from the URI
           'target.id': `${process.env.TIMELINE_BASE_URI}${this.currentTimeline.uuid}`
         }
         const result = await this.$store.dispatch('annotations/find', query)
-          // TODO: ask Anton about how to get metadata from transcoder
-          //
-          // anton says: https://www.youtube.com/watch?v=0hiUuL5uTKc
-          //
-        const videos = result.items
+        // TODO: Anton, »result.items« is being manipulated elsewhere causing problems here
+        const videos = result.items.map(v => {
+          return ObjectUtil.merge({}, v)
+        })
         for (let entry of videos) {
           try {
-            // passing the UUID of the annotation will give you metadata for its target
             const metadata = await this.$store.dispatch('metadata/get', entry.uuid)
-            console.log(entry, metadata)
             entry.title = metadata.title
           }
           catch (e) {

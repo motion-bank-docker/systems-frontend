@@ -427,8 +427,12 @@
         return `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%'><defs><pattern id='smallGrid' width='${cell.width}' height='${cell.height}' patternUnits='userSpaceOnUse'><path d='M ${cell.width} 0 L 0 0 0 ${cell.height}' fill='none' stroke='gray' stroke-width='0.5'/></pattern></defs><rect width='100%' height='100%' fill='url(#smallGrid)' /></svg>")`
       },
       fetchCellAnnotations () {
-        const _this = this,
-          query = { 'body.type': '2DCell', 'target.id': `${process.env.GRID_BASE_URI}${this.gridUuid}` }
+        const _this = this
+        const query = {
+          type: 'Annotation',
+          'body.type': '2DCell',
+          'target.id': `${process.env.GRID_BASE_URI}${this.gridUuid}`
+        }
         this.$store.dispatch('annotations/find', query)
           .then(result => {
             _this.cells = result.items.map(annotation => {
