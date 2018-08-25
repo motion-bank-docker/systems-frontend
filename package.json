@@ -18,14 +18,14 @@
     "build-staging": "cross-env NODE_ENV=production IS_STAGING=true quasar build",
     "clean": "quasar clean",
     "dev": "cross-env NODE_ENV=production quasar dev",
+    "docker-build": "docker build -t motionbank/systems-frontend:latest .",
+    "docker-build-staging": "docker build -t motionbank/systems-frontend:staging .",
+    "docker-release": "npm run docker-build && docker push motionbank/systems-frontend:latest",
+    "docker-release-staging": "npm run docker-build-staging && docker push motionbank/systems-frontend:staging",
     "lint": "eslint --ext .js,.vue src",
     "metapak": "metapak",
     "start": "node ./",
-    "test": "echo \"No test specified\" && exit 0",
-    "docker-build": "docker build -t motionbank/systems-frontend:latest .",
-    "docker-release": "npm run docker-build && docker push motionbank/systems-frontend:latest",
-    "docker-build-staging": "docker build -t motionbank/systems-frontend:staging .",
-    "docker-release-staging": "npm run docker-build-staging && docker push motionbank/systems-frontend:staging"
+    "test": "echo \"No test specified\" && exit 0"
   },
   "metapak": {
     "configs": [
@@ -58,10 +58,10 @@
     "sift": "^5.1.0",
     "tiny-emitter": "^2.0.2",
     "uuid-validate": "0.0.2",
-    "videojs-framebyframe": "^1.0.1",
     "videojs-record": "^2.4.1",
     "videojs-vimeo": "git+https://github.com/PieceMeta/videojs-vimeo.git",
     "videojs-youtube": "^2.4.1",
+    "videojs-framebyframe": "git+https://github.com/fjenett/videojs-framebyframe.git",
     "vue-i18n": "^7.7.0",
     "vue-shortkey": "^3.1.6",
     "vue-video-player": "^5.0.2",
