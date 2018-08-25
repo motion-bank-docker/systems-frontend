@@ -22,7 +22,7 @@
       template(v-for="(video, i) in searchResults")
         template(v-if="i > 0")
           q-item-separator
-        q-item(draggable="true", @dragstart="event => {handleVideoItemDragStart(event, video)}")
+        q-item(draggable="true", @dragstart.native="event => {handleVideoItemDragStart(event, video)}")
           q-item-side
             template(v-if="video.pictures[4]")
               img(:src="video.pictures[4].link", style="width: 100%; max-width: 50px")
@@ -62,11 +62,13 @@
           // TODO: check if change from superagent to axios plugin is breaking
           this.$axios
             .get(apiBase + apiSearchVideos, {
-              query: this.searchTerm,
-              access_token: VIMEO_ACCESS_TOKEN
+              params: {
+                query: this.searchTerm,
+                access_token: VIMEO_ACCESS_TOKEN
+              }
             })
             .then(results => {
-              _this.searchResults = results.body.data
+              _this.searchResults = results.data.data
               _this.checkNewSearchTerm()
             })
             .catch(() => {
