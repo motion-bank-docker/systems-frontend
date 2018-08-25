@@ -117,14 +117,12 @@
         // renderFull: true,
       }
     },
-    mounted () {
+    async mounted () {
       const _this = this
       window.addEventListener('resize', this.updateGridDimensions)
-      this.fetchMetadataAnnotations()
-        .then(() => {
-          this.updateGridDimensions()
-          _this.fetchCellAnnotations()
-        })
+      await this.fetchMetadataAnnotations()
+      this.updateGridDimensions()
+      _this.fetchCellAnnotations()
     },
     beforeDestroy () {
       window.removeEventListener('resize', this.updateGridDimensions)
@@ -132,10 +130,6 @@
     watch: {
       cells () {
         this.updateCellUIStates()
-      },
-      gridUuid () {
-        console.log('Grid UUID changed, fetch metadata again??')
-        // this.gridMetadata = ObjectUtil.merge({}, this.grid)
       },
       gridMetadata () {
         this.updateGridDimensions()
@@ -417,7 +411,11 @@
         } */
       },
       getGridBackgroundSVG (cell) {
-        return `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%'><defs><pattern id='smallGrid' width='${cell.width}' height='${cell.height}' patternUnits='userSpaceOnUse'><path d='M ${cell.width} 0 L 0 0 0 ${cell.height}' fill='none' stroke='gray' stroke-width='0.5'/></pattern></defs><rect width='100%' height='100%' fill='url(#smallGrid)' /></svg>")`
+        return `url("data:image/svg+xml;utf8,` +
+          `<svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%'><defs>` +
+          `<pattern id='smallGrid' width='${cell.width}' height='${cell.height}' patternUnits='userSpaceOnUse'>` +
+          `<path d='M ${cell.width} 0 L 0 0 0 ${cell.height}' fill='none' stroke='gray' stroke-width='0.5'/>` +
+          `</pattern></defs><rect width='100%' height='100%' fill='url(#smallGrid)' /></svg>")`
       },
       fetchCellAnnotations () {
         const _this = this
@@ -439,32 +437,29 @@
             _this.updateCellUIStates()
           })
       },
-      fetchMetadataAnnotations () {
+      async fetchMetadataAnnotations () {
         const _this = this
-        const query = { 'body.type': '2DGridMetadata', 'target.id': `${process.env.GRID_BASE_URI}${this.gridUuid}` }
-        return new Promise((resolve, reject) => {
-          this.$store.dispatch('annotations/find', query)
-            .then(result => {
-              let annotation = result.items.shift()
-              if (annotation) {
-                let metadata = JSON.parse(annotation.body.value)
-                metadata.uuid = annotation.uuid
-                if (metadata) {
-                  _this.gridMetadata = metadata
-                  resolve()
-                }
-              }
-              else {
-                _this.gridMetadata = {
-                  columns: 10,
-                  rows: 6,
-                  ratio: 16 / 9.0
-                }
-                _this.updateGridMetadataStore()
-              }
-            })
-            .catch(reject)
-        })
+        const query = {
+          'body.type': '2DGridMetadata',
+          'target.id': `${process.env.GRID_BASE_URI}${this.gridUuid}`
+        }
+        const result = await this.$store.dispatch('annotations/find', query)
+        let annotation = result.items.shift()
+        if (annotation) {
+          let metadata = JSON.parse(annotation.body.value)
+          metadata.uuid = annotation.uuid
+          if (metadata) {
+            _this.gridMetadata = metadata
+          }
+        }
+        else {
+          _this.gridMetadata = {
+            columns: 10,
+            rows: 6,
+            ratio: 16 / 9.0
+          }
+          _this.updateGridMetadataStore()
+        }
       },
       getGridCellAnnotation (cell) {
         return {
@@ -507,23 +502,23 @@
         }
         _this.fetchCellAnnotations()
       },
-      updateGridMetadataStore () {
+      async updateGridMetadataStore () {
         const _this = this
         let mapAnnotation = this.getGridMetadataAnnotation(this.gridUuid, this.gridMetadata)
 
-        return Promise.resolve()
-          .then(() => {
-            if (_this.gridMetadata.uuid) {
-              return _this.$store.dispatch('annotations/patch', [_this.gridMetadata.uuid, mapAnnotation])
-            }
-            return _this.$store.dispatch('annotations/post', mapAnnotation)
-          })
-          .then(() => {
-            _this.updateGridDimensions()
-          })
+        if (_this.gridMetadata.uuid) {
+          await _this.$store.dispatch('annotations/patch', [_this.gridMetadata.uuid, mapAnnotation])
+        }
+        await _this.$store.dispatch('annotations/post', mapAnnotation)
+        _this.updateGridDimensions()
       },
       getCellStyle (cell) {
-        return {'grid-column-start': cell.x, 'grid-column-end': `span ${cell.width}`, 'grid-row-start': cell.y, 'grid-row-end': `span ${cell.height}`}
+        return {
+          'grid-column-start': cell.x,
+          'grid-column-end': `span ${cell.width}`,
+          'grid-row-start': cell.y,
+          'grid-row-end': `span ${cell.height}`
+        }
       }
       // setCellSet: function (cellSet) {
       //   this.grid = cellSet

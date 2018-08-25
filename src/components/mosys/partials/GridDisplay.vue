@@ -36,30 +36,18 @@
         messenger: new MessengerComponent()
       }
     },
-    mounted () {
+    async mounted () {
       const _this = this
       window.addEventListener('resize', this.updateGridDimensions)
-      this.messenger.$on('video-loaded', (/* origin */) => {
-        // console.log('video loaded', origin.origin)
-      })
-      this.messenger.$on('video-time-changed', (/* time, globalTime, origin */) => {
-        // console.log(videoUuid, time)
-      })
-      this.fetchMetadataAnnotations()
-        .then(() => {
-          this.updateGridDimensions()
-          _this.fetchCellAnnotations()
-        })
-    },
-    watch: {
-      gridUuid () {
-        const _this = this
-        this.fetchMetadataAnnotations()
-          .then(() => {
-            this.updateGridDimensions()
-            _this.fetchCellAnnotations()
-          })
-      }
+      // this.messenger.$on('video-loaded', (/* origin */) => {
+      //   // console.log('video loaded', origin.origin)
+      // })
+      // this.messenger.$on('video-time-changed', (/* time, globalTime, origin */) => {
+      //   // console.log(videoUuid, time)
+      // })
+      await this.fetchMetadataAnnotations()
+      this.updateGridDimensions()
+      _this.fetchCellAnnotations()
     },
     methods: {
       fetchCellAnnotations () {
@@ -78,64 +66,46 @@
             }).filter(cell => cell)
           })
       },
-      fetchMetadataAnnotations () {
+      async fetchMetadataAnnotations () {
         const _this = this
         const query = { 'body.type': '2DGridMetadata', 'target.id': `${process.env.GRID_BASE_URI}${this.gridUuid}` }
-        return new Promise((resolve, reject) => {
-          this.$store.dispatch('annotations/find', query)
-            .then(annotations => {
-              let annotation = annotations.items.shift()
-              if (annotation) {
-                let metadata = JSON.parse(annotation.body.value)
-                metadata.uuid = annotation.uuid
-                if (metadata) {
-                  _this.gridMetadata = metadata
-                  resolve()
-                }
-              }
-              else {
-                _this.gridMetadata = {
-                  columns: 10,
-                  rows: 6,
-                  ratio: 16 / 9.0
-                }
-                _this.updateGridMetadataStore()
-              }
-            })
-            .catch(reject)
-        })
+        const annotations = await this.$store.dispatch('annotations/find', query)
+        let annotation = annotations.items.shift()
+        if (annotation) {
+          let metadata = JSON.parse(annotation.body.value)
+          metadata.uuid = annotation.uuid
+          if (metadata) {
+            _this.gridMetadata = metadata
+          }
+        }
+        else {
+          _this.gridMetadata = {
+            columns: 10,
+            rows: 6,
+            ratio: 16 / 9.0
+          }
+          _this.updateGridMetadataStore()
+        }
       },
-      updateCellStore (cell) {
+      async updateCellStore (cell) {
         const _this = this
         let annotation = this.getGridCellAnnotation(cell)
-        Promise
-          .resolve()
-          .then(() => {
-            if (cell.uuid) {
-              return _this.$store.dispatch('annotations/patch', [cell.uuid, annotation])
-            }
-            else {
-              return _this.$store.dispatch('annotations/post', annotation)
-            }
-          })
-          .then(() => {
-            _this.fetchCellAnnotations()
-          })
+        if (cell.uuid) {
+          await _this.$store.dispatch('annotations/patch', [cell.uuid, annotation])
+        }
+        else {
+          await _this.$store.dispatch('annotations/post', annotation)
+        }
       },
-      updateGridMetadataStore () {
+      async updateGridMetadataStore () {
         const _this = this
         let mapAnnotation = this.getGridMetadataAnnotation(this.gridUuid, this.gridMetadata)
 
-        return Promise.resolve()
-          .then(() => {
-            if (_this.gridMetadata.uuid) {
-              return _this.$store.dispatch('annotations/patch', [_this.gridMetadata.uuid, mapAnnotation])
-            }
-            return _this.$store.dispatch('annotations/post', mapAnnotation)
-          })
-          .then(() => {
-            _this.updateGridDimensions()
-          })
+        if (_this.gridMetadata.uuid) {
+          await _this.$store.dispatch('annotations/patch', [_this.gridMetadata.uuid, mapAnnotation])
+        }
+        await _this.$store.dispatch('annotations/post', mapAnnotation)
+        _this.updateGridDimensions()
       },
       updateGridDimensions () {
         let elWidth = this.$el.offsetWidth
