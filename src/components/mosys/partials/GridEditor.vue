@@ -259,7 +259,7 @@
       handleGridContextMenu (event) {
         this.contextMenuClickPosition = this.getGridPositionForEvent(event)
       },
-      handleGridContextMenuAddCell () {
+      async handleGridContextMenuAddCell () {
         const _this = this
         let position = this.contextMenuClickPosition
         let newCell = {
@@ -271,14 +271,8 @@
           content: 'A new cell is born'
         }
         let annotation = this.getGridCellAnnotation(newCell)
-        Promise
-          .resolve()
-          .then(() => {
-            return _this.$store.dispatch('annotations/post', annotation)
-          })
-          .then(() => {
-            _this.fetchCellAnnotations()
-          })
+        await _this.$store.dispatch('annotations/post', annotation)
+        _this.fetchCellAnnotations()
       },
       handleGridContextMenuInsertColumnLeft () {
         const _this = this
@@ -502,22 +496,16 @@
           }
         }
       },
-      updateCellStore (cell) {
+      async updateCellStore (cell) {
         const _this = this
         let annotation = this.getGridCellAnnotation(cell)
-        Promise
-          .resolve()
-          .then(() => {
-            if (cell.uuid) {
-              return _this.$store.dispatch('annotations/patch', [cell.uuid, annotation])
-            }
-            else {
-              return _this.$store.dispatch('annotations/post', annotation)
-            }
-          })
-          .then(() => {
-            _this.fetchCellAnnotations()
-          })
+        if (cell.uuid) {
+          await _this.$store.dispatch('annotations/patch', [cell.uuid, annotation])
+        }
+        else {
+          await _this.$store.dispatch('annotations/post', annotation)
+        }
+        _this.fetchCellAnnotations()
       },
       updateGridMetadataStore () {
         const _this = this
