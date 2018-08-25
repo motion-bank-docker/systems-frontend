@@ -71,6 +71,7 @@
       if (meta && meta.title) {
         this.videoMeta = meta
       }
+      this.fetchAnnotations()
       if (this.messenger) {
         this.messenger.$on('video-time-changed', (time, globalTime, origin) => {
           if (origin.type === 'Video' &&
@@ -88,11 +89,6 @@
             }
           }
         })
-      }
-    },
-    watch: {
-      videoUuid () {
-        this.fetchAnnotations()
       }
     },
     methods: {
@@ -148,15 +144,32 @@
               _this.video = videoAnnotation
               _this.videoTime = Date.parse(_this.video.target.selector.value)
               _this.contextTime = _this.videoTime
-              // fetch the PM timeline (if any)
-              _this.$store.dispatch('maps/find', { type: constants.MAP_TYPE_TIMELINE, uuid: videoAnnotation.target.uuid })
+              const query = {
+                type: constants.MAP_TYPE_TIMELINE,
+                uuid: videoAnnotation.target.uuid
+              }
+              _this.$store.dispatch('maps/find', query)
                 .then(result => {
                   const map = result.items.shift()
                   if (map) {
                     _this.map = map
                   }
                 })
-              _this.$store.dispatch('annotations/find', {'target.id': videoAnnotation.target.id, 'body.purpose': 'commenting'})
+              const selectorValue = videoAnnotation.target.selector.value
+              const startDate = Date.parse(selectorValue)
+              const endDate = DateTime.fromMillis(startDate + (_this.videoMeta.duration * 1000))
+              const endDateISO = endDate.toISO()
+              console.log(selectorValue, endDateISO)
+              const annotationsQuery = {
+                'target.id': videoAnnotation.target.id,
+                'target.type': constants.MAP_TYPE_TIMELINE,
+                'body.type': 'TextualBody',
+                'target.selector.value': {
+                  $gte: selectorValue,
+                  $lte: endDateISO
+                }
+              }
+              _this.$store.dispatch('annotations/find', annotationsQuery)
                 .then(result => {
                   let annotations = result.items.filter(a => {
                     return Date.parse(a.target.selector.value) >= _this.videoTime
