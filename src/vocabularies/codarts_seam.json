@@ -1,7 +1,7 @@
 {
   "uuid": "9e86a0e2-56d5-4888-92d7-222fa917a436",
   "namespace": "d829b99c-d608-43db-a147-0614558eb915",
-  "title": "Codarts: SEAM",
+  "title": "SEAM",
   "entries": [
     { "value": "movement direction", "shortcut": ["a"] },
     { "value": "direction body/body parts", "shortcut": ["b"] },

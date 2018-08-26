@@ -21,7 +21,7 @@
     //
     //
     .fixed-top.bg-dark.q-pb-md(style="top: 50px; width: 100%; z-index: 1000;")
-      vocabularies-main(@currentString="currentString", :newVocabulary="newVocabulary")
+      annotation-field(@annotation="onAnnotation", ref="annotationField")
 
     // CENTER: SHOW ANNOTATIONS
     //
@@ -33,17 +33,22 @@
             q-item-side(v-if="annotation.target.selector")
               | {{ formatSelectorForList(annotation.target.selector.value) }}
             q-item-main
-              q-input(type="textarea", v-model="annotation.body.value", dark)
+              q-input(v-if="annotation.body.type === 'TextualBody'", type="textarea",
+                v-model="annotation.body.value", dark)
+              q-input(v-if="annotation.body.type === 'VocabularyEntry'", type="textarea",
+                v-model="annotation.body.value", dark, disabled)
             q-item-side.text-right
-              q-btn.q-mr-sm(@click="cloneEntry(annotation.body.value)", small, round, icon="filter_none")
-              q-btn.q-mr-sm(@click="newVocab(annotation.body.value)", small, round, icon="playlist_add")
+              q-btn.q-mr-sm(@click="cloneEntry(annotation)", small, round, icon="filter_none")
+              q-btn.q-mr-sm(small, round, icon="playlist_add",
+                :disabled="annotation.body.type !== 'TextualBody'",
+                @click="this.$refs.annotationField.addToVocabulary(annotation)")
                 // q-tooltip.q-caption.bg-dark(:offset="[0,5]") alt + e
               q-btn(@click="deleteAnnotation(annotation.uuid, i)", icon="clear", round, small)
 
 </template>
 
 <script>
-  import VocabulariesMain from '../../../components/piecemaker/partials/vocabularies/VocabulariesMain'
+  import AnnotationField from '../../../components/piecemaker/partials/AnnotationField'
   import { ObjectUtil, Assert } from 'mbjs-utils'
   import { DateTime } from 'luxon'
   import uuidValidate from 'uuid-validate'
@@ -52,77 +57,44 @@
 
   export default {
     components: {
-      VocabulariesMain
+      AnnotationField
     },
     data () {
       return {
         annotations: [],
-        currentBody: {
-          value: undefined,
-          purpose: 'commenting',
-          type: 'TextualBody'
-        },
-        currentSelector: {
-          type: 'Fragment',
-          value: undefined
-        },
-        highlightedTag: undefined,
         inputStyle: true,
-        newVocabulary: '',
-        parent: 'live-annotate',
-        pressedKey: '',
-        prevKey: undefined,
         staging: process.env.IS_STAGING,
         tagBox: false
       }
     },
     methods: {
-      newVocab (val) {
-        this.newVocabulary = val
-        // alert(this.newVocabulary)
-      },
-      cloneEntry (val) {
-        // this.$refs.vocabInput.$el[0].focus()
-        this.currentBody.value = val
-        this.currentSelector.value = DateTime.local().toISO()
-        // this.currentSelector.value = this.formatSelectorForList(DateTime.local().toISO())
-        this.createAnnotation()
-      },
-      currentString (val) {
-        // console.log(val, '------')
-        if (val.string !== undefined) {
-          const bodyLength = val.string.length
-          if (bodyLength > 2) {
-            this.currentBody.value = val.string
-            this.currentSelector.value = val.time
-            this.createAnnotation()
-            this.currentBody.value = undefined
-          }
-          else {
-            this.currentBody.value = undefined
-          }
+      cloneEntry (annotation) {
+        const payload = {
+          body: ObjectUtil.merge({}, annotation.body),
+          target: ObjectUtil.merge({}, annotation.target)
         }
+        annotation.target.selector.value = DateTime.local().toISO()
+        this.createAnnotation(payload)
       },
-      createAnnotation () {
-        const _this = this
-        const annotation = {
-          body: ObjectUtil.merge({}, _this.currentBody),
+      onAnnotation (annotation) {
+        console.debug('received annotation...', annotation)
+        if (annotation) this.createAnnotation(annotation)
+      },
+      async createAnnotation (annotation = {}) {
+        const payload = ObjectUtil.merge(annotation, {
           target: {
-            id: `${process.env.TIMELINE_BASE_URI}${_this.$route.params.id}`,
-            type: constants.MAP_TYPE_TIMELINE,
-            selector: ObjectUtil.merge({}, _this.currentSelector)
+            id: `${process.env.TIMELINE_BASE_URI}${this.$route.params.id}`,
+            type: constants.MAP_TYPE_TIMELINE
           }
+        })
+        const result = await this.$store.dispatch('annotations/post', payload)
+        if (result.body.type === 'VocabularyEntry') {
+          const entry = await this.$vocabularies.getEntry(result.body.source.id)
+          result.body.value = entry.value
         }
-        annotation.body.value = annotation.body.value.trim()
-        this.currentBody.value = undefined
-        this.currentSelector.value = undefined
-        return this.$store.dispatch('annotations/post', annotation)
-          .then(annotation => {
-            _this.annotations.push(annotation)
-            _this.annotations = _this.annotations.sort(Sorting.sortOnTarget)
-            _this.scrollToElement()
-            // _this.scrollToElement(annotation.uuid)
-          })
+        this.annotations.push(result)
+        this.annotations = this.annotations.sort(Sorting.sortOnTarget)
+        this.scrollToElement()
       },
       deleteAnnotation (uuid, index) {
         Assert.ok(uuidValidate(uuid))
