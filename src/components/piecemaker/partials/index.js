@@ -1,4 +1,4 @@
-import Vocabulary from './vocabularies/Vocabulary'
+import Vocabulary from './Vocabulary'
 import AnnotationField from './AnnotationField'
 
 export {
