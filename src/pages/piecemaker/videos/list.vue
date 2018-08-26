@@ -1,9 +1,11 @@
 <template lang="pug">
   full-screen
+    confirm-modal(ref="confirmModal", @confirm="handleConfirmModal")
+
     q-btn(slot="backButton", @click="$router.push({ name: 'piecemaker.timelines.list' })", icon="keyboard_backspace", round, small)
     span(slot="form-logo")
     span(slot="form-title") {{ $t('routes.piecemaker.videos.list.title') }}
-    data-table(:config="config", :title="'routes.piecemaker.videos.list.title'",
+    data-table(ref="listTable", :config="config", :title="'routes.piecemaker.videos.list.title'",
       path="annotations", :query="query", base-path="videos")
       template(slot="buttons-left")
         q-btn(@click="$router.push({ name: 'piecemaker.videos.create', params: { timelineId: $route.params.timelineId } })",
@@ -11,12 +13,13 @@
 </template>
 
 <script>
-  import { DataTable, FullScreen } from 'mbjs-quasar/src/components'
+  import { DataTable, FullScreen, ConfirmModal } from 'mbjs-quasar/src/components'
 
   export default {
     components: {
       DataTable,
-      FullScreen
+      FullScreen,
+      ConfirmModal
     },
     data () {
       const _this = this
@@ -82,10 +85,19 @@
             },
             {
               type: 'delete',
-              title: 'buttons.delete'
+              title: 'buttons.delete',
+              click: (item) => {
+                this.$refs.confirmModal.show('buttons.delete', item, 'buttons.delete')
+              }
             }
           ]
         }
+      }
+    },
+    methods: {
+      async handleConfirmModal (item) {
+        await this.$store.dispatch('annotations/delete', item.uuid)
+        this.$refs.listTable.request()
       }
     }
   }

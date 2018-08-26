@@ -1,5 +1,7 @@
 <template lang="pug">
   full-screen
+    confirm-modal(ref="confirmModal", @confirm="handleConfirmModal")
+
     span(slot="form-logo")
     span(slot="form-title") {{ $t('routes.piecemaker.timelines.list.title') }}
 
@@ -25,13 +27,14 @@
 </template>
 
 <script>
-  import { DataTable, FullScreen } from 'mbjs-quasar/src/components'
+  import { DataTable, FullScreen, ConfirmModal } from 'mbjs-quasar/src/components'
   import constants from 'mbjs-data-models/src/constants'
 
   export default {
     components: {
       DataTable,
-      FullScreen
+      FullScreen,
+      ConfirmModal
     },
     mounted () {
       // this.diagramDimensions.currentWidth = this.$refs['diagramList'].offsetWidth
@@ -116,29 +119,35 @@
               type: 'delete',
               title: 'buttons.delete',
               click: item => {
-                _this.$store.dispatch('annotations/find', { 'target.id': `${process.env.TIMELINE_BASE_URI}${item.uuid}` }).then(async result => {
-                  for (let a of result.items) {
-                    await _this.$store.dispatch('annotations/delete', a.uuid)
-                  }
-                  await _this.$store.dispatch('maps/delete', item.uuid)
-                  this.$store.commit('notifications/addMessage', {
-                    body: 'messages.timeline_deleted',
-                    mode: 'alert',
-                    type: 'success'
-                  })
-                  this.$refs.listTable.request()
-                }).catch(err => {
-                  console.error('timeline delete failed', err.message)
-                  this.$store.commit('notifications/addMessage', {
-                    body: 'errors.timeline_delete_failed',
-                    mode: 'alert',
-                    type: 'error'
-                  })
-                })
+                this.$refs.confirmModal.show('buttons.delete', item, 'buttons.delete')
               }
             }
           ]
         }
+      }
+    },
+    methods: {
+      handleConfirmModal (item) {
+        const _this = this
+        _this.$store.dispatch('annotations/find', { 'target.id': `${process.env.TIMELINE_BASE_URI}${item.uuid}` }).then(async result => {
+          for (let a of result.items) {
+            await _this.$store.dispatch('annotations/delete', a.uuid)
+          }
+          await _this.$store.dispatch('maps/delete', item.uuid)
+          this.$store.commit('notifications/addMessage', {
+            body: 'messages.timeline_deleted',
+            mode: 'alert',
+            type: 'success'
+          })
+          this.$refs.listTable.request()
+        }).catch(err => {
+          console.error('timeline delete failed', err.message)
+          this.$store.commit('notifications/addMessage', {
+            body: 'errors.timeline_delete_failed',
+            mode: 'alert',
+            type: 'error'
+          })
+        })
       }
     }
   }
