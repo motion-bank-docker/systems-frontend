@@ -184,7 +184,11 @@ export default {
       },
       terms: {
         title: 'Terms & Conditions',
-        caption: 'Lorem ipsum dolores dings.'
+        caption: 'Software and service are provided as is. We are not making any guarantees about availability or security of information you are giving or data you are adding to the system.'
+      },
+      contact: {
+        title: 'Contact',
+        caption: 'When getting in touch, please remember that we are located in Germany and are a research project, not a service or company.'
       }
     },
     piecemaker: {

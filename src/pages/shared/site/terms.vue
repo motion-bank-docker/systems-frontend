@@ -1,14 +1,22 @@
 <template lang="pug">
-  center-card-three-quarter
-    span(slot="title") {{ $t('routes.site.terms.title') }}
-    p.caption(slot="caption") {{ $t('routes.site.terms.caption') }}
+
+  full-screen
+    .row
+      .col-xs-12.col-xs-10.col-sm-8
+        h5 {{ $t('routes.site.terms.title') }}
+        p {{ $t('routes.site.terms.caption') }}
+
+        p
+          a(href="https://www.hs-mainz.de/datenschutz/") Datenschutz
+
 </template>
 
 <script>
-  import CenterCardThreeQuarter from 'mbjs-quasar/src/components/layouts/CenterCardThreeQuarter'
+  import { FullScreen } from 'mbjs-quasar/src/components'
+
   export default {
     components: {
-      CenterCardThreeQuarter: CenterCardThreeQuarter
+      FullScreen
     }
   }
 </script>

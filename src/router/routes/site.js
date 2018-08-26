@@ -20,6 +20,14 @@ export default {
       path: '/imprint',
       component: () => import('pages/shared/site/imprint'),
       name: 'site.imprint'
+    }, {
+      path: '/contact',
+      component: () => import('pages/shared/site/contact'),
+      name: 'site.contact'
+    }, {
+      path: '/terms',
+      component: () => import('pages/shared/site/terms'),
+      name: 'site.terms'
     }
   ]
 }
