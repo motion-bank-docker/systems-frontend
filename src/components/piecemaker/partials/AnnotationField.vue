@@ -38,7 +38,7 @@
   import { DateTime } from 'luxon'
   import { ObjectUtil } from 'mbjs-utils'
 
-  import Vocabulary from './vocabularies/Vocabulary'
+  import Vocabulary from './Vocabulary'
 
   export default {
     components: {
@@ -163,6 +163,7 @@
           console.debug('esc')
           this.reset()
         }
+        else this.setFocusOnInput()
       },
       onKeyUp () {
         if (this.annotationText) this.annotationText = this.annotationText.trim()

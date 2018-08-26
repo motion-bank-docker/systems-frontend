@@ -43,7 +43,7 @@
       //
       // .fixed-top(style="top: 50px; width: 100%; z-index: 1000;")
       .absolute-top(style="width: 100%;")
-        annotation-field(@currentString="currentString", @annotation="createAnnotation")
+        annotation-field(@annotation="onAnnotation", ref="annotationField")
 
         // INFO TEXT
 
@@ -100,7 +100,10 @@
             q-item-tile.q-caption.q-my-xs
               span {{ annotation.author.name }}
             q-item-tile.q-caption
-              q-input(@click="changeState(), hideForm()", color="white", type="textarea", v-model="annotation.body.value", dark)
+              q-input(v-if="annotation.body.type === 'TextualBody'", @click="changeState(), hideForm()", color="white",
+                type="textarea", v-model="annotation.body.value", dark)
+              q-input(v-if="annotation.body.type === 'VocabularyEntry'", type="textarea",
+                v-model="annotation.body.value", dark, disabled)
 
 </template>
 
@@ -224,6 +227,12 @@
           query['target.selector.value']['$lte'] = this.selector.plus(this.metadata.duration * 1000).toISO()
         }
         const results = await this.$store.dispatch('annotations/find', query)
+        for (let item of results.items) {
+          if (item.body.type === 'VocabularyEntry') {
+            const entry = await this.$vocabularies.getEntry(item.body.source.id)
+            item.body.value = entry.value
+          }
+        }
         if (results && Array.isArray(results.items)) {
           _this.annotations = results.items.sort(Sorting.sortOnTarget)
         }
@@ -245,47 +254,30 @@
           this.active = true
         }
       },
-      currentString (val) {
-        console.log(val, '------')
-        // alert(val)
-        const bodyLength = val.value.length
-        if (bodyLength > 2) {
-          // this.currentBody.value = val.string.substr(0, bodyLength - 2)
-          this.currentBody.value = val.value
-          this.currentSelector.value = DateTime.local().toISO()
-          this.createAnnotation()
-        }
-        else {
-          this.currentBody.value = undefined
-        }
+      onAnnotation (annotation) {
+        console.debug('received annotation...', annotation)
+        if (annotation) this.createAnnotation(annotation)
       },
-      createAnnotation (annotation = undefined) {
-        const _this = this
-        annotation = ObjectUtil.merge({
-          body: ObjectUtil.merge({}, _this.currentBody),
+      async createAnnotation (annotation = {}) {
+        const payload = ObjectUtil.merge(annotation, {
           target: {
-            id: `${process.env.TIMELINE_BASE_URI}${_this.timelineId}`,
-            type: constants.MAP_TYPE_TIMELINE,
-            selector: ObjectUtil.merge({}, _this.currentSelector)
+            id: `${process.env.TIMELINE_BASE_URI}${this.$route.params.id}`,
+            type: constants.MAP_TYPE_TIMELINE
           }
-        }, annotation)
-        annotation.body.value = annotation.body.value.trim()
-        console.debug('annotation', annotation)
-        this.currentBody.value = undefined
-        this.currentSelector.value = undefined
-        return this.$store.dispatch('annotations/post', annotation)
-          .then(res => {
-            _this.getAnnotations().then(() => {
-              const targets = this.$refs[res.uuid]
-              if (targets && targets.length) _this.scrollToElement(targets[0].$el)
-            })
-          })
-          .then(() => _this.toggleForm())
+        })
+        const result = await this.$store.dispatch('annotations/post', payload)
+        if (result.body.type === 'VocabularyEntry') {
+          const entry = await this.$vocabularies.getEntry(result.body.source.id)
+          result.body.value = entry.value
+        }
+        this.annotations.push(result)
+        this.annotations = this.annotations.sort(Sorting.sortOnTarget)
+        // FIXME: scroll seems broken, cannot find ref
+        // this.scrollToAnnotation(result.uuid)
       },
-      scrollToElement (el, duration = 1000) {
-        let target = getScrollTarget(el)
-        let offset = el.offsetTop - el.scrollHeight
-        setScrollPosition(target, offset, duration)
+      scrollToAnnotation (uuid, duration = 1000) {
+        const el = this.$refs[uuid][0].$el
+        setScrollPosition(getScrollTarget(el), el.offsetTop - el.scrollHeight, duration)
       },
       updateAnnotation (annotation) {
         Assert.isType(annotation, 'object')
