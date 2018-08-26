@@ -43,7 +43,7 @@
       //
       // .fixed-top(style="top: 50px; width: 100%; z-index: 1000;")
       .absolute-top(style="width: 100%;")
-        vocabularies-main(@currentString="currentString")
+        annotation-field(@currentString="currentString", @annotation="createAnnotation")
 
         // INFO TEXT
 
@@ -114,8 +114,7 @@
   import { parseURI, Sorting } from 'mbjs-data-models/src/lib'
 
   import { VideoPlayer, Username } from 'mbjs-quasar/src/components'
-  // import Vocabularies from '../../../components/piecemaker/partials/vocabularies/Vocabularies'
-  import VocabulariesMain from '../../../components/piecemaker/partials/vocabularies/VocabulariesMain'
+  import AnnotationField from '../../../components/piecemaker/partials/AnnotationField'
 
   const { getScrollTarget, setScrollPosition } = scroll
 
@@ -123,8 +122,7 @@
     components: {
       VideoPlayer,
       Username,
-      // Vocabularies,
-      VocabulariesMain
+      AnnotationField
     },
     async mounted () {
       if (this.$route.params.id) {
@@ -248,30 +246,31 @@
         }
       },
       currentString (val) {
-        // console.log(val, '------')
+        console.log(val, '------')
         // alert(val)
-        const bodyLength = val.string.length
+        const bodyLength = val.value.length
         if (bodyLength > 2) {
           // this.currentBody.value = val.string.substr(0, bodyLength - 2)
-          this.currentBody.value = val.string
-          this.currentSelector.value = val.time
+          this.currentBody.value = val.value
+          this.currentSelector.value = DateTime.local().toISO()
           this.createAnnotation()
         }
         else {
           this.currentBody.value = undefined
         }
       },
-      createAnnotation () {
+      createAnnotation (annotation = undefined) {
         const _this = this
-        const annotation = {
+        annotation = ObjectUtil.merge({
           body: ObjectUtil.merge({}, _this.currentBody),
           target: {
             id: `${process.env.TIMELINE_BASE_URI}${_this.timelineId}`,
             type: constants.MAP_TYPE_TIMELINE,
             selector: ObjectUtil.merge({}, _this.currentSelector)
           }
-        }
+        }, annotation)
         annotation.body.value = annotation.body.value.trim()
+        console.debug('annotation', annotation)
         this.currentBody.value = undefined
         this.currentSelector.value = undefined
         return this.$store.dispatch('annotations/post', annotation)
