@@ -51,7 +51,7 @@
     "mbjs-api-client": "^1.0.5",
     "mbjs-data-models": "0.0.8",
     "mbjs-media": "0.0.18",
-    "mbjs-quasar": "0.0.12",
+    "mbjs-quasar": "0.0.14",
     "mbjs-utils": "^0.0.6",
     "pug": "^2.0.3",
     "raven-js": "^3.26.4",
