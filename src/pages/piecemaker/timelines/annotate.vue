@@ -39,7 +39,7 @@
                 v-model="annotation.body.value", dark, disabled)
             q-item-side.text-right
               q-btn.q-mr-sm(@click="cloneEntry(annotation)", small, round, icon="filter_none")
-              q-btn.q-mr-sm(small, round, icon="playlist_add",
+              q-btn.q-mr-sm(v-if="staging", small, round, icon="playlist_add",
                 :disabled="annotation.body.type !== 'TextualBody'",
                 @click="this.$refs.annotationField.addToVocabulary(annotation)")
                 // q-tooltip.q-caption.bg-dark(:offset="[0,5]") alt + e

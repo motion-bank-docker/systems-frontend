@@ -116,9 +116,10 @@
         this.$refs.textInput.focus()
       },
       toggleVocabulary () {
+        if (!this.$refs.vocabulary) return
         this.$refs.vocabulary.toggle()
-        if (this.$refs.vocabulary.visible) this.currentBody = ObjectUtil.merge({}, this.defaultBodyVocabulary)
-        if (!this.$refs.vocabulary.visible) this.reset()
+        if (this.vocabularyVisible) this.currentBody = ObjectUtil.merge({}, this.defaultBodyVocabulary)
+        if (!this.vocabularyVisible) this.reset()
         this.setFocusOnInput()
       },
       selectEntry (entry) {
@@ -137,7 +138,7 @@
         this.annotationText = undefined
         this.currentBody = ObjectUtil.merge({}, this.defaultBodyText)
         this.currentSelector = ObjectUtil.merge({}, this.defaultSelector)
-        if (this.$refs.vocabulary.visible) this.$refs.vocabulary.toggle()
+        if (this.vocabularyVisible) this.$refs.vocabulary.toggle()
       },
       onKeyDown (event) {
         const key = event.key.toLowerCase().replace(/\s/g, '')
