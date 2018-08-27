@@ -41,9 +41,12 @@
             q-item-side.q-px-sm.q-py
               // div(v-if="!pressedAlt")
               div
-                q-btn.text-primary(@click="enterSetShortcut(entry.id)", no-caps, round, size="sm") {{ getInitials(entry.value) }}
+                q-btn.text-primary(no-caps, round, size="sm") {{ getInitials(entry.value) }}
 
-                q-btn.text-grey-8.cursor-pointer.no-margin(v-else, icon="keyboard", round, size="sm", @click="enterSetShortcut(entry.id)")
+                q-btn.text-grey-8.cursor-pointer.no-margin(
+                  icon="keyboard",
+                  round, size="sm",
+                  @click="enterSetShortcut(entry.id)") {{ getShortcutKey(entry) }}
               // div(v-else)
                 .text-primary {{ tag.shortcutKey.value }}
 
@@ -135,6 +138,12 @@
           .map((n) => n[0])
           .join('')
           .toUpperCase()
+      },
+      getShortcutKey (val) {
+        if (val.shortcut) {
+          return val.shortcut.join('')
+        }
+        return ''
       },
       onKeyPress (event) {
         const key = event.key.toLowerCase().replace(/\s/g, '')
