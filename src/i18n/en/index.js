@@ -104,7 +104,8 @@ export default {
     timeline_imported: 'Timeline imported successfully',
     timeline_deleted: 'Timeline deleted',
     grid_imported: 'Grid imported successfully',
-    grid_deleted: 'Grid deleted'
+    grid_deleted: 'Grid deleted',
+    confirm_delete: 'Delete this item?'
   },
   navigation: {
     annotate_video: 'Annotate Video',

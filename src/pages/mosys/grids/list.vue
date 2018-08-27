@@ -1,10 +1,18 @@
 <template lang="pug">
   full-screen
+    confirm-modal(ref="confirmModal", @confirm="handleConfirmModal")
+
     span(slot="form-title") {{ $t('routes.mosys.grids.list.title') }}
-    data-table(:config="config", :title="'routes.mosys.grids.list.title'",
-    path="maps", :query="query", base-path="grids", :has-show="true")
-      template(slot="buttons-left")
-        q-btn(@click="$router.push({ name: 'mosys.grids.create' })", color="primary") {{ $t('buttons.create_grid') }}
+    data-table(
+      ref="listTable",
+      :config="config",
+      :title="'routes.mosys.grids.list.title'",
+      path="maps",
+      :query="query",
+      base-path="grids",
+      :has-show="true")
+        template(slot="buttons-left")
+          q-btn(@click="$router.push({ name: 'mosys.grids.create' })", color="primary") {{ $t('buttons.create_grid') }}
 </template>
 
 <script>
@@ -55,29 +63,35 @@
               type: 'delete',
               title: 'buttons.delete',
               click: item => {
-                _this.$store.dispatch('annotations/find', { 'target.id': `${process.env.GRID_BASE_URI}${item.uuid}` }).then(async result => {
-                  for (let a of result.items) {
-                    await _this.$store.dispatch('annotations/delete', a.uuid)
-                  }
-                  await _this.$store.dispatch('maps/delete', item.uuid)
-                  this.$store.commit('notifications/addMessage', {
-                    body: 'messages.grid_deleted',
-                    mode: 'alert',
-                    type: 'success'
-                  })
-                  this.$refs.listTable.request()
-                }).catch(err => {
-                  console.error('grid delete failed', err.message)
-                  this.$store.commit('notifications/addMessage', {
-                    body: 'errors.grid_delete_failed',
-                    mode: 'alert',
-                    type: 'error'
-                  })
-                })
+                this.$refs.confirmModal.show('messages.confirm_delete', item, 'buttons.delete')
               }
             }
           ]
         }
+      }
+    },
+    methods: {
+      handleConfirmModal (item) {
+        const _this = this
+        _this.$store.dispatch('annotations/find', { 'target.id': `${process.env.GRID_BASE_URI}${item.uuid}` }).then(async result => {
+          for (let a of result.items) {
+            await _this.$store.dispatch('annotations/delete', a.uuid)
+          }
+          await _this.$store.dispatch('maps/delete', item.uuid)
+          this.$store.commit('notifications/addMessage', {
+            body: 'messages.grid_deleted',
+            mode: 'alert',
+            type: 'success'
+          })
+          this.$refs.listTable.request()
+        }).catch(err => {
+          console.error('grid delete failed', err.message)
+          this.$store.commit('notifications/addMessage', {
+            body: 'errors.grid_delete_failed',
+            mode: 'alert',
+            type: 'error'
+          })
+        })
       }
     }
   }
