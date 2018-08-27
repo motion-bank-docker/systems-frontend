@@ -12,6 +12,7 @@
         .col-md-12
           p {{ $t('labels.access_control') }}
           q-checkbox(v-model="acl.public", :label="$t('labels.access_control_public')")
+        .col-md-12
           q-btn.q-mr-md.bg-grey-9(:label="$t('buttons.update_access_control')", @click="updateACL")
       // .row
       //   .col-md-12
