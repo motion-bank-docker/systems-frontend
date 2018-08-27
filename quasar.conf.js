@@ -25,7 +25,7 @@ module.exports = function (ctx) {
       ctx.theme.mat ? 'roboto-font' : null,
       'material-icons'
     ],
-    supportIE: true,
+    supportIE: false,
     build: {
       scopeHoisting: true,
       vueRouterMode: 'history',
