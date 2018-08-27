@@ -1,5 +1,6 @@
 export default {
   buttons: {
+    update_access_control: 'Change access settings',
     arrow_next: '>',
     arrow_prev: '<',
     abort: 'Abort',
@@ -55,6 +56,8 @@ export default {
     timeline_delete_failed: 'Failed to delete Timeline'
   },
   labels: {
+    access_control: 'Access',
+    access_control_public: 'Public',
     annotations: 'Annotations',
     annotation_body: 'Annotation text',
     accept_terms: 'I accept the Terms and Conditions',
@@ -94,6 +97,7 @@ export default {
     click_to_register: 'Click here to create an account.'
   },
   messages: {
+    acl_updated: 'Access settings updated',
     login_success: 'Login successful',
     logout_notice: 'You have been logged out',
     registration_success: 'Account was successfully created. You can log in now!',
