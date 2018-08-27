@@ -48,9 +48,14 @@
                 .text-primary {{ tag.shortcutKey.value }}
 
             q-item-main
-              q-btn.full-width(v-shortkey="entry.key", @shortkey.native="selectEntry(entry.id)", @click="selectEntry(entry.id)",
-                no-caps, flat, align="left", color="transparent")
-                .text-white.text-weight-regular {{ entry.value }}
+              q-btn.full-width(
+                v-shortkey="entry.key",
+                @shortkey.native="selectEntry(entry.id)",
+                @dblclick.native="selectEntry(entry.id, true)",
+                @click="selectEntry(entry.id)",
+                no-caps, flat, align="left",
+                color="transparent")
+                  .text-white.text-weight-regular {{ entry.value }}
 
           q-item(v-if="!selectedVocabulary.length")
             q-item-main.text-italic.text-center no matches
@@ -104,9 +109,9 @@
       async addEntry (value) {
         await this.selectedVocabulary.addEntry(value)
       },
-      async selectEntry (id) {
+      async selectEntry (id, createImmediatly = false) {
         const entry = await this.selectedVocabulary.get(id)
-        this.$emit('select-entry', entry)
+        this.$emit('select-entry', entry, createImmediatly)
       },
       async enterSetShortcut (val) {
         this.isSetShortcut = true

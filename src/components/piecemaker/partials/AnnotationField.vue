@@ -30,7 +30,11 @@
       // VOCABULARY (staging)
 
       div(v-if="staging")
-        vocabulary(ref="vocabulary", @select-entry="selectEntry", @focus="setFocusOnInput", :highlight="selectedEntry")
+        vocabulary(
+          ref="vocabulary",
+          @select-entry="selectEntry",
+          @focus="setFocusOnInput",
+          :highlight="selectedEntry")
 
 </template>
 
@@ -124,12 +128,17 @@
         this.$refs.vocabulary.toggle()
         this.setFocusOnInput()
       },
-      selectEntry (entry) {
+      selectEntry (entry, andCreate = false) {
         this.selectedEntry = entry
         this.currentBody = ObjectUtil.merge({}, this.defaultBodyVocabulary, {
           source: { id: entry.id }
         })
-        this.setFocusOnInput()
+        if (andCreate) {
+          this.createAnnotation()
+        }
+        else {
+          this.setFocusOnInput()
+        }
       },
       addToVocabulary (annotation) {
         this.$refs.vocabulary.addEntry(annotation.body.value)
@@ -147,15 +156,7 @@
         if (key === 'enter') {
           if (this.enterDown === this.$props.submitOnNumEnters - 1) {
             event.preventDefault()
-            const annotation = {
-              body: ObjectUtil.merge({}, this.currentBody),
-              target: {
-                selector: ObjectUtil.merge({}, this.currentSelector)
-              }
-            }
-            if (!this.selectedEntry) annotation.body.value = this.annotationText.trim()
-            this.reset()
-            this.$emit('annotation', annotation)
+            this.createAnnotation()
           }
           else {
             this.enterDown += 1
@@ -169,6 +170,17 @@
           this.enterDown = 0
           this.setFocusOnInput()
         }
+      },
+      createAnnotation () {
+        const annotation = {
+          body: ObjectUtil.merge({}, this.currentBody),
+          target: {
+            selector: ObjectUtil.merge({}, this.currentSelector)
+          }
+        }
+        if (!this.selectedEntry) annotation.body.value = this.annotationText.trim()
+        this.reset()
+        this.$emit('annotation', annotation)
       }
     }
   }
