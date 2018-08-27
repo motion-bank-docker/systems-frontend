@@ -1,8 +1,10 @@
 <template lang="pug">
 
   // POST ANNOTATION
-
+  //
+  //
   .bg-dark(style="height: calc(100vh - 52px); overflow: hidden;")
+    confirm-modal(ref="confirmModal", @confirm="handleConfirmModal")
 
     .bg-dark.relative-position(style="height: calc(100vh - 52px);")
 
@@ -92,7 +94,7 @@
               v-if="annotation.target.selector", :color="currentIndex === i ? 'primary' : 'dark'",
               @click="gotoSelector(annotation.target.selector.value), changeState()", size="sm")
                 | {{ formatSelectorForList(annotation.target.selector.value) }}
-              q-btn.float-right(@click="deleteAnnotation(annotation.uuid), changeState()", size="sm") {{ $t('buttons.delete') }}
+              q-btn.float-right(@click="$refs.confirmModal.show('messages.confirm_delete', annotation, 'buttons.delete')", size="sm") {{ $t('buttons.delete') }}
               q-btn.float-right(@click="updateAnnotation(annotation), addKeypressListener()", size="sm") {{ $t('buttons.save') }}
             q-item-tile.q-caption.q-my-xs
               span {{ annotation.author.name }}
@@ -177,6 +179,10 @@
       }
     },
     methods: {
+      handleConfirmModal (annotation) {
+        this.deleteAnnotation(annotation.uuid)
+        this.changeState()
+      },
       toggleFullscreen () {
         AppFullscreen.toggle()
       },
