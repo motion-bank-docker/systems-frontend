@@ -90,14 +90,14 @@
             q-item-tile
               q-btn(
               v-if="annotation.target.selector", :color="currentIndex === i ? 'primary' : 'dark'",
-              @click="gotoSelector(annotation.target.selector.value), changeState()", size="sm")
+              @click="gotoSelector(annotation.target.selector.value)", size="sm")
                 | {{ formatSelectorForList(annotation.target.selector.value) }}
-              q-btn.float-right(@click="deleteAnnotation(annotation.uuid), changeState()", size="sm") {{ $t('buttons.delete') }}
-              q-btn.float-right(@click="updateAnnotation(annotation), addKeypressListener()", size="sm") {{ $t('buttons.save') }}
+              q-btn.float-right(@click="deleteAnnotation(annotation.uuid)", size="sm") {{ $t('buttons.delete') }}
+              q-btn.float-right(@click="updateAnnotation(annotation)", size="sm") {{ $t('buttons.save') }}
             q-item-tile.q-caption.q-my-xs
               span {{ annotation.author.name }}
             q-item-tile.q-caption
-              q-input(v-if="annotation.body.type === 'TextualBody'", @click="changeState(), hideForm()", color="white",
+              q-input(v-if="annotation.body.type === 'TextualBody'", color="white",
                 type="textarea", v-model="annotation.body.value", dark)
               q-input(v-if="annotation.body.type === 'VocabularyEntry'", type="textarea",
                 v-model="annotation.body.value", dark, disabled)
@@ -126,10 +126,8 @@
         await this.getVideo()
         await this.getAnnotations()
       }
-      window.addEventListener('keypress', this.toggleForm)
     },
     beforeDestroy () {
-      window.removeEventListener('keypress', this.toggleForm)
       AppFullscreen.exit()
     },
     data () {
@@ -137,26 +135,15 @@
         active: false,
         annotations: [],
         baseSelector: undefined,
-        currentBody: {
-          value: undefined,
-          purpose: 'commenting',
-          type: 'TextualBody'
-        },
-        currentSelector: {
-          type: 'Fragment',
-          value: undefined
-        },
         drawer: true,
         fullscreen: false,
         filtertypes: [{
           title: 'Comment'
         }, {
           title: 'Marker'
-        }
-        ],
+        }],
         inputStyle: true,
         metadata: undefined,
-        parent: 'post-annotate',
         player: undefined,
         playerTime: 0.0,
         selector: undefined,
@@ -180,24 +167,9 @@
       toggleFullscreen () {
         AppFullscreen.toggle()
       },
-      changeState () {
-        this.active = false
-        this.currentSelector.value = undefined
-        this.currentBody.value = undefined
-        window.addEventListener('keypress', this.toggleForm)
-      },
-      hideForm () {
-        window.removeEventListener('keypress', this.toggleForm)
-      },
-      addKeypressListener () {
-        window.addEventListener('keypress', this.toggleForm)
-      },
       fullscreenHandler () {
         this.fullscreen = !this.fullscreen
       },
-      /* toggleInputStyle () {
-        this.inputStyle = !this.inputStyle
-      }, */
       async getVideo () {
         const result = await this.$store.dispatch('annotations/get', this.$route.params.id)
         if (result.body) {
@@ -229,23 +201,6 @@
         }
         if (results && Array.isArray(results.items)) {
           _this.annotations = results.items.sort(Sorting.sortOnTarget)
-        }
-      },
-      toggleForm () {
-        if (this.active) {
-          this.active = false
-          this.currentSelector.value = undefined
-          this.currentBody.value = undefined
-          window.addEventListener('keypress', this.toggleForm)
-        }
-        else {
-          window.removeEventListener('keypress', this.toggleForm)
-          if (!this.player) return
-          let selector = DateTime.fromISO(this.baseSelector.toISO())
-          let seconds = this.player.currentTime()
-          selector = selector.plus(seconds * 1000)
-          this.currentSelector.value = selector.toISO()
-          this.active = true
         }
       },
       onAnnotation (annotation) {
