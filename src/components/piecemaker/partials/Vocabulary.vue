@@ -110,7 +110,9 @@
         this.selectedVocabulary = vocabulary
       },
       async addEntry (value) {
-        await this.selectedVocabulary.addEntry(value)
+        if (this.selectedVocabulary) {
+          await this.selectedVocabulary.addTerm(value)
+        }
       },
       async selectEntry (id, createImmediatly = false) {
         const entry = await this.selectedVocabulary.get(id)
