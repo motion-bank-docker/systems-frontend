@@ -17,7 +17,11 @@
     data () {
       const _this = this
       return {
-        query: { 'body.purpose': 'linking', 'target.id': `${process.env.TIMELINE_BASE_URI}${this.$route.params.timelineId}` },
+        query: {
+          'body.purpose': 'linking',
+          'body.type': 'Video',
+          'target.id': `${process.env.TIMELINE_BASE_URI}${this.$route.params.timelineId}`
+        },
         config: {
           columns: [
             {
