@@ -191,11 +191,11 @@
           query = {
             'target.id': `${process.env.TIMELINE_BASE_URI}${_this.timelineId}`,
             'target.type': constants.MAP_TYPE_TIMELINE,
-            'body.type': 'TextualBody',
-            'target.selector.value': { $gte: this.baseSelector.toISO() }
+            'target.selector.value': { $gte: this.baseSelector.toISO() },
+            'body.type': 'TextualBody'
           }
         if (this.metadata.duration) {
-          query['target.selector.value']['$lte'] = this.selector.plus(this.metadata.duration * 1000).toISO()
+          query['target.selector.value']['$lte'] = this.baseSelector.plus(this.metadata.duration * 1000).toISO()
         }
         const results = await this.$store.dispatch('annotations/find', query)
         for (let item of results.items) {
@@ -204,6 +204,7 @@
             item.body.value = entry.value
           }
         }
+        console.log(results.items)
         if (results && Array.isArray(results.items)) {
           _this.annotations = results.items.sort(Sorting.sortOnTarget)
         }
@@ -215,7 +216,7 @@
       async createAnnotation (annotation = {}) {
         const payload = ObjectUtil.merge(annotation, {
           target: {
-            id: `${process.env.TIMELINE_BASE_URI}${this.$route.params.id}`,
+            id: `${process.env.TIMELINE_BASE_URI}${this.timelineId}`,
             type: constants.MAP_TYPE_TIMELINE,
             selector: {
               type: 'Fragment',
