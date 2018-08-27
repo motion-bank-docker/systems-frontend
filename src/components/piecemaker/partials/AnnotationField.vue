@@ -118,8 +118,6 @@
       toggleVocabulary () {
         if (!this.$refs.vocabulary) return
         this.$refs.vocabulary.toggle()
-        if (this.vocabularyVisible) this.currentBody = ObjectUtil.merge({}, this.defaultBodyVocabulary)
-        if (!this.vocabularyVisible) this.reset()
         this.setFocusOnInput()
       },
       selectEntry (entry) {
@@ -133,25 +131,25 @@
         this.$refs.vocabulary.addEntry(annotation.body.value)
       },
       reset () {
+        if (this.selectedEntry && this.$refs.vocabulary) this.toggleVocabulary()
         this.submitArmed = false
         this.selectedEntry = undefined
         this.annotationText = undefined
         this.currentBody = ObjectUtil.merge({}, this.defaultBodyText)
         this.currentSelector = ObjectUtil.merge({}, this.defaultSelector)
-        if (this.vocabularyVisible) this.$refs.vocabulary.toggle()
       },
       onKeyDown (event) {
         const key = event.key.toLowerCase().replace(/\s/g, '')
         if (key === 'enter') {
           if (this.submitArmed) {
-            if (this.annotationText) this.annotationText = this.annotationText.trim()
+            event.preventDefault()
             const annotation = {
               body: ObjectUtil.merge({}, this.currentBody),
               target: {
                 selector: ObjectUtil.merge({}, this.currentSelector)
               }
             }
-            if (!this.selectedEntry) annotation.body.value = this.annotationText
+            if (!this.selectedEntry) annotation.body.value = this.annotationText.trim()
             this.reset()
             this.$emit('annotation', annotation)
           }
