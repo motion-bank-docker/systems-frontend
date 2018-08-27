@@ -216,7 +216,11 @@
         const payload = ObjectUtil.merge(annotation, {
           target: {
             id: `${process.env.TIMELINE_BASE_URI}${this.$route.params.id}`,
-            type: constants.MAP_TYPE_TIMELINE
+            type: constants.MAP_TYPE_TIMELINE,
+            selector: {
+              type: 'Fragment',
+              value: this.baseSelector.plus(this.playerTime * 1000).toISO()
+            }
           }
         })
         const result = await this.$store.dispatch('annotations/post', payload)
