@@ -1,19 +1,20 @@
 <template lang="pug">
 
   q-list
+    q-list-header
+      q-item
+        small Cell Content Editor
+
+    q-item-separator
+
     template(v-for="(cell, index) in cells")
-
-      q-list-header
-        q-item
-          small Cell Content Editor
-
-      q-item-separator
 
       template(v-if="index > 0")
         q-item-separator
 
       q-item
         q-field(
+          v-if="cell.type in itemSpecs",
           :icon="typeToIconName[cell.type]",
           :helper="itemSpecs[cell.type].help",
           :error="itemSpecs[cell.type].error",
@@ -27,6 +28,7 @@
               :value="cell.content",
               @change="value => {handleItemChanged(value, cell)}")
 
+        q-field(v-else) This cell type is not supported yet: {{ cell.type }}
 </template>
 
 <script>
@@ -96,10 +98,22 @@
             error: false,
             errorMessage: 'Needs to be a valid URL',
             value: ''
+          },
+          'Annotation-List': {
+            inputType: 'text',
+            type: 'Annotation-List',
+            label: 'Annotation List Cell',
+            help: 'Insert a Video UUID',
+            error: false,
+            errorMessage: '',
+            value: ''
           }
         }
       }
     },
+    // mounted () {
+    //   console.log(this.$props.cells)
+    // },
     methods: {
       handleItemChanged (value, cell) {
         if (cell.inputType !== 'url') {
