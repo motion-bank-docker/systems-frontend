@@ -45,7 +45,11 @@
       Vocabulary
     },
     props: {
-      newVocabularyEntry: String
+      newVocabularyEntry: String,
+      submitOnNumEnters: {
+        type: Number,
+        default: 2
+      }
     },
     data () {
       const defaultBodyText = {
@@ -75,7 +79,7 @@
           focusInput: ['tab'],
           showVocabulary: ['alt']
         },
-        submitArmed: false,
+        enterDown: 0,
         selectedEntry: undefined,
         staging: process.env.IS_STAGING
       }
@@ -132,7 +136,7 @@
       },
       reset () {
         if (this.selectedEntry && this.$refs.vocabulary) this.toggleVocabulary()
-        this.submitArmed = false
+        this.enterDown = 0
         this.selectedEntry = undefined
         this.annotationText = undefined
         this.currentBody = ObjectUtil.merge({}, this.defaultBodyText)
@@ -141,7 +145,7 @@
       onKeyDown (event) {
         const key = event.key.toLowerCase().replace(/\s/g, '')
         if (key === 'enter') {
-          if (this.submitArmed) {
+          if (this.enterDown === this.$props.submitOnNumEnters - 1) {
             event.preventDefault()
             const annotation = {
               body: ObjectUtil.merge({}, this.currentBody),
@@ -154,7 +158,7 @@
             this.$emit('annotation', annotation)
           }
           else {
-            this.submitArmed = true
+            this.enterDown += 1
           }
         }
         else if (key === 'escape') {
@@ -162,7 +166,7 @@
           this.reset()
         }
         else {
-          this.submitArmed = false
+          this.enterDown = 0
           this.setFocusOnInput()
         }
       }
