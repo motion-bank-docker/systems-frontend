@@ -2,7 +2,7 @@
   full-screen
     confirm-modal(ref="confirmModal", @confirm="handleConfirmModal")
 
-    q-btn(slot="backButton", @click="$router.push({ name: 'piecemaker.timelines.list' })", icon="keyboard_backspace", round, small)
+    back-button(slot="backButton")
     span(slot="form-logo")
     span(slot="form-title") {{ $t('routes.piecemaker.videos.list.title') }}
     data-table(ref="listTable", :config="config", :title="'routes.piecemaker.videos.list.title'",
@@ -13,14 +13,7 @@
 </template>
 
 <script>
-  import { DataTable, FullScreen, ConfirmModal } from 'mbjs-quasar/src/components'
-
   export default {
-    components: {
-      DataTable,
-      FullScreen,
-      ConfirmModal
-    },
     data () {
       const _this = this
       return {

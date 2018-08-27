@@ -10,12 +10,8 @@
     //
     //
     .absolute-top-left.q-ma-md
-
       // BUTTON - GO BACK
-
-      q-btn.fixed-top-left.q-ma-md(slot="nav-button", icon="keyboard_backspace",
-      @click="$router.push({name: 'piecemaker.timelines.show', params: {id: $route.params.id}})", round, small,
-      style="top: 50px; z-index: 2100;")
+      back-button.fixed-top-left.q-ma-md(slot="nav-button", style="top: 50px; z-index: 2100;")
 
     // TOP CENTER: INPUT AREA
     //

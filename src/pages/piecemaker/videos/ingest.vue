@@ -10,12 +10,7 @@
 <script>
   import { DateTime } from 'luxon'
   import path from 'path'
-  import { FullScreen, Uploader } from 'mbjs-quasar/src/components'
   export default {
-    components: {
-      FullScreen,
-      Uploader
-    },
     data () {
       return {
         timelines: [],

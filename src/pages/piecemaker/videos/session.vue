@@ -209,12 +209,10 @@
 </template>
 
 <script>
-  import { DataTable } from 'mbjs-quasar/src/components'
   import CardFull from 'mbjs-quasar/src/components/layouts/CardFull'
 
   export default {
     components: {
-      DataTable,
       CardFull
     },
     mounted () {

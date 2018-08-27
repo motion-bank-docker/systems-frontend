@@ -1,7 +1,7 @@
 <template lang="pug">
   full-screen
     // q-btn(slot="backButton", @click="$router.push({ name: 'piecemaker.videos.list' })", icon="keyboard_backspace", round, small)
-    q-btn(slot="backButton", @click="$router.push('timelines/' + payload.gid + '/videos')", icon="keyboard_backspace", round, small)
+    back-button(slot="backButton")
     .q-pa-xl(style="min-width: 50vw;")
       h5.caption(dark) {{ $t('routes.piecemaker.videos.edit.title') }}
       .row
@@ -13,7 +13,6 @@
 <script>
   import CalendarTimeMain from '../../../components/shared/forms/CalendarTimeMain'
   import FormMain from '../../../components/shared/forms/FormMain'
-  import { FullScreen } from 'mbjs-quasar/src/components'
 
   import { required } from 'vuelidate/lib/validators'
   import guessType from 'mbjs-media/src/util/guess-type'
@@ -21,8 +20,7 @@
   export default {
     components: {
       CalendarTimeMain,
-      FormMain,
-      FullScreen
+      FormMain
     },
     methods: {
       getTimeAndDate (val) {

@@ -21,7 +21,6 @@
 <script>
   import Tags from '../../../components/shared/partials/Tags'
   import FormMain from '../../../components/shared/forms/FormMain'
-  import FullScreen from 'mbjs-quasar/src/components/layouts/FullScreen'
 
   import { required } from 'vuelidate/lib/validators'
   import constants from 'mbjs-data-models/src/constants'
@@ -31,8 +30,7 @@
   export default {
     components: {
       FormMain,
-      Tags,
-      FullScreen
+      Tags
     },
     data () {
       const _this = this

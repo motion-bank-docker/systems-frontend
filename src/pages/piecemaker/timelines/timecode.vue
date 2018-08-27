@@ -15,12 +15,8 @@
 
 <script>
   import { DateTime } from 'luxon'
-  import { FullScreen } from 'mbjs-quasar/src/components'
   import path from 'path'
   export default {
-    components: {
-      FullScreen
-    },
     data () {
       return {
         isPlaying: false,

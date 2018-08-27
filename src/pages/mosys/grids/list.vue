@@ -8,14 +8,9 @@
 </template>
 
 <script>
-  import { DataTable, FullScreen } from 'mbjs-quasar/src/components'
   import constants from 'mbjs-data-models/src/constants'
 
   export default {
-    components: {
-      DataTable,
-      FullScreen
-    },
     data () {
       const _this = this
       return {

@@ -15,11 +15,8 @@
       //
       //
       .absolute-top-left.q-ma-md(style="z-index: 2100;")
-
         // BUTTON: GO BACK
-
-        q-btn(@click="$router.push({name: 'piecemaker.videos.list', params: {timelineId: timelineId}})",
-        color="grey", icon="keyboard_backspace", round, flat, small)
+        back-button
 
       // TOP RIGHT
       //
@@ -116,15 +113,12 @@
   import constants from 'mbjs-data-models/src/constants'
   import { parseURI, Sorting } from 'mbjs-data-models/src/lib'
 
-  import { VideoPlayer, Username } from 'mbjs-quasar/src/components'
   import AnnotationField from '../../../components/piecemaker/partials/AnnotationField'
 
   const { getScrollTarget, setScrollPosition } = scroll
 
   export default {
     components: {
-      VideoPlayer,
-      Username,
       AnnotationField
     },
     async mounted () {

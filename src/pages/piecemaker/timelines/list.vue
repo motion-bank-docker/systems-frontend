@@ -27,18 +27,9 @@
 </template>
 
 <script>
-  import { DataTable, FullScreen, ConfirmModal } from 'mbjs-quasar/src/components'
   import constants from 'mbjs-data-models/src/constants'
 
   export default {
-    components: {
-      DataTable,
-      FullScreen,
-      ConfirmModal
-    },
-    mounted () {
-      // this.diagramDimensions.currentWidth = this.$refs['diagramList'].offsetWidth
-    },
     data () {
       const _this = this
       return {

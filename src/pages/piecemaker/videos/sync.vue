@@ -75,13 +75,10 @@
   import CardFull from 'mbjs-quasar/src/components/layouts/CardFull'
   import constants from 'mbjs-data-models/src/constants'
   import {parseURI} from 'mbjs-data-models/src/lib'
-  import { VideoPlayer, VideoTitle } from 'mbjs-quasar/src/components'
 
   export default {
     components: {
-      CardFull,
-      VideoPlayer,
-      VideoTitle
+      CardFull
     },
     data () {
       return {

@@ -1,6 +1,6 @@
 <template lang="pug">
   full-screen
-    q-btn(slot="backButton", @click="$router.push({ name: 'piecemaker.videos.list' })", icon="keyboard_backspace", round, small)
+    back-button(slot="backButton")
     h5.caption(dark).text-center {{ $t('routes.piecemaker.videos.create.title') }}
     .row
       .col-xs-12.offset-xs-none.col-xl-10.offset-xl-1
@@ -14,7 +14,6 @@
 <script>
   import CalendarTimeMain from '../../../components/shared/forms/CalendarTimeMain'
   import FormMain from '../../../components/shared/forms/FormMain'
-  import { FullScreen } from 'mbjs-quasar/src/components'
 
   import { DateTime } from 'luxon'
   import { required } from 'vuelidate/lib/validators'
@@ -24,8 +23,7 @@
   export default {
     components: {
       CalendarTimeMain,
-      FormMain,
-      FullScreen
+      FormMain
     },
     methods: {
       getTimeAndDate (val) {

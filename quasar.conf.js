@@ -8,6 +8,7 @@ module.exports = function (ctx) {
       'api',
       'auth',
       'axios',
+      'components',
       'conversions',
       'extractions',
       'i18n',

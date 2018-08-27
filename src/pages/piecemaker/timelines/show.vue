@@ -40,7 +40,6 @@
 </template>
 
 <script>
-  import { FullScreen } from 'mbjs-quasar/src/components'
   import { DateTime } from 'luxon'
   import {
     SessionDiagram,
@@ -50,7 +49,6 @@
 
   export default {
     components: {
-      FullScreen,
       SessionDiagram,
       SessionFilter,
       SessionStream
