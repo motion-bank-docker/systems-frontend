@@ -17,6 +17,8 @@
   import { required } from 'vuelidate/lib/validators'
   import guessType from 'mbjs-media/src/util/guess-type'
 
+  import { parseURI } from 'mbjs-data-models/src/lib'
+
   export default {
     components: {
       CalendarTimeMain,
@@ -63,11 +65,10 @@
                   }
                 }
               }
-              console.log(context.payload, context.apiPayload)
               return context.$store.dispatch('annotations/patch', [context.payload.uuid, context.apiPayload])
                 .then(() => context.$router.push({
                   name: 'piecemaker.videos.list',
-                  params: { timelineId: context.$route.params.timelineId }
+                  params: { timelineId: parseURI(context.payload.gid).uuid }
                 }))
             }
           }
