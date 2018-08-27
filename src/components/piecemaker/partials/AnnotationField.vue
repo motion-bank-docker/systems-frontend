@@ -143,8 +143,8 @@
       onKeyDown (event) {
         const key = event.key.toLowerCase().replace(/\s/g, '')
         if (key === 'enter') {
-          event.preventDefault()
           if (this.submitArmed) {
+            if (this.annotationText) this.annotationText = this.annotationText.trim()
             const annotation = {
               body: ObjectUtil.merge({}, this.currentBody),
               target: {
@@ -158,16 +158,15 @@
           else {
             this.submitArmed = true
           }
-          if (this.annotationText) this.annotationText = this.annotationText.trim()
         }
         else if (key === 'escape') {
           console.debug('esc')
           this.reset()
         }
-        else this.setFocusOnInput()
-      },
-      onKeyUp () {
-        if (this.annotationText) this.annotationText = this.annotationText.trim()
+        else {
+          this.submitArmed = false
+          this.setFocusOnInput()
+        }
       }
     }
   }
