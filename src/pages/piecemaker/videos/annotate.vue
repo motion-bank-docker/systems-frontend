@@ -42,7 +42,7 @@
       //
       // .fixed-top(style="top: 50px; width: 100%; z-index: 1000;")
       .absolute-top(style="width: 100%;")
-        annotation-field(@annotation="onAnnotation", ref="annotationField", submit-on-num-enters="1")
+        annotation-field(@annotation="onAnnotation", ref="annotationField", :submit-on-num-enters="1")
 
         // INFO TEXT
 
