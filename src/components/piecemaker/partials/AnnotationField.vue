@@ -53,6 +53,12 @@
       submitOnNumEnters: {
         type: Number,
         default: 2
+      },
+      selectorFactory: {
+        type: Function,
+        default () {
+          return this.getCurrentSelector
+        }
       }
     },
     data () {
@@ -108,18 +114,21 @@
       annotationText (text) {
         if (!text) this.currentSelector.value = undefined
         else if (!this.selectedEntry) {
-          this.currentSelector.value = this.currentSelector.value || DateTime.local().toISO()
+          this.currentSelector.value = this.currentSelector.value || this.selectorFactory()
         }
       },
       selectedEntry (entry) {
         if (entry) {
-          this.currentSelector.value = this.currentSelector.value || DateTime.local().toISO()
+          this.currentSelector.value = this.currentSelector.value || this.selectorFactory()
           this.annotationText = entry.value
         }
         else this.annotationText = undefined
       }
     },
     methods: {
+      getCurrentSelector () {
+        return DateTime.local().toISO()
+      },
       setFocusOnInput () {
         this.$refs.textInput.focus()
       },
