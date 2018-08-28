@@ -133,9 +133,6 @@
         }
       }
     },
-    mounted () {
-      console.log(this.$props.session.videos)
-    },
     computed: {
       previewLineY () {
         if (typeof this.previewTime !== 'undefined') return this.previewTime
@@ -152,7 +149,6 @@
       //   this.setSessionTime(event.clientY)
       // },
       setSessionTime (val) {
-        console.log(val)
         // this.previewTime = val
         // if (video) this.onClickVideo(video)
         this.$emit('session-time', val)
