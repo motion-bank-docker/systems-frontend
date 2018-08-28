@@ -40,12 +40,43 @@
 </template>
 
 <script>
+  import axios from 'axios'
   import { DateTime } from 'luxon'
   import {
     SessionDiagram,
     SessionFilter,
     SessionStream
   } from '../../../components/piecemaker/partials/sessions'
+  import { Sorting } from 'mbjs-data-models/src/lib'
+  // import constants from 'mbjs-data-models/src/constants'
+  import { ObjectUtil } from 'mbjs-utils'
+
+  const resurrectAnnotation = function (annotation) {
+    if (typeof annotation.created === 'string') annotation.created = DateTime.fromISO(annotation.created)
+    if (typeof annotation.updated === 'string') annotation.updated = DateTime.fromISO(annotation.updated)
+    if (annotation.target && annotation.target.selector) {
+      if (typeof annotation.target.selector.value === 'string') {
+        annotation.target.selector.value = DateTime.fromISO(annotation.target.selector.value)
+      }
+    }
+    return annotation
+  }
+
+  const fetchMetaData = async (videos) => {
+    let videosMeta = []
+    const headers = {
+      Authorization: `Bearer ${localStorage.getItem('access_token')}`
+    }
+    for (let v of videos) {
+      try {
+        const meta = await axios.get(`${process.env.TRANSCODER_HOST}/metadata/${v.annotation.uuid}`, {headers})
+        Object.assign(v.meta, meta.data)
+        videosMeta.push(v)
+      }
+      catch (e) { console.log(e) }
+    }
+    return videosMeta
+  }
 
   export default {
     components: {
@@ -58,14 +89,99 @@
         uuid = this.$route.params.id,
         map = await this.$store.dispatch('maps/get', uuid)
       this.map = map
-      const grouped = await this.$store.dispatch('sessions/get', uuid)
-      grouped.sessions = grouped.sessions.map(session => {
-        session.start = DateTime.fromISO(session.start)
-        session.end = DateTime.fromISO(session.end)
-        return session
+      // const grouped = await this.$store.dispatch('sessions/get', uuid)
+      // grouped.sessions = grouped.sessions.map(session => {
+      //   session.start = DateTime.fromISO(session.start)
+      //   session.end = DateTime.fromISO(session.end)
+      //   return session
+      // })
+      const result = await this.$store.dispatch('annotations/find', {
+        'target.id': `${process.env.TIMELINE_BASE_URI}${uuid}`
       })
-      this.grouped = grouped
-      console.log(map, this.grouped)
+      const annotations = result.items
+      .filter(a => {
+        return a.target.selector.value
+      })
+      .sort(Sorting.sortOnTarget)
+      .map(a => {
+        return resurrectAnnotation(a)
+      })
+      const videosBase = result.items.filter(a => { return a.body.type === 'Video' })
+        .map(video => {
+          return {
+            meta: {},
+            annotation: video
+          }
+        })
+      const videos = await fetchMetaData(videosBase)
+
+      const millisDist = 90 /* constants.SESSION_DISTANCE_SECONDS */ * 1000
+      const sessions = []
+      const defaultSession = { start: undefined, end: undefined, duration: undefined, annotations: [], videos: [] }
+      let session = ObjectUtil.merge({}, defaultSession)
+
+      for (let i = 0; i < annotations.length; i++) {
+        const a = annotations[i]
+        const annotationStart = a.target.selector.value
+        let annotationEnd = annotationStart
+        let video
+
+        // TODO: handle other annotations with a duration here
+        if (a.body.type === 'Video') {
+          video = videos.find(v => {
+            return a.uuid === v.annotation.uuid
+          })
+          if (video) {
+            if (video.meta && video.meta.duration) {
+              annotationEnd = annotationStart.plus(video.meta.duration * 1000)
+            }
+          }
+        }
+
+        const annotationDuration = annotationEnd.toMillis() - annotationStart.toMillis()
+
+        if (!session.start) {
+          session.start = annotationStart
+        }
+        if (!session.end) {
+          session.end = annotationEnd
+        }
+
+        // could be negative if first annotation is video, hence Math.max()
+        const distToSessionEnd = Math.max(0, annotationStart.toMillis() - session.end.toMillis())
+
+        const annotationInside = distToSessionEnd <= millisDist
+        const isLastAnnotation = i === annotations.length - 1
+
+        if (annotationInside) {
+          // only set end if past current session.end
+          if (annotationEnd.toMillis() > session.end.toMillis()) {
+            session.end = annotationEnd
+          }
+          session.annotations.push({ annotation: a, duration: annotationDuration, active: false })
+          if (video) session.videos.push(video)
+        }
+        if (!annotationInside || isLastAnnotation) {
+          // store current annotation
+          session.duration = (session.end.toMillis() - session.start.toMillis()) * 0.1
+          if (isNaN(session.duration)) {
+            console.error('duration NaN', session)
+            session.duration = 0
+          }
+          sessions.push(session)
+          // start fresh session
+          session = ObjectUtil.merge({}, defaultSession)
+          // add current annotation
+          session.start = annotationStart
+          session.end = annotationEnd
+          session.annotations.push({ annotation: a, duration: annotationDuration, active: false })
+          if (video) session.videos.push(video)
+        }
+
+        // console.log(sessions.length, session.annotations.length, session.videos.length)
+      }
+      this.grouped = {sessions, videos}
+      // console.log(annotations, this.grouped)
     },
     methods: {
       selectSession (data) {
