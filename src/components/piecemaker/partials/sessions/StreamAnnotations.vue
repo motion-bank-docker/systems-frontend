@@ -1,23 +1,30 @@
 <template lang="pug">
   div
-    .q-pl-sm(v-for="annotation in annotations", :ref="annotation.annotation.uuid",
-      @mouseenter="onAnnotationEnter(annotation)", @mouseleave="onAnnotationLeave",
-      @click="setSessionTime(annotation.duration)")
+    .q-pl-sm(v-for="annotation in annotations",
+      :ref="annotation.annotation.uuid",
+      @mouseenter="onAnnotationEnter(annotation)",
+      @mouseleave="onAnnotationLeave",
+      @click="setSessionTime(annotation.relativeTime)")
 
-      .row.moba-list-entry(:ref="`annotation-${annotation.annotation.uuid}-${annotation.duration.toFixed(3)}`")
+      .row.moba-list-entry(:ref="`annotation-${annotation.annotation.uuid}-${annotation.relativeTime.toFixed(3)}`")
         .row.col-12(style="line-height: 1.35rem;")
-          .col-12.row.q-px-md.q-py-sm.moba-round-borders(:class="[annotation.type != 'system' ? 'moba-hover' : '', annotation.type == 'separator' ? 'bg-grey-9 text-black text-center' : '']")
+          .col-12.row.q-px-md.q-py-sm.moba-round-borders(
+            :class="[annotation.type != 'system' ? 'moba-hover' : '', annotation.type == 'separator' ? 'bg-grey-9 text-black text-center' : '']")
             .col-10.cursor-pointer
 
               // AUTHOR
               //
               span.text-grey-9 {{ shortenName(annotation.annotation.author.name) }}&nbsp;&nbsp;
-                q-tooltip.bg-dark.shadow-8.moba-border(anchor="center left", self="center right", :offset="[10, 0]") {{ annotation.annotation.author.name }}
+                q-tooltip.bg-dark.shadow-8.moba-border(anchor="center left",
+                  self="center right", :offset="[10, 0]")
+                  | {{ annotation.annotation.author.name }}
 
               // TEXT
               //
-              span(v-if="annotation.annotation.body.type === 'TextualBody'", :class="[annotation.active ? 'text-primary' : '']") {{ annotation.annotation.body.value }}
-              span(v-else, :class="[annotation.active ? 'text-primary' : '']") &lt;&lt; {{ annotation.annotation.body.type }} &gt;&gt;
+              span(v-if="annotation.annotation.body.type === 'TextualBody'",
+                :class="[annotation.active ? 'text-primary' : '']") {{ annotation.annotation.body.value }}
+              span(v-else,
+                :class="[annotation.active ? 'text-primary' : '']") &lt;&lt; {{ annotation.annotation.body.type }} &gt;&gt;
 
             // ZITIER LINK
             //
@@ -37,11 +44,11 @@
                         q-item(v-for="(at, ati) in annotation.tags", :class="{'q-pa-xs': ati - 2 < annotation.tags.length}")
                           q-chip.bg-transparent.text-grey-4.moba-border {{ at }}
 
-            // BUTTON
             // go to annotation screen
-            //
-              .col-1.text-right.moba-edit
-                q-btn.bg-dark.text-white.flip-horizontal.moba-border(icon="keyboard_backspace", size="sm", round, flat)
+            .col-1.text-right.moba-edit
+              q-btn.bg-dark.text-white.flip-horizontal.moba-border(
+                icon="keyboard_backspace",
+                size="sm", round, flat)
 </template>
 
 <script>
