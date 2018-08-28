@@ -58,6 +58,7 @@ module.exports = function (ctx) {
         TIMELINE_BASE_URI: JSON.stringify(process.env.TIMELINE_BASE_URI || 'https://app.motionbank.org/piecemaker/timelines/'),
         GRID_BASE_URI: JSON.stringify(process.env.GRID_BASE_URI || 'https://app.motionbank.org/mosys/grids/'),
         VOCABULARY_BASE_URI: JSON.stringify(process.env.VOCABULARY_BASE_URI || 'https://app.motionbank.org/piecemaker/vocabularies/'),
+        AUTH0_APP_METADATA_PREFIX: JSON.stringify(process.env.AUTH0_APP_METADATA_PREFIX || 'https://app.motionbank.org/app_metadata/'),
         ID_FIELD: JSON.stringify(process.env.ID_FIELD || 'uuid'),
         //
         // Auth0
