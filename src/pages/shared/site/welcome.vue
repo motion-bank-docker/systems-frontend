@@ -4,8 +4,8 @@
     .text-center.fit.relative-position(style="padding-bottom: 120px;")
       a(@click="openURL('http://www.motionbank.org')")
         img.responsive(src="~assets/motionbank-logo.png")
-      h3.caption.light-paragraph {{ $t('site.title') }}
-      p.caption {{ $t('site.tagline') }}
+      h3.caption.text-white {{ $t('site.title') }}
+      p.caption.text-white {{ $t('site.tagline') }}
       q-btn(outline, size="big", color="primary", @click="openURL('http://www.motionbank.org')") {{ $t('buttons.more_info') }}
     // .row.full-width
       .column.items-between
