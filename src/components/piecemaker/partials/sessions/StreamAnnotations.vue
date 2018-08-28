@@ -21,8 +21,8 @@
 
             // ZITIER LINK
             //
-            .col-1.text-right.moba-edit
-              q-btn.bg-dark.text-white.flip-horizontal.moba-border(icon="link", size="sm", round, flat)
+              .col-1.text-right.moba-edit
+                q-btn.bg-dark.text-white.flip-horizontal.moba-border(icon="link", size="sm", round, flat)
 
               // ANNOTATION TAGS
               // erstmal drin lassen
@@ -40,8 +40,8 @@
             // BUTTON
             // go to annotation screen
             //
-            .col-1.text-right.moba-edit
-              q-btn.bg-dark.text-white.flip-horizontal.moba-border(icon="keyboard_backspace", size="sm", round, flat)
+              .col-1.text-right.moba-edit
+                q-btn.bg-dark.text-white.flip-horizontal.moba-border(icon="keyboard_backspace", size="sm", round, flat)
 </template>
 
 <script>

@@ -10,7 +10,7 @@
           // DIAGRAM
           //
           .col-4(:class="{'row': fixDiagram, 'shadow-16': !fixDiagram}")
-            // stream-diagram(
+            stream-diagram(
               @session-time="changeSessionTime",
               @click-video="onClickVideo",
               :previewTime="previewTime",

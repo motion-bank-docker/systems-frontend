@@ -1,5 +1,6 @@
 <template lang="pug">
-  .col-4.shadow-16.moba-border.stream-diagram(:class="{'moba-fixed': fixDiagram, 'full-width': fixDiagram}")
+  .col-4.shadow-16.moba-border.stream-diagram.overflow-hidden(
+    :class="{'moba-fixed': fixDiagram, 'full-width': fixDiagram}")
 
     svg(v-if="session", width="100%", :height="session.duration")
 
@@ -21,13 +22,21 @@
       // vertical visualization of the videos
       //
       svg(width="80%")
-        svg.shadow-6(v-for="(vid, i) in session.videos", :id="vid.annotation.uuid", @click="onClickVideo(vid)",
-        :width="session.videos.length * 10", height="100%", :x="(session.videos.length * 10 + 15) * i + 20", y="0")
+        // @click="onClickVideo(vid)",
+        svg.shadow-6(
+          v-for="(vid, i) in session.videos",
+          :id="vid.annotation.uuid",
+          :width="session.videos.length * 10",
+          height="100%",
+          :x="(session.videos.length * 10 + 15) * i + 20",
+          y="0")
           rect.moba-swimlane(:class="{ 'moba-active-swimlane': isCurrentVideo(vid) }", width="100%", height="100%", x="0", y="0")
 
           g(v-if="currentVideo === vid.annotation.uuid")
             rect.moba-svg-entry(v-for="n in parseInt(session.duration / 10 + 1)",
-              @click="setSessionTime(parseInt(n * 10), vid)", width="100%", height="10", :y="(n - 1) * 10")
+              @click="setSessionTime(parseInt(n * 10), vid)",
+              width="100%", height="10",
+              :y="(n - 1) * 10")
             line.video-line-trans(v-for="n in parseInt(session.duration / 10 + 1)",
               x1="25%", x2="75%", :y1="n * 10", :y2="n * 10")
 
