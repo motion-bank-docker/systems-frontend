@@ -200,7 +200,7 @@
             'target.id': `${process.env.TIMELINE_BASE_URI}${_this.timelineId}`,
             'target.type': constants.MAP_TYPE_TIMELINE,
             'target.selector.value': { $gte: this.baseSelector.toISO() },
-            'body.type': 'TextualBody'
+            'body.type': { $in: ['TextualBody', 'VocabularyEntry'] }
           }
         if (this.metadata.duration) {
           query['target.selector.value']['$lte'] = this.baseSelector.plus(this.metadata.duration * 1000).toISO()
