@@ -1,10 +1,16 @@
 <template lang="pug">
   .col-4.shadow-16.moba-border.stream-diagram.overflow-hidden(
-    :class="{'moba-fixed': fixDiagram, 'full-width': fixDiagram}",
-    style="position: relative; height: 100%")
+    :class="{'moba-fixed': fixDiagram}")
 
     //
     svg(v-if="session", width="100%", height="100%")
+
+      //
+        rect(v-if="$props.visibleWindow",
+          x="0",
+          :y="`${(($props.visibleWindow.top / $props.visibleWindow.height) * 100).toFixed(3)}%`",
+          width="100%",
+          :height="`${(($props.visibleWindow.windowHeight / $props.visibleWindow.height) * 100).toFixed(3)}%`")
 
       // LINES - horizontal
       // displays the annotations as lines in the diagramm
@@ -15,8 +21,16 @@
           @click="setSessionTime(annotation.relativeTime)",
           :class="[annotation.active ? 'moba-active-line' : '']",
           style="fill: rgba(255, 255, 255, 0.2); opacity: 1",
-          width="100%", height="1", x="0",
+          width="100%", height="2", x="0",
           :y="((annotation.relativeTime / session.duration) * 100).toFixed(3) + '%'")
+
+      // PREVIEW LINE – horizontal
+      // appears on the left when hovering matching text on the right
+      //
+      svg(v-if="previewTime", width="100%", height="100%")
+        rect.preview-line(
+        width="100%", height="2",
+        :y="((previewTime / session.duration) * 100).toFixed(3) + '%'")
 
       // CURRENT TIME
       //
@@ -54,12 +68,6 @@
           //
             line.video-line(v-if="currentVideo == vid.annotation.uuid", x1="0", x2="100%", :y1="n * 60", :y2="n * 60",
               v-for="n in parseInt(session.duration / 60 + 1)")
-
-      // PREVIEW LINE – horizontal
-      // appears on the left when hovering matching text on the right
-      //
-      svg(v-if="previewLine.visibility", width="100%", height="100%")
-        rect.preview-line(width="100%", height="1", :y="previewLineY")
 
       // CURRENT TIME
       // appears on the right side of the diagram when video is playing
@@ -109,7 +117,14 @@
 
 <script>
   export default {
-    props: ['session', 'fixDiagram', 'sessionTime', 'currentVideo', 'previewTime'],
+    props: [
+      'session',
+      'fixDiagram',
+      'sessionTime',
+      'currentVideo',
+      'previewTime',
+      'visibleWindow'
+    ],
     data () {
       return {
         previewLine: {
@@ -131,14 +146,15 @@
       }
     },
     methods: {
-      changeSessionTimeDown () {
-        // console.log('changeSessionTime fired')
-        // console.log('--> ' + event.clientY)
-        this.setSessionTime(event.clientY)
-      },
-      setSessionTime (val, video) {
-        this.previewLine.positionY = val
-        if (video) this.onClickVideo(video)
+      // changeSessionTimeDown () {
+      //   // console.log('changeSessionTime fired')
+      //   // console.log('--> ' + event.clientY)
+      //   this.setSessionTime(event.clientY)
+      // },
+      setSessionTime (val) {
+        console.log(val)
+        // this.previewTime = val
+        // if (video) this.onClickVideo(video)
         this.$emit('session-time', val)
       },
       onClickVideo (vid) {
@@ -158,7 +174,7 @@
     fill rgba(255, 255, 255, .2)
 
   .moba-svg-entry:hover
-    fill rgba(255, 255, 255, 1)!important
+    fill rgba(255, 255, 255, 1) !important
     opacity 1
 
   .moba-swimlane
@@ -183,10 +199,17 @@
     stroke-width 1
 
   .preview-line
-    fill rgba(255, 255, 255, .5)!important
+    fill hotpink !important
 
   .stream-diagram
+    position relative
+    height 100%
+
+  .stream-diagram.moba-fixed
+    position fixed
+    top 50px
+    left 0
+    width 33%
     height calc(100vh - 50px)
-    overflow scroll
-    z-index 20
+
 </style>

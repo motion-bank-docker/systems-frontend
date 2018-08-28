@@ -1,6 +1,11 @@
 <template lang="pug">
     div
-      stream-video(ref="streamVideo", @close="onCloseVideo", :fix-diagram="fixDiagram", :video="video", :visible="showVideo")
+      stream-video(
+        ref="streamVideo",
+        @close="onCloseVideo",
+        :fix-diagram="fixDiagram",
+        :video="video",
+        :visible="showVideo")
 
       // STREAM VIEW
       //
@@ -10,13 +15,14 @@
           // DIAGRAM
           //
           .col-4(:class="{'row': fixDiagram, 'shadow-16': !fixDiagram}")
+            // @click-video="onClickVideo",
             stream-diagram(
               @session-time="changeSessionTime",
-              @click-video="onClickVideo",
               :previewTime="previewTime",
               :fix-diagram="fixDiagram",
               :session="session",
-              :session-time="sessionTime")
+              :session-time="sessionTime",
+              :visible-window="visibleWindow")
 
           // TEXT
           //
@@ -45,15 +51,41 @@
       StreamDiagram,
       StreamVideo
     },
+    data () {
+      // const _this = this
+      return {
+        annotations: [],
+        currentVideo: '',
+        currentSession: 0,
+        fixDiagram: false,
+        hoverVal: '',
+        map: undefined,
+        prevVideo: '',
+        showVideo: false,
+        propActiveSession: this.activesession,
+        propGrouped: this.grouped,
+        previewTime: undefined,
+        scaleFactor: '',
+        sessionTime: 0,
+        svgHeight: '100',
+        svgWidth: '',
+        video: '',
+        viewport: {
+          height: '',
+          width: ''
+        },
+        visibleWindow: undefined
+      }
+    },
     mounted () {
       this.getSvgHeight()
     },
     props: ['videos', 'session'],
     created: function () {
-      // window.addEventListener('scroll', this.scrollPos)
+      window.addEventListener('scroll', this.scrollPos)
     },
     destroyed: function () {
-      // window.removeEventListener('scroll', this.scrollPos)
+      window.removeEventListener('scroll', this.scrollPos)
     },
     watch: {
       sessionTime () {
@@ -95,13 +127,16 @@
         this.currentVideo = ''
       },
       onAnnotationPreview (annotation) {
-        if (annotation !== undefined) this.previewTime = annotation.duration
+        if (annotation !== undefined) this.previewTime = annotation.relativeTime
         else this.previewTime = undefined
       },
-      scrollPos () {
+      scrollPos (event) {
         this.fixDiagram = this.$refs.stream.getBoundingClientRect().top < '50'
-        // console.log(this.$refs.stream.getBoundingClientRect().top)
-        // console.log(this.$refs.stream.getBoundingClientRect().bottom - this.viewport.height)
+        this.visibleWindow = {
+          top: window.scrollY,
+          height: event.target.body.offsetHeight,
+          windowHeight: window.innerHeight
+        }
       },
       setSessionTime (seconds) {
         console.debug('set session time', seconds, this.player, this.sessionTime)
@@ -125,31 +160,6 @@
         switch (type) {
         case 'annotate':
           return _this.$router.push(`/piecemaker/videos/${data.row.uuid}/annotate`)
-        }
-      }
-    },
-    data () {
-      // const _this = this
-      return {
-        annotations: [],
-        currentVideo: '',
-        currentSession: 0,
-        fixDiagram: false,
-        hoverVal: '',
-        map: undefined,
-        prevVideo: '',
-        showVideo: false,
-        propActiveSession: this.activesession,
-        propGrouped: this.grouped,
-        previewTime: undefined,
-        scaleFactor: '',
-        sessionTime: 0,
-        svgHeight: '100',
-        svgWidth: '',
-        video: '',
-        viewport: {
-          height: '',
-          width: ''
         }
       }
     }
