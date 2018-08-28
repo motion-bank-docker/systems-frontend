@@ -131,12 +131,13 @@
         else this.previewTime = undefined
       },
       scrollPos (event) {
-        this.fixDiagram = this.$refs.stream.getBoundingClientRect().top < '50'
         this.visibleWindow = {
           top: window.scrollY,
           height: event.target.body.offsetHeight,
           windowHeight: window.innerHeight
         }
+        const bounds = this.$refs.stream.getBoundingClientRect()
+        this.fixDiagram = bounds.top < 50 && (bounds.height + bounds.top) >= window.innerHeight
       },
       setSessionTime (seconds) {
         console.debug('set session time', seconds, this.player, this.sessionTime)

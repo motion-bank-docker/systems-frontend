@@ -43,13 +43,13 @@
       // SWIMLANES - vertical
       // vertical visualization of the videos
       //
-      svg(width="80%")
+      svg
         // @click="onClickVideo(vid)",
         svg.shadow-6(
           v-if="session.videos",
           v-for="(vid, i) in session.videos",
           :id="vid.annotation.uuid",
-          :width="session.videos.length * 10",
+          :width="20",
           :height="(((vid.meta.duration * 1000) / session.duration) * 100).toFixed(3) + '%'",
           :x="(session.videos.length * 10 + 15) * i + 20",
           :y="(((vid.annotation.target.selector.value.toMillis() - session.start.toMillis()) / session.duration) * 100).toFixed(3) + '%'")
