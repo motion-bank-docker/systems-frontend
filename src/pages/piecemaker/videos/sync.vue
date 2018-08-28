@@ -116,7 +116,8 @@
           _this.timeline = timeline
           const query = {
             'target.id': `${process.env.TIMELINE_BASE_URI}${timeline.uuid}`,
-            'body.purpose': 'linking'
+            'body.purpose': 'linking',
+            'body.type': 'Video'
           }
           return _this.$store.dispatch('annotations/find', query)
         })

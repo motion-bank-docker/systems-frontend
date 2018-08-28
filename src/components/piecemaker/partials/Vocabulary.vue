@@ -22,7 +22,8 @@
 
     .q-pa-md(v-if="visible")
       q-btn.q-px-lg.q-mr-sm(v-for="vocabulary in vocabularies",
-      @click="selectVocabulary(vocabulary)", size="sm") {{ vocabulary.title }}
+        @click="selectVocabulary(vocabulary)", size="sm") {{ vocabulary.title }}
+
     div(ref="tagList", v-if="visible", style="max-height: 66vh; overflow-y: scroll;")
 
       // LIST RESULTS
@@ -31,7 +32,7 @@
         // (todo: most used?)
         q-list.no-border.no-margin.no-padding
 
-          q-item.no-padding.moba-tag-hover(v-for="entry in selectedVocabulary.entries", :key="entry.id",
+          q-item.no-padding.moba-tag-hover(v-for="(entry, i) in selectedVocabulary.entries", :key="`entry-${entry.id}-${i}`",
             :class="{ 'bg-grey-9': highlight && entry.id === highlight.id }")
 
             // q-item-side.q-px-sm.q-caption(style="min-width: 5rem;")
@@ -40,16 +41,24 @@
             q-item-side.q-px-sm.q-py
               // div(v-if="!pressedAlt")
               div
-                q-btn.text-primary(@click="enterSetShortcut(entry.id)", no-caps, round, size="sm") {{ getInitials(entry.value) }}
+                q-btn.text-primary(no-caps, round, size="sm") {{ getInitials(entry.value) }}
 
-                q-btn.text-grey-8.cursor-pointer.no-margin(v-else, icon="keyboard", round, size="sm", @click="enterSetShortcut(entry.id)")
+                q-btn.text-grey-8.cursor-pointer.no-margin(
+                  icon="keyboard",
+                  round, size="sm",
+                  @click="enterSetShortcut(entry.id)") {{ getShortcutKey(entry) }}
               // div(v-else)
                 .text-primary {{ tag.shortcutKey.value }}
 
             q-item-main
-              q-btn.full-width(v-shortkey="entry.key", @shortkey.native="selectEntry(entry.id)", @click="selectEntry(entry.id)",
-                no-caps, flat, align="left", color="transparent")
-                .text-white.text-weight-regular {{ entry.value }}
+              q-btn.full-width(
+                v-shortkey="entry.key",
+                @shortkey.native="selectEntry(entry.id)",
+                @dblclick.native="selectEntry(entry.id, true)",
+                @click="selectEntry(entry.id)",
+                no-caps, flat, align="left",
+                color="transparent")
+                  .text-white.text-weight-regular {{ entry.value }}
 
           q-item(v-if="!selectedVocabulary.length")
             q-item-main.text-italic.text-center no matches
@@ -88,6 +97,7 @@
         }
       }
       this.vocabularies = await this.$vocabularies.find()
+      if (this.vocabularies && this.vocabularies.length > 0) this.selectVocabulary(this.vocabularies[0])
     },
     beforeDestroy () {
       window.removeEventListener('keypress', this.onKeyPress)
@@ -100,11 +110,13 @@
         this.selectedVocabulary = vocabulary
       },
       async addEntry (value) {
-        await this.selectedVocabulary.addEntry(value)
+        if (this.selectedVocabulary) {
+          await this.selectedVocabulary.addTerm(value)
+        }
       },
-      async selectEntry (id) {
+      async selectEntry (id, createImmediatly = false) {
         const entry = await this.selectedVocabulary.get(id)
-        this.$emit('select-entry', entry)
+        this.$emit('select-entry', entry, createImmediatly)
       },
       async enterSetShortcut (val) {
         this.isSetShortcut = true
@@ -128,6 +140,12 @@
           .map((n) => n[0])
           .join('')
           .toUpperCase()
+      },
+      getShortcutKey (val) {
+        if (val.shortcut) {
+          return val.shortcut.join('')
+        }
+        return ''
       },
       onKeyPress (event) {
         const key = event.key.toLowerCase().replace(/\s/g, '')

@@ -30,7 +30,11 @@
       // VOCABULARY (staging)
 
       div(v-if="staging")
-        vocabulary(ref="vocabulary", @select-entry="selectEntry", @focus="setFocusOnInput", :highlight="selectedEntry")
+        vocabulary(
+          ref="vocabulary",
+          @select-entry="selectEntry",
+          @focus="setFocusOnInput",
+          :highlight="selectedEntry")
 
 </template>
 
@@ -45,7 +49,17 @@
       Vocabulary
     },
     props: {
-      newVocabularyEntry: String
+      newVocabularyEntry: String,
+      submitOnNumEnters: {
+        type: Number,
+        default: 2
+      },
+      selectorFactory: {
+        type: Function,
+        default () {
+          return this.getCurrentSelector
+        }
+      }
     },
     data () {
       const defaultBodyText = {
@@ -75,7 +89,7 @@
           focusInput: ['tab'],
           showVocabulary: ['alt']
         },
-        submitArmed: false,
+        enterDown: 0,
         selectedEntry: undefined,
         staging: process.env.IS_STAGING
       }
@@ -100,18 +114,21 @@
       annotationText (text) {
         if (!text) this.currentSelector.value = undefined
         else if (!this.selectedEntry) {
-          this.currentSelector.value = this.currentSelector.value || DateTime.local().toISO()
+          this.currentSelector.value = this.currentSelector.value || this.selectorFactory()
         }
       },
       selectedEntry (entry) {
         if (entry) {
-          this.currentSelector.value = this.currentSelector.value || DateTime.local().toISO()
+          this.currentSelector.value = this.currentSelector.value || this.selectorFactory()
           this.annotationText = entry.value
         }
         else this.annotationText = undefined
       }
     },
     methods: {
+      getCurrentSelector () {
+        return DateTime.local().toISO()
+      },
       setFocusOnInput () {
         this.$refs.textInput.focus()
       },
@@ -120,19 +137,24 @@
         this.$refs.vocabulary.toggle()
         this.setFocusOnInput()
       },
-      selectEntry (entry) {
+      selectEntry (entry, andCreate = false) {
         this.selectedEntry = entry
         this.currentBody = ObjectUtil.merge({}, this.defaultBodyVocabulary, {
           source: { id: entry.id }
         })
-        this.setFocusOnInput()
+        if (andCreate) {
+          this.createAnnotation()
+        }
+        else {
+          this.setFocusOnInput()
+        }
       },
       addToVocabulary (annotation) {
         this.$refs.vocabulary.addEntry(annotation.body.value)
       },
       reset () {
         if (this.selectedEntry && this.$refs.vocabulary) this.toggleVocabulary()
-        this.submitArmed = false
+        this.enterDown = 0
         this.selectedEntry = undefined
         this.annotationText = undefined
         this.currentBody = ObjectUtil.merge({}, this.defaultBodyText)
@@ -141,20 +163,12 @@
       onKeyDown (event) {
         const key = event.key.toLowerCase().replace(/\s/g, '')
         if (key === 'enter') {
-          if (this.submitArmed) {
+          if (this.enterDown === this.$props.submitOnNumEnters - 1) {
             event.preventDefault()
-            const annotation = {
-              body: ObjectUtil.merge({}, this.currentBody),
-              target: {
-                selector: ObjectUtil.merge({}, this.currentSelector)
-              }
-            }
-            if (!this.selectedEntry) annotation.body.value = this.annotationText.trim()
-            this.reset()
-            this.$emit('annotation', annotation)
+            this.createAnnotation()
           }
           else {
-            this.submitArmed = true
+            this.enterDown += 1
           }
         }
         else if (key === 'escape') {
@@ -162,9 +176,20 @@
           this.reset()
         }
         else {
-          this.submitArmed = false
+          this.enterDown = 0
           this.setFocusOnInput()
         }
+      },
+      createAnnotation () {
+        const annotation = {
+          body: ObjectUtil.merge({}, this.currentBody),
+          target: {
+            selector: ObjectUtil.merge({}, this.currentSelector)
+          }
+        }
+        if (!this.selectedEntry) annotation.body.value = this.annotationText.trim()
+        this.reset()
+        this.$emit('annotation', annotation)
       }
     }
   }

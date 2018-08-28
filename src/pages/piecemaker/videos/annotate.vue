@@ -42,7 +42,11 @@
       //
       // .fixed-top(style="top: 50px; width: 100%; z-index: 1000;")
       .absolute-top(style="width: 100%;")
-        annotation-field(@annotation="onAnnotation", ref="annotationField")
+        annotation-field(
+          @annotation="onAnnotation",
+          ref="annotationField",
+          :submit-on-num-enters="1",
+          :selector-factory="getCurrentSelector")
 
         // INFO TEXT
 
@@ -166,6 +170,10 @@
       }
     },
     methods: {
+      getCurrentSelector () {
+        // store the current time of the player in relation to annotation upon first key press / term selection
+        return this.baseSelector.plus(this.playerTime * 1000).toISO()
+      },
       handleConfirmModal (annotation) {
         this.deleteAnnotation(annotation.uuid)
       },
@@ -217,11 +225,7 @@
         const payload = ObjectUtil.merge(annotation, {
           target: {
             id: `${process.env.TIMELINE_BASE_URI}${this.timelineId}`,
-            type: constants.MAP_TYPE_TIMELINE,
-            selector: {
-              type: 'Fragment',
-              value: this.baseSelector.plus(this.playerTime * 1000).toISO()
-            }
+            type: constants.MAP_TYPE_TIMELINE
           }
         })
         const result = await this.$store.dispatch('annotations/post', payload)

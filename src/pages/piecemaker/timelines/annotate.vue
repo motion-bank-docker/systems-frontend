@@ -37,7 +37,7 @@
               q-btn.q-mr-sm(@click="cloneEntry(annotation)", small, round, icon="filter_none")
               q-btn.q-mr-sm(v-if="staging", small, round, icon="playlist_add",
                 :disabled="annotation.body.type !== 'TextualBody'",
-                @click="this.$refs.annotationField.addToVocabulary(annotation)")
+                @click="$refs.annotationField.addToVocabulary(annotation)")
                 // q-tooltip.q-caption.bg-dark(:offset="[0,5]") alt + e
               q-btn(@click="deleteAnnotation(annotation.uuid, i)", icon="clear", round, small)
 
