@@ -42,7 +42,7 @@
       // SESSION BARS
       //
       svg(:x="sessionBarX")
-        diagram-bar(v-for="(session, i) in grouped.sessions", :session="session", :index="i", :active="activeBar === i"
+        diagram-bar(v-for="(session, i) in grouped.sessions", :session="session", :index="i", :active="activeSessionIndex === i"
           @hover="sessionHover", @click="sessionBarClick", :time-format="timeFormat", :dimensions="diagramDimensions")
 
       // BOTTOM LINE
@@ -56,7 +56,7 @@
     components: {
       DiagramBar
     },
-    props: ['grouped'],
+    props: ['grouped', 'activeSessionIndex'],
     data () {
       return {
         activeBar: null,
@@ -106,11 +106,9 @@
     methods: {
       clearSession () {
         this.diagramDimensions.activeId = null
-        this.activeBar = null
       },
       sessionBarClick (data) {
         this.$emit('select-session', data)
-        this.activeBar = data.index
       },
       sessionHover (hoverVal) {
         this.hoverVal = hoverVal

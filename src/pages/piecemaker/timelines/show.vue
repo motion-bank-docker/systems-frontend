@@ -11,17 +11,17 @@
     // btn: back
     q-btn.absolute-top-left(slot="backButton", @click="$router.push({ name: 'piecemaker.timelines.list' })", icon="keyboard_backspace", round, small, style="top: 66px; left: 16px;")
 
-    session-filter
-    session-diagram(:grouped="grouped", @select-session="selectSession", ref="sessionDiagram")
+    // session-filter
+    session-diagram(:grouped="grouped", @select-session="selectSession", :active-session-index="activeSessionIndex", ref="sessionDiagram")
 
     // ACTIVE SESSION IN DETAIL
     //
     .row.q-mt-xl(v-if="showSession")
       .col-10.offset-1.text-center
-        q-btn.bg-grey-10(@click='jumpBetweenSessions(false)', icon="keyboard_arrow_left", flat, round)
+        q-btn.bg-grey-10(@click='setActiveSession(activeSessionIndex-1)', icon="keyboard_arrow_left", flat, round)
         span.q-mx-md.q-py-sm.q-px-md.shadow-6.text-primary.moba-border
           | {{ getTime(activeSession.start) }} – {{ getTime(activeSession.end) }}
-        q-btn.bg-grey-10(@click="jumpBetweenSessions(true)", icon="keyboard_arrow_right", flat, round)
+        q-btn.bg-grey-10(@click="setActiveSession(activeSessionIndex+1)", icon="keyboard_arrow_right", flat, round)
 
       .col-1.text-right
         q-btn.shadow-6(@click="clearSession", icon="clear", size="small", flat, round)
@@ -218,15 +218,9 @@
         if (difference <= minVal) difference = minVal
         return difference
       },
-      jumpBetweenSessions (val) {
-        if (!val && this.activeBar > 0) this.activeBar -= 1
-        else if (val && this.activeBar < this.grouped.sessions.length - 1) this.activeBar += 1
-        this.setActiveSession(this.activeBar)
-        if (val) this.getActiveSessionDuration(this.activeSession.start.millis, this.activeSession.end.millis)
-      },
       setActiveSession (val) {
-        this.activeSession = this.grouped.sessions[val]
-        console.log(this.activeSession)
+        this.activeSessionIndex = Math.min(this.grouped.sessions.length - 1, Math.max(0, val))
+        this.activeSession = this.grouped.sessions[this.activeSessionIndex]
       },
       toggleShowSession () {
         this.showSession = true
@@ -241,7 +235,7 @@
     },
     data () {
       return {
-        activeSession: [],
+        activeSession: undefined,
         grouped: { annotations: [], videos: [] },
         map: undefined,
         previewLine: {
