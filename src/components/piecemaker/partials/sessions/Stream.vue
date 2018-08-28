@@ -10,12 +10,21 @@
           // DIAGRAM
           //
           .col-4(:class="{'row': fixDiagram, 'shadow-16': !fixDiagram}")
-            stream-diagram(@session-time="changeSessionTime", @click-video="onClickVideo", :previewTime="previewTime", :fix-diagram="fixDiagram", :session="session", :session-time="sessionTime")
+            // stream-diagram(
+              @session-time="changeSessionTime",
+              @click-video="onClickVideo",
+              :previewTime="previewTime",
+              :fix-diagram="fixDiagram",
+              :session="session",
+              :session-time="sessionTime")
 
           // TEXT
           //
           .col-8(:style="{minHeight: '100vh', paddingBottom: $refs.streamVideo ? $refs.streamVideo.height + 'px' : '0px'}")
-            stream-annotations(:annotations="session.annotations", @annotation-preview="onAnnotationPreview", @session-time="changeSessionTime")
+            stream-annotations(
+              :annotations="session.annotations",
+              @annotation-preview="onAnnotationPreview",
+              @session-time="changeSessionTime")
 </template>
 
 <script>

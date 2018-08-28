@@ -48,7 +48,7 @@
     SessionStream
   } from '../../../components/piecemaker/partials/sessions'
   import { Sorting } from 'mbjs-data-models/src/lib'
-  // import constants from 'mbjs-data-models/src/constants'
+  import constants from 'mbjs-data-models/src/constants'
   import { ObjectUtil } from 'mbjs-utils'
 
   const resurrectAnnotation = function (annotation) {
@@ -115,7 +115,7 @@
         })
       const videos = await fetchMetaData(videosBase)
 
-      const millisDist = 90 /* constants.SESSION_DISTANCE_SECONDS */ * 1000
+      const millisDist = constants.SESSION_DISTANCE_SECONDS * 1000
       const sessions = []
       const defaultSession = { start: undefined, end: undefined, duration: undefined, annotations: [], videos: [] }
       let session = ObjectUtil.merge({}, defaultSession)

@@ -16,7 +16,8 @@
 
               // TEXT
               //
-              span(:class="[annotation.active ? 'text-primary' : '']") {{ annotation.annotation.body.value }}
+              span(v-if="annotation.annotation.body.type === 'TextualBody'", :class="[annotation.active ? 'text-primary' : '']") {{ annotation.annotation.body.value }}
+              span(v-else, :class="[annotation.active ? 'text-primary' : '']") &lt;&lt; {{ annotation.annotation.body.type }} &gt;&gt;
 
             // ZITIER LINK
             //
@@ -44,6 +45,7 @@
 </template>
 
 <script>
+  // TODO: load VocabularyEntry annotations
   export default {
     props: ['annotations'],
     methods: {
