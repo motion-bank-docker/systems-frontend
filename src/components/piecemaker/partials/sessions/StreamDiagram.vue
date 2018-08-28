@@ -2,18 +2,19 @@
   .col-4.shadow-16.moba-border.stream-diagram.overflow-hidden(
     :class="{'moba-fixed': fixDiagram, 'full-width': fixDiagram}")
 
-    svg(v-if="session", width="100%", :height="session.duration")
+    svg(v-if="session", width="100%", :height="session.duration * 0.01")
 
       // LINES - horizontal
       // displays the annotations as lines in the diagramm
       //
       svg(width="100%", height="100%", x="0%")
         rect.cursor-pointer.moba-svg-entry(
-        v-for="annotation in annotations",
-        @click="setSessionTime(annotation.duration)",
-        :class="[annotation.active ? 'moba-active-line' : '']",
-        style="fill: rgba(255, 255, 255, .2);",
-        width="100%", height="1", x="0", :y="annotation.duration")
+          v-for="annotation in annotations",
+          @click="setSessionTime(annotation.duration)",
+          :class="[annotation.active ? 'moba-active-line' : '']",
+          style="fill: rgba(255, 255, 255, 0.2); opacity: 1",
+          width="100%", height="1", x="0",
+          :y="((annotation.relativeTime / session.duration) * 100).toFixed(3) + '%'")
 
       // CURRENT TIME
       line.current-time(v-if="typeof sessionTime === 'number'", x1="0", x2="100%", :y1="sessionTime", :y2="sessionTime")

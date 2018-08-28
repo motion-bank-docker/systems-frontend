@@ -158,7 +158,12 @@
           if (annotationEnd.toMillis() > session.end.toMillis()) {
             session.end = annotationEnd
           }
-          session.annotations.push({ annotation: a, duration: annotationDuration, active: false })
+          session.annotations.push({
+            annotation: a,
+            duration: annotationDuration,
+            relativeTime: annotationStart.toMillis() - session.start.toMillis(),
+            active: false
+          })
           if (video) session.videos.push(video)
         }
         if (!annotationInside || isLastAnnotation) {
@@ -174,7 +179,12 @@
           // add current annotation
           session.start = annotationStart
           session.end = annotationEnd
-          session.annotations.push({ annotation: a, duration: annotationDuration, active: false })
+          session.annotations.push({
+            annotation: a,
+            duration: annotationDuration,
+            relativeTime: annotationStart.toMillis() - session.start.toMillis(),
+            active: false
+          })
           if (video) session.videos.push(video)
         }
 

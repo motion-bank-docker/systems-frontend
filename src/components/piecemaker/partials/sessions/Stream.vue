@@ -50,10 +50,10 @@
     },
     props: ['videos', 'session'],
     created: function () {
-      window.addEventListener('scroll', this.scrollPos)
+      // window.addEventListener('scroll', this.scrollPos)
     },
     destroyed: function () {
-      window.removeEventListener('scroll', this.scrollPos)
+      // window.removeEventListener('scroll', this.scrollPos)
     },
     watch: {
       sessionTime () {
