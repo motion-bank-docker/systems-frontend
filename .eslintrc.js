@@ -17,7 +17,8 @@ module.exports = {
   ],
   // required to lint *.vue files
   plugins: [
-    'vue'
+    'vue',
+    'flowtype-errors'
   ],
   globals: {
     'ga': true, // Google Analytics
@@ -53,6 +54,9 @@ module.exports = {
     'brace-style': [2, 'stroustrup', { 'allowSingleLine': true }],
 
     // for mocha & chai tests
-    'no-unused-vars': ['error', { varsIgnorePattern: 'should|expect' }]
+    'no-unused-vars': ['error', { varsIgnorePattern: 'should|expect' }],
+
+    // flow types
+    'flowtype-errors/show-errors': 2
   }
 }
