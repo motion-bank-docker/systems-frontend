@@ -10,7 +10,7 @@
         template(v-for="(annot, index) in annotations")
           q-item-separator
 
-          template(v-if="$store.state.auth.user && showAnnotationInput(index)")
+          template(v-if="staging && $store.state.auth.user && showAnnotationInput(index)")
             q-item.annotation-input-container
               q-input.annotation-input(type="textarea",
                 :max-height="200",
@@ -61,7 +61,8 @@
         map: {},
         annotationTimes: [],
         inputIndex: 0,
-        newAnnotationText: ''
+        newAnnotationText: '',
+        staging: process.env.IS_STAGING
       }
     },
     async mounted () {
