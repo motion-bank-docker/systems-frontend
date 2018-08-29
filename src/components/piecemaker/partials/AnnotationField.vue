@@ -114,12 +114,12 @@
       annotationText (text) {
         if (!text) this.currentSelector.value = undefined
         else if (!this.selectedEntry) {
-          this.currentSelector.value = this.currentSelector.value || this.selectorFactory()
+          this.currentSelector.value = this.currentSelector.value || DateTime.local().toISO() || this.selectorFactory()
         }
       },
       selectedEntry (entry) {
         if (entry) {
-          this.currentSelector.value = this.currentSelector.value || this.selectorFactory()
+          this.currentSelector.value = this.currentSelector.value || DateTime.local().toISO() || this.selectorFactory()
           this.annotationText = entry.value
         }
         else this.annotationText = undefined
