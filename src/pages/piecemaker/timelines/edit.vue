@@ -29,6 +29,7 @@
   import Tags from '../../../components/shared/partials/Tags'
   import FormMain from '../../../components/shared/forms/FormMain'
 
+  import { ObjectUtil } from 'mbjs-utils'
   import { required } from 'vuelidate/lib/validators'
   import constants from 'mbjs-data-models/src/constants'
 
@@ -98,28 +99,30 @@
           _this.exportLabel = _this.$t('buttons.download_archive')
         })
       },
-      async setACL (action, role, uuid, permissions, recursive = false) {
-        await this.$store.dispatch(action, { role, uuid, permissions })
+      async setACL (action, payload, recursive = false) {
+        await this.$store.dispatch(action, payload)
         if (recursive) {
-          const results = await this.$store.dispatch('annotations/find', { 'target.id': `${process.env.TIMELINE_BASE_URI}${uuid}` })
+          const results = await this.$store.dispatch('annotations/find', { 'target.id': `${process.env.TIMELINE_BASE_URI}${payload.uuid}` })
           for (let item of results.items) {
-            await this.$store.dispatch(action, { role, uuid: item.uuid, permissions })
+            const itemPayload = ObjectUtil.merge({}, payload)
+            itemPayload.uuid = item.uuid
+            await this.$store.dispatch(action, payload)
           }
         }
       },
       async updateACL () {
         console.debug('setting acl...', this.acl)
         if (this.acl.public) {
-          await this.setACL('acl/set', 'public', this.$route.params.id, ['get'], this.acl.recursive)
+          await this.setACL('acl/set', { role: 'public', uuid: this.$route.params.id, permissions: ['get'] }, this.acl.recursive)
         }
         else {
-          await this.setACL('acl/remove', 'public', this.$route.params.id, 'get', this.acl.recursive)
+          await this.setACL('acl/remove', { role: 'public', uuid: this.$route.params.id, permission: 'get' }, this.acl.recursive)
         }
         if (this.acl.group) {
-          await this.setACL('acl/set', this.acl.group, this.$route.params.id, ['get'], this.acl.recursive)
+          await this.setACL('acl/set', { role: this.acl.group, uuid: this.$route.params.id, permissions: ['get'] }, this.acl.recursive)
         }
         if (this.acl.group_remove) {
-          await this.setACL('acl/remove', this.acl.group_remove, this.$route.params.id, 'get', this.acl.recursive)
+          await this.setACL('acl/remove', { role: this.acl.group_remove, uuid: this.$route.params.id, permission: 'get' }, this.acl.recursive)
         }
         this.$store.commit('notifications/addMessage', {
           body: 'messages.acl_updated',
