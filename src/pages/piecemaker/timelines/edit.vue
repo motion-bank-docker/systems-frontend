@@ -11,7 +11,13 @@
       .row(v-if="env.IS_STAGING")
         .col-md-12
           p {{ $t('labels.access_control') }}
-          q-checkbox(v-model="acl.public", :label="$t('labels.access_control_public')")
+          q-checkbox(v-model="acl.public", :label="$t('labels.access_control_public')", dark)
+        .col-md-12
+          p {{ $t('labels.access_control_add_group') }}
+          q-input(v-model="acl.group", :label="$t('labels.access_control_add_group')", dark)
+        .col-md-12
+          p {{ $t('labels.access_control_remove_group') }}
+          q-input(v-model="acl.group_remove", :label="$t('labels.access_control_remove_group')", dark)
         .col-md-12
           q-btn.q-mr-md.bg-grey-9(:label="$t('buttons.update_access_control')", @click="updateACL")
       // .row
@@ -42,7 +48,10 @@
         type: constants.MAP_TYPE_TIMELINE,
         payload: this.$route.params.id ? _this.$store.dispatch('maps/get', _this.$route.params.id) : undefined,
         acl: {
-          public: false
+          public: false,
+          group: undefined,
+          group_remove: undefined,
+          recursive: false
         },
         schema: {
           fields: {
@@ -89,13 +98,28 @@
           _this.exportLabel = _this.$t('buttons.download_archive')
         })
       },
+      async setACL (action, role, uuid, permissions, recursive = false) {
+        await this.$store.dispatch(action, { role, uuid, permissions })
+        if (recursive) {
+          const results = await this.$store.dispatch('annotations/find', { 'target.id': `${process.env.TIMELINE_BASE_URI}${uuid}` })
+          for (let item of results.items) {
+            await this.$store.dispatch(action, { role, uuid: item.uuid, permissions })
+          }
+        }
+      },
       async updateACL () {
         console.debug('setting acl...', this.acl)
         if (this.acl.public) {
-          await this.$store.dispatch('acl/set', {role: 'public', uuid: this.$route.params.id, permissions: ['get']})
+          await this.setACL('acl/set', 'public', this.$route.params.id, ['get'], this.acl.recursive)
         }
         else {
-          await this.$store.dispatch('acl/remove', {role: 'public', uuid: this.$route.params.id, permission: 'get'})
+          await this.setACL('acl/remove', 'public', this.$route.params.id, 'get', this.acl.recursive)
+        }
+        if (this.acl.group) {
+          await this.setACL('acl/set', this.acl.group, this.$route.params.id, ['get'], this.acl.recursive)
+        }
+        if (this.acl.group_remove) {
+          await this.setACL('acl/remove', this.acl.group_remove, this.$route.params.id, 'get', this.acl.recursive)
         }
         this.$store.commit('notifications/addMessage', {
           body: 'messages.acl_updated',
