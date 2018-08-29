@@ -17,6 +17,9 @@
     ]
   ],
   "plugins": [
+    "babel-plugin-transform-class-properties",
+    "babel-plugin-syntax-flow",
+    "babel-plugin-transform-flow-strip-types",
     [
       "@babel/transform-runtime", {
         "polyfill": false,
