@@ -1,8 +1,10 @@
 <template lang="pug">
   .col-4.shadow-16.moba-border.stream-diagram.overflow-hidden(
-    :class="{'moba-fixed': fixDiagram, 'full-width': fixDiagram}")
+    :class="{'moba-fixed': fixDiagram, 'full-width': fixDiagram}",
+    style="position: relative; height: 100%")
 
-    svg(v-if="session", width="100%", :height="session.duration * 0.01")
+    //
+    svg(v-if="session", width="100%", height="100%")
 
       // LINES - horizontal
       // displays the annotations as lines in the diagramm
@@ -10,14 +12,19 @@
       svg(width="100%", height="100%", x="0%")
         rect.cursor-pointer.moba-svg-entry(
           v-for="annotation in annotations",
-          @click="setSessionTime(annotation.duration)",
+          @click="setSessionTime(annotation.relativeTime)",
           :class="[annotation.active ? 'moba-active-line' : '']",
           style="fill: rgba(255, 255, 255, 0.2); opacity: 1",
           width="100%", height="1", x="0",
           :y="((annotation.relativeTime / session.duration) * 100).toFixed(3) + '%'")
 
       // CURRENT TIME
-      line.current-time(v-if="typeof sessionTime === 'number'", x1="0", x2="100%", :y1="sessionTime", :y2="sessionTime")
+      //
+      line.current-time(
+        v-if="typeof sessionTime === 'number'",
+        x1="0", x2="100%",
+        :y1="`${((sessionTime / session.duration) * 100).toFixed(3)}%`",
+        :y2="`${((sessionTime / session.duration) * 100).toFixed(3)}%`")
 
       // SWIMLANES - vertical
       // vertical visualization of the videos
@@ -25,24 +32,28 @@
       svg(width="80%")
         // @click="onClickVideo(vid)",
         svg.shadow-6(
+          v-if="session.videos",
           v-for="(vid, i) in session.videos",
           :id="vid.annotation.uuid",
           :width="session.videos.length * 10",
-          height="100%",
+          :height="(((vid.meta.duration * 1000) / session.duration) * 100).toFixed(3) + '%'",
           :x="(session.videos.length * 10 + 15) * i + 20",
-          y="0")
-          rect.moba-swimlane(:class="{ 'moba-active-swimlane': isCurrentVideo(vid) }", width="100%", height="100%", x="0", y="0")
+          :y="(((vid.annotation.target.selector.value.toMillis() - session.start.toMillis()) / session.duration) * 100).toFixed(3) + '%'")
+          rect.moba-swimlane(width="100%", height="100%", x="0", y="0", :title="vid.annotation.uuid")
 
-          g(v-if="currentVideo === vid.annotation.uuid")
-            rect.moba-svg-entry(v-for="n in parseInt(session.duration / 10 + 1)",
-              @click="setSessionTime(parseInt(n * 10), vid)",
-              width="100%", height="10",
-              :y="(n - 1) * 10")
-            line.video-line-trans(v-for="n in parseInt(session.duration / 10 + 1)",
-              x1="25%", x2="75%", :y1="n * 10", :y2="n * 10")
+          //
+            g(v-if="currentVideo === vid.annotation.uuid")
+              rect.moba-svg-entry(v-for="n in parseInt(session.duration / 10 + 1)",
+                @click="setSessionTime(parseInt(n * 10), vid)",
+                width="100%", height="10",
+                :y="(n - 1) * 10")
+            //
+              line.video-line-trans(v-for="n in parseInt(session.duration / 10 + 1)",
+                x1="25%", x2="75%", :y1="n * 10", :y2="n * 10")
 
-          line.video-line(v-if="currentVideo == vid.annotation.uuid", x1="0", x2="100%", :y1="n * 60", :y2="n * 60",
-            v-for="n in parseInt(session.duration / 60 + 1)")
+          //
+            line.video-line(v-if="currentVideo == vid.annotation.uuid", x1="0", x2="100%", :y1="n * 60", :y2="n * 60",
+              v-for="n in parseInt(session.duration / 60 + 1)")
 
       // PREVIEW LINE – horizontal
       // appears on the left when hovering matching text on the right
@@ -76,11 +87,12 @@
       // VIDEO TIME
       // displays the actual time of the selected video
       //
-      svg(v-for="(vid, i) in session.videos")
-        svg(v-if="currentVideo === vid.annotation.uuid", :y="(sessionTime - 10)", :x="(session.videos.length * 10) + ((session.videos.length * 10 + 15) * i + 20) + 5")
-          polygon(points="10 0 0 10 10 20 60 20 60 0 10 0", fill="#749DFC")
-          // rect(width="50", height="20", x="10", fill="#749DFC")
-          text.q-caption(x="20", y="15", fill="white") {{ Math.floor(sessionTime / 60) }}:{{ Math.trunc(sessionTime - Math.floor(sessionTime / 60) * 60) }}
+        svg(v-for="(vid, i) in session.videos")
+          svg(v-if="currentVideo === vid.annotation.uuid", :y="(sessionTime - 10)", :x="(session.videos.length * 10) + ((session.videos.length * 10 + 15) * i + 20) + 5")
+            polygon(points="10 0 0 10 10 20 60 20 60 0 10 0", fill="#749DFC")
+            // rect(width="50", height="20", x="10", fill="#749DFC")
+            text.q-caption(x="20", y="15", fill="white") {{ Math.floor(sessionTime / 60) }}:{{ Math.trunc(sessionTime - Math.floor(sessionTime / 60) * 60) }}
+
       //
         svg(width="50", height="20", :y="sessionTime - 10", x="100")
           //
@@ -105,6 +117,9 @@
           visibility: false
         }
       }
+    },
+    mounted () {
+      console.log(this.$props.session.videos)
     },
     computed: {
       previewLineY () {

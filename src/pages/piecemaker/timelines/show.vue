@@ -115,7 +115,7 @@
         })
       const videos = await fetchMetaData(videosBase)
 
-      const millisDist = constants.SESSION_DISTANCE_SECONDS * 1000
+      const millisDist = (3600 || constants.SESSION_DISTANCE_SECONDS) * 1000
       const sessions = []
       const defaultSession = { start: undefined, end: undefined, duration: undefined, annotations: [], videos: [] }
       let session = ObjectUtil.merge({}, defaultSession)
@@ -168,7 +168,7 @@
         }
         if (!annotationInside || isLastAnnotation) {
           // store current annotation
-          session.duration = (session.end.toMillis() - session.start.toMillis()) * 0.1
+          session.duration = session.end.toMillis() - session.start.toMillis()
           if (isNaN(session.duration)) {
             console.error('duration NaN', session)
             session.duration = 0
@@ -182,7 +182,7 @@
           session.annotations.push({
             annotation: a,
             duration: annotationDuration,
-            relativeTime: annotationStart.toMillis() - session.start.toMillis(),
+            relativeTime: 0,
             active: false
           })
           if (video) session.videos.push(video)
