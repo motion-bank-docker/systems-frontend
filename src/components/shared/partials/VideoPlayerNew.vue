@@ -3,7 +3,7 @@
   .column(style="height:100%")
     .col(ref="videoContainer")
       vue-video-player(
-        class="video-player-box vjs-big-play-centered",
+        class="video-player video-player-box vjs-big-play-centered",
         ref="videoPlayer",
         :options="playerOptions",
         :playsinline="true",
@@ -137,3 +137,10 @@
     }
   }
 </script>
+
+<style lang="stylus">
+  .video-player .video-js .vjs-big-play-button
+    display: none
+  .video-player .vjs-default-skin.vjs-paused .vjs-control-bar
+    display flex
+</style>
