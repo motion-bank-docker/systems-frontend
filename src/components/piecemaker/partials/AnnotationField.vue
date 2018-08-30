@@ -170,12 +170,9 @@
           console.debug('esc')
           this.reset()
         }
-        else if (key === 'tab') {
-          this.enterDown = 0
-          if (event.target.tagName.toLowerCase() !== 'textarea') this.setFocusOnInput()
-        }
         else {
           this.enterDown = 0
+          if (event.target.tagName.toLowerCase() !== 'textarea') this.setFocusOnInput()
         }
       },
       createAnnotation () {
