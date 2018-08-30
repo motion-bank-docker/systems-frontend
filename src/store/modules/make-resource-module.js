@@ -1,32 +1,47 @@
 // const sift = require('sift')
 import { Assert } from 'mbjs-utils'
 
-const makeResourceModule = function (client, resourceName, resourceNamePluralised = undefined, overrideHost = undefined) {
+const makeResourceModule = function (client, Model, resourceName, resourceNamePluralised = undefined, overrideHost = undefined) {
   const
     name = resourceName,
     namePlural = resourceNamePluralised || `${name}s`,
     idList = `${resourceName}IDs`
 
   const makeResourceAction = (action) => {
-    return (context, args) => {
+    return async (context, args) => {
       context.commit('setPending', action)
       /**
        * Execute action
        */
       if (!Array.isArray(args)) args = [args]
-      return client[action](namePlural, args[0],
-        args.length > 1 ? args[1] : overrideHost, args.length > 1 ? overrideHost : undefined).then(response => {
-          if (response) {
-            // if (args.length > 1) context.commit(action, [response.uuid, response])
-            // else context.commit(action, response)
-            context.commit('setPending', action, false)
-            return response
-          }
-          else throw new Error(`${action} ${name} failed: empty API response`)
-        }).catch(err => {
+      try {
+        const response = await client[action](
+          namePlural,
+          args[0],
+          args.length > 1 ? args[1] : overrideHost,
+          args.length > 1 ? overrideHost : undefined)
+
+        if (response) {
+          // if (args.length > 1) context.commit(action, [response.uuid, response])
+          // else context.commit(action, response)
           context.commit('setPending', action, false)
-          throw err
-        })
+          if (Model) {
+            if (response.items && Array.isArray(response.items)) {
+              response.items = response.items.map(item => new Model(item))
+              return response
+            }
+            else {
+              return new Model(response)
+            }
+          }
+          return response
+        }
+        else throw new Error(`${action} ${name} failed: empty API response`)
+      }
+      catch (err) {
+        context.commit('setPending', action, false)
+        throw err
+      }
     }
   }
 

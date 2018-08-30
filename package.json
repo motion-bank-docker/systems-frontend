@@ -49,7 +49,7 @@
     "he": "^1.1.1",
     "luxon": "^1.3.3",
     "mbjs-api-client": "^1.0.5",
-    "mbjs-data-models": "0.0.8",
+    "mbjs-data-models": "0.0.10",
     "mbjs-media": "0.0.19",
     "mbjs-quasar": "0.0.20",
     "mbjs-utils": "^0.0.6",

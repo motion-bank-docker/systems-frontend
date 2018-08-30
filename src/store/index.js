@@ -11,6 +11,11 @@ import WebAuth from 'mbjs-api-client/src/web'
 import Vue from 'vue'
 import Vuex from 'vuex'
 
+import {
+  Annotation,
+  Map
+} from 'mbjs-data-models/src/models'
+
 Vue.use(Vuex)
 
 const apiClient = new WebAuth({
@@ -36,11 +41,11 @@ const store = new Vuex.Store({
     forms,
     timecodes,
     mosysGridEditorStore,
-    annotations: makeResourceModule(apiClient, 'annotation'),
-    maps: makeResourceModule(apiClient, 'map'),
-    profiles: makeResourceModule(apiClient, 'profile'),
-    sessions: makeResourceModule(apiClient, 'session'),
-    metadata: makeResourceModule(apiClient, 'metadata', 'metadata', process.env.TRANSCODER_HOST),
+    annotations: makeResourceModule(apiClient, Annotation, 'annotation'),
+    maps: makeResourceModule(apiClient, Map, 'map'),
+    profiles: makeResourceModule(apiClient, undefined, 'profile'),
+    sessions: makeResourceModule(apiClient, undefined, 'session'),
+    metadata: makeResourceModule(apiClient, undefined, 'metadata', 'metadata', process.env.TRANSCODER_HOST),
     auth
   }
 })
