@@ -27,8 +27,8 @@
 
         // BUTTONS: SWITCH TO FULLSCREEN
 
-        q-btn(v-if="!fullscreen", @click="toggleFullscreen(), fullscreenHandler()", icon="fullscreen", round)
-        q-btn(v-if="fullscreen", @click="toggleFullscreen(), fullscreenHandler()", icon="fullscreen_exit", round)
+        // q-btn(v-if="!fullscreen", @click="toggleFullscreen()", icon="fullscreen", round)
+        // q-btn(v-if="fullscreen", @click="toggleFullscreen()", icon="fullscreen_exit", round)
 
         // BUTTONS: SHOW/HIDE ANNOTATIONS
 
@@ -143,8 +143,6 @@
       },
       toggleFullscreen () {
         AppFullscreen.toggle()
-      },
-      fullscreenHandler () {
         this.fullscreen = !this.fullscreen
       },
       async getVideo () {

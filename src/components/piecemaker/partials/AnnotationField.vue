@@ -172,7 +172,7 @@
         }
         else if (key === 'tab') {
           this.enterDown = 0
-          this.setFocusOnInput()
+          if (event.target.tagName.toLowerCase() !== 'textarea') this.setFocusOnInput()
         }
         else {
           this.enterDown = 0
