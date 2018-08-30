@@ -40,47 +40,12 @@
       // TOP CENTER
       //
       //
-      // .fixed-top(style="top: 50px; width: 100%; z-index: 1000;")
       .absolute-top(style="width: 100%;")
         annotation-field(
           @annotation="onAnnotation",
           ref="annotationField",
           :submit-on-num-enters="1",
           :selector-value="baseSelector")
-
-        // INFO TEXT
-
-        // .bg-dark.q-pa-md.q-mt-md.q-mr-md.text-center(
-          .bg-dark.q-pa-md.cursor-pointer(
-          v-if="!active && inputStyle", @click="toggleForm()", color="primary", style="opacity: .6;")
-            | Start typing or click here.
-
-        // TEXT INPUT
-
-        // .q-pa-md(v-if="active")
-          div(v-if="active && inputStyle")
-            q-input.q-px-sm(
-            @keyup.enter="createAnnotation()", @keyup.esc="toggleForm(); closePopUp()",
-            v-model="currentBody.value", type="textarea", float-label="Start typing", autofocus, dark,
-            style="background-color: rgba( 0, 0, 0, .5 );", rounded
-            )
-          // .row
-            .col-6
-              q-btn.bg-dark(@click="toggleForm()", small) Esc
-            .col-6.text-right
-              q-btn.bg-dark(@click="createAnnotation()", small) Enter
-
-      // VOCABULARIES
-
-        div.fixed-top.q-mt-md.absolute-top.moba-vocabs(v-if="!inputStyle", style="width: 60%; left: 20%;")
-          div.bg-dark.q-pa-md(style="opacity: .6;") Vocabularies
-          vocabularies.q-px-sm.q-pt-sm(:parent='parent')
-
-      //
-        q-collapsible.fixed-top.q-mt-md.absolute-top.moba-hover(
-        v-if="!inputStyle", style="width: 60%; left: 20%;", label="Hover the rectangle below to show vocabularies", opened
-        )
-          vocabularies(:parent='parent')
 
     // ANNOTATIONS
     //
@@ -113,7 +78,7 @@
 <script>
   import { scroll, AppFullscreen } from 'quasar'
   import uuidValidate from 'uuid-validate'
-  import { DateTime } from 'luxon'
+  import { DateTime, Duration } from 'luxon'
 
   import { ObjectUtil, Assert } from 'mbjs-utils'
   import constants from 'mbjs-data-models/src/constants'
@@ -260,7 +225,13 @@
       },
       formatSelectorForList (val) {
         const selector = DateTime.fromISO(val)
-        return selector.toFormat(constants.TIMECODE_FORMAT)
+        // TODO: this is displaying 'HH:00:00.000' for times that are less than an hour
+        return Duration
+          .fromMillis(selector.toMillis() - this.baseSelector.toMillis())
+          .toFormat(constants.TIMECODE_FORMAT)
+          .replace(/[^0-9.:]+/, '')
+          .replace(/^[^0-9]/, '')
+          .replace(/[^0-9]$/, '')
       },
       onPlayerTime (seconds) {
         this.playerTime = seconds

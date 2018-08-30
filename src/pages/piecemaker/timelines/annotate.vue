@@ -69,7 +69,7 @@
           body: ObjectUtil.merge({}, annotation.body),
           target: ObjectUtil.merge({}, annotation.target)
         }
-        annotation.target.selector.value = DateTime.local().toISO()
+        payload.target.selector.value = DateTime.local().toISO()
         this.createAnnotation(payload)
       },
       onAnnotation (annotation) {

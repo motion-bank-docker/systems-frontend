@@ -40,8 +40,7 @@
         return this.session && this.dimensions
       },
       height () {
-        return this.isConfigured ? (this.dimensions.height / 2 / 60 / 60) * this.session.duration : 0
-          // (this.getActiveSessionDuration(this.session.start.millis, this.session.end.millis) / 1000)
+        return Math.min(this.dimensions.height, this.isConfigured ? (this.dimensions.height / 2 / 60 / 60) * Math.max(10 * 60, this.session.duration) : 0)
       },
       width () {
         return this.isConfigured ? this.dimensions.barWidth : 0
@@ -50,7 +49,7 @@
         return this.isConfigured ? (this.dimensions.barWidth + this.dimensions.barSpace) : 0
       },
       y () {
-        return this.isConfigured ? this.dimensions.height - ((this.dimensions.height / 2 / 60 / 60) * this.session.duration) +
+        return this.isConfigured ? this.dimensions.height - this.height +
           // (this.getActiveSessionDuration(this.session.start.millis, this.session.end.millis) / 1000)) +
           this.dimensions.offsetY : 0
       }
