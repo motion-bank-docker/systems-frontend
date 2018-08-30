@@ -54,12 +54,7 @@
         type: Number,
         default: 2
       },
-      selectorFactory: {
-        type: Function,
-        default () {
-          return this.getCurrentSelector
-        }
-      }
+      selectorValue: String
     },
     data () {
       const defaultBodyText = {
@@ -114,20 +109,20 @@
       annotationText (text) {
         if (!text) this.currentSelector.value = undefined
         else if (!this.selectedEntry) {
-          this.currentSelector.value = this.currentSelector.value || this.selectorFactory()
+          this.currentSelector.value = this.getSelectorValue()
         }
       },
       selectedEntry (entry) {
         if (entry) {
-          this.currentSelector.value = this.currentSelector.value || this.selectorFactory()
+          this.currentSelector.value = this.getSelectorValue()
           this.annotationText = entry.value
         }
         else this.annotationText = undefined
       }
     },
     methods: {
-      getCurrentSelector () {
-        return DateTime.local().toISO()
+      getSelectorValue () {
+        return this.currentSelector.value || this.selectorValue || DateTime.local().toISO()
       },
       setFocusOnInput () {
         this.$refs.textInput.focus()
@@ -175,9 +170,12 @@
           console.debug('esc')
           this.reset()
         }
-        else {
+        else if (key === 'tab') {
           this.enterDown = 0
           this.setFocusOnInput()
+        }
+        else {
+          this.enterDown = 0
         }
       },
       createAnnotation () {
@@ -187,7 +185,7 @@
             selector: ObjectUtil.merge({}, this.currentSelector)
           }
         }
-        if (!this.selectedEntry) annotation.body.value = this.annotationText.trim()
+        if (!this.selectedEntry && this.annotationText) annotation.body.value = this.annotationText.trim()
         this.reset()
         this.$emit('annotation', annotation)
       }
