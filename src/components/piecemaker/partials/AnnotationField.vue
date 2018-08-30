@@ -55,10 +55,7 @@
         default: 2
       },
       selectorFactory: {
-        type: Function,
-        default () {
-          return this.getCurrentSelector
-        }
+        type: Function
       }
     },
     data () {
@@ -114,12 +111,16 @@
       annotationText (text) {
         if (!text) this.currentSelector.value = undefined
         else if (!this.selectedEntry) {
-          this.currentSelector.value = this.currentSelector.value || this.selectorFactory()
+          this.currentSelector.value = this.currentSelector.value ||
+            (this.selectorFactory && this.selectorFactory()) ||
+            this.getCurrentSelector()
         }
       },
       selectedEntry (entry) {
         if (entry) {
-          this.currentSelector.value = this.currentSelector.value || this.selectorFactory()
+          this.currentSelector.value = this.currentSelector.value ||
+            (this.selectorFactory && this.selectorFactory()) ||
+            this.getCurrentSelector()
           this.annotationText = entry.value
         }
         else this.annotationText = undefined
