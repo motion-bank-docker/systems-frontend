@@ -227,7 +227,7 @@
         const selector = DateTime.fromISO(val)
         // TODO: this is displaying 'HH:00:00.000' for times that are less than an hour
         return Duration
-          .fromMillis(selector.toMillis() - this.baseSelector.toMillis())
+          .fromMillis(selector.toMillis() - DateTime.fromISO(this.video.target.selector.value).toMillis())
           .toFormat(constants.TIMECODE_FORMAT)
           .replace(/[^0-9.:]+/, '')
           .replace(/^[^0-9]/, '')
