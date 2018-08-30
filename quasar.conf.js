@@ -15,6 +15,7 @@ module.exports = function (ctx) {
       'notifications',
       'pkg',
       'shortkey',
+      'sort',
       'vocabularies',
       'window'
     ],
