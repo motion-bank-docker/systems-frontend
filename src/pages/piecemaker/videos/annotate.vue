@@ -46,7 +46,7 @@
           @annotation="onAnnotation",
           ref="annotationField",
           :submit-on-num-enters="1",
-          :selector-factory="getCurrentSelector")
+          :selector-value="baseSelector")
 
         // INFO TEXT
 
@@ -117,7 +117,7 @@
 
   import { ObjectUtil, Assert } from 'mbjs-utils'
   import constants from 'mbjs-data-models/src/constants'
-  import { parseURI, Sorting } from 'mbjs-data-models/src/lib'
+  import parseURI from 'mbjs-data-models/src/lib/parse-uri'
 
   import AnnotationField from '../../../components/piecemaker/partials/AnnotationField'
 
@@ -140,14 +140,8 @@
       return {
         active: false,
         annotations: [],
-        baseSelector: undefined,
         drawer: true,
         fullscreen: false,
-        filtertypes: [{
-          title: 'Comment'
-        }, {
-          title: 'Marker'
-        }],
         inputStyle: true,
         metadata: undefined,
         player: undefined,
@@ -155,27 +149,32 @@
         selector: undefined,
         staging: process.env.IS_STAGING,
         timelineId: undefined,
+        timeline: undefined,
         video: undefined
       }
     },
     computed: {
       currentIndex () {
         if (!this.annotations.length) return
-        let selector, baseMillis = this.baseSelector.toMillis() + this.playerTime * 1000
-        for (let idx in this.annotations) {
-          selector = this.annotations[idx].target.selector
-            ? DateTime.fromISO(this.annotations[idx].target.selector.value).toMillis() : 0
-          if (selector >= baseMillis) return parseInt(idx)
+
+        let idx = -1, annotation = this.annotations[0]
+        while (annotation && idx < this.annotations.length &&
+          DateTime.fromISO(this.baseSelector) >= DateTime.fromISO(annotation.target.selector.value)) {
+          idx++
+          annotation = this.annotations[idx + 1]
         }
+        return idx
+      },
+      baseSelector () {
+        if (!this.video) return DateTime.local().toISO()
+        return DateTime.fromISO(this.video.target.selector.value)
+          .plus(this.playerTime * 1000)
+          .toISO()
       }
     },
     methods: {
-      getCurrentSelector () {
-        // store the current time of the player in relation to annotation upon first key press / term selection
-        return this.baseSelector.plus(this.playerTime * 1000).toISO()
-      },
-      handleConfirmModal (annotation) {
-        this.deleteAnnotation(annotation.uuid)
+      async handleConfirmModal (annotation) {
+        await this.deleteAnnotation(annotation.uuid)
       },
       toggleFullscreen () {
         AppFullscreen.toggle()
@@ -184,26 +183,25 @@
         this.fullscreen = !this.fullscreen
       },
       async getVideo () {
-        const result = await this.$store.dispatch('annotations/get', this.$route.params.id)
-        if (result.body) {
-          this.timelineId = parseURI(result.target.id).uuid
-          this.video = result
-          this.selector = DateTime.fromISO(result.target.selector.value)
-          this.baseSelector = this.selector
-          this.metadata = await this.$store.dispatch('metadata/get', result.uuid)
+        this.video = await this.$store.dispatch('annotations/get', this.$route.params.id)
+        this.timeline = await this.$store.dispatch('maps/get', parseURI(this.video.target.id).uuid)
+        if (this.video) {
+          this.metadata = await this.$store.dispatch('metadata/get', this.video.uuid)
         }
       },
       async getAnnotations () {
         const
           _this = this,
           query = {
-            'target.id': `${process.env.TIMELINE_BASE_URI}${_this.timelineId}`,
+            'target.id': this.timeline.id,
             'target.type': constants.MAP_TYPE_TIMELINE,
-            'target.selector.value': { $gte: this.baseSelector.toISO() },
+            'target.selector.value': { $gte: this.video.target.selector.value },
             'body.type': { $in: ['TextualBody', 'VocabularyEntry'] }
           }
         if (this.metadata.duration) {
-          query['target.selector.value']['$lte'] = this.baseSelector.plus(this.metadata.duration * 1000).toISO()
+          query['target.selector.value']['$lte'] = DateTime.fromISO(this.video.target.selector.value)
+            .plus(this.metadata.duration * 1000)
+            .toISO()
         }
         const results = await this.$store.dispatch('annotations/find', query)
         for (let item of results.items) {
@@ -212,9 +210,8 @@
             item.body.value = entry.value
           }
         }
-        console.log(results.items)
         if (results && Array.isArray(results.items)) {
-          _this.annotations = results.items.sort(Sorting.sortOnTarget)
+          _this.annotations = results.items.sort(this.$sort.onRef)
         }
       },
       onAnnotation (annotation) {
@@ -222,40 +219,40 @@
         if (annotation) this.createAnnotation(annotation)
       },
       async createAnnotation (annotation = {}) {
+        const target = this.timeline.getTimelineTarget(annotation.target.selector.value)
         const payload = ObjectUtil.merge(annotation, {
-          target: {
-            id: `${process.env.TIMELINE_BASE_URI}${this.timelineId}`,
-            type: constants.MAP_TYPE_TIMELINE
-          }
+          target: ObjectUtil.merge({}, annotation.target, target)
         })
+        console.debug('create annotation', target, payload)
         const result = await this.$store.dispatch('annotations/post', payload)
         if (result.body.type === 'VocabularyEntry') {
           const entry = await this.$vocabularies.getEntry(result.body.source.id)
           result.body.value = entry.value
         }
         this.annotations.push(result)
-        this.annotations = this.annotations.sort(Sorting.sortOnTarget)
-        // FIXME: scroll seems broken, cannot find ref
+        this.annotations = this.annotations.sort(this.$sort.onRef)
+        // FIXME: scroll seems broken, cannot find ref, dom element probably not available yet
         // this.scrollToAnnotation(result.uuid)
       },
       scrollToAnnotation (uuid, duration = 1000) {
         const el = this.$refs[uuid][0].$el
         setScrollPosition(getScrollTarget(el), el.offsetTop - el.scrollHeight, duration)
       },
-      updateAnnotation (annotation) {
+      async updateAnnotation (annotation) {
         Assert.isType(annotation, 'object')
         Assert.ok(uuidValidate(annotation.uuid))
         Assert.isType(annotation.body.value, 'string')
-        return this.$store.dispatch('annotations/patch', [annotation.uuid, annotation])
-          .then(() => this.getAnnotations())
+        await this.$store.dispatch('annotations/patch', [annotation.uuid, annotation])
+        await this.getAnnotations()
       },
-      deleteAnnotation (uuid) {
+      async deleteAnnotation (uuid) {
         Assert.ok(uuidValidate(uuid))
-        return this.$store.dispatch('annotations/delete', uuid)
-          .then(() => this.getAnnotations())
+        await this.$store.dispatch('annotations/delete', uuid)
+        await this.getAnnotations()
       },
       gotoSelector (selector) {
-        const millis = DateTime.fromISO(selector).toMillis() - this.baseSelector.toMillis()
+        const millis = DateTime.fromISO(selector).toMillis() -
+          DateTime.fromISO(this.video.target.selector.value).toMillis()
         this.player.currentTime(millis * 0.001)
       },
       playerReady (player) {
