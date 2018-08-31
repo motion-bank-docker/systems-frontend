@@ -49,7 +49,6 @@
   import { DateTime } from 'luxon'
   import uuidValidate from 'uuid-validate'
   import constants from 'mbjs-data-models/src/constants'
-  import { Sorting } from 'mbjs-data-models/src/lib'
 
   export default {
     components: {
@@ -64,17 +63,17 @@
       }
     },
     methods: {
-      cloneEntry (annotation) {
+      async cloneEntry (annotation) {
         const payload = {
           body: ObjectUtil.merge({}, annotation.body),
           target: ObjectUtil.merge({}, annotation.target)
         }
         payload.target.selector.value = DateTime.local().toISO()
-        this.createAnnotation(payload)
+        await this.createAnnotation(payload)
       },
-      onAnnotation (annotation) {
+      async onAnnotation (annotation) {
         console.debug('received annotation...', annotation)
-        if (annotation) this.createAnnotation(annotation)
+        if (annotation) await this.createAnnotation(annotation)
       },
       async createAnnotation (annotation = {}) {
         const payload = ObjectUtil.merge(annotation, {
@@ -89,16 +88,14 @@
           result.body.value = entry.value
         }
         this.annotations.push(result)
-        this.annotations = this.annotations.sort(Sorting.sortOnTarget)
+        this.annotations = this.annotations.sort(this.$sort.onRef)
         this.scrollToElement()
       },
-      deleteAnnotation (uuid, index) {
+      async deleteAnnotation (uuid, index) {
         Assert.ok(uuidValidate(uuid))
         Assert.isType(index, 'number')
-        return this.$store.dispatch('annotations/delete', uuid)
-          .then(() => {
-            this.annotations.splice(index, 1)
-          })
+        await this.$store.dispatch('annotations/delete', uuid)
+        this.annotations.splice(index, 1)
       },
       scrollToElement () {
         // let delay = 250
