@@ -2,7 +2,7 @@
 
   // LIVE ANNOTATE
 
-  .wrapper.relative-position
+  .wrapper.relative-position(v-if="timeline")
     span(slot="form-logo")
     span(slot="form-title")
 
@@ -17,7 +17,7 @@
     //
     //
     .fixed-top.bg-dark.q-pb-md(style="top: 50px; width: 100%; z-index: 1000;")
-      annotation-field(@annotation="onAnnotation", ref="annotationField")
+      annotation-field(@annotation="onAnnotation", ref="annotationField", :submit-on-num-enters="2")
 
     // CENTER: SHOW ANNOTATIONS
     //
@@ -56,11 +56,15 @@
     },
     data () {
       return {
+        timeline: undefined,
         annotations: [],
         inputStyle: true,
         staging: process.env.IS_STAGING,
         tagBox: false
       }
+    },
+    async mounted () {
+      this.timeline = await this.$store.dispatch('maps/get', this.$route.params.id)
     },
     methods: {
       async cloneEntry (annotation) {
@@ -76,13 +80,10 @@
         if (annotation) await this.createAnnotation(annotation)
       },
       async createAnnotation (annotation = {}) {
-        const payload = ObjectUtil.merge(annotation, {
-          target: {
-            id: `${process.env.TIMELINE_BASE_URI}${this.$route.params.id}`,
-            type: constants.MAP_TYPE_TIMELINE
-          }
-        })
+        const target = this.timeline.getTimelineTarget(annotation.target.selector.value)
+        const payload = ObjectUtil.merge(annotation, { target })
         const result = await this.$store.dispatch('annotations/post', payload)
+        console.debug('res', result)
         if (result.body.type === 'VocabularyEntry') {
           const entry = await this.$vocabularies.getEntry(result.body.source.id)
           result.body.value = entry.value
