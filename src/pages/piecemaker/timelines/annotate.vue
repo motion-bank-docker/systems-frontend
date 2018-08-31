@@ -83,7 +83,6 @@
         const target = this.timeline.getTimelineTarget(annotation.target.selector.value)
         const payload = ObjectUtil.merge(annotation, { target })
         const result = await this.$store.dispatch('annotations/post', payload)
-        console.debug('res', result)
         if (result.body.type === 'VocabularyEntry') {
           const entry = await this.$vocabularies.getEntry(result.body.source.id)
           result.body.value = entry.value
