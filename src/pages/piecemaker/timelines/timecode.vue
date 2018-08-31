@@ -29,7 +29,7 @@
     },
     async mounted () {
       let result = await this.$store.dispatch('maps/find', {type: 'Timeline'})
-      this.timelines = result.items.map(timeline => { return { label: timeline.title, value: timeline.uuid } })
+      this.timelines = result.items.map(timeline => { return { label: timeline.title, value: timeline.id } })
       result = await this.$store.dispatch('timecodes/listSignals')
       this.signals = result.map(signal => { return { label: path.basename(signal), value: signal } })
     },
@@ -40,7 +40,7 @@
         const annotation = {
           target: {
             type: 'Timeline',
-            id: `${process.env.TIMELINE_BASE_URI}${this.selectedTimeline}`,
+            id: this.selectedTimeline,
             selector: {
               type: 'Fragment',
               value: DateTime.local().toISO()
