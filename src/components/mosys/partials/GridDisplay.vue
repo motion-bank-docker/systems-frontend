@@ -28,6 +28,7 @@
     props: ['gridUuid'],
     data () {
       return {
+        grid: undefined,
         annotations: [],
         cells: [],
         gridMetadata: {},
@@ -45,6 +46,7 @@
       // this.messenger.$on('video-time-changed', (/* time, globalTime, origin */) => {
       //   // console.log(videoUuid, time)
       // })
+      this.grid = await this.$store.dispatch('maps/get', this.$route.params.id)
       await this.fetchMetadataAnnotations()
       this.updateGridDimensions()
       _this.fetchCellAnnotations()
@@ -52,7 +54,7 @@
     methods: {
       fetchCellAnnotations () {
         const _this = this,
-          query = { 'body.type': '2DCell', 'target.id': `${process.env.GRID_BASE_URI}${this.gridUuid}` }
+          query = { 'body.type': '2DCell', 'target.id': this.grid.id }
         this.$store.dispatch('annotations/find', query)
           .then(annotations => {
             _this.annotations = annotations.items
@@ -68,7 +70,7 @@
       },
       async fetchMetadataAnnotations () {
         const _this = this
-        const query = { 'body.type': '2DGridMetadata', 'target.id': `${process.env.GRID_BASE_URI}${this.gridUuid}` }
+        const query = { 'body.type': '2DGridMetadata', 'target.id': this.grid.id }
         const annotations = await this.$store.dispatch('annotations/find', query)
         let annotation = annotations.items.shift()
         if (annotation) {
@@ -99,7 +101,7 @@
       },
       async updateGridMetadataStore () {
         const _this = this
-        let mapAnnotation = this.getGridMetadataAnnotation(this.gridUuid, this.gridMetadata)
+        let mapAnnotation = this.getGridMetadataAnnotation(this.grid.id, this.gridMetadata)
 
         if (_this.gridMetadata.uuid) {
           await _this.$store.dispatch('annotations/patch', [_this.gridMetadata.uuid, mapAnnotation])
@@ -154,7 +156,7 @@
           }
         }
       },
-      getGridMetadataAnnotation (uuid, metadata) {
+      getGridMetadataAnnotation (id, metadata) {
         return {
           body: {
             type: '2DGridMetadata',
@@ -162,7 +164,7 @@
             value: JSON.stringify(metadata)
           },
           target: {
-            id: uuid,
+            id,
             type: 'Map'
           }
         }

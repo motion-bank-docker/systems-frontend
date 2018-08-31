@@ -71,27 +71,28 @@
       }
     },
     methods: {
-      handleConfirmModal (item) {
-        const _this = this
-        _this.$store.dispatch('annotations/find', { 'target.id': `${process.env.GRID_BASE_URI}${item.uuid}` }).then(async result => {
+      async handleConfirmModal (item) {
+        try {
+          const result = await this.$store.dispatch('annotations/find', { 'target.id': item.id })
           for (let a of result.items) {
-            await _this.$store.dispatch('annotations/delete', a.uuid)
+            await this.$store.dispatch('annotations/delete', a.uuid)
           }
-          await _this.$store.dispatch('maps/delete', item.uuid)
+          await this.$store.dispatch('maps/delete', item.uuid)
           this.$store.commit('notifications/addMessage', {
             body: 'messages.grid_deleted',
             mode: 'alert',
             type: 'success'
           })
           this.$refs.listTable.request()
-        }).catch(err => {
+        }
+        catch (err) {
           console.error('grid delete failed', err.message)
           this.$store.commit('notifications/addMessage', {
             body: 'errors.grid_delete_failed',
             mode: 'alert',
             type: 'error'
           })
-        })
+        }
       }
     }
   }

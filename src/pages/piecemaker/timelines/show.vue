@@ -47,7 +47,6 @@
     SessionFilter,
     SessionStream
   } from '../../../components/piecemaker/partials/sessions'
-  import { Sorting } from 'mbjs-data-models/src/lib'
   import constants from 'mbjs-data-models/src/constants'
   import { ObjectUtil } from 'mbjs-utils'
 
@@ -85,10 +84,7 @@
       SessionStream
     },
     async mounted () {
-      const
-        uuid = this.$route.params.id,
-        map = await this.$store.dispatch('maps/get', uuid)
-      this.map = map
+      this.map = await this.$store.dispatch('maps/get', this.$route.params.id)
       // const grouped = await this.$store.dispatch('sessions/get', uuid)
       // grouped.sessions = grouped.sessions.map(session => {
       //   session.start = DateTime.fromISO(session.start)
@@ -96,13 +92,13 @@
       //   return session
       // })
       const result = await this.$store.dispatch('annotations/find', {
-        'target.id': `${process.env.TIMELINE_BASE_URI}${uuid}`
+        'target.id': this.map.id
       })
       const annotations = result.items
       .filter(a => {
         return a.target.selector.value
       })
-      .sort(Sorting.sortOnTarget)
+      .sort(this.$sort.onRef)
       .map(a => {
         return resurrectAnnotation(a)
       })

@@ -43,6 +43,7 @@
     data () {
       const _this = this
       return {
+        timeline: undefined,
         env: process.env,
         downloadURL: undefined,
         exportLabel: this.$t('buttons.export_timeline'),
@@ -76,8 +77,9 @@
       }
     },
     async mounted () {
+      this.timeline = await this.$store.dispatch('maps/get', this.$route.params.id)
       if (process.env.IS_STAGING) {
-        const aclQuery = {role: 'public', uuid: this.$route.params.id, permission: 'get'}
+        const aclQuery = {role: 'public', id: this.timeline.id, permission: 'get'}
         const permissions = await this.$store.dispatch('acl/isRoleAllowed', aclQuery)
         this.acl.public = permissions.get === true
       }
@@ -88,7 +90,7 @@
         if (this.downloadURL) return openURL(this.downloadURL)
         this.$axios.post(
           `${process.env.API_HOST}/archives/maps`,
-          { id: this.$route.params.id },
+          { id: this.timeline.uuid },
           {
             headers: {
               Authorization: `Bearer ${localStorage.access_token}`
@@ -102,7 +104,7 @@
       async setACL (action, payload, recursive = false) {
         await this.$store.dispatch(action, payload)
         if (recursive) {
-          const results = await this.$store.dispatch('annotations/find', { 'target.id': `${process.env.TIMELINE_BASE_URI}${payload.uuid}` })
+          const results = await this.$store.dispatch('annotations/find', { 'target.id': payload.id })
           for (let item of results.items) {
             const itemPayload = ObjectUtil.merge({}, payload)
             itemPayload.uuid = item.uuid
@@ -113,16 +115,16 @@
       async updateACL () {
         console.debug('setting acl...', this.acl)
         if (this.acl.public) {
-          await this.setACL('acl/set', { role: 'public', uuid: this.$route.params.id, permissions: ['get'] }, this.acl.recursive)
+          await this.setACL('acl/set', { role: 'public', id: this.timeline.id, permissions: ['get'] }, this.acl.recursive)
         }
         else {
-          await this.setACL('acl/remove', { role: 'public', uuid: this.$route.params.id, permission: 'get' }, this.acl.recursive)
+          await this.setACL('acl/remove', { role: 'public', id: this.timeline.id, permission: 'get' }, this.acl.recursive)
         }
         if (this.acl.group) {
-          await this.setACL('acl/set', { role: this.acl.group, uuid: this.$route.params.id, permissions: ['get'] }, this.acl.recursive)
+          await this.setACL('acl/set', { role: this.acl.group, id: this.timeline.id, permissions: ['get'] }, this.acl.recursive)
         }
         if (this.acl.group_remove) {
-          await this.setACL('acl/remove', { role: this.acl.group_remove, uuid: this.$route.params.id, permission: 'get' }, this.acl.recursive)
+          await this.setACL('acl/remove', { role: this.acl.group_remove, id: this.timeline.id, permission: 'get' }, this.acl.recursive)
         }
         this.$store.commit('notifications/addMessage', {
           body: 'messages.acl_updated',

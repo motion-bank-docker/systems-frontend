@@ -5,7 +5,7 @@
     back-button(slot="backButton")
     span(slot="form-logo")
     span(slot="form-title") {{ $t('routes.piecemaker.videos.list.title') }}
-    data-table(ref="listTable", :config="config", :title="'routes.piecemaker.videos.list.title'",
+    data-table(v-if="query", ref="listTable", :config="config", :title="'routes.piecemaker.videos.list.title'",
       path="annotations", :query="query", base-path="videos")
       template(slot="buttons-left")
         q-btn(@click="$router.push({ name: 'piecemaker.videos.create', params: { timelineId: $route.params.timelineId } })",
@@ -17,11 +17,8 @@
     data () {
       const _this = this
       return {
-        query: {
-          'body.purpose': 'linking',
-          'body.type': 'Video',
-          'target.id': `${process.env.TIMELINE_BASE_URI}${this.$route.params.timelineId}`
-        },
+        timeline: undefined,
+        query: undefined,
         config: {
           columns: [
             {
@@ -88,6 +85,16 @@
               }
             }
           ]
+        }
+      }
+    },
+    async mounted () {
+      this.timeline = await this.$store.dispatch('maps/get', this.$route.params.timelineId)
+      if (this.timeline) {
+        this.query = {
+          'body.purpose': 'linking',
+          'body.type': 'Video',
+          'target.id': this.timeline.id
         }
       }
     },

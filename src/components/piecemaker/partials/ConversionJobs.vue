@@ -55,7 +55,7 @@
               catch (e) { console.error('Failed to remove video', e.message) }
             }
             const target = detail.target || {
-              id: `${process.env.TIMELINE_BASE_URI}${detail.timeline}`,
+              id: detail.timeline,
               type: 'Timeline',
               selector: {
                 type: 'Fragment',

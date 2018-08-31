@@ -115,7 +115,7 @@
         .then(timeline => {
           _this.timeline = timeline
           const query = {
-            'target.id': `${process.env.TIMELINE_BASE_URI}${timeline.uuid}`,
+            'target.id': timeline.id,
             'body.purpose': 'linking',
             'body.type': 'Video'
           }

@@ -23,12 +23,14 @@
         }]
       }
     },
-    mounted () {
-      this.loadTags()
+    async mounted () {
+      this.timeline = await this.$store.dispatch('maps/get', this.targetUuid)
+      await this.loadTags()
     },
     watch: {
-      targetUuid () {
-        this.loadTags()
+      async targetUuid (val) {
+        this.timeline = await this.$store.dispatch('maps/get', val)
+        await this.loadTags()
       }
     },
     methods: {
@@ -82,7 +84,7 @@
               value: t
             },
             target: {
-              id: `${process.env.TIMELINE_BASE_URI}${_this.targetUuid}`,
+              id: _this.timeline.id,
               type: _this.targetType || _this.typeFromRoute()
             }
           }
@@ -111,10 +113,10 @@
       },
       loadTags () {
         const _this = this
-        const query = { 'target.id': `${process.env.TIMELINE_BASE_URI}${_this.targetUuid}`, 'body.purpose': 'tagging' }
+        const query = { 'target.id': this.timeline.id, 'body.purpose': 'tagging' }
         this.$store.dispatch('annotations/find', query)
           .then(annotations => {
-            _this.annotations = annotations.filter(a => a.target.id === _this.targetUuid) // TODO: Anton, why is target id ignored in the query?
+            _this.annotations = annotations.filter(a => a.target.id === _this.timeline.id) // TODO: Anton, why is target id ignored in the query?
             let newTags = annotations.map(a => {
               // this.$store.dispatch('annotations/remove', a.uuid) // clean up tags
               return a.body.value

@@ -18,7 +18,6 @@
   import { DateTime } from 'luxon'
   import { required } from 'vuelidate/lib/validators'
   import guessType from 'mbjs-media/src/util/guess-type'
-  import constants from 'mbjs-data-models/src/constants'
 
   export default {
     components: {
@@ -33,6 +32,7 @@
     data () {
       const _this = this
       return {
+        timeline: undefined,
         // FIXME: i know this is bullshit!!! (but i hope it works for now)
         apiPayload: undefined,
         payload: undefined,
@@ -59,14 +59,7 @@
                   type: 'Video',
                   purpose: 'linking'
                 },
-                target: {
-                  id: `${process.env.TIMELINE_BASE_URI}${_this.$route.params.timelineId}`,
-                  type: constants.MAP_TYPE_TIMELINE,
-                  selector: {
-                    type: 'Fragment',
-                    value: DateTime.local().toString()
-                  }
-                }
+                target: this.timeline.getTimelineTarget(DateTime.local().toString())
               }
               return _this.$store.dispatch('annotations/post', _this.apiPayload)
                 .then(() => _this.$router.push(`/piecemaker/timelines/${_this.$route.params.timelineId}/videos`))
@@ -75,6 +68,9 @@
         },
         staging: process.env.IS_STAGING
       }
+    },
+    async mounted () {
+      this.timeline = await this.$store.dispatch('maps/get', this.$route.params.timelineId)
     }
   }
 </script>

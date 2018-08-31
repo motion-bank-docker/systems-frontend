@@ -41,7 +41,7 @@
     methods: {
       async getTimecodeAnnotations () {
         const result = await this.$store.dispatch('annotations/find', {
-          'target.id': `${process.env.TIMELINE_BASE_URI}${this.selectedTimeline}`,
+          'target.id': this.selectedTimeline.id,
           'body.type': 'Audio',
           'body.purpose': 'linking'
         })
@@ -54,7 +54,7 @@
         for (let key of responseKeys) {
           const detail = {
             source: responses[key].file,
-            timeline: `${process.env.TIMELINE_BASE_URI}${this.selectedTimeline}`,
+            timeline: this.selectedTimeline.id,
             title: path.basename(responses[key].originalName, path.extname(responses[key].originalName))
           }
           const payload = {

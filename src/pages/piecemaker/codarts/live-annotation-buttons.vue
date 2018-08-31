@@ -23,6 +23,7 @@
     },
     data () {
       return {
+        timeline: undefined,
         buttons: [
           [
             {label: 'complex eclectic technique without “effort”'},
@@ -42,23 +43,18 @@
         ]
       }
     },
+    async mounted () {
+      this.timeline = await this.$store.dispatch('maps/get', this.$route.params.timelineId)
+    },
     methods: {
       handleButtonClick (event, button) {
-        const timelineId = this.$route.params.timelineId
         let annotation = {
           body: {
             value: button.label,
             purpose: 'commenting',
             type: 'TextualBody'
           },
-          target: {
-            id: `${process.env.TIMELINE_BASE_URI}${timelineId}`,
-            type: constants.MAP_TYPE_TIMELINE,
-            selector: {
-              type: 'Fragment',
-              value: DateTime.local().toISO()
-            }
-          }
+          target: this.timeline.getTimelineTarget(DateTime.local().toISO())
         }
         this.$store.dispatch('annotations/create', annotation)
       }

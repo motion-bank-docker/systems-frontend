@@ -81,7 +81,7 @@
         const query = {
           type: 'Annotation',
           'body.purpose': 'linking',
-          'target.id': `${process.env.TIMELINE_BASE_URI}${this.currentTimeline.uuid}`
+          'target.id': this.currentTimeline.idync
         }
         const result = await this.$store.dispatch('annotations/find', query)
         const videos = result.items

@@ -68,7 +68,7 @@
       },
       loadAnnotations () {
         const _this = this
-        this.$store.dispatch('annotations/find', { target: { id: `${process.env.TIMELINE_BASE_URI}${this.$route.params.mapId}` } })
+        return this.$store.dispatch('annotations/find', { 'target.id': this.timeline.id })
           .then(annotations => {
             _this.annotations = annotations.map(annotation => {
               annotation.object = JSON.parse(annotation.object)
@@ -105,6 +105,7 @@
     data () {
       const _this = this
       return {
+        timeline: undefined,
         video: {
           src: _this.$route.query.url || undefined
         },
@@ -124,7 +125,7 @@
           },
           submit: {
             handler () {
-              _this.payload.target = { id: `${process.env.TIMELINE_BASE_URI}${_this.$route.params.mapId}` }
+              _this.payload.target = { id: _this.timeline.id }
               _this.payload.body = JSON.stringify({
                 url: _this.video.src,
                 sel: _this.annotationSelect
@@ -133,7 +134,7 @@
                 .then(() => {
                   _this.payload = undefined
                   _this.annotationSelect = undefined
-                  _this.loadAnnotations()
+                  return _this.loadAnnotations()
                 })
             }
           }
@@ -147,8 +148,9 @@
         }
       }
     },
-    mounted () {
-      this.loadAnnotations()
+    async mounted () {
+      this.timeline = await this.$store.dispatch('maps/get', this.$route.params.mapId)
+      await this.loadAnnotations()
     }
   }
 </script>
