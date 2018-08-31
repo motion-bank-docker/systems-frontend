@@ -78,7 +78,7 @@
 <script>
   import { scroll, AppFullscreen } from 'quasar'
   import uuidValidate from 'uuid-validate'
-  import { DateTime, Duration } from 'luxon'
+  import { DateTime } from 'luxon'
 
   import { ObjectUtil, Assert } from 'mbjs-utils'
   import constants from 'mbjs-data-models/src/constants'
