@@ -81,7 +81,7 @@
         const query = {
           type: 'Annotation',
           'body.purpose': 'linking',
-          'target.id': this.currentTimeline.idync
+          'target.id': this.currentTimeline.id
         }
         const result = await this.$store.dispatch('annotations/find', query)
         const videos = result.items
