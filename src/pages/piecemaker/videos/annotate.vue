@@ -222,14 +222,11 @@
         this.player = player
       },
       formatSelectorForList (val) {
-        const selector = DateTime.fromISO(val)
-        // TODO: this is displaying 'HH:00:00.000' for times that are less than an hour
-        return Duration
-          .fromMillis(selector.toMillis() - DateTime.fromISO(this.video.target.selector.value).toMillis())
-          .toFormat(constants.TIMECODE_FORMAT)
-          .replace(/[^0-9.:]+/, '')
-          .replace(/^[^0-9]/, '')
-          .replace(/[^0-9]$/, '')
+        const annotationDate = DateTime.fromISO(val)
+        const videoDate = DateTime.fromISO(this.video.target.selector.value).toMillis()
+        return annotationDate
+          .minus(videoDate)
+          .toFormat(constants.TIMECODE_FORMAT).split(':').slice(1).join(':')
       },
       onPlayerTime (seconds) {
         this.playerTime = seconds
