@@ -95,12 +95,13 @@
     methods: {
       async handleInputChanged () {
         const _this = this
-        if (this.newAnnotationText) {
+        const text = this.newAnnotationText && this.newAnnotationText.trim()
+        if (text && text.length > 0) {
           let newAnnotation = {
             body: {
               type: 'TextualBody',
               purpose: 'commenting',
-              value: this.newAnnotationText
+              value: text
             },
             target: {
               id: this.video.target.id,

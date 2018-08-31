@@ -172,19 +172,22 @@
         }
         else {
           this.enterDown = 0
-          if (event.target.tagName.toLowerCase() !== 'textarea') this.setFocusOnInput()
+          if (event.target.tagName.toLowerCase() !== 'textarea') this.setFocusOnInput() // only set focus if not already in a textfield
         }
       },
       createAnnotation () {
-        const annotation = {
-          body: ObjectUtil.merge({}, this.currentBody),
-          target: {
-            selector: ObjectUtil.merge({}, this.currentSelector)
+        const text = this.annotationText && this.annotationText.trim()
+        if (text && text.length > 0) {
+          const annotation = {
+            body: ObjectUtil.merge({}, this.currentBody),
+            target: {
+              selector: ObjectUtil.merge({}, this.currentSelector)
+            }
           }
+          if (!this.selectedEntry && this.annotationText) annotation.body.value = this.annotationText.trim()
+          this.reset()
+          this.$emit('annotation', annotation)
         }
-        if (!this.selectedEntry && this.annotationText) annotation.body.value = this.annotationText.trim()
-        this.reset()
-        this.$emit('annotation', annotation)
       }
     }
   }
