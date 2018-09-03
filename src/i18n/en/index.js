@@ -86,6 +86,7 @@ export default {
     map_title: 'Map Title',
     name: 'Name',
     new_tag: 'New tag',
+    new_group_title: 'New group title',
     organisation: 'Organisation',
     participants: 'Participants',
     password: 'Password',
