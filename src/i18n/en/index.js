@@ -35,9 +35,9 @@ export default {
     yes: 'Yes'
   },
   checkboxes: {
-    delete: 'may delete',
-    read: 'may read',
-    write: 'may write'
+    delete: 'delete',
+    read: 'read',
+    write: 'write'
   },
   forms: {
     timelines: {
@@ -61,7 +61,7 @@ export default {
     timeline_delete_failed: 'Failed to delete Timeline'
   },
   labels: {
-    access_control: 'Access',
+    access_control: 'Access Control',
     access_control_public: 'Public',
     add_group: 'Add Group',
     annotations: 'Annotations',
