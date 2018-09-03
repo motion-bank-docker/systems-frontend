@@ -2,8 +2,11 @@
   full-screen
     // q-btn(slot="backButton", @click="$router.push({ name: 'piecemaker.videos.list' })", icon="keyboard_backspace", round, small)
     back-button(slot="backButton")
-    .q-pa-xl(style="min-width: 50vw;")
+    .q-px-xl(style="min-width: 50vw;")
       h5.caption(dark) {{ $t('routes.piecemaker.videos.edit.title') }}
+
+      access-right
+
       .row
         .col-md-12
           calendar-time-main(v-if="staging", @getTimeAndDate="getTimeAndDate")
@@ -11,6 +14,7 @@
 </template>
 
 <script>
+  import AccessRight from '../../../components/shared/partials/AccessRight'
   import CalendarTimeMain from '../../../components/shared/forms/CalendarTimeMain'
   import FormMain from '../../../components/shared/forms/FormMain'
 
@@ -21,6 +25,7 @@
 
   export default {
     components: {
+      AccessRight,
       CalendarTimeMain,
       FormMain
     },

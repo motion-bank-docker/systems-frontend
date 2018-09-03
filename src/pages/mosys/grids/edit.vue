@@ -1,7 +1,8 @@
 <template lang="pug">
   full-screen
-    .q-pa-xl(style="min-width: 50vw;")
+    .q-px-xl(style="min-width: 50vw;")
       h5.caption(dark) {{ $t('routes.mosys.grids.edit.title') }}
+      access-right
       .row
         .col-md-12
           form-main(v-model="payload", :schema="schema")
@@ -11,6 +12,7 @@
 </template>
 
 <script>
+  import AccessRight from '../../../components/shared/partials/AccessRight'
   import Tags from '../../../components/shared/partials/Tags'
   import FormMain from '../../../components/shared/forms/FormMain'
 
@@ -19,6 +21,7 @@
 
   export default {
     components: {
+      AccessRight,
       FormMain,
       Tags
     },

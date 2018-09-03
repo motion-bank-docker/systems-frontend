@@ -34,6 +34,11 @@ export default {
     videos: 'Videos',
     yes: 'Yes'
   },
+  checkboxes: {
+    delete: 'delete',
+    read: 'read',
+    write: 'write'
+  },
   forms: {
     timelines: {
       import: {
@@ -56,8 +61,9 @@ export default {
     timeline_delete_failed: 'Failed to delete Timeline'
   },
   labels: {
-    access_control: 'Access',
+    access_control: 'Access Control',
     access_control_public: 'Public',
+    add_group: 'Add Group',
     annotations: 'Annotations',
     annotation_body: 'Annotation text',
     accept_terms: 'I accept the Terms and Conditions',
@@ -69,6 +75,7 @@ export default {
     edit_title: 'Edit title',
     email: 'Email',
     embedded: 'Embedded in',
+    empty: 'empty',
     elements_length: 'Used Elements',
     // timeline_title: 'Timeline title',
     timeline_title: 'Timeline title',
@@ -79,6 +86,7 @@ export default {
     map_title: 'Map Title',
     name: 'Name',
     new_tag: 'New tag',
+    new_group_title: 'New group title',
     organisation: 'Organisation',
     participants: 'Participants',
     password: 'Password',
