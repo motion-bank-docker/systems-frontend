@@ -2,6 +2,8 @@
   full-screen
     q-btn(slot="backButton", @click="$router.push({ name: 'piecemaker.timelines.list' })", icon="keyboard_backspace", round, small)
 
+    access-right
+
     .q-pa-xl(style="min-width: 50vw;")
       h5.caption(dark) {{ $t('routes.piecemaker.timelines.edit.title') }}
       .row
@@ -26,6 +28,7 @@
 </template>
 
 <script>
+  import AccessRight from '../../../components/shared/partials/AccessRight'
   import Tags from '../../../components/shared/partials/Tags'
   import FormMain from '../../../components/shared/forms/FormMain'
 
@@ -37,6 +40,7 @@
 
   export default {
     components: {
+      AccessRight,
       FormMain,
       Tags
     },
