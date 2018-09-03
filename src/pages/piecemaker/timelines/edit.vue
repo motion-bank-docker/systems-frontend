@@ -2,15 +2,17 @@
   full-screen
     q-btn(slot="backButton", @click="$router.push({ name: 'piecemaker.timelines.list' })", icon="keyboard_backspace", round, small)
 
-    access-right
-
-    .q-pa-xl(style="min-width: 50vw;")
+    .q-px-xl
       h5.caption(dark) {{ $t('routes.piecemaker.timelines.edit.title') }}
+
+      access-right
+
       .row
         .col-md-12
           form-main(v-model="payload", :schema="schema")
             q-btn.q-mr-md.bg-grey-9(q-if="$route.params.id", slot="form-buttons-add", :label="exportLabel", @click="exportTimeline")
-      .row(v-if="env.IS_STAGING")
+
+      // .row(v-if="env.IS_STAGING")
         .col-md-12
           p {{ $t('labels.access_control') }}
           q-checkbox(v-model="acl.public", :label="$t('labels.access_control_public')", dark)
@@ -22,6 +24,7 @@
           q-input(v-model="acl.group_remove", :label="$t('labels.access_control_remove_group')", dark)
         .col-md-12
           q-btn.q-mr-md.bg-grey-9(:label="$t('buttons.update_access_control')", @click="updateACL")
+
       // .row
       //   .col-md-12
       //     tags(v-if="payload", :targetUuid="payload.uuid", fullWidth)
