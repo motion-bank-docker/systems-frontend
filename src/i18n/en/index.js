@@ -75,6 +75,7 @@ export default {
     edit_title: 'Edit title',
     email: 'Email',
     embedded: 'Embedded in',
+    empty: 'empty',
     elements_length: 'Used Elements',
     // timeline_title: 'Timeline title',
     timeline_title: 'Timeline title',
