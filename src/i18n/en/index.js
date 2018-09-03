@@ -6,6 +6,7 @@ export default {
     abort: 'Abort',
     apply_synchronisation: 'Apply Synchronisation',
     annotate: 'Annotate',
+    add_group: 'Add Group',
     add_video: 'Add Video',
     add_and_go: 'Add & Go',
     back: 'Back',
@@ -33,6 +34,11 @@ export default {
     synchronize: 'Sync',
     videos: 'Videos',
     yes: 'Yes'
+  },
+  checkboxes: {
+    delete: 'may delete',
+    read: 'may read',
+    write: 'may write'
   },
   forms: {
     timelines: {
