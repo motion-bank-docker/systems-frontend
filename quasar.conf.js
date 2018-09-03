@@ -129,6 +129,7 @@ module.exports = function (ctx) {
         // Grouping
         //
         'QCard',
+        'QCardActions',
         'QCardSeparator',
         'QCardTitle',
         'QCardMain',
@@ -178,7 +179,8 @@ module.exports = function (ctx) {
         'Notify',
         'Dialog',
         'Loading',
-        'ActionSheet'
+        'ActionSheet',
+        'Screen'
       ]
     },
     animations: 'all',
