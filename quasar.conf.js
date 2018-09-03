@@ -130,6 +130,7 @@ module.exports = function (ctx) {
         //
         'QCard',
         'QCardSeparator',
+        'QCardTitle',
         'QCardMain',
         'QCollapsible',
         'QTable',
