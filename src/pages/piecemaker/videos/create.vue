@@ -59,7 +59,7 @@
                   type: 'Video',
                   purpose: 'linking'
                 },
-                target: this.timeline.getTimelineTarget(DateTime.local().toString())
+                target: _this.timeline.getTimelineTarget(DateTime.local().toString())
               }
               return _this.$store.dispatch('annotations/post', _this.apiPayload)
                 .then(() => _this.$router.push(`/piecemaker/timelines/${_this.$route.params.timelineId}/videos`))
