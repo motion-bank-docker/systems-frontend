@@ -6,7 +6,6 @@ export default {
     abort: 'Abort',
     apply_synchronisation: 'Apply Synchronisation',
     annotate: 'Annotate',
-    add_group: 'Add Group',
     add_video: 'Add Video',
     add_and_go: 'Add & Go',
     back: 'Back',
@@ -64,6 +63,7 @@ export default {
   labels: {
     access_control: 'Access',
     access_control_public: 'Public',
+    add_group: 'Add Group',
     annotations: 'Annotations',
     annotation_body: 'Annotation text',
     accept_terms: 'I accept the Terms and Conditions',
