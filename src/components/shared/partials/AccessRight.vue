@@ -21,7 +21,7 @@
             q-item-separator.bg-grey-9
         div(v-else) {{ $t('labels.empty') }}
       q-card-separator
-      q-card-actions.q-pa-md
+      q-card-actions(:class="[!showForm ? 'q-pa-md' : 'q-px-md q-pb-md q-pt-none']")
         q-btn(v-if="!showForm", @click="showForm = true", :label="$t('labels.add_group')", color="primary")
         form-main.full-width(v-if="showForm", v-model="payload", :schema="schema")
           q-btn(slot="form-buttons-add", :label="$t('buttons.cancel')", @click="showForm = false, payloard = ''")
