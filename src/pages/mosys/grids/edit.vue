@@ -2,7 +2,7 @@
   full-screen
     .q-px-xl(style="min-width: 50vw;")
       h5.caption(dark) {{ $t('routes.mosys.grids.edit.title') }}
-      access-right
+      access-control
       .row
         .col-md-12
           form-main(v-model="payload", :schema="schema")
@@ -12,7 +12,7 @@
 </template>
 
 <script>
-  import AccessRight from '../../../components/shared/partials/AccessRight'
+  import AccessControl from '../../../components/shared/partials/AccessControl'
   import Tags from '../../../components/shared/partials/Tags'
   import FormMain from '../../../components/shared/forms/FormMain'
 
@@ -21,7 +21,7 @@
 
   export default {
     components: {
-      AccessRight,
+      AccessControl,
       FormMain,
       Tags
     },

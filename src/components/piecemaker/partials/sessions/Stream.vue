@@ -80,7 +80,7 @@
     mounted () {
       this.getSvgHeight()
     },
-    props: ['videos', 'session'],
+    props: ['session'],
     created: function () {
       window.addEventListener('scroll', this.scrollPos)
     },
@@ -120,7 +120,7 @@
       onClickVideo (vid) {
         this.showVideo = true
         this.video = vid
-        this.currentVideo = vid.annotation._id
+        this.currentVideo = vid.annotation.uuid
       },
       onCloseVideo () {
         this.showVideo = false

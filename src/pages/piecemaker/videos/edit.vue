@@ -5,7 +5,7 @@
     .q-px-xl(style="min-width: 50vw;")
       h5.caption(dark) {{ $t('routes.piecemaker.videos.edit.title') }}
 
-      access-right
+      access-control
 
       .row
         .col-md-12
@@ -14,7 +14,7 @@
 </template>
 
 <script>
-  import AccessRight from '../../../components/shared/partials/AccessRight'
+  import AccessControl from '../../../components/shared/partials/AccessControl'
   import CalendarTimeMain from '../../../components/shared/forms/CalendarTimeMain'
   import FormMain from '../../../components/shared/forms/FormMain'
 
@@ -25,7 +25,7 @@
 
   export default {
     components: {
-      AccessRight,
+      AccessControl,
       CalendarTimeMain,
       FormMain
     },

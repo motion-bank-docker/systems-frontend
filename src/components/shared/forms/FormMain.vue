@@ -115,7 +115,7 @@
         const ctx = this
         if (this.value && this.value.then) {
           this.value.then(data => {
-            ctx.local = data
+            ctx.local = data.toObject ? data.toObject() : data
             ctx.loaded = true
           })
         }

@@ -1,25 +1,23 @@
 <template lang="pug">
   svg(:width="width", height="100%", :x="x * index")
-    rect.cursor-pointer.moba-diagram-bar(width="100%", :height="height", :y="y", :class="{'moba-active-bar' : active}",
+    rect.cursor-pointer.moba-diagram-bar(v-if="session", width="100%", :height="height", :y="y", :class="{'moba-active-bar' : active}",
       @mouseenter="sessionBarEnter", @mouseleave="sessionBarLeave", @click="sessionBarClick")
 </template>
 
 <script>
+  import { DateTime } from 'luxon'
   export default {
     props: ['session', 'index', 'dimensions', 'active', 'timeFormat'],
     methods: {
       sessionBarEnter () {
         const hoverVal = {}
-        hoverVal.start = this.getTime(this.session.start)
-        hoverVal.end = this.getTime(this.session.end)
-        hoverVal.duration = this.session.end.toMillis() - this.session.start.toMillis()
+        hoverVal.start = this.getTime(DateTime.fromISO(this.session.start))
+        hoverVal.end = this.getTime(DateTime.fromISO(this.session.end))
+        hoverVal.duration = this.duration
         this.$emit('hover', hoverVal)
       },
       sessionBarLeave () {
-        const hoverVal = {}
-        hoverVal.start = false
-        hoverVal.end = ''
-        this.$emit('hover', hoverVal)
+        this.$emit('hover')
       },
       sessionBarClick () {
         this.$emit('click', { session: this.session, index: this.index })
@@ -36,11 +34,14 @@
       }
     },
     computed: {
+      duration () {
+        return (DateTime.fromISO(this.session.end).toMillis() - DateTime.fromISO(this.session.start).toMillis()) * 0.001
+      },
       isConfigured () {
         return this.session && this.dimensions
       },
       height () {
-        return Math.min(this.dimensions.height, this.isConfigured ? (this.dimensions.height / 2 / 60 / 60) * Math.max(10 * 60, this.session.duration) : 0)
+        return Math.min(this.dimensions.height, this.isConfigured ? (this.dimensions.height / 2 / 60 / 60) * Math.max(10 * 60, this.duration) : 0)
       },
       width () {
         return this.isConfigured ? this.dimensions.barWidth : 0
