@@ -5,12 +5,14 @@
     .q-px-xl
       h5.caption(dark) {{ $t('routes.piecemaker.timelines.edit.title') }}
 
-      access-right
-
       .row
         .col-md-12
           form-main(v-model="payload", :schema="schema")
             q-btn.q-mr-md.bg-grey-9(q-if="$route.params.id", slot="form-buttons-add", :label="exportLabel", @click="exportTimeline")
+
+      .row
+        .col-md-12
+          access-control(:resource="timeline")
 
       // .row(v-if="env.IS_STAGING")
         .col-md-12
@@ -31,7 +33,7 @@
 </template>
 
 <script>
-  import AccessRight from '../../../components/shared/partials/AccessRight'
+  import AccessControl from '../../../components/shared/partials/AccessControl'
   import Tags from '../../../components/shared/partials/Tags'
   import FormMain from '../../../components/shared/forms/FormMain'
 
@@ -43,7 +45,7 @@
 
   export default {
     components: {
-      AccessRight,
+      AccessControl,
       FormMain,
       Tags
     },
