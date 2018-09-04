@@ -24,6 +24,7 @@
       q-card-actions.q-pa-md
         q-btn(v-if="!showForm", @click="showForm = true", :label="$t('labels.add_group')", color="primary")
         form-main.full-width(v-if="showForm", v-model="payload", :schema="schema")
+          q-btn(slot="form-buttons-add", :label="$t('buttons.cancel')", @click="showForm = false, payloard = ''")
 
 </template>
 
