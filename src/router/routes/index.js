@@ -1,9 +1,11 @@
+import mocabulary from './mocabulary'
 import mosys from './mosys'
 import piecemaker from './piecemaker'
 import site from './site'
 import users from './users'
 
 export default [
+  mocabulary,
   mosys,
   piecemaker,
   site,
