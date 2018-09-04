@@ -5,12 +5,14 @@
     .q-px-xl(style="min-width: 50vw;")
       h5.caption(dark) {{ $t('routes.piecemaker.videos.edit.title') }}
 
-      access-control
-
       .row
         .col-md-12
           calendar-time-main(v-if="staging", @getTimeAndDate="getTimeAndDate")
           form-main(v-model="payload", :schema="schema")
+
+      .row
+        .col-md-12
+          access-control
 </template>
 
 <script>
