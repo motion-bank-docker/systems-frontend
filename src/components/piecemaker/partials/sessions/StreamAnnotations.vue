@@ -1,30 +1,30 @@
 <template lang="pug">
   div
     .q-pl-sm(v-for="annotation in annotations",
-      :ref="annotation.annotation.uuid",
+      :ref="annotation.uuid",
       @mouseenter="onAnnotationEnter(annotation)",
       @mouseleave="onAnnotationLeave",
-      @click="setSessionTime(annotation.relativeTime)")
+      @click="setSessionTime(annotation)")
 
-      .row.moba-list-entry(:ref="`annotation-${annotation.annotation.uuid}-${annotation.relativeTime.toFixed(3)}`")
+      .row.moba-list-entry(:ref="`annotation-${annotation.uuid}`")
         .row.col-12(style="line-height: 1.35rem;")
           .col-12.row.q-px-md.q-py-sm.moba-round-borders(
-            :class="[annotation.type != 'system' ? 'moba-hover' : '', annotation.type == 'separator' ? 'bg-grey-9 text-black text-center' : '']")
+            :class="[annotation.type !== 'system' ? 'moba-hover' : '', annotation.type === 'separator' ? 'bg-grey-9 text-black text-center' : '']")
             .col-10.cursor-pointer
 
               // AUTHOR
               //
-              span.text-grey-9 {{ shortenName(annotation.annotation.author.name) }}&nbsp;&nbsp;
+              span.text-grey-9 {{ shortenName(annotation.author.name) }}&nbsp;&nbsp;
                 q-tooltip.bg-dark.shadow-8.moba-border(anchor="center left",
                   self="center right", :offset="[10, 0]")
-                  | {{ annotation.annotation.author.name }}
+                  | {{ annotation.author.name }}
 
               // TEXT
               //
-              span(v-if="annotation.annotation.body.type === 'TextualBody'",
-                :class="[annotation.active ? 'text-primary' : '']") {{ annotation.annotation.body.value }}
+              span(v-if="annotation.body.type === 'TextualBody'",
+                :class="[annotation.active ? 'text-primary' : '']") {{ annotation.body.value }}
               span(v-else,
-                :class="[annotation.active ? 'text-primary' : '']") &lt;&lt; {{ annotation.annotation.body.type }} &gt;&gt;
+                :class="[annotation.active ? 'text-primary' : '']") &lt;&lt; {{ annotation.body.type }} &gt;&gt;
 
             // ZITIER LINK
             //

@@ -2,14 +2,14 @@
   // DIAGRAM
   // timeline overview
   //
-  .text-center(v-if="grouped")
+  .text-center(v-if="sessions")
     // TOOLTIP FOR TIMELINE DIAGRAM BARS
     //
     .fixed.bg-dark.shadow-6.moba-border(v-if="barTooltip.visibility", :style="{left: barTooltip.cursorX + 15 + 'px', top: barTooltip.cursorY + 15 + 'px', zIndex: 1000}")
-      .q-ma-sm
+      .q-ma-sm(v-if="hoverVal")
         div {{ hoverVal.start }}
         div {{ hoverVal.end }}
-        div {{ hoverVal.duration / 1000 }} seconds
+        div {{ hoverVal.duration }} seconds
 
     q-window-resize-observable(@resize="onWindowResize")
 
@@ -42,8 +42,8 @@
       // SESSION BARS
       //
       svg(:x="sessionBarX")
-        diagram-bar(v-for="(session, i) in grouped.sessions", :session="session", :index="i", :active="activeSessionIndex === i"
-          @hover="sessionHover", @click="sessionBarClick", :time-format="timeFormat", :dimensions="diagramDimensions")
+        diagram-bar(v-for="(session, i) in sessions", :session="session", :index="i", :active="activeSessionIndex === i"
+          @hover="sessionHover", @click="sessionBarClick(session, i)", :time-format="timeFormat", :dimensions="diagramDimensions")
 
       // BOTTOM LINE
       //
@@ -56,7 +56,7 @@
     components: {
       DiagramBar
     },
-    props: ['grouped', 'activeSessionIndex'],
+    props: ['sessions', 'activeSessionIndex'],
     data () {
       return {
         activeBar: null,
@@ -107,12 +107,13 @@
       clearSession () {
         this.diagramDimensions.activeId = null
       },
-      sessionBarClick (data) {
-        this.$emit('select-session', data)
+      sessionBarClick (session, index) {
+        this.$emit('select-session', { session, index })
       },
       sessionHover (hoverVal) {
+        console.debug('hover', hoverVal)
         this.hoverVal = hoverVal
-        if (this.hoverVal.start) this.barTooltip.visibility = true
+        if (this.hoverVal && this.hoverVal.start) this.barTooltip.visibility = true
         else { this.barTooltip.visibility = false }
       },
       moveTooltip (event) {

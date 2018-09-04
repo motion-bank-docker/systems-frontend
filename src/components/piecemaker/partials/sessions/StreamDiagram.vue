@@ -8,9 +8,9 @@
       //
         rect(v-if="$props.visibleWindow",
           x="0",
-          :y="`${(($props.visibleWindow.top / $props.visibleWindow.height) * 100).toFixed(3)}%`",
+          // :y="`${(($props.visibleWindow.top / $props.visibleWindow.height) * 100).toFixed(3)}%`",
           width="100%",
-          :height="`${(($props.visibleWindow.windowHeight / $props.visibleWindow.height) * 100).toFixed(3)}%`")
+          // :height="`${(($props.visibleWindow.windowHeight / $props.visibleWindow.height) * 100).toFixed(3)}%`")
 
       // LINES - horizontal
       // displays the annotations as lines in the diagramm
@@ -22,7 +22,7 @@
           :class="[annotation.active ? 'moba-active-line' : '']",
           style="fill: rgba(255, 255, 255, 0.2); opacity: 1",
           width="100%", height="2", x="0",
-          :y="((annotation.relativeTime / session.duration) * 100).toFixed(3) + '%'")
+          :y="((annotation.relativeTime / duration) * 100).toFixed(3) + '%'")
 
       // PREVIEW LINE – horizontal
       // appears on the left when hovering matching text on the right
@@ -30,15 +30,15 @@
       svg(v-if="previewTime", width="100%", height="100%")
         rect.preview-line(
         width="100%", height="2",
-        :y="((previewTime / session.duration) * 100).toFixed(3) + '%'")
+        :y="((previewTime / duration) * 100).toFixed(3) + '%'")
 
       // CURRENT TIME
       //
       line.current-time(
         v-if="typeof sessionTime === 'number'",
         x1="0", x2="100%",
-        :y1="`${((sessionTime / session.duration) * 100).toFixed(3)}%`",
-        :y2="`${((sessionTime / session.duration) * 100).toFixed(3)}%`")
+        :y1="`${((sessionTime / duration) * 100).toFixed(3)}%`",
+        :y2="`${((sessionTime / duration) * 100).toFixed(3)}%`")
 
       // SWIMLANES - vertical
       // vertical visualization of the videos
@@ -50,9 +50,9 @@
           v-for="(vid, i) in session.videos",
           :id="vid.annotation.uuid",
           :width="20",
-          :height="(((vid.meta.duration * 1000) / session.duration) * 100).toFixed(3) + '%'",
+          :height="(((vid.metadata.duration * 1000) / duration) * 100).toFixed(3) + '%'",
           :x="(session.videos.length * 10 + 15) * i + 20",
-          :y="(((vid.annotation.target.selector.value.toMillis() - session.start.toMillis()) / session.duration) * 100).toFixed(3) + '%'")
+          :y="getSwimlaneY(vid.annotation)")
           rect.moba-swimlane(width="100%", height="100%", x="0", y="0", :title="vid.annotation.uuid")
 
           //
@@ -116,6 +116,7 @@
 </template>
 
 <script>
+  import { DateTime } from 'luxon'
   export default {
     props: [
       'session',
@@ -140,6 +141,9 @@
       },
       annotations () {
         return this.session ? this.session.annotations : []
+      },
+      duration () {
+        return (DateTime.fromISO(this.session.end).toMillis() - DateTime.fromISO(this.session.start).toMillis()) * 0.001
       }
     },
     methods: {
@@ -158,6 +162,9 @@
       },
       isCurrentVideo (vid) {
         return this.currentVideo && this.currentVideo === vid.annotation.uuid
+      },
+      getSwimlaneY (annotation) {
+        return (((DateTime.fromISO(annotation.target.selector.value).toMillis() - DateTime.fromISO(this.session.start).toMillis()) / this.duration) * 100).toFixed(3) + '%'
       }
     }
   }

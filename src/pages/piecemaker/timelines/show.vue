@@ -12,7 +12,7 @@
     q-btn.absolute-top-left(slot="backButton", @click="$router.push({ name: 'piecemaker.timelines.list' })", icon="keyboard_backspace", round, small, style="top: 66px; left: 16px;")
 
     // session-filter
-    session-diagram(:grouped="grouped", @select-session="selectSession", :active-session-index="activeSessionIndex", ref="sessionDiagram")
+    session-diagram(v-if="sessions", :sessions="sessions", @select-session="selectSession", :active-session-index="activeSessionIndex", ref="sessionDiagram")
 
     // ACTIVE SESSION IN DETAIL
     //
@@ -27,7 +27,7 @@
         q-btn.shadow-6(@click="clearSession", icon="clear", size="small", flat, round)
 
       .col-12.q-mt-md
-        session-stream(:videos="grouped.videos", :session="activeSession")
+        session-stream(:session="activeSession")
 
     // BUTTON: LIVE ANNOTATE
     // appears when no session active
@@ -40,42 +40,42 @@
 </template>
 
 <script>
-  import axios from 'axios'
+  // import axios from 'axios'
   import { DateTime } from 'luxon'
   import {
     SessionDiagram,
     SessionFilter,
     SessionStream
   } from '../../../components/piecemaker/partials/sessions'
-  import constants from 'mbjs-data-models/src/constants'
-  import { ObjectUtil } from 'mbjs-utils'
+  // import constants from 'mbjs-data-models/src/constants'
+  // import { ObjectUtil } from 'mbjs-utils'
 
-  const resurrectAnnotation = function (annotation) {
-    if (typeof annotation.created === 'string') annotation.created = DateTime.fromISO(annotation.created)
-    if (typeof annotation.updated === 'string') annotation.updated = DateTime.fromISO(annotation.updated)
-    if (annotation.target && annotation.target.selector) {
-      if (typeof annotation.target.selector.value === 'string') {
-        annotation.target.selector.value = DateTime.fromISO(annotation.target.selector.value)
-      }
-    }
-    return annotation
-  }
-
-  const fetchMetaData = async (videos) => {
-    let videosMeta = []
-    const headers = {
-      Authorization: `Bearer ${localStorage.getItem('access_token')}`
-    }
-    for (let v of videos) {
-      try {
-        const meta = await axios.get(`${process.env.TRANSCODER_HOST}/metadata/${v.annotation.uuid}`, {headers})
-        Object.assign(v.meta, meta.data)
-        videosMeta.push(v)
-      }
-      catch (e) { console.log(e) }
-    }
-    return videosMeta
-  }
+  // const resurrectAnnotation = function (annotation) {
+  //   if (typeof annotation.created === 'string') annotation.created = DateTime.fromISO(annotation.created)
+  //   if (typeof annotation.updated === 'string') annotation.updated = DateTime.fromISO(annotation.updated)
+  //   if (annotation.target && annotation.target.selector) {
+  //     if (typeof annotation.target.selector.value === 'string') {
+  //       annotation.target.selector.value = DateTime.fromISO(annotation.target.selector.value)
+  //     }
+  //   }
+  //   return annotation
+  // }
+  //
+  // const fetchMetaData = async (videos) => {
+  //   let videosMeta = []
+  //   const headers = {
+  //     Authorization: `Bearer ${localStorage.getItem('access_token')}`
+  //   }
+  //   for (let v of videos) {
+  //     try {
+  //       const meta = await axios.get(`${process.env.TRANSCODER_HOST}/metadata/${v.annotation.uuid}`, {headers})
+  //       Object.assign(v.meta, meta.data)
+  //       videosMeta.push(v)
+  //     }
+  //     catch (e) { console.log(e) }
+  //   }
+  //   return videosMeta
+  // }
 
   export default {
     components: {
@@ -84,6 +84,10 @@
       SessionStream
     },
     async mounted () {
+      this.map = await this.$store.dispatch('maps/get', this.$route.params.id)
+      this.sessions = await this.generateSessions(this.map.id)
+
+      /*
       this.map = await this.$store.dispatch('maps/get', this.$route.params.id)
       // const grouped = await this.$store.dispatch('sessions/get', uuid)
       // grouped.sessions = grouped.sessions.map(session => {
@@ -188,10 +192,66 @@
       }
       this.grouped = {sessions, videos}
       // console.log(annotations, this.grouped)
+      */
     },
     methods: {
+      async generateSessions (timelineId) {
+        const storeSession = function (sessions, session) {
+          if (session) {
+            sessions.push(session)
+          }
+          return {
+            annotations: [],
+            videos: [],
+            start: undefined,
+            end: undefined
+          }
+        }
+        const maxDist = 6 * 60 * 60 * 1000
+        const sessions = []
+        const result = await this.$store.dispatch('annotations/find', {
+          'target.id': timelineId
+        })
+        const annotations = result.items.sort(this.$sort.onRef)
+        let lastRef, session
+        for (let annotation of annotations) {
+          const ref = DateTime.fromISO(annotation.target.selector.value)
+          if (lastRef) console.debug('dist', ref.toMillis() - lastRef.toMillis(), ref.minus(lastRef).toMillis(), maxDist)
+          if (!lastRef || ref.toMillis() - lastRef.toMillis() >= maxDist) {
+            session = storeSession(sessions, session)
+            session.start = annotation.target.selector.value
+            session.end = annotation.target.selector.value
+          }
+          let sessionEnd = DateTime.fromISO(session.end)
+          if (lastRef && lastRef > sessionEnd) {
+            sessionEnd = lastRef
+            session.end = sessionEnd.toISO()
+          }
+          if (annotation.body.type === 'Video') {
+            const metadata = await this.$store.dispatch('metadata/get', annotation.uuid)
+            const video = {
+              metadata,
+              annotation
+            }
+            if (metadata && metadata.duration) {
+              const videoEnd = DateTime.fromISO(annotation.target.selector.value).plus(metadata.duration * 1000)
+              if (videoEnd > ref && videoEnd > sessionEnd) session.end = videoEnd.toISO()
+            }
+            session.videos.push(video)
+          }
+          else if (annotation.body.type === 'TextualBody') {
+            session.annotations.push(annotation)
+          }
+          lastRef = ref
+        }
+        storeSession(sessions, session)
+        console.debug('generated session data', sessions)
+        return sessions
+      },
       selectSession (data) {
-        this.setActiveSession(data.index)
+        const { session, index } = data
+        this.activeSessionIndex = Math.min(this.sessions.length - 1, Math.max(0, index))
+        this.activeSession = session
         this.toggleShowSession()
       },
       clearSession () {
@@ -214,10 +274,6 @@
         if (difference <= minVal) difference = minVal
         return difference
       },
-      setActiveSession (val) {
-        this.activeSessionIndex = Math.min(this.grouped.sessions.length - 1, Math.max(0, val))
-        this.activeSession = this.grouped.sessions[this.activeSessionIndex]
-      },
       toggleShowSession () {
         this.showSession = true
       },
@@ -233,6 +289,7 @@
       return {
         activeSession: undefined,
         grouped: { annotations: [], videos: [] },
+        sessions: undefined,
         map: undefined,
         previewLine: {
           visibility: false,
