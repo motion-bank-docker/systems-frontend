@@ -163,6 +163,12 @@ export default {
         caption: 'Media recording via Cellphone, Web- or other USB-camera.'
       }
     },
+    mocabulary: {
+      trees: {
+        title: 'Mocabulary list',
+        caption: 'captions'
+      }
+    },
     users: {
       create: {
         title: 'Create Account',

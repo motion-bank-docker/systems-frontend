@@ -137,6 +137,7 @@ module.exports = function (ctx) {
         'QTable',
         'QTr',
         'QTd',
+        'QTree',
         'QList',
         'QListHeader',
         'QItem',
