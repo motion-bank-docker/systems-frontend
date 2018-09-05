@@ -90,6 +90,7 @@ export default {
     name: 'Name',
     new_tag: 'New tag',
     new_group_title: 'New group title',
+    new_vocabulary: 'New vocabulary',
     organisation: 'Organisation',
     participants: 'Participants',
     password: 'Password',
