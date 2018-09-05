@@ -89,6 +89,7 @@ export default {
     my_vocabularies: 'my vocabularies',
     name: 'Name',
     new_tag: 'New tag',
+    new_term: 'New term',
     new_group_title: 'New group title',
     new_vocabulary: 'New vocabulary',
     organisation: 'Organisation',
