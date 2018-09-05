@@ -66,6 +66,7 @@ export default {
     access_control: 'Access Control',
     access_control_public: 'Public',
     add_group: 'Add Group',
+    add_term: 'Add Term',
     annotations: 'Annotations',
     annotation_body: 'Annotation text',
     accept_terms: 'I accept the Terms and Conditions',
