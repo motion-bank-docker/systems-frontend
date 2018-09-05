@@ -8,6 +8,7 @@ export default {
     annotate: 'Annotate',
     add_term: 'Add Term',
     add_video: 'Add Video',
+    add_vocabulary: 'Add Vocabulary',
     add_and_go: 'Add & Go',
     back: 'Back',
     create_account: 'Create Account',
