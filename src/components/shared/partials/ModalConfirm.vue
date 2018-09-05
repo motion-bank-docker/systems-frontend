@@ -23,6 +23,7 @@
         this.cancel()
       },
       cancel () {
+        this.$emit('cancel')
         this.$refs.modal.close()
       }
     }
