@@ -14,7 +14,7 @@
         @click="executeApp('mosys', 'mosys.grids.list')",
         big, flat
         ) Mosys
-      q-btn(
+      q-btn(v-if="env.IS_STAGING",
         :color="currentApp === 'mocabulary' ? 'primary' : ''",
         @click="executeApp('mocabulary', 'mocabulary.trees.list')",
         big, flat
@@ -35,7 +35,8 @@
   export default {
     data () {
       return {
-        currentApp: null
+        currentApp: null,
+        env: process.env
       }
     },
     computed: {
