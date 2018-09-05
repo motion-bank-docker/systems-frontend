@@ -152,6 +152,7 @@ module.exports = function (ctx) {
         'QModalLayout',
         'QTooltip',
         'QPopover',
+        'QPopupEdit',
         //
         // Progress
         //
