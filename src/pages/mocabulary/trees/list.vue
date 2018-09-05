@@ -1,9 +1,9 @@
 <template lang="pug">
   full-screen
 
-    modal-confirm(ref="newVocabularyModal", close-icon="clear", @confirm="setShortcut", @cancel="exitSetShortcut")
-      template(slot="content", v-if="newShortcutEntry")
-        p Save configuration?
+    modal-confirm(ref="newVocabularyModal", close-icon="clear", @confirm="addVocabulary(newVocabulary)", @cancel="cancelModal")
+      template(slot="content")
+        q-input(v-model="newVocabulary", :float-label="$t('buttons.add_vocabulary')", dark)
 
     h5.caption(dark) {{ $t('routes.mocabulary.trees.title') }}
     .row
@@ -14,39 +14,29 @@
             div(slot="header-generic", slot-scope="prop")
               q-btn(@click="onAction(prop.node.label)", icon="edit", size="sm", round)
               q-btn.q-mx-xs(@click="onAction(prop.node.label)", icon="keyboard", size="sm", round)
-                // q-popup-edit(v-model="prop.node.label", buttons)
-                  q-input(v-model="prop.node.label")
               q-btn.q-mr-md(@click="onAction(prop.node.label)", icon="clear", size="sm", round)
               | {{ prop.node.label }}
             div(slot="header-add", slot-scope="prop")
-              // q-btn(icon="add", :label="$t('buttons.add_term')", color="primary")
-              q-input(:label="$t('buttons.add_term')", color="primary", dark)
-              q-btn(@click="add", icon="add", :label="$t('buttons.add_term')", color="primary")
+              q-btn(@click="showModal('newTerm')", icon="add", :label="$t('buttons.add_term')", color="primary")
         q-btn(@click="showModal('newVocabulary')", icon="add", :label="$t('buttons.add_vocabulary')", color="primary")
-      // .col-6
-        h5 public
-        q-card.q-mb-xl.q-pa-sm(v-for="(tree, i) in trees")
-          q-tree(:nodes="tree", node-key="label", color="primary", dark)
-            // div(slot="header-generic", slot-scope="prop")
-              q-btn(@click="onAction(prop.node.label)", icon="edit", size="sm", round)
-              q-btn.q-mx-xs(@click="onAction(prop.node.label)", icon="keyboard", size="sm", round)
-                // q-popup-edit(v-model="prop.node.label", buttons)
-                  q-input(v-model="prop.node.label")
-              q-btn.q-mr-md(@click="onAction(prop.node.label)", icon="clear", size="sm", round)
-              | {{ prop.node.label }}
+
 </template>
 
 <script>
+  // import FormMain from '../../../components/shared/forms/FormMain'
   import ModalConfirm from '../../../components/shared/partials/ModalConfirm'
 
   export default {
     components: {
+      // FormMain,
       ModalConfirm
     },
     data () {
+      // const _this = this
       return {
-        vocabularies: [],
-        trees: []
+        newVocabulary: '',
+        trees: [],
+        vocabularies: []
       }
     },
     async mounted () {
@@ -64,6 +54,15 @@
       }
     },
     methods: {
+      // addTerm (val) {
+      //   console.log(val)
+      // },
+      addVocabulary (val) {
+        this.trees.push([{label: val, children: [{label: 'empty', header: 'add'}]}])
+      },
+      cancelModal () {
+        this.newVocabulary = ''
+      },
       onAction (val) {
         console.log(val)
       },
