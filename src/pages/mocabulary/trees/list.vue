@@ -19,14 +19,16 @@
               q-btn(@click="onAction(prop.node.label)", icon="edit", size="sm", round)
               q-btn.q-mx-xs(@click="onAction(prop.node.label)", icon="keyboard", size="sm", round)
               q-btn.q-mr-md(@click="onAction(prop.node.label)", icon="clear", size="sm", round)
+              // q-btn.q-mr-md(@click="onAction(prop.node.label)", icon="play_arrow", size="sm", round)
               | {{ prop.node.label }}
             q-item(slot="header-add", slot-scope="prop")
-              q-btn(@click="showModal('newTermModal', i)", icon="add", :label="$t('buttons.add_term')", color="primary", size="sm")
-              //
-                q-item-main
-                  q-input(:float-label="$t('labels.add_term')", dark)
-                q-item-side
-                  q-btn(@click="showModal('newTermModal', i)", icon="add", :label="$t('buttons.add_term')", color="primary")
+              // q-btn(@click="showModal('newTermModal', i)", icon="add", color="primary", size="sm", round)
+              q-item-main
+                // q-input(:ref="trees[i][0].uuid", value="eins", :float-label="$t('labels.add_term')", dark)
+                q-input(v-model="tree[0].newChild", value="eins", :float-label="$t('labels.add_term')", dark)
+              q-item-side
+                q-btn(@click="addTermInput(tree[0], i)", icon="add", color="primary", size="sm", round)
+                // q-btn(@click="addTermInput(tree[0], i)", icon="add", :label="$t('buttons.add_term')", color="primary", size="sm")
         q-btn(@click="showModal('newVocabularyModal')", icon="add", :label="$t('buttons.add_vocabulary')", color="primary")
 
 </template>
@@ -61,8 +63,9 @@
         }
         // children.unshift({label: '', body: 'test'})
         children.push({label: '', header: 'add'})
-        this.trees.push([{label: this.vocabularies[i].title, children: children}])
+        this.trees.push([{newChild: '', uuid: this.vocabularies[i].uuid, label: this.vocabularies[i].title, children: children}])
       }
+      // console.log(this.trees)
     },
     methods: {
       addTerm (val) {
@@ -71,6 +74,13 @@
         target.push({label: val, header: 'generic', body: 'generic'})
         target.push({label: '', header: 'add'})
         this.targetVocabulary = ''
+      },
+      addTermInput (val, i) {
+        let target = this.trees[i][0].children
+        target.splice(-1, 1)
+        target.push({label: val.newChild, header: 'generic', body: 'generic'})
+        target.push({label: '', header: 'add'})
+        this.trees[i][0].newChild = ''
       },
       addVocabulary (val) {
         this.trees.push([{label: val, children: [{label: 'empty', header: 'add'}]}])
