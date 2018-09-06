@@ -28,25 +28,39 @@
                 q-card.bg-grey-9.q-ml-sm(style="min-width: 400px;")
                   q-card-main.q-pt-xs
                     q-input(ref="inputterm", v-model="editTermNewValue", :stack-label="$t('labels.edit_term')", placeholder="empty", dark)
-                  q-card-separator.bg-grey-9
+                  q-card-separator
                   q-card-main.q-pt-xs
                     // FIXME: No idea where the number is coming from on the screen
                     q-input.q-py-none.q-my-none(ref="inputshortcut", v-model="editTermShortcut", :stack-label="$t('labels.set_shortcut')",
                     placeholder="not defined", dark)
-                  q-card-separator.bg-grey-9
+                  q-card-separator
                   q-card-main.text-center
                     q-btn(@click="editTerm(prop.node.id, i)", :label="$t('buttons.save')", color="primary", size="sm")
+                    q-btn.q-ml-sm(@click="cancelButton()", :label="$t('buttons.cancel')", color="primary", size="sm")
+
+              // delete term
+              //
+              template(v-else-if="deleteTermId === prop.node.id")
+                // q-card.bg-grey-9.q-ml-sm(style="min-width: 400px;")
+                q-card.bg-grey-9.q-ml-sm(style="min-width: 400px;")
+                  q-card-main.text-center
+                    | Delete&nbsp;
+                    span.text-primary {{ prop.node.label }}
+                    | &nbsp;?
+                  q-card-separator
+                  q-card-main.text-center
+                    q-btn(@click="removeTerm(prop.node.id, i)", :label="$t('buttons.delete')", color="primary", size="sm")
                     q-btn.q-ml-sm(@click="cancelButton()", :label="$t('buttons.cancel')", color="primary", size="sm")
 
               // show term
               //
               template(v-else)
                 q-item-main
-                  | {{ prop.node.label }}
-                q-item-side.q-pl-sm(v-if="editTermId !== prop.node.id")
+                  q-item-tile {{ prop.node.label }}
+                q-item-side.q-pl-sm(v-if="editTermId !== prop.node.id && deleteTermId !== prop.node.id")
                   // q-btn.rotate-90(@click="", icon="play_arrow", size="sm", round)
                   q-btn(@click="handlerEdit(prop.node, 'term')", icon="edit", size="sm", round)
-                  q-btn.q-ml-sm(@click="removeTerm(prop.node.id, i)", icon="clear", size="sm", round)
+                  q-btn.q-ml-sm(@click="handlerDelete(prop.node)", icon="clear", size="sm", round)
 
             q-item(slot="header-add", slot-scope="prop")
               q-item-main
@@ -68,6 +82,7 @@
     data () {
       // const _this = this
       return {
+        deleteTermId: '',
         dummyTermId: 0,
         editTermId: '',
         editTermNewValue: '',
@@ -107,6 +122,7 @@
         this.trees.unshift([{label: val, children: [{label: 'empty', header: 'add'}]}])
       },
       cancelButton () {
+        this.deleteTermId = ''
         this.editTermId = ''
       },
       cancelModal () {
@@ -132,6 +148,11 @@
           .map((n) => n[0])
           .join('')
           .toUpperCase()
+      },
+      handlerDelete (val) {
+        console.log(val)
+        this.cancelButton()
+        this.deleteTermId = val.id
       },
       handlerEdit (val, focus) {
         // let targetFocus = 'input' + focus
