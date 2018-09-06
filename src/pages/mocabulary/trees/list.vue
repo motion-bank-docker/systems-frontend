@@ -9,35 +9,50 @@
     .row
       .col-6
         <!--h5 {{ $t('labels.my_vocabularies') }}-->
-        .q-mb-xl.q-pa-sm(v-for="(tree, i) in trees")
+        q-btn(@click="showModal('newVocabularyModal')", icon="add", :label="$t('buttons.add_vocabulary')", color="primary")
+
+        q-card.q-mt-lg.q-pa-sm(v-for="(tree, i) in trees")
           q-tree(:nodes="tree", node-key="label", color="primary", dark)
-            q-item(slot="header-generic", slot-scope="prop").q-pl-none
+            q-item.full-width(slot="header-generic", slot-scope="prop").q-pl-none
               q-item-side
                 q-btn.text-primary(no-caps, round, size="sm") {{ getInitials(prop.node.label) }}
-                q-btn(@click="onAction(prop.node.label)", icon="keyboard", size="sm", round)
+                q-btn(
+                @click="cancelButton(), editTermId = prop.node.id, editTermNewValue = prop.node.label, editTermShortcut = prop.node.id",
+                size="sm", round)
+                  q-icon(v-if="!prop.node.shortcut", name="keyboard")
+                  span.text-primary(v-else) {{ prop.node.shortcut }}
 
+              // edit term
+              //
               template(v-if="editTermId === prop.node.id")
-                q-item-main.full-width()
-                  q-input.q-pt-xs.q-pb-none(v-model="editTermNewValue", :value="prop.node.label", dark)
-                q-item-side.q-pl-sm
-                  q-btn(@click="editTerm(prop.node.id, i)", :label="$t('buttons.save')", color="primary", size="sm")
-                  q-btn.q-ml-sm(@click="editTermId = ''", :label="$t('buttons.cancel')", color="primary", size="sm")
+                q-card.bg-grey-9.q-ml-sm(style="min-width: 400px;")
+                  q-card-main.q-pt-xs
+                    q-input(v-model="editTermNewValue", :stack-label="$t('labels.edit_term')", placeholder="empty", dark)
+                  q-card-separator.bg-grey-9
+                  q-card-main.q-pt-xs
+                    // FIXME: No idea where the number is coming from on the screen
+                    q-input.q-py-none.q-my-none(v-model="editTermShortcut", :stack-label="$t('labels.set_shortcut')",
+                    placeholder="not defined", dark)
+                  q-card-separator.bg-grey-9
+                  q-card-main.text-center
+                    q-btn(@click="editTerm(prop.node.id, i)", :label="$t('buttons.save')", color="primary", size="sm")
+                    q-btn.q-ml-sm(@click="cancelButton()", :label="$t('buttons.cancel')", color="primary", size="sm")
 
+              // show term
+              //
               template(v-else)
-                q-item-main() {{ prop.node.label }}
-                q-item-side.q-pl-sm
+                q-item-main
+                  | {{ prop.node.label }}
+                q-item-side.q-pl-sm(v-if="editTermId !== prop.node.id")
                   // q-btn.rotate-90(@click="", icon="play_arrow", size="sm", round)
-                  q-btn(@click="editTermId = prop.node.id, editTermNewValue = prop.node.label", icon="edit", size="sm", round)
+                  q-btn(@click="cancelButton(), editTermId = prop.node.id, editTermNewValue = prop.node.label, editTermShortcut = prop.node.id", icon="edit", size="sm", round)
                   q-btn.q-ml-sm(@click="removeTerm(prop.node.id, i)", icon="clear", size="sm", round)
 
             q-item(slot="header-add", slot-scope="prop")
               q-item-main
-                // q-input(:ref="trees[i][0].uuid", value="eins", :float-label="$t('labels.add_term')", dark)
                 q-input(v-model="tree[0].newChild", value="eins", :float-label="$t('labels.add_term')", dark)
               q-item-side
                 q-btn(@click="addTerm(tree[0], i)", icon="add", color="primary", size="sm", round)
-                // q-btn(@click="addTerm(tree[0], i)", icon="add", :label="$t('buttons.add_term')", color="primary", size="sm")
-        q-btn(@click="showModal('newVocabularyModal')", icon="add", :label="$t('buttons.add_vocabulary')", color="primary")
 
 </template>
 
@@ -56,8 +71,10 @@
         dummyTermId: 0,
         editTermId: '',
         editTermNewValue: '',
+        editTermShortcut: '',
         newVocabulary: '',
         newTerm: '',
+        // shortcutTermId: '',
         targetVocabulary: '',
         trees: [],
         vocabularies: []
@@ -71,7 +88,7 @@
         let children = []
         for (k = 0; k < this.vocabularies[i].entries.length; k++) {
           this.dummyTermId++
-          children.push({id: this.dummyTermId, label: this.vocabularies[i].entries[k].value, header: 'generic', body: 'generic'})
+          children.push({id: this.dummyTermId, label: this.vocabularies[i].entries[k].value, header: 'generic', body: 'generic', shortcut: ''})
         }
         // children.unshift({label: '', body: 'test'})
         children.push({label: '', header: 'add'})
@@ -90,11 +107,18 @@
         this.trees[i][0].newChild = ''
       },
       addVocabulary (val) {
-        this.trees.push([{label: val, children: [{label: 'empty', header: 'add'}]}])
+        this.trees.unshift([{label: val, children: [{label: 'empty', header: 'add'}]}])
+      },
+      cancelButton () {
+        this.editTermId = ''
+        // this.shortcutTermId = ''
       },
       cancelModal () {
         this.newTerm = ''
         this.newVocabulary = ''
+      },
+      defineShortcut (val, i) {
+        console.log(val, i)
       },
       editTerm (val, i) {
         console.log(val, i, this.editTermNewValue)
@@ -102,8 +126,11 @@
         let editIndex = target.map(function (item) { return item.id }).indexOf(val)
         // console.log(editIndex, target[editIndex])
         target[editIndex].label = this.editTermNewValue
+        target[editIndex].shortcut = this.editTermShortcut
+        console.log(target[editIndex])
         this.editTermId = ''
         this.editTermNewValue = ''
+        this.editTermShortcut = ''
       },
       getInitials (val) {
         return val.split(' ')
