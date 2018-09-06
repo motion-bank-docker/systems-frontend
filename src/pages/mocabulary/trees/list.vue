@@ -15,9 +15,9 @@
           q-tree(:nodes="tree", node-key="label", color="primary", dark)
             q-item.full-width(slot="header-generic", slot-scope="prop").q-pl-none
               q-item-side
-                q-btn.text-primary(no-caps, round, size="sm") {{ getInitials(prop.node.label) }}
+                q-btn(no-caps, round, size="sm", disabled) {{ getInitials(prop.node.label) }}
                 q-btn(
-                @click="cancelButton(), editTermId = prop.node.id, editTermNewValue = prop.node.label, editTermShortcut = prop.node.id",
+                @click="handlerEdit(prop.node, 'shortcut')",
                 size="sm", round)
                   q-icon(v-if="!prop.node.shortcut", name="keyboard")
                   span.text-primary(v-else) {{ prop.node.shortcut }}
@@ -27,11 +27,11 @@
               template(v-if="editTermId === prop.node.id")
                 q-card.bg-grey-9.q-ml-sm(style="min-width: 400px;")
                   q-card-main.q-pt-xs
-                    q-input(v-model="editTermNewValue", :stack-label="$t('labels.edit_term')", placeholder="empty", dark)
+                    q-input(ref="inputterm", v-model="editTermNewValue", :stack-label="$t('labels.edit_term')", placeholder="empty", dark)
                   q-card-separator.bg-grey-9
                   q-card-main.q-pt-xs
                     // FIXME: No idea where the number is coming from on the screen
-                    q-input.q-py-none.q-my-none(v-model="editTermShortcut", :stack-label="$t('labels.set_shortcut')",
+                    q-input.q-py-none.q-my-none(ref="inputshortcut", v-model="editTermShortcut", :stack-label="$t('labels.set_shortcut')",
                     placeholder="not defined", dark)
                   q-card-separator.bg-grey-9
                   q-card-main.text-center
@@ -45,7 +45,7 @@
                   | {{ prop.node.label }}
                 q-item-side.q-pl-sm(v-if="editTermId !== prop.node.id")
                   // q-btn.rotate-90(@click="", icon="play_arrow", size="sm", round)
-                  q-btn(@click="cancelButton(), editTermId = prop.node.id, editTermNewValue = prop.node.label, editTermShortcut = prop.node.id", icon="edit", size="sm", round)
+                  q-btn(@click="handlerEdit(prop.node, 'term')", icon="edit", size="sm", round)
                   q-btn.q-ml-sm(@click="removeTerm(prop.node.id, i)", icon="clear", size="sm", round)
 
             q-item(slot="header-add", slot-scope="prop")
@@ -73,8 +73,6 @@
         editTermNewValue: '',
         editTermShortcut: '',
         newVocabulary: '',
-        newTerm: '',
-        // shortcutTermId: '',
         targetVocabulary: '',
         trees: [],
         vocabularies: []
@@ -100,7 +98,6 @@
       addTerm (val, i) {
         this.dummyTermId++
         let target = this.trees[i][0].children
-        // target.splice(-1, 1)
         target.pop()
         target.push({id: this.dummyTermId, label: val.newChild, header: 'generic', body: 'generic'})
         target.push({label: '', header: 'add'})
@@ -111,10 +108,8 @@
       },
       cancelButton () {
         this.editTermId = ''
-        // this.shortcutTermId = ''
       },
       cancelModal () {
-        this.newTerm = ''
         this.newVocabulary = ''
       },
       defineShortcut (val, i) {
@@ -137,6 +132,15 @@
           .map((n) => n[0])
           .join('')
           .toUpperCase()
+      },
+      handlerEdit (val, focus) {
+        // let targetFocus = 'input' + focus
+        console.log(val, focus)
+        this.cancelButton()
+        this.editTermId = val.id
+        this.editTermNewValue = val.label
+        this.editTermShortcut = val.shortcut
+        // this.$refs.inputterm.focus()
       },
       removeTerm (val, i) {
         let target = this.trees[i][0].children
