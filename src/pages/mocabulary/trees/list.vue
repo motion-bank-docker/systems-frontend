@@ -15,12 +15,15 @@
         <!--h5 {{ $t('labels.my_vocabularies') }}-->
         .q-mb-xl.q-pa-sm(v-for="(tree, i) in trees")
           q-tree(:nodes="tree", node-key="label", color="primary", dark)
-            div(slot="header-generic", slot-scope="prop")
-              q-btn(@click="onAction(prop.node.label)", icon="edit", size="sm", round)
-              q-btn.q-mx-xs(@click="onAction(prop.node.label)", icon="keyboard", size="sm", round)
-              q-btn.q-mr-md(@click="removeTerm(prop.node.id, i)", icon="clear", size="sm", round)
-              // q-btn.q-mr-md(@click="onAction(prop.node.label)", icon="play_arrow", size="sm", round)
-              | {{ prop.node.label }}
+            q-item(slot="header-generic", slot-scope="prop").q-pl-none
+              q-item-side
+                q-btn.text-primary(no-caps, round, size="sm") {{ getInitials(prop.node.label) }}
+                q-btn(@click="onAction(prop.node.label)", icon="keyboard", size="sm", round)
+              q-item-main
+                | {{ prop.node.label }}
+              q-item-side.q-pl-sm
+                q-btn(@click="onAction(prop.node.label)", icon="edit", size="sm", round)
+                q-btn.q-ml-sm(@click="removeTerm(prop.node.id, i)", icon="clear", size="sm", round)
             q-item(slot="header-add", slot-scope="prop")
               // q-btn(@click="showModal('newTermModal', i)", icon="add", color="primary", size="sm", round)
               q-item-main
@@ -92,6 +95,12 @@
       cancelModal () {
         this.newTerm = ''
         this.newVocabulary = ''
+      },
+      getInitials (val) {
+        return val.split(' ')
+          .map((n) => n[0])
+          .join('')
+          .toUpperCase()
       },
       onAction (val) {
         console.log(val)
