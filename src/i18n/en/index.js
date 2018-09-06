@@ -76,6 +76,7 @@ export default {
     description: 'Description',
     duration: 'Duration',
     edit_title: 'Edit title',
+    edit_term: 'Edit term',
     email: 'Email',
     embedded: 'Embedded in',
     empty: 'empty',
