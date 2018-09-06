@@ -1,9 +1,9 @@
 <template lang="pug">
   full-screen
 
-    modal-confirm(ref="newTermModal", close-icon="clear", @confirm="addTerm(newTerm)", @cancel="cancelModal")
-      template(slot="content")
-        q-input(v-model="newTerm", :float-label="$t('buttons.add_term')", dark)
+    <!--modal-confirm(ref="newTermModal", close-icon="clear", @confirm="addTerm(newTerm)", @cancel="cancelModal")-->
+      <!--template(slot="content")-->
+        <!--q-input(v-model="newTerm", :float-label="$t('buttons.add_term')", dark)-->
 
     modal-confirm(ref="newVocabularyModal", close-icon="clear", @confirm="addVocabulary(newVocabulary)", @cancel="cancelModal")
       template(slot="content")
@@ -18,7 +18,7 @@
             div(slot="header-generic", slot-scope="prop")
               q-btn(@click="onAction(prop.node.label)", icon="edit", size="sm", round)
               q-btn.q-mx-xs(@click="onAction(prop.node.label)", icon="keyboard", size="sm", round)
-              q-btn.q-mr-md(@click="onAction(prop.node.label)", icon="clear", size="sm", round)
+              q-btn.q-mr-md(@click="removeTerm(prop.node.id, i)", icon="clear", size="sm", round)
               // q-btn.q-mr-md(@click="onAction(prop.node.label)", icon="play_arrow", size="sm", round)
               | {{ prop.node.label }}
             q-item(slot="header-add", slot-scope="prop")
@@ -45,6 +45,7 @@
     data () {
       // const _this = this
       return {
+        dummyTermId: 0,
         newVocabulary: '',
         newTerm: '',
         targetVocabulary: '',
@@ -59,7 +60,8 @@
         let k
         let children = []
         for (k = 0; k < this.vocabularies[i].entries.length; k++) {
-          children.push({label: this.vocabularies[i].entries[k].value, header: 'generic', body: 'generic'})
+          this.dummyTermId++
+          children.push({id: this.dummyTermId, label: this.vocabularies[i].entries[k].value, header: 'generic', body: 'generic'})
         }
         // children.unshift({label: '', body: 'test'})
         children.push({label: '', header: 'add'})
@@ -68,17 +70,19 @@
       // console.log(this.trees)
     },
     methods: {
-      addTerm (val) {
-        let target = this.trees[this.targetVocabulary][0].children
-        target.splice(-1, 1)
-        target.push({label: val, header: 'generic', body: 'generic'})
-        target.push({label: '', header: 'add'})
-        this.targetVocabulary = ''
-      },
+      // addTerm (val) {
+      //   let target = this.trees[this.targetVocabulary][0].children
+      //   target.splice(-1, 1)
+      //   target.push({label: val, header: 'generic', body: 'generic'})
+      //   target.push({label: '', header: 'add'})
+      //   this.targetVocabulary = ''
+      // },
       addTermInput (val, i) {
+        this.dummyTermId++
         let target = this.trees[i][0].children
-        target.splice(-1, 1)
-        target.push({label: val.newChild, header: 'generic', body: 'generic'})
+        // target.splice(-1, 1)
+        target.pop()
+        target.push({id: this.dummyTermId, label: val.newChild, header: 'generic', body: 'generic'})
         target.push({label: '', header: 'add'})
         this.trees[i][0].newChild = ''
       },
@@ -91,6 +95,11 @@
       },
       onAction (val) {
         console.log(val)
+      },
+      removeTerm (val, i) {
+        let target = this.trees[i][0].children
+        let removeIndex = target.map(function (item) { return item.id }).indexOf(val)
+        target.splice(removeIndex, 1)
       },
       showModal (val, i) {
         this.$refs[val].show()
