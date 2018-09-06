@@ -1,10 +1,6 @@
 <template lang="pug">
   full-screen
 
-    <!--modal-confirm(ref="newTermModal", close-icon="clear", @confirm="addTerm(newTerm)", @cancel="cancelModal")-->
-      <!--template(slot="content")-->
-        <!--q-input(v-model="newTerm", :float-label="$t('buttons.add_term')", dark)-->
-
     modal-confirm(ref="newVocabularyModal", close-icon="clear", @confirm="addVocabulary(newVocabulary)", @cancel="cancelModal")
       template(slot="content")
         q-input(v-model="newVocabulary", :float-label="$t('buttons.add_vocabulary')", dark)
@@ -19,19 +15,28 @@
               q-item-side
                 q-btn.text-primary(no-caps, round, size="sm") {{ getInitials(prop.node.label) }}
                 q-btn(@click="onAction(prop.node.label)", icon="keyboard", size="sm", round)
-              q-item-main
-                | {{ prop.node.label }}
-              q-item-side.q-pl-sm
-                q-btn(@click="onAction(prop.node.label)", icon="edit", size="sm", round)
-                q-btn.q-ml-sm(@click="removeTerm(prop.node.id, i)", icon="clear", size="sm", round)
+
+              template(v-if="editTermId === prop.node.id")
+                q-item-main.full-width()
+                  q-input.q-pt-xs.q-pb-none(v-model="editTermNewValue", :value="prop.node.label", dark)
+                q-item-side.q-pl-sm
+                  q-btn(@click="editTerm(prop.node.id, i)", :label="$t('buttons.save')", color="primary", size="sm")
+                  q-btn.q-ml-sm(@click="editTermId = ''", :label="$t('buttons.cancel')", color="primary", size="sm")
+
+              template(v-else)
+                q-item-main() {{ prop.node.label }}
+                q-item-side.q-pl-sm
+                  // q-btn.rotate-90(@click="", icon="play_arrow", size="sm", round)
+                  q-btn(@click="editTermId = prop.node.id, editTermNewValue = prop.node.label", icon="edit", size="sm", round)
+                  q-btn.q-ml-sm(@click="removeTerm(prop.node.id, i)", icon="clear", size="sm", round)
+
             q-item(slot="header-add", slot-scope="prop")
-              // q-btn(@click="showModal('newTermModal', i)", icon="add", color="primary", size="sm", round)
               q-item-main
                 // q-input(:ref="trees[i][0].uuid", value="eins", :float-label="$t('labels.add_term')", dark)
                 q-input(v-model="tree[0].newChild", value="eins", :float-label="$t('labels.add_term')", dark)
               q-item-side
-                q-btn(@click="addTermInput(tree[0], i)", icon="add", color="primary", size="sm", round)
-                // q-btn(@click="addTermInput(tree[0], i)", icon="add", :label="$t('buttons.add_term')", color="primary", size="sm")
+                q-btn(@click="addTerm(tree[0], i)", icon="add", color="primary", size="sm", round)
+                // q-btn(@click="addTerm(tree[0], i)", icon="add", :label="$t('buttons.add_term')", color="primary", size="sm")
         q-btn(@click="showModal('newVocabularyModal')", icon="add", :label="$t('buttons.add_vocabulary')", color="primary")
 
 </template>
@@ -49,6 +54,8 @@
       // const _this = this
       return {
         dummyTermId: 0,
+        editTermId: '',
+        editTermNewValue: '',
         newVocabulary: '',
         newTerm: '',
         targetVocabulary: '',
@@ -73,14 +80,7 @@
       // console.log(this.trees)
     },
     methods: {
-      // addTerm (val) {
-      //   let target = this.trees[this.targetVocabulary][0].children
-      //   target.splice(-1, 1)
-      //   target.push({label: val, header: 'generic', body: 'generic'})
-      //   target.push({label: '', header: 'add'})
-      //   this.targetVocabulary = ''
-      // },
-      addTermInput (val, i) {
+      addTerm (val, i) {
         this.dummyTermId++
         let target = this.trees[i][0].children
         // target.splice(-1, 1)
@@ -96,14 +96,20 @@
         this.newTerm = ''
         this.newVocabulary = ''
       },
+      editTerm (val, i) {
+        console.log(val, i, this.editTermNewValue)
+        let target = this.trees[i][0].children
+        let editIndex = target.map(function (item) { return item.id }).indexOf(val)
+        // console.log(editIndex, target[editIndex])
+        target[editIndex].label = this.editTermNewValue
+        this.editTermId = ''
+        this.editTermNewValue = ''
+      },
       getInitials (val) {
         return val.split(' ')
           .map((n) => n[0])
           .join('')
           .toUpperCase()
-      },
-      onAction (val) {
-        console.log(val)
       },
       removeTerm (val, i) {
         let target = this.trees[i][0].children
