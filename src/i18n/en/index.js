@@ -99,6 +99,7 @@ export default {
     password_confirmation: 'Password confirmation',
     status: 'Status',
     set_title: 'Set Title',
+    set_shortcut: 'Set Shortcut',
     starting_point: 'Starting point',
     tag: 'Tag',
     tags: 'Tags',
