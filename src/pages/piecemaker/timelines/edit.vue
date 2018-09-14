@@ -120,7 +120,7 @@
           for (let item of results.items) {
             if (item.author.id === this.$store.state.auth.user.uuid) {
               const itemPayload = ObjectUtil.merge({}, payload)
-              itemPayload.id = item.id
+              itemPayload.uuid = item.uuid
               await this.$store.dispatch(action, itemPayload)
             }
           }
@@ -129,16 +129,16 @@
       async updateACL () {
         console.debug('setting acl...', this.acl)
         if (this.acl.public) {
-          await this.setACL('acl/set', { role: 'public', id: this.timeline.id, permissions: ['get'] }, this.acl.recursive)
+          await this.setACL('acl/set', { role: 'public', uuid: this.timeline.uuid, permissions: ['get'] }, this.acl.recursive)
         }
         else {
-          await this.setACL('acl/remove', { role: 'public', id: this.timeline.id, permission: 'get' }, this.acl.recursive)
+          await this.setACL('acl/remove', { role: 'public', uuid: this.timeline.uuid, permission: 'get' }, this.acl.recursive)
         }
         if (this.acl.group) {
-          await this.setACL('acl/set', { role: this.acl.group, id: this.timeline.id, permissions: ['get'] }, this.acl.recursive)
+          await this.setACL('acl/set', { role: this.acl.group, uuid: this.timeline.uuid, permissions: ['get'] }, this.acl.recursive)
         }
         if (this.acl.group_remove) {
-          await this.setACL('acl/remove', { role: this.acl.group_remove, id: this.timeline.id, permission: 'get' }, this.acl.recursive)
+          await this.setACL('acl/remove', { role: this.acl.group_remove, uuid: this.timeline.uuid, permission: 'get' }, this.acl.recursive)
         }
         this.$store.commit('notifications/addMessage', {
           body: 'messages.acl_updated',
