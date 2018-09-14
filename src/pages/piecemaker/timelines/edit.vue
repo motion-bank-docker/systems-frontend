@@ -12,9 +12,9 @@
 
       .row
         .col-md-12
-          access-control(:resource="timeline")
+          // access-control(:resource="timeline")
 
-      // .row(v-if="env.IS_STAGING")
+      .row(v-if="env.IS_STAGING")
         .col-md-12
           p {{ $t('labels.access_control') }}
           q-checkbox(v-model="acl.public", :label="$t('labels.access_control_public')", dark)
@@ -24,6 +24,9 @@
         .col-md-12
           p {{ $t('labels.access_control_remove_group') }}
           q-input(v-model="acl.group_remove", :label="$t('labels.access_control_remove_group')", dark)
+        .col-md-12
+          p {{ $t('labels.recursive') }}
+          q-checkbox(v-model="acl.recursive", :label="$t('labels.recursive')", dark)
         .col-md-12
           q-btn.q-mr-md.bg-grey-9(:label="$t('buttons.update_access_control')", @click="updateACL")
 
