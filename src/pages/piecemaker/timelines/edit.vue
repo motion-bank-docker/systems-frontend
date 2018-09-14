@@ -118,9 +118,11 @@
         if (recursive) {
           const results = await this.$store.dispatch('annotations/find', { 'target.id': payload.id })
           for (let item of results.items) {
-            const itemPayload = ObjectUtil.merge({}, payload)
-            itemPayload.uuid = item.uuid
-            await this.$store.dispatch(action, payload)
+            if (item.author.id === this.$store.state.auth.user.uuid) {
+              const itemPayload = ObjectUtil.merge({}, payload)
+              itemPayload.uuid = item.uuid
+              await this.$store.dispatch(action, payload)
+            }
           }
         }
       },
