@@ -120,8 +120,8 @@
           for (let item of results.items) {
             if (item.author.id === this.$store.state.auth.user.uuid) {
               const itemPayload = ObjectUtil.merge({}, payload)
-              itemPayload.uuid = item.uuid
-              await this.$store.dispatch(action, payload)
+              itemPayload.id = item.id
+              await this.$store.dispatch(action, itemPayload)
             }
           }
         }
