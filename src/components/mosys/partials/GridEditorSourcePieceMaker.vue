@@ -87,7 +87,7 @@
         const videos = result.items
         for (let entry of videos) {
           try {
-            const metadata = await this.$store.dispatch('metadata/get', entry.uuid)
+            const metadata = await this.$store.dispatch('metadata/get', entry)
             entry.title = metadata.title
           }
           catch (e) {

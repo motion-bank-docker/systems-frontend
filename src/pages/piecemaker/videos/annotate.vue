@@ -149,7 +149,7 @@
         this.video = await this.$store.dispatch('annotations/get', this.$route.params.id)
         this.timeline = await this.$store.dispatch('maps/get', parseURI(this.video.target.id).uuid)
         if (this.video) {
-          this.metadata = await this.$store.dispatch('metadata/get', this.video.uuid)
+          this.metadata = await this.$store.dispatch('metadata/get', this.video)
         }
       },
       async getAnnotations () {

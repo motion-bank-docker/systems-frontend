@@ -31,9 +31,11 @@
               format: async (val) => {
                 let meta
                 try {
-                  meta = await _this.$store.dispatch('metadata/get', val.uuid)
+                  meta = await _this.$store.dispatch('metadata/get', val)
                 }
                 catch (e) {
+                  console.error('metadata error', e)
+                  _this.$captureException(e)
                   meta = {}
                 }
                 return meta && meta.title ? meta.title : _this.$t('labels.title_unknown')

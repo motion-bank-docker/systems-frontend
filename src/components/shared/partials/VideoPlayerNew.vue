@@ -105,7 +105,7 @@
         }
         else if (this.type === 'video/panopto' && annotation) {
           this.type = 'video/mp4'
-          const meta = await this.$store.dispatch('metadata/get', annotation.uuid)
+          const meta = await this.$store.dispatch('metadata/get', annotation)
           if (meta && meta.video) src = meta.video
           else console.error('panopto video failed to load', meta.video)
         }

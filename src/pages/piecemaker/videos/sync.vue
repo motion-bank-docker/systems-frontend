@@ -151,7 +151,7 @@
       },
       async fetchVideoMetadata () {
         const _this = this
-        const videoMeta = await _this.$store.dispatch('metadata/get', this.video.uuid)
+        const videoMeta = await _this.$store.dispatch('metadata/get', this.video)
         if (videoMeta) {
           _this.videoMetadata = videoMeta
         }
@@ -162,7 +162,7 @@
           for (const v of _this.refVideos) {
             let refVideoMeta
             try {
-              refVideoMeta = await _this.$store.dispatch('metadata/get', v.uuid)
+              refVideoMeta = await _this.$store.dispatch('metadata/get', v)
             }
             catch (e) {}
             if (refVideoMeta) {
