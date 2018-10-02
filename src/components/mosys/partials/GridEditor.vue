@@ -112,6 +112,10 @@
             label: 'Insert Column Left',
             handler: this.handleGridContextMenuInsertColumnLeft
           },
+          delete_column: {
+            label: 'Delete Column',
+            handler: this.handleGridContextMenuDeleteColumn
+          },
           insert_row_above: {
             label: 'Insert Row Above',
             handler: this.handleGridContextMenuInsertRowAbove
@@ -311,6 +315,20 @@
         }
 
         this.gridMetadata = ObjectUtil.merge({}, this.gridMetadata, {columns: this.gridMetadata.columns + 1})
+        await this.updateGridMetadataStore()
+      },
+      async handleGridContextMenuDeleteColumn () {
+        let position = this.contextMenuClickPosition
+        for (let cell of this.cells) {
+          if (cell.x >= position.x) {
+            cell.x -= 1
+            let annotation = this.getGridCellAnnotation(cell)
+            await this.$store.dispatch('annotations/patch', [cell.uuid, annotation])
+            await this.fetchCellAnnotations()
+          }
+        }
+
+        this.gridMetadata = ObjectUtil.merge({}, this.gridMetadata, {columns: this.gridMetadata.columns - 1})
         await this.updateGridMetadataStore()
       },
       async handleGridContextMenuInsertRowAbove () {
