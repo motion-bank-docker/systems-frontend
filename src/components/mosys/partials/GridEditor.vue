@@ -120,6 +120,10 @@
             label: 'Insert Row Above',
             handler: this.handleGridContextMenuInsertRowAbove
           },
+          delete_row: {
+            label: 'Delete Row',
+            handler: this.handleGridContextMenuDeleteRow
+          },
           edit_grid_dimensions: {
             label: 'Change Grid',
             handler: () => { this.resizingGrid = !this.resizingGrid }
@@ -320,7 +324,7 @@
       async handleGridContextMenuDeleteColumn () {
         let position = this.contextMenuClickPosition
         for (let cell of this.cells) {
-          if (cell.x >= position.x) {
+          if (cell.x > position.x) {
             cell.x -= 1
             let annotation = this.getGridCellAnnotation(cell)
             await this.$store.dispatch('annotations/patch', [cell.uuid, annotation])
@@ -342,6 +346,20 @@
           }
         }
         this.gridMetadata = ObjectUtil.merge({}, this.gridMetadata, {rows: this.gridMetadata.rows + 1})
+
+        await this.updateGridMetadataStore()
+      },
+      async handleGridContextMenuDeleteRow () {
+        let position = this.contextMenuClickPosition
+        for (let cell of this.cells) {
+          if (cell.y > position.y) {
+            cell.y -= 1
+            let annotation = this.getGridCellAnnotation(cell)
+            await this.$store.dispatch('annotations/patch', [cell.uuid, annotation])
+            await this.fetchCellAnnotations()
+          }
+        }
+        this.gridMetadata = ObjectUtil.merge({}, this.gridMetadata, {rows: this.gridMetadata.rows - 1})
 
         await this.updateGridMetadataStore()
       },
