@@ -67,10 +67,17 @@
     },
     async mounted () {
       const _this = this
-      this.videoUuid = this.cell.content
-      const meta = await this.$store.dispatch('metadata/get', this.videoUuid)
-      if (meta && meta.title) {
-        this.videoMeta = meta
+      console.log(this.cell)
+      this.videoUuid = this.cell.sourceUuid
+      try {
+        const videoAnnotation = await this.$store.dispatch('annotations/get', this.cell.sourceUuid)
+        const meta = await this.$store.dispatch('metadata/get', videoAnnotation)
+        if (meta && meta.title) {
+          this.videoMeta = meta
+        }
+      }
+      catch (e) {
+        console.log('Unable to fetch metadata for annotation')
       }
       this.fetchAnnotations()
       if (this.messenger) {
