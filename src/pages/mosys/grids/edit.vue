@@ -104,16 +104,16 @@
       async updateACL () {
         console.debug('setting acl...', this.acl)
         if (this.acl.public) {
-          await this.setACL('acl/set', { role: 'public', uuid: this.timeline.uuid, permissions: ['get'] }, this.acl.recursive)
+          await this.setACL('acl/set', { role: 'public', uuid: this.grid.uuid, permissions: ['get'] }, this.acl.recursive)
         }
         else {
-          await this.setACL('acl/remove', { role: 'public', uuid: this.timeline.uuid, permission: 'get' }, this.acl.recursive)
+          await this.setACL('acl/remove', { role: 'public', uuid: this.grid.uuid, permission: 'get' }, this.acl.recursive)
         }
         if (this.acl.group) {
-          await this.setACL('acl/set', { role: this.acl.group, uuid: this.timeline.uuid, permissions: ['get'] }, this.acl.recursive)
+          await this.setACL('acl/set', { role: this.acl.group, uuid: this.grid.uuid, permissions: ['get'] }, this.acl.recursive)
         }
         if (this.acl.group_remove) {
-          await this.setACL('acl/remove', { role: this.acl.group_remove, uuid: this.timeline.uuid, permission: 'get' }, this.acl.recursive)
+          await this.setACL('acl/remove', { role: this.acl.group_remove, uuid: this.grid.uuid, permission: 'get' }, this.acl.recursive)
         }
         this.$store.commit('notifications/addMessage', {
           body: 'messages.acl_updated',
