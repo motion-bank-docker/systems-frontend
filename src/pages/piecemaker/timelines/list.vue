@@ -21,7 +21,7 @@
           // rect.moba-test(@click="testWidth = testWidth + 30", fill="red", :width="testWidth", height="30")
 
     data-table(:config="config", :title="'routes.piecemaker.timelines.list.title'", ref="listTable",
-      path="maps", :query="query", base-path="timelines", :has-show="true")
+      path="maps", :query="query", base-path="timelines", :has-show="isStaging")
       template(slot="buttons-left")
         q-btn(@click="$router.push({ name: 'piecemaker.timelines.create' })", color="primary") {{ $t('buttons.create_timeline') }}
 </template>
@@ -33,6 +33,7 @@
     data () {
       const _this = this
       return {
+        isStaging: process.env.IS_STAGING,
         testWidth: 40,
         diagramDimensions: {
           activeId: null,
