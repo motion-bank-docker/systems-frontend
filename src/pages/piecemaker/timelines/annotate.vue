@@ -30,14 +30,14 @@
               | {{ formatSelectorForList(annotation.target.selector.value) }}
             q-item-main
               q-input(v-if="annotation.body.type === 'TextualBody'", type="textarea",
-                v-model="annotation.body.value", dark)
+              v-model="annotation.body.value", dark)
               q-input(v-if="annotation.body.type === 'VocabularyEntry'", type="textarea",
-                v-model="annotation.body.value", dark, disabled)
+              v-model="annotation.body.value", dark, disabled)
             q-item-side.text-right
               q-btn.q-mr-sm(@click="cloneEntry(annotation)", small, round, icon="filter_none")
               q-btn.q-mr-sm(v-if="staging", small, round, icon="playlist_add",
-                :disabled="annotation.body.type !== 'TextualBody'",
-                @click="$refs.annotationField.addToVocabulary(annotation)")
+              :disabled="annotation.body.type !== 'TextualBody'",
+              @click="$refs.annotationField.addToVocabulary(annotation)")
                 // q-tooltip.q-caption.bg-dark(:offset="[0,5]") alt + e
               q-btn(@click="deleteAnnotation(annotation.uuid, i)", icon="clear", round, small)
 
@@ -80,22 +80,42 @@
         if (annotation) await this.createAnnotation(annotation)
       },
       async createAnnotation (annotation = {}) {
-        const target = this.timeline.getTimelineTarget(annotation.target.selector.value)
-        const payload = ObjectUtil.merge(annotation, { target })
-        const result = await this.$store.dispatch('annotations/post', payload)
-        if (result.body.type === 'VocabularyEntry') {
-          const entry = await this.$vocabularies.getEntry(result.body.source.id)
-          result.body.value = entry.value
+        try {
+          const target = this.timeline.getTimelineTarget(annotation.target.selector.value)
+          const payload = ObjectUtil.merge(annotation, {target})
+          const result = await this.$store.dispatch('annotations/post', payload)
+          if (result.body.type === 'VocabularyEntry') {
+            const entry = await this.$vocabularies.getEntry(result.body.source.id)
+            result.body.value = entry.value
+          }
+          this.annotations.push(result)
+          this.annotations = this.annotations.sort(this.$sort.onRef)
+          this.scrollToElement()
         }
-        this.annotations.push(result)
-        this.annotations = this.annotations.sort(this.$sort.onRef)
-        this.scrollToElement()
+        catch (err) {
+          this.$store.commit('notifications/addMessage', {
+            body: 'errors.create_annotation_failed',
+            mode: 'alert',
+            type: 'error'
+          })
+          this.$captureException(err)
+        }
       },
       async deleteAnnotation (uuid, index) {
-        Assert.ok(uuidValidate(uuid))
-        Assert.isType(index, 'number')
-        await this.$store.dispatch('annotations/delete', uuid)
-        this.annotations.splice(index, 1)
+        try {
+          Assert.ok(uuidValidate(uuid))
+          Assert.isType(index, 'number')
+          await this.$store.dispatch('annotations/delete', uuid)
+          this.annotations.splice(index, 1)
+        }
+        catch (err) {
+          this.$store.commit('notifications/addMessage', {
+            body: 'errors.delete_annotation_failed',
+            mode: 'alert',
+            type: 'error'
+          })
+          this.$captureException(err)
+        }
       },
       scrollToElement () {
         // let delay = 250
