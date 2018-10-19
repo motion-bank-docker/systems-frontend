@@ -60,7 +60,10 @@ export default {
     field_required: 'This field is mandatory',
     has_duplicates: 'Import has existing items, please import as a copy',
     grid_delete_failed: 'Failed to delete Grid',
-    timeline_delete_failed: 'Failed to delete Timeline'
+    timeline_delete_failed: 'Failed to delete Timeline',
+    create_annotation_failed: 'Failed to create annotation',
+    update_annotation_failed: 'Failed to update annotation',
+    delete_annotation_failed: 'Failed to remove annotation'
   },
   labels: {
     access_control: 'Access Control',
@@ -123,7 +126,8 @@ export default {
     timeline_deleted: 'Timeline deleted',
     grid_imported: 'Grid imported successfully',
     grid_deleted: 'Grid deleted',
-    confirm_delete: 'Delete this item?'
+    confirm_delete: 'Delete this item?',
+    updated_annotation: 'Updated annotation'
   },
   navigation: {
     annotate_video: 'Annotate Video',
