@@ -126,7 +126,6 @@
         return this.currentSelector.value || this.selectorValue || DateTime.local().toISO()
       },
       setFocusOnInput () {
-        window.removeEventListener('keydown', this.onKeyDown)
         this.$refs.textInput.focus()
       },
       toggleVocabulary () {
