@@ -127,6 +127,7 @@
         }
       },
       async updateACL () {
+        this.$q.loading.show()
         console.debug('setting acl...', this.acl)
         if (this.acl.public) {
           await this.setACL('acl/set', { role: 'public', uuid: this.timeline.uuid, permissions: ['get'] }, this.acl.recursive)
@@ -140,6 +141,7 @@
         if (this.acl.group_remove) {
           await this.setACL('acl/remove', { role: this.acl.group_remove, uuid: this.timeline.uuid, permission: 'get' }, this.acl.recursive)
         }
+        this.$q.loading.hide()
         this.$store.commit('notifications/addMessage', {
           body: 'messages.acl_updated',
           type: 'success'
