@@ -1,6 +1,6 @@
 export default {
   buttons: {
-    update_access_control: 'Change access settings',
+    update_access_control: 'Update access settings',
     arrow_next: '>',
     arrow_prev: '<',
     abort: 'Abort',
@@ -68,6 +68,9 @@ export default {
   labels: {
     access_control: 'Access Control',
     access_control_public: 'Public',
+    access_control_add_group: 'Add to group',
+    access_control_remove_group: 'Remove from group',
+    recursive: 'Apply to all contained annotations and videos',
     add_group: 'Add Group',
     add_term: 'Add Term',
     annotations: 'Annotations',

@@ -16,19 +16,19 @@
 
       .row(v-if="env.IS_STAGING")
         .col-md-12
-          p {{ $t('labels.access_control') }}
-          q-checkbox(v-model="acl.public", :label="$t('labels.access_control_public')", dark)
+          h5.caption(dark) {{ $t('labels.access_control') }}
         .col-md-12
-          p {{ $t('labels.access_control_add_group') }}
-          q-input(v-model="acl.group", :label="$t('labels.access_control_add_group')", dark)
+          <!--p {{ $t('labels.access_control_add_group') }}-->
+          q-field(dark)
+            q-input(v-model="acl.group", :float-label="$t('labels.access_control_add_group')", dark)
         .col-md-12
-          p {{ $t('labels.access_control_remove_group') }}
-          q-input(v-model="acl.group_remove", :label="$t('labels.access_control_remove_group')", dark)
-        .col-md-12
-          p {{ $t('labels.recursive') }}
-          q-checkbox(v-model="acl.recursive", :label="$t('labels.recursive')", dark)
-        .col-md-12
-          q-btn.q-mr-md.bg-grey-9(:label="$t('buttons.update_access_control')", @click="updateACL")
+          q-field(dark)
+            q-input(v-model="acl.group_remove", :float-label="$t('labels.access_control_remove_group')", dark)
+        .col-md-12.q-mt-md
+          q-field(dark)
+            q-checkbox(v-model="acl.recursive", :label="$t('labels.recursive')", dark)
+        .row.xs-gutter.full-width.justify-end.items-end
+          q-btn(:label="$t('buttons.update_access_control')", @click="updateACL", color="grey")
 
       // .row
       //   .col-md-12
