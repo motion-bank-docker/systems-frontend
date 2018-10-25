@@ -61,9 +61,12 @@ export default {
     has_duplicates: 'Import has existing items, please import as a copy',
     grid_delete_failed: 'Failed to delete Grid',
     timeline_delete_failed: 'Failed to delete Timeline',
-    create_annotation_failed: 'Failed to create annotation',
-    update_annotation_failed: 'Failed to update annotation',
-    delete_annotation_failed: 'Failed to remove annotation'
+    create_annotation_failed: 'Failed to create annotation: {error}',
+    update_annotation_failed: 'Failed to update annotation: {error}',
+    delete_annotation_failed: 'Failed to remove annotation: {error}',
+    unauthorized: 'Unauthorized',
+    forbidden: 'Forbidden',
+    http_server_error: 'HTTP error {code}: {message}'
   },
   labels: {
     access_control: 'Access Control',

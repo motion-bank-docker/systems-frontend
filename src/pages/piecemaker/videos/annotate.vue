@@ -199,12 +199,7 @@
           // this.scrollToAnnotation(result.uuid)
         }
         catch (err) {
-          this.$store.commit('notifications/addMessage', {
-            body: 'errors.create_annotation_failed',
-            mode: 'alert',
-            type: 'error'
-          })
-          this.$captureException(err)
+          this.$handleError(this, err, 'errors.create_annotation_failed')
         }
       },
       scrollToAnnotation (uuid, duration = 1000) {
@@ -225,12 +220,7 @@
           })
         }
         catch (err) {
-          this.$store.commit('notifications/addMessage', {
-            body: 'errors.update_annotation_failed',
-            mode: 'alert',
-            type: 'error'
-          })
-          this.$captureException(err)
+          this.$handleError(this, err, 'errors.update_annotation_failed')
         }
       },
       async deleteAnnotation (uuid) {
@@ -240,12 +230,7 @@
           await this.getAnnotations()
         }
         catch (err) {
-          this.$store.commit('notifications/addMessage', {
-            body: 'errors.delete_annotation_failed',
-            mode: 'alert',
-            type: 'error'
-          })
-          this.$captureException(err)
+          this.$handleError(this, err, 'errors.delete_annotation_failed')
         }
       },
       gotoSelector (selector) {

@@ -93,12 +93,7 @@
           this.scrollToElement()
         }
         catch (err) {
-          this.$store.commit('notifications/addMessage', {
-            body: 'errors.create_annotation_failed',
-            mode: 'alert',
-            type: 'error'
-          })
-          this.$captureException(err)
+          this.$handleError(this, err, 'errors.create_annotation_failed')
         }
       },
       async deleteAnnotation (uuid, index) {
@@ -109,12 +104,7 @@
           this.annotations.splice(index, 1)
         }
         catch (err) {
-          this.$store.commit('notifications/addMessage', {
-            body: 'errors.delete_annotation_failed',
-            mode: 'alert',
-            type: 'error'
-          })
-          this.$captureException(err)
+          this.$handleError(this, err, 'errors.delete_annotation_failed')
         }
       },
       scrollToElement () {
