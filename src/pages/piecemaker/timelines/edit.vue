@@ -109,7 +109,8 @@
             }
           }
         ).then(result => {
-          _this.downloadURL = `${process.env.API_HOST}/archives/maps/${result.data}`
+          console.log('presigned', result.data)
+          _this.downloadURL = result.data
           _this.exportLabel = _this.$t('buttons.download_archive')
         })
       },
