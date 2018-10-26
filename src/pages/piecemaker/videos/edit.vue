@@ -7,7 +7,8 @@
 
       .row
         .col-md-12
-          calendar-time-main(v-if="staging", @getTimeAndDate="getTimeAndDate")
+          calendar-time-main(:datetime="selectorValue", @update="onCalendarUpdate")
+          p.q-mb-lg(v-if="selectorOverride !== selectorValue") {{ $t('messages.caution_video_time_override') }}
           form-main(v-model="payload", :schema="schema")
 
       .row
@@ -32,8 +33,8 @@
       FormMain
     },
     methods: {
-      getTimeAndDate (val) {
-        console.log(val)
+      onCalendarUpdate (val) {
+        this.selectorOverride = val
       }
     },
     data () {
@@ -41,9 +42,11 @@
       return {
         // FIXME: i know this is bullshit!!! (but i hope it works for now)
         apiPayload: undefined,
+        selectorOverride: undefined,
+        selectorValue: undefined,
         payload: context.$store.dispatch('annotations/get', context.$route.params.id)
           .then(result => {
-            console.log(result)
+            this.selectorValue = result.target.selector.value
             return {
               gid: result.target.id,
               uuid: result.uuid,
@@ -65,6 +68,11 @@
           submit: {
             handler () {
               context.apiPayload = {
+                target: {
+                  selector: {
+                    value: context.selectorOverride || context.selectorValue
+                  }
+                },
                 body: {
                   source: {
                     id: context.payload.url,
@@ -79,8 +87,7 @@
                 }))
             }
           }
-        },
-        staging: process.env.IS_STAGING
+        }
       }
     }
   }
