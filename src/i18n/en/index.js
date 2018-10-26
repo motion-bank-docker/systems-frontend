@@ -120,6 +120,9 @@ export default {
   links: {
     click_to_register: 'Click here to create an account.'
   },
+  descriptions: {
+    access_control: 'Allow or disallow members of a group see your timeline and, optionally, the attached annotations.'
+  },
   messages: {
     acl_updated: 'Access settings updated',
     login_success: 'Login successful',

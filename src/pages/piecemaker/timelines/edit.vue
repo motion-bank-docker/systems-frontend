@@ -13,8 +13,8 @@
       .row(v-if="availableRoles.length")
         .col-md-12
           h5.caption.text-light {{ $t('labels.access_control') }}
+          p {{ $t('descriptions.access_control') }}
         .col-md-12.q-mb-md
-          <!--p {{ $t('labels.access_control_add_group') }}-->
           q-field(orientation="vertical", dark)
             q-select(v-model="acl.group", :clearable="true", :clear-value="undefined",
             :float-label="$t('labels.access_control_add_group')", :options="availableRoles", dark)
