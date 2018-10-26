@@ -97,22 +97,26 @@
       }
     },
     methods: {
-      exportTimeline () {
-        const _this = this
+      async exportTimeline () {
         if (this.downloadURL) return openURL(this.downloadURL)
-        this.$axios.post(
-          `${process.env.API_HOST}/archives/maps`,
-          { id: this.timeline.uuid },
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.access_token}`
+        this.$q.loading.show()
+        try {
+          const result = await this.$axios.post(
+            `${process.env.API_HOST}/archives/maps`,
+            {id: this.timeline.uuid},
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.access_token}`
+              }
             }
-          }
-        ).then(result => {
-          console.log('presigned', result.data)
-          _this.downloadURL = result.data
-          _this.exportLabel = _this.$t('buttons.download_archive')
-        })
+          )
+          this.downloadURL = result.data
+          this.exportLabel = this.$t('buttons.download_archive')
+        }
+        catch (err) {
+          this.$handleError(this, err, 'errors.export_archive_failed')
+        }
+        this.$q.loading.hide()
       },
       async setACL (action, payload, recursive = false) {
         await this.$store.dispatch(action, payload)

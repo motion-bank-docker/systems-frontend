@@ -64,6 +64,7 @@ export default {
     create_annotation_failed: 'Failed to create annotation: {error}',
     update_annotation_failed: 'Failed to update annotation: {error}',
     delete_annotation_failed: 'Failed to remove annotation: {error}',
+    export_archive_failed: 'Failed to export timeline archive: {error}',
     unauthorized: 'Unauthorized',
     forbidden: 'Forbidden',
     http_server_error: 'HTTP error {code}: {message}'
