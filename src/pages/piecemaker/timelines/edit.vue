@@ -3,36 +3,30 @@
     q-btn(slot="backButton", @click="$router.push({ name: 'piecemaker.timelines.list' })", icon="keyboard_backspace", round, small)
 
     .q-px-xl
-      h5.caption(dark) {{ $t('routes.piecemaker.timelines.edit.title') }}
+      h5.caption.text-light(dark) {{ $t('routes.piecemaker.timelines.edit.title') }}
 
       .row
         .col-md-12
           form-main(v-model="payload", :schema="schema")
             q-btn.q-mr-md.bg-grey-9(q-if="$route.params.id", slot="form-buttons-add", :label="exportLabel", @click="exportTimeline")
 
-      .row
+      .row(v-if="availableRoles.length")
         .col-md-12
-          // access-control(:resource="timeline")
-
-      .row(v-if="env.IS_STAGING")
-        .col-md-12
-          h5.caption(dark) {{ $t('labels.access_control') }}
-        .col-md-12
+          h5.caption.text-light {{ $t('labels.access_control') }}
+        .col-md-12.q-mb-md
           <!--p {{ $t('labels.access_control_add_group') }}-->
-          q-field(dark)
-            q-input(v-model="acl.group", :float-label="$t('labels.access_control_add_group')", dark)
-        .col-md-12
-          q-field(dark)
-            q-input(v-model="acl.group_remove", :float-label="$t('labels.access_control_remove_group')", dark)
-        .col-md-12.q-mt-md
+          q-field(orientation="vertical", dark)
+            q-select(v-model="acl.group", :clearable="true", :clear-value="undefined",
+            :float-label="$t('labels.access_control_add_group')", :options="availableRoles", dark)
+        .col-md-12.q-mb-md
+          q-field(orientation="vertical", dark)
+            q-select(v-model="acl.group_remove", :clearable="true", :clear-value="undefined",
+            :float-label="$t('labels.access_control_remove_group')", :options="availableRoles", dark)
+        .col-md-12.q-mb-md
           q-field(dark)
             q-checkbox(v-model="acl.recursive", :label="$t('labels.recursive')", dark)
         .row.xs-gutter.full-width.justify-end.items-end
           q-btn(:label="$t('buttons.update_access_control')", @click="updateACL", color="grey")
-
-      // .row
-      //   .col-md-12
-      //     tags(v-if="payload", :targetUuid="payload.uuid", fullWidth)
 </template>
 
 <script>
@@ -45,6 +39,7 @@
   import constants from 'mbjs-data-models/src/constants'
 
   import { openURL } from 'quasar'
+  import { mapGetters } from 'vuex'
 
   export default {
     components: {
@@ -94,6 +89,22 @@
         const aclQuery = {role: 'public', id: this.timeline.id, permission: 'get'}
         const permissions = await this.$store.dispatch('acl/isRoleAllowed', aclQuery)
         this.acl.public = permissions.get === true
+      }
+    },
+    computed: {
+      ...mapGetters({
+        user: 'auth/getUserState'
+      }),
+      availableRoles () {
+        console.log(this.user)
+        try {
+          return this.user[`${process.env.AUTH0_APP_METADATA_PREFIX}roles`]
+            .filter(role => role !== 'user')
+            .map(role => { return { label: role, value: role } })
+        }
+        catch (e) {
+          return []
+        }
       }
     },
     methods: {
