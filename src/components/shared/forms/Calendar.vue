@@ -1,26 +1,33 @@
 <template lang="pug">
   .shadow-6
-    q-datetime-picker.full-width(v-model="modelCalendar", dark)
+    q-datetime-picker.full-width(v-model="datetimeInternal", type="date", dark)
     .text-center.q-px-md
-      q-btn.full-width.q-ma-md(@click="resetTime", label="Today", no-caps)
+      q-btn.full-width.q-ma-md(@click="setNow", label="Today", no-caps)
 </template>
 
 <script>
+  import { DateTime } from 'luxon'
   export default {
+    props: ['datetime'],
+    data () {
+      return {
+        datetimeInternal: undefined
+      }
+    },
+    mounted () {
+      if (this.datetime) this.datetimeInternal = this.datetime
+    },
     watch: {
-      modelCalendar: function () {
-        this.$emit('calendarChange', this.modelCalendar)
+      datetime (val) {
+        if (val !== this.datetimeInternal) this.datetimeInternal = val
+      },
+      datetimeInternal (val) {
+        if (val) this.$emit('update', val)
       }
     },
     methods: {
-      resetTime () {
-        this.$emit('timeReset', 'date')
-        this.modelCalendar = Date.now()
-      }
-    },
-    data () {
-      return {
-        modelCalendar: null
+      setNow () {
+        this.datetimeInternal = DateTime.local().toISO()
       }
     }
   }

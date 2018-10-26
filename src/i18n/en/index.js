@@ -134,7 +134,8 @@ export default {
     grid_imported: 'Grid imported successfully',
     grid_deleted: 'Grid deleted',
     confirm_delete: 'Delete this item?',
-    updated_annotation: 'Updated annotation'
+    updated_annotation: 'Updated annotation',
+    caution_video_time_override: 'Caution: Changing a video\'s time does not update existing annotations!'
   },
   navigation: {
     annotate_video: 'Annotate Video',

@@ -117,6 +117,7 @@
           this.value.then(data => {
             ctx.local = data.toObject ? data.toObject() : data
             ctx.loaded = true
+            ctx.$emit('loaded')
           })
         }
         else {
