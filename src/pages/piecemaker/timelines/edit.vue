@@ -96,7 +96,6 @@
         user: 'auth/getUserState'
       }),
       availableRoles () {
-        console.log(this.user)
         try {
           return this.user[`${process.env.AUTH0_APP_METADATA_PREFIX}roles`]
             .filter(role => role !== 'user')
