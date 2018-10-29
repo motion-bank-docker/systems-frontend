@@ -33,14 +33,14 @@
       // video to be sync'd
       .target-video.col-6.row
         .video.col-12(v-if="video")
-          video-player(:src="video.body.source.id",
+          video-player(:src="video.body.source.id", :fine-controls="true",
                        @ready="onVidPlayerReady($event)")
 
       // video used as reference
       .reference-video.col-6.row
         template(v-if="video && refIndex > -1")
           .video.col-12
-            video-player(:annotation="refVideos[refIndex]",
+            video-player(:annotation="refVideos[refIndex]", :fine-controls="true",
                          @ready="onTargetPlayerReady($event)")
         template(v-else)
           .video-list.col-12

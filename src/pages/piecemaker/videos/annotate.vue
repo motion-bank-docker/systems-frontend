@@ -11,7 +11,8 @@
       // VIDEO
       //
       //
-      video-player(v-if="video", :annotation="video", @ready="playerReady($event)", @time="onPlayerTime($event)")
+      video-player(v-if="video", :annotation="video", :fine-controls="true",
+      @ready="playerReady($event)", @time="onPlayerTime($event)")
 
       // TOP LEFT
       //
