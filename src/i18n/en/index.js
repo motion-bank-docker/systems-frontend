@@ -138,7 +138,11 @@ export default {
     grid_deleted: 'Grid deleted',
     confirm_delete: 'Delete this item?',
     updated_annotation: 'Updated annotation',
-    caution_video_time_override: 'Caution: Changing a video\'s time does not update existing annotations!'
+    caution_video_time_override: 'Caution: Changing a video\'s time does not update existing annotations!',
+    browser_unsupported_warning: '<strong>Unsupported browser:</strong> For optimal performance please use ' +
+      '<a href="https://www.google.com/chrome" target="_blank">Google Chrome</a> or ' +
+      '<a href="http://www.chromium.org/Home" target="_blank">Chromium</a>.<br>' +
+      '<small>While the site might work on your browser, more or less subtle problems can occur. You have been warned!</small>'
   },
   navigation: {
     annotate_video: 'Annotate Video',
