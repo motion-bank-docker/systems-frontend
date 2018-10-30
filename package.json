@@ -69,6 +69,7 @@
   },
   "devDependencies": {
     "babel-eslint": "^8.2.6",
+    "babel-plugin-dynamic-import-node": "^2.2.0",
     "babel-plugin-syntax-flow": "^6.18.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-flow-strip-types": "^6.22.0",
@@ -98,7 +99,8 @@
     "npm": ">= 5.6.0"
   },
   "browserslist": [
-    "> 0.1%",
+    "> 1%",
+    "last 2 versions",
     "not ie <= 10"
   ],
   "license": "MIT"

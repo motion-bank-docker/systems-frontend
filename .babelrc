@@ -25,7 +25,8 @@
         "polyfill": false,
         "regenerator": false
       }
-    ]
+    ],
+    ["dynamic-import-node", { "noInterop": true }]
   ],
   "comments": false
 }
