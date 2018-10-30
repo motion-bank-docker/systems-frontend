@@ -461,7 +461,7 @@
           `<svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%'><defs>` +
           `<pattern id='smallGrid' width='${cell.width}' height='${cell.height}' patternUnits='userSpaceOnUse'>` +
           `<path d='M ${cell.width} 0 L 0 0 0 ${cell.height}' fill='none' stroke='gray' stroke-width='0.5'/>` +
-          `</pattern></defs><rect width='100%' height='100%' fill='url(#smallGrid)' /></svg>")`
+          `</pattern></defs><rect width='100%' height='100%' fill='url(%23smallGrid)' /></svg>")`
       },
       async fetchCellAnnotations () {
         const query = {
