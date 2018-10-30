@@ -16,6 +16,7 @@ export default {
     create_grid: 'Create Grid',
     cancel: 'Cancel',
     change: 'Change',
+    confirm: 'OK',
     delete: 'Delete',
     download_archive: 'Download Archive',
     done: 'Done',
