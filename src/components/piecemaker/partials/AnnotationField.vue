@@ -126,7 +126,7 @@
         return this.currentSelector.value || this.selectorValue || DateTime.local().toISO()
       },
       setFocusOnInput () {
-        this.$refs.textInput.focus()
+        if (this.$refs.textInput) this.$refs.textInput.focus()
       },
       toggleVocabulary () {
         if (!this.$refs.vocabulary) return
