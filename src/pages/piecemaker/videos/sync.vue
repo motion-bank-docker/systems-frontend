@@ -15,7 +15,7 @@
       .col-6.row
         .col-12(title="Applying the synchronisation will move this video in time") Target video to be synchronized:
           br
-          span {{(videoMetadata && videoMetadata.title) || video.uuid}}
+          span {{(videoMetadata && videoMetadata.title) || (video && video.uuid)}}
 
       .col-6.row
         .col-12.text-right(title="This video is used as source reference and will not be changed")
