@@ -29,6 +29,20 @@
               sort: false,
               filter: true,
               format: async (val) => {
+                try {
+                  const titleResults = await _this.$store.dispatch('annotations/find', {
+                    'target.id': val.id,
+                    'body.type': 'TextualBody',
+                    'body.purpose': 'describing'
+                  })
+                  if (titleResults && titleResults.items && titleResults.items.length) {
+                    return titleResults.items[0].body.value
+                  }
+                }
+                catch (e) {
+                  console.error('title annotation error', e)
+                  _this.$captureException(e)
+                }
                 let meta
                 try {
                   meta = await _this.$store.dispatch('metadata/get', val)
