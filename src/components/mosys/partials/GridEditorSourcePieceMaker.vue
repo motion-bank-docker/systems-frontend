@@ -26,21 +26,21 @@
 
       // videos, annotations
       template(v-else)
-        template(v-for="(video, i) in currentVideos")
+        template(v-for="(entry, i) in currentVideos")
           template(v-if="i > 0")
             q-item-separator
           q-item.video-item
             q-item-side
               q-icon(
                 draggable="true",
-                @dragstart.native="event => {handleItemDragStart(event, video, 'Video')}",
+                @dragstart.native="event => {handleItemDragStart(event, entry.annotation, 'Video')}",
                 name="local movies", style="font-size: 1.8rem")
               q-icon(
                 draggable="true",
-                @dragstart.native="event => {handleItemDragStart(event, video, 'Annotation-List')}",
+                @dragstart.native="event => {handleItemDragStart(event, entry.annotation, 'Annotation-List')}",
                 name="comment", style="font-size: 1.8rem")
             q-item-main
-              a(@click.prevent="event => {handleVideoItemClick(event, video)}") {{video.title || video.uuid}}
+              a(@click.prevent="event => {handleVideoItemClick(event, entry.annotation)}") {{entry.title || entry.annotation.uuid}}
 
     // timelines list
     template(v-else)
@@ -55,6 +55,7 @@
 </template>
 
 <script>
+  import getVideoMetadata from '../../../lib/get-video-metadata'
   import constants from 'mbjs-data-models/src/constants'
 
   export default {
@@ -85,17 +86,14 @@
         }
         const result = await this.$store.dispatch('annotations/find', query)
         const videos = result.items
-        for (let entry of videos) {
-          try {
-            const metadata = await this.$store.dispatch('metadata/get', entry)
-            entry.title = metadata.title
-          }
-          catch (e) {
-            console.error(e.message, e.stack)
-            entry.title = this.$t('labels.title_unknown')
-          }
+        const entries = []
+        for (let annotation of videos) {
+          const meta = await getVideoMetadata(this, annotation)
+          const entry = { annotation }
+          entry.title = meta.title || this.$t('labels.title_unknown')
+          entries.push(entry)
         }
-        this.currentVideos = videos
+        this.currentVideos = entries
         this.loadingVideos = false
       },
       handleClickUnsetCurrentTimeline () {

@@ -13,6 +13,8 @@
 </template>
 
 <script>
+  import getVideoMetadata from '../../../lib/get-video-metadata'
+
   export default {
     data () {
       const _this = this
@@ -29,29 +31,7 @@
               sort: false,
               filter: true,
               format: async (val) => {
-                try {
-                  const titleResults = await _this.$store.dispatch('annotations/find', {
-                    'target.id': val.id,
-                    'body.type': 'TextualBody',
-                    'body.purpose': 'describing'
-                  })
-                  if (titleResults && titleResults.items && titleResults.items.length) {
-                    return titleResults.items[0].body.value
-                  }
-                }
-                catch (e) {
-                  console.error('title annotation error', e)
-                  _this.$captureException(e)
-                }
-                let meta
-                try {
-                  meta = await _this.$store.dispatch('metadata/get', val)
-                }
-                catch (e) {
-                  console.error('metadata error', e)
-                  _this.$captureException(e)
-                  meta = {}
-                }
+                const meta = await getVideoMetadata(_this, val)
                 return meta && meta.title ? meta.title : _this.$t('labels.title_unknown')
               }
             },
