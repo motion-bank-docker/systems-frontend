@@ -8,7 +8,7 @@
       .row
         .col-md-12
           calendar-time-main(@update="onCalendarUpdate")
-          form-main(v-model="payload", :schema="schema")
+          form-main(v-model="payload", :schema="schema", ref="videoForm")
 
 </template>
 
@@ -36,7 +36,7 @@
         timeline: undefined,
         // FIXME: i know this is bullshit!!! (but i hope it works for now)
         apiPayload: undefined,
-        payload: undefined,
+        payload: { url: undefined, title: undefined },
         selectorTime: undefined,
         schema: {
           fields: {
@@ -51,7 +51,7 @@
             }
           },
           submit: {
-            handler () {
+            async handler () {
               const target = _this.timeline.getTimelineTarget(DateTime.local().toString())
               if (_this.selectorTime) target.selector.value = _this.selectorTime
               _this.apiPayload = {
@@ -65,8 +65,8 @@
                 },
                 target
               }
-              return _this.$store.dispatch('annotations/post', _this.apiPayload)
-                .then(() => _this.$router.push(`/piecemaker/timelines/${_this.$route.params.timelineId}/videos`))
+              const annotation = await _this.$store.dispatch('annotations/post', _this.apiPayload)
+              _this.$router.push(`/piecemaker/videos/${annotation.uuid}/edit`)
             }
           }
         }

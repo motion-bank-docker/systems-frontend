@@ -13,6 +13,8 @@
 </template>
 
 <script>
+  import getVideoMetadata from '../../../lib/get-video-metadata'
+
   export default {
     data () {
       const _this = this
@@ -29,15 +31,7 @@
               sort: false,
               filter: true,
               format: async (val) => {
-                let meta
-                try {
-                  meta = await _this.$store.dispatch('metadata/get', val)
-                }
-                catch (e) {
-                  console.error('metadata error', e)
-                  _this.$captureException(e)
-                  meta = {}
-                }
+                const meta = await getVideoMetadata(_this, val)
                 return meta && meta.title ? meta.title : _this.$t('labels.title_unknown')
               }
             },
@@ -103,6 +97,16 @@
     methods: {
       async handleConfirmModal (item) {
         await this.$store.dispatch('annotations/delete', item.uuid)
+        if (item.id) {
+          const results = await this.$store.dispatch('annotations/find', {
+            'target.id': item.id,
+            'body.purpose': 'describing',
+            'body.type': 'TextualBody'
+          })
+          for (let a of results.items) {
+            await this.$store.dispatch('annotations/delete', a.uuid)
+          }
+        }
         this.$refs.listTable.request()
       }
     }

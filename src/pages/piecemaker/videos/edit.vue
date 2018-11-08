@@ -9,7 +9,7 @@
         .col-md-12
           calendar-time-main(:datetime="selectorValue", @update="onCalendarUpdate")
           p.q-mb-lg(v-if="selectorOverride !== selectorValue") {{ $t('messages.caution_video_time_override') }}
-          form-main(v-model="payload", :schema="schema")
+          form-main(v-model.lazy="payload", :schema="schema", ref="videoForm")
 
       .row
         .col-md-12
@@ -35,6 +35,42 @@
     methods: {
       onCalendarUpdate (val) {
         this.selectorOverride = val
+      },
+      async createTitle (id, value) {
+        const titlePayload = {
+          body: {
+            value,
+            type: 'TextualBody',
+            purpose: 'describing'
+          },
+          target: {
+            type: 'Annotation',
+            id
+          }
+        }
+        const title = await this.$store.dispatch('annotations/post', titlePayload)
+        return title
+      },
+      async updateTitle (uuid, value) {
+        const titlePayload = { body: { value } }
+        const title = await this.$store.dispatch('annotations/patch', [uuid, titlePayload])
+        return title
+      },
+      async removeTitle (uuid) {
+        await this.$store.dispatch('annotations/delete', uuid)
+      }
+    },
+    computed: {
+      url () {
+        if (this.payload) return this.payload.url
+      }
+    },
+    watch: {
+      async url (val) {
+        if (typeof val === 'string' && val !== this.payload.url) {
+          const meta = await this.$store.dispatch('metadata/get', { body: { source: { id: val } } })
+          this.payload.title = meta.title
+        }
       }
     },
     data () {
@@ -44,13 +80,31 @@
         apiPayload: undefined,
         selectorOverride: undefined,
         selectorValue: undefined,
+        titlePayload: undefined,
+        meta: undefined,
         payload: context.$store.dispatch('annotations/get', context.$route.params.id)
-          .then(result => {
+          .then(async result => {
+            const titleQuery = {
+              'target.id': result.id,
+              'body.purpose': 'describing'
+            }
+            this.meta = await this.$store.dispatch('metadata/get', { body: { source: { id: result.body.source.id } } })
+            const titleResult = await context.$store.dispatch('annotations/find', titleQuery)
+            let title
+            if (titleResult && titleResult.items && titleResult.items.length) {
+              this.titlePayload = titleResult.items[0]
+              title = titleResult.items[0].body.value
+            }
+            else if (this.meta) {
+              title = this.meta.title
+            }
             this.selectorValue = result.target.selector.value
             return {
               gid: result.target.id,
               uuid: result.uuid,
-              url: result.body.source.id
+              url: result.body.source.id,
+              id: result.id,
+              title
             }
           }),
         schema: {
@@ -63,10 +117,24 @@
               validators: {
                 required
               }
+            },
+            title: {
+              fullWidth: true,
+              type: 'text',
+              label: 'labels.video_title'
             }
           },
           submit: {
-            handler () {
+            async handler () {
+              if (!context.titlePayload && context.payload.title !== context.meta.title) {
+                await context.createTitle(context.payload.id, context.payload.title)
+              }
+              else if (context.titlePayload && context.payload.title === context.meta.title) {
+                await context.removeTitle(context.titlePayload.uuid)
+              }
+              else if (context.titlePayload && context.payload.title !== context.titlePayload.body.value) {
+                await context.updateTitle(context.titlePayload.uuid, context.payload.title)
+              }
               context.apiPayload = {
                 target: {
                   selector: {
@@ -80,11 +148,11 @@
                   }
                 }
               }
-              return context.$store.dispatch('annotations/patch', [context.payload.uuid, context.apiPayload])
-                .then(() => context.$router.push({
-                  name: 'piecemaker.videos.list',
-                  params: { timelineId: parseURI(context.payload.gid).uuid }
-                }))
+              await context.$store.dispatch('annotations/patch', [context.payload.uuid, context.apiPayload])
+              context.$router.push({
+                name: 'piecemaker.videos.list',
+                params: { timelineId: parseURI(context.payload.gid).uuid }
+              })
             }
           }
         }
