@@ -97,6 +97,16 @@
     methods: {
       async handleConfirmModal (item) {
         await this.$store.dispatch('annotations/delete', item.uuid)
+        if (item.id) {
+          const results = await this.$store.dispatch('annotations/find', {
+            'target.id': item.id,
+            'body.purpose': 'describing',
+            'body.type': 'TextualBody'
+          })
+          for (let a of results.items) {
+            await this.$store.dispatch('annotations/delete', a.uuid)
+          }
+        }
         this.$refs.listTable.request()
       }
     }
