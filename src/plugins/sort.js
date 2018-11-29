@@ -24,6 +24,18 @@ class Sort {
     else if (dateA < dateB) return -1 * mod
     return 0
   }
+
+  static onDateValueDesc (a, b) {
+    return Sort.onDateValue(a, b, -1)
+  }
+  static onDateValue (a, b, mod = 1) {
+    const
+      dateA = DateTime.fromISO(a),
+      dateB = DateTime.fromISO(b)
+    if (dateA > dateB) return 1 * mod
+    else if (dateA < dateB) return -1 * mod
+    return 0
+  }
 }
 
 export default ({ Vue }) => {

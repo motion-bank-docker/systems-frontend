@@ -14,6 +14,7 @@
 
 <script>
   import getVideoMetadata from '../../../lib/get-video-metadata'
+  import { DateTime } from 'luxon'
 
   export default {
     data () {
@@ -26,8 +27,9 @@
             {
               name: 'title',
               label: _this.$t('labels.title'),
-              field: val => val,
+              field: row => row,
               // FIXME: throws array sort exception when active
+              sortable: false,
               sort: false,
               filter: true,
               format: async (val) => {
@@ -36,16 +38,25 @@
               }
             },
             {
-              label: _this.$t('labels.created'),
-              field: 'created',
-              sort: true
+              name: 'date',
+              label: _this.$t('labels.date'),
+              sortable: true,
+              sort: _this.$sort.onDateValue,
+              field: row => row.target.selector ? row.target.selector.value : undefined,
+              format: val => DateTime.fromISO(val)
+                .toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS)
             },
             {
-              label: _this.$t('labels.updated'),
-              field: 'updated',
-              sort: true
+              name: 'last_updated',
+              label: _this.$t('labels.last_updated'),
+              sortable: true,
+              sort: _this.$sort.onDateValue,
+              field: row => row.updated ? row.updated : row.created,
+              format: val => DateTime.fromISO(val)
+                  .toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS)
             },
             {
+              name: 'author',
               label: _this.$t('labels.author'),
               field: 'author'
             }

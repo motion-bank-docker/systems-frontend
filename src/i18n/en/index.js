@@ -84,6 +84,8 @@ export default {
     author: 'Author',
     created: 'Created',
     updated: 'Updated',
+    last_updated: 'Last updated',
+    date: 'Date',
     description: 'Description',
     duration: 'Duration',
     edit_title: 'Edit title',
