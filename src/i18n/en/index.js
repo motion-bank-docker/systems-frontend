@@ -82,6 +82,7 @@ export default {
     annotation_body: 'Annotation text',
     accept_terms: 'I accept the Terms and Conditions',
     author: 'Author',
+    unknown_author: 'Unknown Author',
     created: 'Created',
     updated: 'Updated',
     last_updated: 'Last updated',
