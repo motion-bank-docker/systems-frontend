@@ -28,6 +28,7 @@
 
 <script>
   import constants from 'mbjs-data-models/src/constants'
+  import { DateTime } from 'luxon'
 
   export default {
     data () {
@@ -68,25 +69,26 @@
         config: {
           columns: [
             {
+              name: 'title',
               label: _this.$t('labels.title'),
-              field: 'title',
-              // FIXME: throws array sort exception when active
-              sort: false,
-              filter: true
+              field: row => row.title,
+              filter: true,
+              sortable: true
             },
             {
-              label: _this.$t('labels.created'),
-              field: 'created',
-              sort: true
+              name: 'last_updated',
+              label: _this.$t('labels.last_updated'),
+              sortable: true,
+              sort: _this.$sort.onDateValue,
+              field: row => row.updated ? row.updated : row.created,
+              format: val => DateTime.fromISO(val)
+                .toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS)
             },
             {
-              label: _this.$t('labels.updated'),
-              field: 'updated',
-              sort: true
-            },
-            {
+              name: 'author',
               label: _this.$t('labels.author'),
-              field: 'author'
+              field: row => row.author ? row.author.name : _this.$t('labels.unknown_author'),
+              sortable: true
             }
           ],
           actions: [

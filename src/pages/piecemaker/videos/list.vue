@@ -28,9 +28,7 @@
               name: 'title',
               label: _this.$t('labels.title'),
               field: row => row,
-              // FIXME: throws array sort exception when active
-              sortable: false,
-              sort: false,
+              sortable: true,
               filter: true,
               format: async (val) => {
                 const meta = await getVideoMetadata(_this, val)
@@ -58,7 +56,8 @@
             {
               name: 'author',
               label: _this.$t('labels.author'),
-              field: 'author'
+              field: row => row.author ? row.author.name : _this.$t('labels.unknown_author'),
+              sortable: true
             }
           ],
           actions: [
