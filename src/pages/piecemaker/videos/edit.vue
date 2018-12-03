@@ -129,6 +129,11 @@
               fullWidth: true,
               type: 'text',
               label: 'labels.video_title'
+            },
+            tags: {
+              fullWidth: true,
+              type: 'chips',
+              label: 'labels.tags'
             }
           },
           submit: {
