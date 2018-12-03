@@ -81,6 +81,7 @@
         selectorOverride: undefined,
         selectorValue: undefined,
         titlePayload: undefined,
+        tags: [],
         meta: undefined,
         payload: context.$store.dispatch('annotations/get', context.$route.params.id)
           .then(async result => {
@@ -99,12 +100,23 @@
               title = this.meta.title
             }
             this.selectorValue = result.target.selector.value
+
+            const tagsQuery = {
+              'target.id': result.id,
+              'body.purpose': 'tagging'
+            }
+            const tagsResult = await context.$store.dispatch('annotations/find', tagsQuery)
+            if (tagsResult && tagsResult.items) {
+              context.tags = tagsResult.items
+            }
+
             return {
               gid: result.target.id,
               uuid: result.uuid,
               url: result.body.source.id,
               id: result.id,
-              title
+              title,
+              tags: context.tags.map(tag => tag.body.value)
             }
           }),
         schema: {
@@ -154,6 +166,36 @@
                 }
               }
               await context.$store.dispatch('annotations/patch', [context.payload.uuid, context.apiPayload])
+
+              for (let tag of context.payload.tags) {
+                let exists = false
+                for (let existingTag of context.tags) {
+                  if (existingTag.body.value === tag) exists = true
+                }
+                if (!exists) {
+                  await context.$store.dispatch('annotations/post', {
+                    target: {
+                      id: context.payload.id,
+                      type: 'Annotation'
+                    },
+                    body: {
+                      type: 'TextualBody',
+                      value: tag,
+                      purpose: 'tagging'
+                    }
+                  })
+                }
+              }
+              for (let existingTag of context.tags) {
+                let exists = false
+                for (let tag of context.payload.tags) {
+                  if (existingTag.body.value === tag) exists = true
+                }
+                if (!exists) {
+                  await context.$store.dispatch('annotations/delete', existingTag.uuid)
+                }
+              }
+
               context.$router.push({
                 name: 'piecemaker.videos.list',
                 params: { timelineId: parseURI(context.payload.gid).uuid }

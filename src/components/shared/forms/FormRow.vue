@@ -3,15 +3,14 @@
   q-field(v-else, :dark="true", :label="fieldLabel", :error="validation ? validation.$error : undefined",
     :error-label="errorLabel", :helper="helperLabel || ''")
     q-select(v-if="type === 'select'", :float-label="label", :dark="true", v-model="local", :options="selectOptions")
-    q-chips-input.q-my-md(v-else-if="type === 'chips'", :float-label="label", :dark="true", v-model="tags",
-    chips-color="white", chips-bg-color="primary", @duplicate="duplicate()")
-      q-autocomplete.bg-grey-9(@search="searchTags", @selected="selectedTag")
+    q-chips-input.q-my-md(v-else-if="type === 'chips'", :float-label="label", :dark="true", v-model="local",
+    chips-color="white", chips-bg-color="grey", @duplicate="duplicate()")
+      q-autocomplete.bg-grey-9(@search="autocompleteSearch", @selected="autocompleteSelected")
     q-input(v-else, :dark="true", :float-label="label", :type="type", v-model="local", :attributes="attributes")
 </template>
 
 <script>
   import { filter } from 'quasar'
-  import countries from './autocomplete.json'
 
   export default {
     props: [
@@ -23,13 +22,12 @@
       'fieldLabel',
       'errorLabel',
       'helperLabel',
-      'selectOptions'
+      'selectOptions',
+      'autocompleteOptions'
     ],
     data () {
       return {
-        countries: this.parseCountries(),
-        local: undefined,
-        tags: []
+        local: undefined
       }
     },
     computed: {
@@ -58,24 +56,16 @@
     },
     methods: {
       duplicate () {
-        this.$q.notify(this.$t('errors.tag_exists'))
+        this.$q.notify(this.$t('errors.item_exists'))
       },
-      parseCountries () {
-        return countries.map(country => {
-          return {
-            label: country,
-            value: country
-          }
-        })
+      autocompleteSearch (terms, done) {
+        if (!Array.isArray(this.autocompleteOptions)) return done([])
+        done(filter(terms, {field: 'value', list: this.autocompleteOptions}))
       },
-      searchTags (terms, done) {
-        done(filter(terms, {field: 'value', list: this.parseCountries()}))
-        /* setTimeout(() => {
-          done(filter(terms, {field: 'value', list: this.parseCountries()}))
-        }, 200) */
-      },
-      selectedTag () {
-        console.log('selected')
+      autocompleteSelected (item) {
+        console.log('autocomplete selected', item)
+        if (Array.isArray(this.local)) this.local.push(item.value)
+        else this.local = [item.value]
       }
     },
     created () {
