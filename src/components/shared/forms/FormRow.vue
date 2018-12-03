@@ -3,7 +3,7 @@
   q-field(v-else, :dark="true", :label="fieldLabel", :error="validation ? validation.$error : undefined",
     :error-label="errorLabel", :helper="helperLabel || ''")
     q-select(v-if="type === 'select'", :float-label="label", :dark="true", v-model="local", :options="selectOptions")
-    q-chips-input(v-else-if="type === 'chips'", :float-label="label", :dark="true", v-model="tags")
+    q-chips-input.q-my-md(v-else-if="type === 'chips'", :float-label="label", :dark="true", v-model="tags")
     q-input(v-else, :dark="true", :float-label="label", :type="type", v-model="local", :attributes="attributes")
 </template>
 
@@ -60,4 +60,5 @@
   }
 </script>
 
-<style></style>
+<style scoped lang="stylus">
+</style>
