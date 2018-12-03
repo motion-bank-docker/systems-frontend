@@ -53,6 +53,7 @@ export default {
     }
   },
   errors: {
+    tag_exists: 'This tag already exists.',
     unknown: 'Unknown Error',
     invalid_email: 'Please enter a valid email',
     invalid_password: 'Password must be min. 6 characters long',
