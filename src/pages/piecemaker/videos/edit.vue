@@ -9,6 +9,8 @@
         .col-md-12
           calendar-time-main(:datetime="selectorValue", @update="onCalendarUpdate")
           p.q-mb-lg(v-if="selectorOverride !== selectorValue") {{ $t('messages.caution_video_time_override') }}
+          .q-mb-lg
+            tagging(@updateTags="onTagsUpdate")
           form-main(v-model.lazy="payload", :schema="schema", ref="videoForm")
 
       .row
@@ -19,6 +21,7 @@
 <script>
   import AccessControl from '../../../components/shared/partials/AccessControl'
   import CalendarTimeMain from '../../../components/shared/forms/CalendarTimeMain'
+  import Tagging from '../../../components/shared/forms/Tagging'
   import FormMain from '../../../components/shared/forms/FormMain'
 
   import { required } from 'vuelidate/lib/validators'
@@ -30,11 +33,15 @@
     components: {
       AccessControl,
       CalendarTimeMain,
+      Tagging,
       FormMain
     },
     methods: {
       onCalendarUpdate (val) {
         this.selectorOverride = val
+      },
+      onTagsUpdate (val) {
+        console.log(val)
       },
       async createTitle (id, value) {
         const titlePayload = {
