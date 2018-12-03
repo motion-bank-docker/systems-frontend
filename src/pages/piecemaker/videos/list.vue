@@ -13,6 +13,9 @@
 </template>
 
 <script>
+  import getVideoMetadata from '../../../lib/get-video-metadata'
+  import { DateTime } from 'luxon'
+
   export default {
     data () {
       const _this = this
@@ -24,34 +27,37 @@
             {
               name: 'title',
               label: _this.$t('labels.title'),
-              field: val => val,
-              // FIXME: throws array sort exception when active
-              sort: false,
+              field: row => row,
+              sortable: true,
               filter: true,
               format: async (val) => {
-                let meta
-                try {
-                  meta = await _this.$store.dispatch('metadata/get', val.uuid)
-                }
-                catch (e) {
-                  meta = {}
-                }
+                const meta = await getVideoMetadata(_this, val)
                 return meta && meta.title ? meta.title : _this.$t('labels.title_unknown')
               }
             },
             {
-              label: _this.$t('labels.created'),
-              field: 'created',
-              sort: true
+              name: 'date',
+              label: _this.$t('labels.date'),
+              sortable: true,
+              sort: _this.$sort.onDateValue,
+              field: row => row.target.selector ? row.target.selector.value : undefined,
+              format: val => DateTime.fromISO(val)
+                .toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS)
             },
             {
-              label: _this.$t('labels.updated'),
-              field: 'updated',
-              sort: true
+              name: 'last_updated',
+              label: _this.$t('labels.last_updated'),
+              sortable: true,
+              sort: _this.$sort.onDateValue,
+              field: row => row.updated ? row.updated : row.created,
+              format: val => DateTime.fromISO(val)
+                  .toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS)
             },
             {
+              name: 'author',
               label: _this.$t('labels.author'),
-              field: 'author'
+              field: row => row.author ? row.author.name : _this.$t('labels.unknown_author'),
+              sortable: true
             }
           ],
           actions: [
@@ -101,6 +107,16 @@
     methods: {
       async handleConfirmModal (item) {
         await this.$store.dispatch('annotations/delete', item.uuid)
+        if (item.id) {
+          const results = await this.$store.dispatch('annotations/find', {
+            'target.id': item.id,
+            'body.purpose': 'describing',
+            'body.type': 'TextualBody'
+          })
+          for (let a of results.items) {
+            await this.$store.dispatch('annotations/delete', a.uuid)
+          }
+        }
         this.$refs.listTable.request()
       }
     }

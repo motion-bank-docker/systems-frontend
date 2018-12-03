@@ -21,18 +21,20 @@
           // rect.moba-test(@click="testWidth = testWidth + 30", fill="red", :width="testWidth", height="30")
 
     data-table(:config="config", :title="'routes.piecemaker.timelines.list.title'", ref="listTable",
-      path="maps", :query="query", base-path="timelines", :has-show="true")
+      path="maps", :query="query", base-path="timelines", :has-show="isStaging")
       template(slot="buttons-left")
         q-btn(@click="$router.push({ name: 'piecemaker.timelines.create' })", color="primary") {{ $t('buttons.create_timeline') }}
 </template>
 
 <script>
   import constants from 'mbjs-data-models/src/constants'
+  import { DateTime } from 'luxon'
 
   export default {
     data () {
       const _this = this
       return {
+        isStaging: process.env.IS_STAGING,
         testWidth: 40,
         diagramDimensions: {
           activeId: null,
@@ -67,25 +69,26 @@
         config: {
           columns: [
             {
+              name: 'title',
               label: _this.$t('labels.title'),
-              field: 'title',
-              // FIXME: throws array sort exception when active
-              sort: false,
-              filter: true
+              field: row => row.title,
+              filter: true,
+              sortable: true
             },
             {
-              label: _this.$t('labels.created'),
-              field: 'created',
-              sort: true
+              name: 'last_updated',
+              label: _this.$t('labels.last_updated'),
+              sortable: true,
+              sort: _this.$sort.onDateValue,
+              field: row => row.updated ? row.updated : row.created,
+              format: val => DateTime.fromISO(val)
+                .toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS)
             },
             {
-              label: _this.$t('labels.updated'),
-              field: 'updated',
-              sort: true
-            },
-            {
+              name: 'author',
               label: _this.$t('labels.author'),
-              field: 'author'
+              field: row => row.author ? row.author.name : _this.$t('labels.unknown_author'),
+              sortable: true
             }
           ],
           actions: [

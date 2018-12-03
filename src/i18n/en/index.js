@@ -1,6 +1,6 @@
 export default {
   buttons: {
-    update_access_control: 'Change access settings',
+    update_access_control: 'Update access settings',
     arrow_next: '>',
     arrow_prev: '<',
     abort: 'Abort',
@@ -16,6 +16,7 @@ export default {
     create_grid: 'Create Grid',
     cancel: 'Cancel',
     change: 'Change',
+    confirm: 'OK',
     delete: 'Delete',
     download_archive: 'Download Archive',
     done: 'Done',
@@ -60,19 +61,32 @@ export default {
     field_required: 'This field is mandatory',
     has_duplicates: 'Import has existing items, please import as a copy',
     grid_delete_failed: 'Failed to delete Grid',
-    timeline_delete_failed: 'Failed to delete Timeline'
+    timeline_delete_failed: 'Failed to delete Timeline',
+    create_annotation_failed: 'Failed to create annotation: {error}',
+    update_annotation_failed: 'Failed to update annotation: {error}',
+    delete_annotation_failed: 'Failed to remove annotation: {error}',
+    export_archive_failed: 'Failed to export timeline archive: {error}',
+    unauthorized: 'Unauthorized',
+    forbidden: 'Forbidden',
+    http_server_error: 'HTTP error {code}: {message}'
   },
   labels: {
     access_control: 'Access Control',
     access_control_public: 'Public',
+    access_control_add_group: 'Add to group',
+    access_control_remove_group: 'Remove from group',
+    recursive: 'Apply to all contained annotations and videos',
     add_group: 'Add Group',
     add_term: 'Add Term',
     annotations: 'Annotations',
     annotation_body: 'Annotation text',
     accept_terms: 'I accept the Terms and Conditions',
     author: 'Author',
+    unknown_author: 'Unknown Author',
     created: 'Created',
     updated: 'Updated',
+    last_updated: 'Last updated',
+    date: 'Date',
     description: 'Description',
     duration: 'Duration',
     edit_title: 'Edit title',
@@ -112,6 +126,9 @@ export default {
   links: {
     click_to_register: 'Click here to create an account.'
   },
+  descriptions: {
+    access_control: 'Allow or disallow members of a group see your timeline and, optionally, the attached annotations.'
+  },
   messages: {
     acl_updated: 'Access settings updated',
     login_success: 'Login successful',
@@ -125,7 +142,13 @@ export default {
     timeline_deleted: 'Timeline deleted',
     grid_imported: 'Grid imported successfully',
     grid_deleted: 'Grid deleted',
-    confirm_delete: 'Delete this item?'
+    confirm_delete: 'Delete this item?',
+    updated_annotation: 'Updated annotation',
+    caution_video_time_override: 'Caution: Changing a video\'s time does not update existing annotations!',
+    browser_unsupported_warning: '<strong>Unsupported browser:</strong> For optimal performance please use ' +
+      '<a href="https://www.google.com/chrome" target="_blank">Google Chrome</a> or ' +
+      '<a href="http://www.chromium.org/Home" target="_blank">Chromium</a>.<br>' +
+      '<small>While the site might work on your browser, more or less subtle problems can occur. You have been warned!</small>'
   },
   navigation: {
     annotate_video: 'Annotate Video',

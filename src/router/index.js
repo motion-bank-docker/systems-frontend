@@ -47,6 +47,9 @@ Router.beforeEach((to, from, next) => {
           Router.app.$auth.authenticate()
         }
         else next()
+      }).catch(err => {
+        Router.app.$captureException(err)
+        Router.app.$auth.logout()
       })
     }
     else next()

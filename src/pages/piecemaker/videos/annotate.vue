@@ -11,7 +11,8 @@
       // VIDEO
       //
       //
-      video-player(v-if="video", :annotation="video", @ready="playerReady($event)", @time="onPlayerTime($event)")
+      video-player(v-if="video", :annotation="video", :fine-controls="true",
+      @ready="playerReady($event)", @time="onPlayerTime($event)")
 
       // TOP LEFT
       //
@@ -42,10 +43,10 @@
       //
       .absolute-top(style="width: 100%;")
         annotation-field(
-          @annotation="onAnnotation",
-          ref="annotationField",
-          :submit-on-num-enters="1",
-          :selector-value="baseSelector")
+        @annotation="onAnnotation",
+        ref="annotationField",
+        :submit-on-num-enters="1",
+        :selector-value="baseSelector")
 
     // ANNOTATIONS
     //
@@ -69,9 +70,9 @@
               span {{ annotation.author.name }}
             q-item-tile.q-caption
               q-input(v-if="annotation.body.type === 'TextualBody'", color="white",
-                type="textarea", v-model="annotation.body.value", dark)
+              type="textarea", v-model="annotation.body.value", dark)
               q-input(v-if="annotation.body.type === 'VocabularyEntry'", type="textarea",
-                v-model="annotation.body.value", dark, disabled)
+              v-model="annotation.body.value", dark, disabled)
 
 </template>
 
@@ -149,7 +150,7 @@
         this.video = await this.$store.dispatch('annotations/get', this.$route.params.id)
         this.timeline = await this.$store.dispatch('maps/get', parseURI(this.video.target.id).uuid)
         if (this.video) {
-          this.metadata = await this.$store.dispatch('metadata/get', this.video.uuid)
+          this.metadata = await this.$store.dispatch('metadata/get', this.video)
         }
       },
       async getAnnotations () {
@@ -182,36 +183,56 @@
         if (annotation) this.createAnnotation(annotation)
       },
       async createAnnotation (annotation = {}) {
-        const target = this.timeline.getTimelineTarget(annotation.target.selector.value)
-        const payload = ObjectUtil.merge(annotation, {
-          target: ObjectUtil.merge({}, annotation.target, target)
-        })
-        console.debug('create annotation', target, payload)
-        const result = await this.$store.dispatch('annotations/post', payload)
-        if (result.body.type === 'VocabularyEntry') {
-          const entry = await this.$vocabularies.getEntry(result.body.source.id)
-          result.body.value = entry.value
+        try {
+          const target = this.timeline.getTimelineTarget(annotation.target.selector.value)
+          const payload = ObjectUtil.merge(annotation, {
+            target: ObjectUtil.merge({}, annotation.target, target)
+          })
+          console.debug('create annotation', target, payload)
+          const result = await this.$store.dispatch('annotations/post', payload)
+          if (result.body.type === 'VocabularyEntry') {
+            const entry = await this.$vocabularies.getEntry(result.body.source.id)
+            result.body.value = entry.value
+          }
+          this.annotations.push(result)
+          this.annotations = this.annotations.sort(this.$sort.onRef)
+          // FIXME: scroll seems broken, cannot find ref, dom element probably not available yet
+          // this.scrollToAnnotation(result.uuid)
         }
-        this.annotations.push(result)
-        this.annotations = this.annotations.sort(this.$sort.onRef)
-        // FIXME: scroll seems broken, cannot find ref, dom element probably not available yet
-        // this.scrollToAnnotation(result.uuid)
+        catch (err) {
+          this.$handleError(this, err, 'errors.create_annotation_failed')
+        }
       },
       scrollToAnnotation (uuid, duration = 1000) {
         const el = this.$refs[uuid][0].$el
         setScrollPosition(getScrollTarget(el), el.offsetTop - el.scrollHeight, duration)
       },
       async updateAnnotation (annotation) {
-        Assert.isType(annotation, 'object')
-        Assert.ok(uuidValidate(annotation.uuid))
-        Assert.isType(annotation.body.value, 'string')
-        await this.$store.dispatch('annotations/patch', [annotation.uuid, annotation])
-        await this.getAnnotations()
+        try {
+          Assert.isType(annotation, 'object')
+          Assert.ok(uuidValidate(annotation.uuid))
+          Assert.isType(annotation.body.value, 'string')
+          await this.$store.dispatch('annotations/patch', [annotation.uuid, annotation])
+          await this.getAnnotations()
+          this.$store.commit('notifications/addMessage', {
+            body: 'messages.updated_annotation',
+            mode: 'alert',
+            type: 'success'
+          })
+        }
+        catch (err) {
+          this.$handleError(this, err, 'errors.update_annotation_failed')
+        }
       },
       async deleteAnnotation (uuid) {
-        Assert.ok(uuidValidate(uuid))
-        await this.$store.dispatch('annotations/delete', uuid)
-        await this.getAnnotations()
+        try {
+          Assert.ok(uuidValidate(uuid))
+          await this.$store.dispatch('annotations/delete', uuid)
+          await this.getAnnotations()
+        }
+        catch (err) {
+          this.$handleError(this, err, 'errors.delete_annotation_failed')
+        }
       },
       gotoSelector (selector) {
         const millis = DateTime.fromISO(selector).toMillis() -

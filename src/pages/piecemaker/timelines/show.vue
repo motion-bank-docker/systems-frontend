@@ -228,7 +228,7 @@
             session.end = sessionEnd.toISO()
           }
           if (annotation.body.type === 'Video') {
-            const metadata = await this.$store.dispatch('metadata/get', annotation.uuid)
+            const metadata = await this.$store.dispatch('metadata/get', annotation)
             const video = {
               metadata,
               annotation

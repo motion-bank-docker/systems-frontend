@@ -11,6 +11,7 @@ module.exports = function (ctx) {
       'components',
       'conversions',
       'extractions',
+      'handle-error',
       'i18n',
       'notifications',
       'pkg',

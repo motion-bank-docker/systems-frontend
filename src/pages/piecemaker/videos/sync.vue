@@ -15,7 +15,7 @@
       .col-6.row
         .col-12(title="Applying the synchronisation will move this video in time") Target video to be synchronized:
           br
-          span {{(videoMetadata && videoMetadata.title) || video.uuid}}
+          span {{(videoMetadata && videoMetadata.title) || (video && video.uuid)}}
 
       .col-6.row
         .col-12.text-right(title="This video is used as source reference and will not be changed")
@@ -33,14 +33,14 @@
       // video to be sync'd
       .target-video.col-6.row
         .video.col-12(v-if="video")
-          video-player(:src="video.body.source.id",
+          video-player(:src="video.body.source.id", :fine-controls="true",
                        @ready="onVidPlayerReady($event)")
 
       // video used as reference
       .reference-video.col-6.row
         template(v-if="video && refIndex > -1")
           .video.col-12
-            video-player(:annotation="refVideos[refIndex]",
+            video-player(:annotation="refVideos[refIndex]", :fine-controls="true",
                          @ready="onTargetPlayerReady($event)")
         template(v-else)
           .video-list.col-12
@@ -72,6 +72,7 @@
   import Vue from 'vue'
   import { ObjectUtil } from 'mbjs-utils'
   import { DateTime } from 'luxon'
+  import getVideoMetadata from '../../../lib/get-video-metadata'
   import CardFull from 'mbjs-quasar/src/components/layouts/CardFull'
   import constants from 'mbjs-data-models/src/constants'
   import {parseURI} from 'mbjs-data-models/src/lib'
@@ -103,31 +104,22 @@
         refVidMarkerSelector: undefined
       }
     },
-    mounted () {
+    async mounted () {
       const _this = this
-      this.$store.dispatch('annotations/get', this.$route.params.id)
-        .then(video => {
-          _this.video = video
-          _this.fetchVideoMetadata()
-          const timelineUuid = parseURI(video.target.id).uuid
-          return _this.$store.dispatch('maps/get', timelineUuid)
-        })
-        .then(timeline => {
-          _this.timeline = timeline
-          const query = {
-            'target.id': timeline.id,
-            'body.purpose': 'linking',
-            'body.type': 'Video'
-          }
-          return _this.$store.dispatch('annotations/find', query)
-        })
-        .then(result => {
-          _this.refVideos = result.items.filter(item => {
-            if (item.uuid !== _this.$route.params.id) return true
-            return false
-          })
-          _this.fetchRefVideoMetadata()
-        })
+      this.video = await this.$store.dispatch('annotations/get', this.$route.params.id)
+      this.videoMetadata = await getVideoMetadata(this, this.video)
+      const timelineUuid = parseURI(this.video.target.id).uuid
+      this.timeline = await this.$store.dispatch('maps/get', timelineUuid)
+      const query = {
+        'target.id': this.timeline.id,
+        'body.purpose': 'linking',
+        'body.type': 'Video'
+      }
+      const result = await this.$store.dispatch('annotations/find', query)
+      this.refVideos = result.items.filter(item => {
+        return item.uuid !== _this.$route.params.id
+      })
+      await _this.fetchRefVideoMetadata()
     },
     watch: {
       refIndex () {
@@ -149,25 +141,11 @@
           return 'Unknown Title'
         }
       },
-      async fetchVideoMetadata () {
-        const _this = this
-        const videoMeta = await _this.$store.dispatch('metadata/get', this.video.uuid)
-        if (videoMeta) {
-          _this.videoMetadata = videoMeta
-        }
-      },
       async fetchRefVideoMetadata () {
-        const _this = this
-        if (_this.refVideos && _this.refVideos.length > 0) {
-          for (const v of _this.refVideos) {
-            let refVideoMeta
-            try {
-              refVideoMeta = await _this.$store.dispatch('metadata/get', v.uuid)
-            }
-            catch (e) {}
-            if (refVideoMeta) {
-              Vue.set(_this.refVideosMetadata, v.uuid, refVideoMeta)
-            }
+        if (this.refVideos && this.refVideos.length > 0) {
+          for (const v of this.refVideos) {
+            let refVideoMeta = await getVideoMetadata(this, v)
+            if (refVideoMeta) Vue.set(this.refVideosMetadata, v.uuid, refVideoMeta)
           }
         }
       },

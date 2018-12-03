@@ -17,7 +17,8 @@
 
       // TEXT INPUT
 
-      q-input.q-pa-md(v-model="annotationText", ref="textInput", type="textarea", autofocus, dark,
+      q-input.q-pa-md(v-on:keydown="onKeyDown", @focus="onInputFocus", @blur="onInputBlur",
+        v-model="annotationText", ref="textInput", type="textarea", autofocus, dark,
         :class="[vocabularyVisible ? 'q-pl-xl text-primary' : 'text-white']")
 
       // CLOSE BUTTON
@@ -91,11 +92,11 @@
     },
     mounted () {
       window.addEventListener('keydown', this.onKeyDown)
-      window.addEventListener('keyup', this.onKeyUp)
+      // window.addEventListener('keyup', this.onKeyUp)
     },
     beforeDestroy () {
       window.removeEventListener('keydown', this.onKeyDown)
-      window.removeEventListener('keyup', this.onKeyUp)
+      // window.removeEventListener('keyup', this.onKeyUp)
     },
     computed: {
       vocabularyVisible () {
@@ -125,7 +126,7 @@
         return this.currentSelector.value || this.selectorValue || DateTime.local().toISO()
       },
       setFocusOnInput () {
-        this.$refs.textInput.focus()
+        if (this.$refs.textInput) this.$refs.textInput.focus()
       },
       toggleVocabulary () {
         if (!this.$refs.vocabulary) return
@@ -174,6 +175,12 @@
           this.enterDown = 0
           if (event.target.tagName.toLowerCase() !== 'textarea') this.setFocusOnInput() // only set focus if not already in a textfield
         }
+      },
+      onInputFocus () {
+        window.removeEventListener('keydown', this.onKeyDown)
+      },
+      onInputBlur () {
+        window.addEventListener('keydown', this.onKeyDown)
       },
       createAnnotation () {
         const text = this.annotationText && this.annotationText.trim()

@@ -37,6 +37,9 @@
           this.validation.$touch()
         }
         this.$emit('input', val)
+      },
+      value (val) {
+        this.local = val
       }
     },
     created () {

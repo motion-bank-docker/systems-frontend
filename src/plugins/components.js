@@ -9,6 +9,8 @@ import {
   VideoTitle
 } from 'mbjs-quasar/src/components'
 
+import BrowserWarning from '../components/shared/partials/BrowserWarning'
+
 export default ({ Vue }) => {
   Vue.component('back-button', BackButton)
   Vue.component('confirm-modal', ConfirmModal)
@@ -18,4 +20,5 @@ export default ({ Vue }) => {
   Vue.component('username', Username)
   Vue.component('video-player', VideoPlayer)
   Vue.component('video-title', VideoTitle)
+  Vue.component('browser-warning', BrowserWarning)
 }

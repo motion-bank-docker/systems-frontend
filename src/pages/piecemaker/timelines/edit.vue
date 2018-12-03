@@ -3,33 +3,30 @@
     q-btn(slot="backButton", @click="$router.push({ name: 'piecemaker.timelines.list' })", icon="keyboard_backspace", round, small)
 
     .q-px-xl
-      h5.caption(dark) {{ $t('routes.piecemaker.timelines.edit.title') }}
+      h5.caption.text-light(dark) {{ $t('routes.piecemaker.timelines.edit.title') }}
 
       .row
         .col-md-12
           form-main(v-model="payload", :schema="schema")
             q-btn.q-mr-md.bg-grey-9(q-if="$route.params.id", slot="form-buttons-add", :label="exportLabel", @click="exportTimeline")
 
-      .row
+      .row(v-if="availableRoles.length")
         .col-md-12
-          access-control(:resource="timeline")
-
-      // .row(v-if="env.IS_STAGING")
-        .col-md-12
-          p {{ $t('labels.access_control') }}
-          q-checkbox(v-model="acl.public", :label="$t('labels.access_control_public')", dark)
-        .col-md-12
-          p {{ $t('labels.access_control_add_group') }}
-          q-input(v-model="acl.group", :label="$t('labels.access_control_add_group')", dark)
-        .col-md-12
-          p {{ $t('labels.access_control_remove_group') }}
-          q-input(v-model="acl.group_remove", :label="$t('labels.access_control_remove_group')", dark)
-        .col-md-12
-          q-btn.q-mr-md.bg-grey-9(:label="$t('buttons.update_access_control')", @click="updateACL")
-
-      // .row
-      //   .col-md-12
-      //     tags(v-if="payload", :targetUuid="payload.uuid", fullWidth)
+          h5.caption.text-light {{ $t('labels.access_control') }}
+          p {{ $t('descriptions.access_control') }}
+        .col-md-12.q-mb-md
+          q-field(orientation="vertical", dark)
+            q-select(v-model="acl.group", :clearable="true", :clear-value="undefined",
+            :float-label="$t('labels.access_control_add_group')", :options="availableRoles", dark)
+        .col-md-12.q-mb-md
+          q-field(orientation="vertical", dark)
+            q-select(v-model="acl.group_remove", :clearable="true", :clear-value="undefined",
+            :float-label="$t('labels.access_control_remove_group')", :options="availableRoles", dark)
+        .col-md-12.q-mb-md
+          q-field(dark)
+            q-checkbox(v-model="acl.recursive", :label="$t('labels.recursive')", dark)
+        .row.xs-gutter.full-width.justify-end.items-end
+          q-btn(:label="$t('buttons.update_access_control')", @click="updateACL", color="grey")
 </template>
 
 <script>
@@ -42,6 +39,7 @@
   import constants from 'mbjs-data-models/src/constants'
 
   import { openURL } from 'quasar'
+  import { mapGetters } from 'vuex'
 
   export default {
     components: {
@@ -93,48 +91,72 @@
         this.acl.public = permissions.get === true
       }
     },
+    computed: {
+      ...mapGetters({
+        user: 'auth/getUserState'
+      }),
+      availableRoles () {
+        try {
+          return this.user[`${process.env.AUTH0_APP_METADATA_PREFIX}roles`]
+            .filter(role => role !== 'user')
+            .map(role => { return { label: role, value: role } })
+        }
+        catch (e) {
+          return []
+        }
+      }
+    },
     methods: {
-      exportTimeline () {
-        const _this = this
+      async exportTimeline () {
         if (this.downloadURL) return openURL(this.downloadURL)
-        this.$axios.post(
-          `${process.env.API_HOST}/archives/maps`,
-          { id: this.timeline.uuid },
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.access_token}`
+        this.$q.loading.show()
+        try {
+          const result = await this.$axios.post(
+            `${process.env.API_HOST}/archives/maps`,
+            {id: this.timeline.uuid},
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.access_token}`
+              }
             }
-          }
-        ).then(result => {
-          _this.downloadURL = `${process.env.API_HOST}/archives/maps/${result.data}`
-          _this.exportLabel = _this.$t('buttons.download_archive')
-        })
+          )
+          this.downloadURL = result.data
+          this.exportLabel = this.$t('buttons.download_archive')
+        }
+        catch (err) {
+          this.$handleError(this, err, 'errors.export_archive_failed')
+        }
+        this.$q.loading.hide()
       },
       async setACL (action, payload, recursive = false) {
         await this.$store.dispatch(action, payload)
         if (recursive) {
           const results = await this.$store.dispatch('annotations/find', { 'target.id': payload.id })
           for (let item of results.items) {
-            const itemPayload = ObjectUtil.merge({}, payload)
-            itemPayload.uuid = item.uuid
-            await this.$store.dispatch(action, payload)
+            if (item.author.id === this.$store.state.auth.user.uuid) {
+              const itemPayload = ObjectUtil.merge({}, payload)
+              itemPayload.uuid = item.uuid
+              await this.$store.dispatch(action, itemPayload)
+            }
           }
         }
       },
       async updateACL () {
+        this.$q.loading.show()
         console.debug('setting acl...', this.acl)
         if (this.acl.public) {
-          await this.setACL('acl/set', { role: 'public', id: this.timeline.id, permissions: ['get'] }, this.acl.recursive)
+          await this.setACL('acl/set', { role: 'public', uuid: this.timeline.uuid, id: this.timeline.id, permissions: ['get'] }, this.acl.recursive)
         }
         else {
-          await this.setACL('acl/remove', { role: 'public', id: this.timeline.id, permission: 'get' }, this.acl.recursive)
+          await this.setACL('acl/remove', { role: 'public', uuid: this.timeline.uuid, id: this.timeline.id, permission: 'get' }, this.acl.recursive)
         }
         if (this.acl.group) {
-          await this.setACL('acl/set', { role: this.acl.group, id: this.timeline.id, permissions: ['get'] }, this.acl.recursive)
+          await this.setACL('acl/set', { role: this.acl.group, uuid: this.timeline.uuid, id: this.timeline.id, permissions: ['get'] }, this.acl.recursive)
         }
         if (this.acl.group_remove) {
-          await this.setACL('acl/remove', { role: this.acl.group_remove, id: this.timeline.id, permission: 'get' }, this.acl.recursive)
+          await this.setACL('acl/remove', { role: this.acl.group_remove, uuid: this.timeline.uuid, id: this.timeline.id, permission: 'get' }, this.acl.recursive)
         }
+        this.$q.loading.hide()
         this.$store.commit('notifications/addMessage', {
           body: 'messages.acl_updated',
           type: 'success'

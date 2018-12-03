@@ -9,7 +9,23 @@
 
       .row
         .col-md-12
-          access-control
+          // access-control(:resource="grid")
+
+      .row(v-if="env.IS_STAGING")
+        .col-md-12
+          p {{ $t('labels.access_control') }}
+          q-checkbox(v-model="acl.public", :label="$t('labels.access_control_public')", dark)
+        .col-md-12
+          p {{ $t('labels.access_control_add_group') }}
+          q-input(v-model="acl.group", :label="$t('labels.access_control_add_group')", dark)
+        .col-md-12
+          p {{ $t('labels.access_control_remove_group') }}
+          q-input(v-model="acl.group_remove", :label="$t('labels.access_control_remove_group')", dark)
+        .col-md-12
+          p {{ $t('labels.recursive') }}
+          q-checkbox(v-model="acl.recursive", :label="$t('labels.recursive')", dark)
+        .col-md-12
+          q-btn.q-mr-md.bg-grey-9(:label="$t('buttons.update_access_control')", @click="updateACL")
 
 </template>
 
@@ -21,6 +37,8 @@
   import { required } from 'vuelidate/lib/validators'
   import constants from 'mbjs-data-models/src/constants'
 
+  import { ObjectUtil } from 'mbjs-utils'
+
   export default {
     components: {
       AccessControl,
@@ -30,6 +48,14 @@
     data () {
       const _this = this
       return {
+        grid: undefined,
+        env: process.env,
+        acl: {
+          public: false,
+          group: undefined,
+          group_remove: undefined,
+          recursive: false
+        },
         type: constants.MAP_TYPE_2D_GRID,
         payload: this.$route.params.id ? _this.$store.dispatch('maps/get', _this.$route.params.id) : undefined,
         schema: {
@@ -51,6 +77,48 @@
             }
           }
         }
+      }
+    },
+    async mounted () {
+      this.grid = await this.$store.dispatch('maps/get', this.$route.params.id)
+      if (process.env.IS_STAGING) {
+        const aclQuery = {role: 'public', id: this.grid.id, permission: 'get'}
+        const permissions = await this.$store.dispatch('acl/isRoleAllowed', aclQuery)
+        this.acl.public = permissions.get === true
+      }
+    },
+    methods: {
+      async setACL (action, payload, recursive = false) {
+        await this.$store.dispatch(action, payload)
+        if (recursive) {
+          const results = await this.$store.dispatch('annotations/find', { 'target.id': payload.id })
+          for (let item of results.items) {
+            if (item.author.id === this.$store.state.auth.user.uuid) {
+              const itemPayload = ObjectUtil.merge({}, payload)
+              itemPayload.uuid = item.uuid
+              await this.$store.dispatch(action, itemPayload)
+            }
+          }
+        }
+      },
+      async updateACL () {
+        console.debug('setting acl...', this.acl)
+        if (this.acl.public) {
+          await this.setACL('acl/set', { role: 'public', uuid: this.grid.uuid, permissions: ['get'] }, this.acl.recursive)
+        }
+        else {
+          await this.setACL('acl/remove', { role: 'public', uuid: this.grid.uuid, permission: 'get' }, this.acl.recursive)
+        }
+        if (this.acl.group) {
+          await this.setACL('acl/set', { role: this.acl.group, uuid: this.grid.uuid, permissions: ['get'] }, this.acl.recursive)
+        }
+        if (this.acl.group_remove) {
+          await this.setACL('acl/remove', { role: this.acl.group_remove, uuid: this.grid.uuid, permission: 'get' }, this.acl.recursive)
+        }
+        this.$store.commit('notifications/addMessage', {
+          body: 'messages.acl_updated',
+          type: 'success'
+        })
       }
     }
   }

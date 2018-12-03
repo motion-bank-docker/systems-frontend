@@ -112,9 +112,17 @@
             label: 'Insert Column Left',
             handler: this.handleGridContextMenuInsertColumnLeft
           },
+          delete_column: {
+            label: 'Delete Column',
+            handler: this.handleGridContextMenuDeleteColumn
+          },
           insert_row_above: {
             label: 'Insert Row Above',
             handler: this.handleGridContextMenuInsertRowAbove
+          },
+          delete_row: {
+            label: 'Delete Row',
+            handler: this.handleGridContextMenuDeleteRow
           },
           edit_grid_dimensions: {
             label: 'Change Grid',
@@ -313,6 +321,20 @@
         this.gridMetadata = ObjectUtil.merge({}, this.gridMetadata, {columns: this.gridMetadata.columns + 1})
         await this.updateGridMetadataStore()
       },
+      async handleGridContextMenuDeleteColumn () {
+        let position = this.contextMenuClickPosition
+        for (let cell of this.cells) {
+          if (cell.x > position.x) {
+            cell.x -= 1
+            let annotation = this.getGridCellAnnotation(cell)
+            await this.$store.dispatch('annotations/patch', [cell.uuid, annotation])
+            await this.fetchCellAnnotations()
+          }
+        }
+
+        this.gridMetadata = ObjectUtil.merge({}, this.gridMetadata, {columns: this.gridMetadata.columns - 1})
+        await this.updateGridMetadataStore()
+      },
       async handleGridContextMenuInsertRowAbove () {
         let position = this.contextMenuClickPosition
         for (let cell of this.cells) {
@@ -324,6 +346,20 @@
           }
         }
         this.gridMetadata = ObjectUtil.merge({}, this.gridMetadata, {rows: this.gridMetadata.rows + 1})
+
+        await this.updateGridMetadataStore()
+      },
+      async handleGridContextMenuDeleteRow () {
+        let position = this.contextMenuClickPosition
+        for (let cell of this.cells) {
+          if (cell.y > position.y) {
+            cell.y -= 1
+            let annotation = this.getGridCellAnnotation(cell)
+            await this.$store.dispatch('annotations/patch', [cell.uuid, annotation])
+            await this.fetchCellAnnotations()
+          }
+        }
+        this.gridMetadata = ObjectUtil.merge({}, this.gridMetadata, {rows: this.gridMetadata.rows - 1})
 
         await this.updateGridMetadataStore()
       },
@@ -425,7 +461,7 @@
           `<svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%'><defs>` +
           `<pattern id='smallGrid' width='${cell.width}' height='${cell.height}' patternUnits='userSpaceOnUse'>` +
           `<path d='M ${cell.width} 0 L 0 0 0 ${cell.height}' fill='none' stroke='gray' stroke-width='0.5'/>` +
-          `</pattern></defs><rect width='100%' height='100%' fill='url(#smallGrid)' /></svg>")`
+          `</pattern></defs><rect width='100%' height='100%' fill='url(%23smallGrid)' /></svg>")`
       },
       async fetchCellAnnotations () {
         const query = {
