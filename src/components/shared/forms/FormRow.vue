@@ -10,8 +10,6 @@
 </template>
 
 <script>
-  import { filter } from 'quasar'
-
   export default {
     props: [
       'value',
@@ -58,14 +56,16 @@
       duplicate () {
         this.$q.notify(this.$t('errors.item_exists'))
       },
-      autocompleteSearch (terms, done) {
+      autocompleteSearch (input, done) {
         if (!Array.isArray(this.autocompleteOptions)) return done([])
-        done(filter(terms, {field: 'value', list: this.autocompleteOptions}))
+        const regex = new RegExp(input, 'i')
+        const filtered = this.autocompleteOptions.filter(term => regex.test(term))
+        done(filtered.map(term => {
+          return { value: term, label: term }
+        }))
       },
       autocompleteSelected (item) {
-        console.log('autocomplete selected', item)
-        if (Array.isArray(this.local)) this.local.push(item.value)
-        else this.local = [item.value]
+        console.debug('autocomplete selected', item)
       }
     },
     created () {
