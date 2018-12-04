@@ -55,7 +55,6 @@
 </template>
 
 <script>
-  import getVideoMetadata from '../../../lib/get-video-metadata'
   import constants from 'mbjs-data-models/src/constants'
 
   export default {
@@ -88,7 +87,7 @@
         const videos = result.items
         const entries = []
         for (let annotation of videos) {
-          const meta = await getVideoMetadata(this, annotation)
+          const meta = await this.$store.dispatch('metadata/get', annotation)
           const entry = { annotation }
           entry.title = meta.title || this.$t('labels.title_unknown')
           entries.push(entry)
