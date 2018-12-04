@@ -65,8 +65,11 @@
               v-if="annotation.target.selector", :color="currentIndex === i ? 'primary' : 'dark'",
               @click="gotoSelector(annotation.target.selector.value)", size="sm")
                 | {{ formatSelectorForList(annotation.target.selector.value) }}
+
               q-btn.float-right(@click="$refs.confirmModal.show('messages.confirm_delete', annotation, 'buttons.delete')", size="sm") {{ $t('buttons.delete') }}
               q-btn.float-right(@click="updateAnnotation(annotation)", size="sm") {{ $t('buttons.save') }}
+              a.float-right.q-mr-sm(v-if="checkIfLink(annotation.body.value)", :href="annotation.body.value")
+                q-icon(name="link")
             q-item-tile.q-caption.q-my-xs
               span {{ annotation.author.name }}
             q-item-tile.q-caption
@@ -140,6 +143,18 @@
       }
     },
     methods: {
+      checkIfLink (val) {
+        let regexp = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9]\.[^\s]{2,})/
+        return regexp.test(val)
+        /* var urlRegex = /(https?:\/\/[^\s]+)/g
+        return val.replace(urlRegex, function (url) {
+          if (url) return true
+        }) */
+        /* return val.replace(urlRegex, function (url) {
+          console.log(url)
+          // return '<a href="' + url + '">' + url + '</a>'
+        }) */
+      },
       async handleConfirmModal (annotation) {
         await this.deleteAnnotation(annotation.uuid)
       },
