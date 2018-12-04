@@ -54,6 +54,17 @@
                   .toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS)
             },
             {
+              name: 'tags',
+              label: _this.$t('labels.tags'),
+              filter: true,
+              sortable: false,
+              field: row => row,
+              format: async val => {
+                const tags = await _this.$store.dispatch('tags/get', val)
+                return tags.join(', ')
+              }
+            },
+            {
               name: 'author',
               label: _this.$t('labels.author'),
               field: row => row.author ? row.author.name : _this.$t('labels.unknown_author'),
