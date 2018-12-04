@@ -6,7 +6,7 @@ npm install
 
 ## Run in third-party webserver
 
-Point your webserver config to the ``dist`` directory. Configure your webserver to serve ``index.html`` with a 200 status code instead of a 404 error page.
+Point your webserver config to the ``dist/spa-mat`` directory. Configure your webserver to serve ``index.html`` with a 200 status code instead of a 404 error page.
 
 ## Run as standalone server
 
@@ -29,6 +29,8 @@ npm run build
 ```
 
 ## Development
+
+Starts a development server with automatic reload on localhost at port 8080.
 
 ```shell
 npm run dev

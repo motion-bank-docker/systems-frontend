@@ -1,6 +1,6 @@
 {
   "name": "motionbank-systems-frontend",
-  "version": "0.3.0",
+  "version": "1.0.0",
   "description": "Combined frontend project for Motion Bank web services",
   "productName": "Motion Bank Systems Frontend",
   "cordovaId": "org.motionbank.frontend",
@@ -29,18 +29,8 @@
   },
   "metapak": {
     "configs": [
-      "readme",
-      "codeclimate",
-      "codacy",
-      "tidelift",
-      "travis"
-    ],
-    "codacy": {
-      "hash": "068aa9defed5426e91e2c2f4c1e2190d"
-    },
-    "codeclimate": {
-      "hash": "cba51f9e40aef7db5dec"
-    }
+      "readme"
+    ]
   },
   "dependencies": {
     "auth0-js": "^9.7.3",
