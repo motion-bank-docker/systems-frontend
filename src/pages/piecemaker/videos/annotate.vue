@@ -146,14 +146,6 @@
       checkIfLink (val) {
         let regexp = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9]\.[^\s]{2,})/
         return regexp.test(val)
-        /* var urlRegex = /(https?:\/\/[^\s]+)/g
-        return val.replace(urlRegex, function (url) {
-          if (url) return true
-        }) */
-        /* return val.replace(urlRegex, function (url) {
-          console.log(url)
-          // return '<a href="' + url + '">' + url + '</a>'
-        }) */
       },
       async handleConfirmModal (annotation) {
         await this.deleteAnnotation(annotation.uuid)
