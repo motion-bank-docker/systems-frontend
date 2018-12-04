@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Readme info
 
+### Fixed
+
+- Timeline list now updates after deleting an item
+
 ### Removed
 
 - Old Github badges, CI and code review configs
