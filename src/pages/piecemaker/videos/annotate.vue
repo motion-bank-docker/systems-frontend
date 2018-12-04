@@ -68,7 +68,7 @@
 
               q-btn.float-right(@click="$refs.confirmModal.show('messages.confirm_delete', annotation, 'buttons.delete')", size="sm") {{ $t('buttons.delete') }}
               q-btn.float-right(@click="updateAnnotation(annotation)", size="sm") {{ $t('buttons.save') }}
-              a.float-right.q-mr-sm(v-if="checkIfLink(annotation.body.value)", :href="annotation.body.value")
+              a.float-right.q-mr-sm.q-pa-xs(v-if="checkIfLink(annotation.body.value)", :href="annotation.body.value")
                 q-icon(name="link")
             q-item-tile.q-caption.q-my-xs
               span {{ annotation.author.name }}
