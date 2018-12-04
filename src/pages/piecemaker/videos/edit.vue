@@ -73,6 +73,9 @@
         }
       }
     },
+    async mounted () {
+      this.schema.fields.tags.autocompleteOptions = await this.$store.dispatch('tags/list')
+    },
     data () {
       const context = this
       return {
@@ -101,14 +104,7 @@
             }
             this.selectorValue = result.target.selector.value
 
-            const tagsQuery = {
-              'target.id': result.id,
-              'body.purpose': 'tagging'
-            }
-            const tagsResult = await context.$store.dispatch('annotations/find', tagsQuery)
-            if (tagsResult && tagsResult.items) {
-              context.tags = tagsResult.items
-            }
+            const tags = await context.$store.dispatch('tags/get', result)
 
             return {
               gid: result.target.id,
@@ -116,7 +112,7 @@
               url: result.body.source.id,
               id: result.id,
               title,
-              tags: context.tags.map(tag => tag.body.value)
+              tags
             }
           }),
         schema: {
@@ -138,7 +134,8 @@
             tags: {
               fullWidth: true,
               type: 'chips',
-              label: 'labels.tags'
+              label: 'labels.tags',
+              autocompleteOptions: []
             }
           },
           submit: {
@@ -166,35 +163,7 @@
                 }
               }
               await context.$store.dispatch('annotations/patch', [context.payload.uuid, context.apiPayload])
-
-              for (let tag of context.payload.tags) {
-                let exists = false
-                for (let existingTag of context.tags) {
-                  if (existingTag.body.value === tag) exists = true
-                }
-                if (!exists) {
-                  await context.$store.dispatch('annotations/post', {
-                    target: {
-                      id: context.payload.id,
-                      type: 'Annotation'
-                    },
-                    body: {
-                      type: 'TextualBody',
-                      value: tag,
-                      purpose: 'tagging'
-                    }
-                  })
-                }
-              }
-              for (let existingTag of context.tags) {
-                let exists = false
-                for (let tag of context.payload.tags) {
-                  if (existingTag.body.value === tag) exists = true
-                }
-                if (!exists) {
-                  await context.$store.dispatch('annotations/delete', existingTag.uuid)
-                }
-              }
+              await context.$store.dispatch('tags/set', [context.payload, context.payload.tags])
 
               context.$router.push({
                 name: 'piecemaker.videos.list',
