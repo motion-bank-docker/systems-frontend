@@ -5,10 +5,6 @@
 
 > Combined frontend project for Motion Bank web services
 
-[![Build status](https://secure.travis-ci.org/motionbank-js/motionbank-systems-frontend.svg)](https://travis-ci.org/motionbank-js/motionbank-systems-frontend)
-[![Dependency Status](https://tidelift.com/badges/github/motionbank-js/motionbank-systems-frontend?style=flat)](https://tidelift.com/repo/github/motionbank-js/motionbank-systems-frontend)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/068aa9defed5426e91e2c2f4c1e2190d)](https://www.codacy.com/app/motionbank-js/motionbank-systems-frontend)
-[![Maintainability](https://api.codeclimate.com/v1/badges/cba51f9e40aef7db5dec/maintainability)](https://codeclimate.com/github/motionbank-js/motionbank-systems-frontend/maintainability)
 
 
 ## Install
@@ -19,7 +15,7 @@ npm install
 
 ## Run in third-party webserver
 
-Point your webserver config to the ``dist`` directory. Configure your webserver to serve ``index.html`` with a 200 status code instead of a 404 error page.
+Point your webserver config to the ``dist/spa-mat`` directory. Configure your webserver to serve ``index.html`` with a 200 status code instead of a 404 error page.
 
 ## Run as standalone server
 
@@ -42,6 +38,8 @@ npm run build
 ```
 
 ## Development
+
+Starts a development server with automatic reload on localhost at port 8080.
 
 ```shell
 npm run dev

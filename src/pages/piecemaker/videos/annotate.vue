@@ -57,7 +57,8 @@
         // q-item
           q-btn.full-width(@click="drawer = false")
             q-icon.flip-horizontal(name="keyboard_backspace")
-        q-item.bg-dark(dark, v-for="(annotation, i) in annotations", :key="annotation.uuid", :ref="annotation.uuid")
+        q-item.bg-dark(dark, v-for="(annotation, i) in annotations", :key="annotation.uuid", :ref="annotation.uuid",
+        :class="[currentIndex === i ? 'bg-grey-9' : '']")
           q-item-main
             q-item-tile
               q-btn(

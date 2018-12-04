@@ -13,7 +13,6 @@
 </template>
 
 <script>
-  import getVideoMetadata from '../../../lib/get-video-metadata'
   import { DateTime } from 'luxon'
 
   export default {
@@ -31,7 +30,7 @@
               sortable: true,
               filter: true,
               format: async (val) => {
-                const meta = await getVideoMetadata(_this, val)
+                const meta = await _this.$store.dispatch('metadata/get', val)
                 return meta && meta.title ? meta.title : _this.$t('labels.title_unknown')
               }
             },

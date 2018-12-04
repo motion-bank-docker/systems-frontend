@@ -84,24 +84,11 @@
         selectorOverride: undefined,
         selectorValue: undefined,
         titlePayload: undefined,
-        tags: [],
         meta: undefined,
         payload: context.$store.dispatch('annotations/get', context.$route.params.id)
           .then(async result => {
-            const titleQuery = {
-              'target.id': result.id,
-              'body.purpose': 'describing'
-            }
             this.meta = await this.$store.dispatch('metadata/get', { body: { source: { id: result.body.source.id } } })
-            const titleResult = await context.$store.dispatch('annotations/find', titleQuery)
-            let title
-            if (titleResult && titleResult.items && titleResult.items.length) {
-              this.titlePayload = titleResult.items[0]
-              title = titleResult.items[0].body.value
-            }
-            else if (this.meta) {
-              title = this.meta.title
-            }
+            this.titlePayload = this.meta.titleAnnotation
             this.selectorValue = result.target.selector.value
 
             const tags = await context.$store.dispatch('tags/get', result)
@@ -111,7 +98,7 @@
               uuid: result.uuid,
               url: result.body.source.id,
               id: result.id,
-              title,
+              title: this.meta.title,
               tags
             }
           }),
