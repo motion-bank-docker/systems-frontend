@@ -20,6 +20,7 @@
         v-model="local[key]",
         :type="field.type",
         :select-options="field.options",
+        :autocomplete-options="field.autocompleteOptions",
         :validation="field.validators ? $v.local[key] : undefined",
         :attributes="field.attributes",
         :label="$t(field.label)",

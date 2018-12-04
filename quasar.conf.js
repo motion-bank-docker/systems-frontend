@@ -126,6 +126,7 @@ module.exports = function (ctx) {
         'QSearch',
         'QDatetimePicker',
         'QDatetime',
+        'QAutocomplete',
         //
         // Grouping
         //
