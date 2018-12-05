@@ -68,9 +68,7 @@
 
               q-btn.float-right(@click="$refs.confirmModal.show('messages.confirm_delete', annotation, 'buttons.delete')", size="sm") {{ $t('buttons.delete') }}
               q-btn.float-right(@click="updateAnnotation(annotation)", size="sm") {{ $t('buttons.save') }}
-              a.float-right.q-mr-sm.q-pa-xs(v-if="checkIfLink(annotation.body.value)",
-              :href="transformToLink(annotation.body.value)", target="_blank")
-                q-icon(name="link")
+              annotation-hyperlink.float-right.q-mr-sm.q-pa-xs(:string="annotation.body.value")
             q-item-tile.q-caption.q-my-xs
               span {{ annotation.author.name }}
             q-item-tile.q-caption
@@ -91,12 +89,14 @@
   import parseURI from 'mbjs-data-models/src/lib/parse-uri'
 
   import AnnotationField from '../../../components/piecemaker/partials/AnnotationField'
+  import AnnotationHyperlink from '../../../components/shared/partials/AnnotationHyperlink'
 
   const { getScrollTarget, setScrollPosition } = scroll
 
   export default {
     components: {
-      AnnotationField
+      AnnotationField,
+      AnnotationHyperlink
     },
     async mounted () {
       if (this.$route.params.id) {
@@ -144,23 +144,6 @@
       }
     },
     methods: {
-      checkIfLink (val) {
-        if (val.startsWith('www.')) return this.transformToLink(val)
-        else {
-          // let regexp = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9]\.[^\s]{2,})/
-          let regexp = /(\b(https?|http|ftp|file):\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|])/ig
-          return regexp.test(val)
-        }
-      },
-      transformToLink (val) {
-        if (val.startsWith('www.')) {
-          let prestr = 'http://'
-          return prestr.concat(val)
-        }
-        else {
-          return val
-        }
-      },
       async handleConfirmModal (annotation) {
         await this.deleteAnnotation(annotation.uuid)
       },
