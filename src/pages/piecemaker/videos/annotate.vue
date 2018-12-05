@@ -67,15 +67,16 @@
                 | {{ formatSelectorForList(annotation.target.selector.value) }}
 
               q-btn.float-right(@click="$refs.confirmModal.show('messages.confirm_delete', annotation, 'buttons.delete')", size="sm") {{ $t('buttons.delete') }}
-              q-btn.float-right(@click="updateAnnotation(annotation)", size="sm") {{ $t('buttons.save') }}
-              annotation-hyperlink.float-right.q-mr-sm.q-pa-xs(:string="annotation.body.value")
+              q-btn.float-right(v-if="(!isEditingAnnotations && annotation.body.type === 'TextualBody') || editAnnotationIndex !== i",
+                @click="setEditIndex(i)", size="sm") {{ $t('buttons.edit') }}
+              q-btn.float-right(v-if="annotation.body.type === 'TextualBody' && editAnnotationIndex === i",
+                @click="updateAnnotation(annotation)", size="sm") {{ $t('buttons.save') }}
             q-item-tile.q-caption.q-my-xs
               span {{ annotation.author.name }}
             q-item-tile.q-caption
-              q-input(v-if="annotation.body.type === 'TextualBody'", color="white",
-              type="textarea", v-model="annotation.body.value", dark)
-              q-input(v-if="annotation.body.type === 'VocabularyEntry'", type="textarea",
-              v-model="annotation.body.value", dark, disabled)
+              markdown-display(v-if="!isEditingAnnotations || editAnnotationIndex !== i", :content="annotation.body.value")
+              q-input(v-if="annotation.body.type === 'TextualBody' && editAnnotationIndex === i", color="white",
+                type="textarea", v-model="annotation.body.value", dark)
 
 </template>
 
@@ -89,14 +90,12 @@
   import parseURI from 'mbjs-data-models/src/lib/parse-uri'
 
   import AnnotationField from '../../../components/piecemaker/partials/AnnotationField'
-  import AnnotationHyperlink from '../../../components/shared/partials/AnnotationHyperlink'
 
   const { getScrollTarget, setScrollPosition } = scroll
 
   export default {
     components: {
-      AnnotationField,
-      AnnotationHyperlink
+      AnnotationField
     },
     async mounted () {
       if (this.$route.params.id) {
@@ -121,7 +120,9 @@
         staging: process.env.IS_STAGING,
         timelineId: undefined,
         timeline: undefined,
-        video: undefined
+        video: undefined,
+        editAnnotationIndex: undefined,
+        editAnnotationBuffer: undefined
       }
     },
     computed: {
@@ -141,6 +142,9 @@
         return DateTime.fromISO(this.video.target.selector.value)
           .plus(this.playerTime * 1000)
           .toISO()
+      },
+      isEditingAnnotations () {
+        return typeof this.editAnnotationIndex === 'number'
       }
     },
     methods: {
@@ -213,6 +217,11 @@
         setScrollPosition(getScrollTarget(el), el.offsetTop - el.scrollHeight, duration)
       },
       async updateAnnotation (annotation) {
+        if (annotation.body.value === this.editAnnotationBuffer) {
+          this.editAnnotationBuffer = undefined
+          this.editAnnotationIndex = undefined
+          return
+        }
         try {
           Assert.isType(annotation, 'object')
           Assert.ok(uuidValidate(annotation.uuid))
@@ -256,6 +265,10 @@
       },
       onPlayerTime (seconds) {
         this.playerTime = seconds
+      },
+      setEditIndex (i) {
+        this.editAnnotationIndex = i
+        this.editAnnotationBuffer = this.annotations[i].body.value
       }
     }
   }
