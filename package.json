@@ -14,10 +14,10 @@
   },
   "homepage": "https://gitlab.rlp.net/motionbank/systems-frontend#readme",
   "scripts": {
-    "build": "cross-env NODE_ENV=production quasar build",
-    "build-staging": "cross-env NODE_ENV=production IS_STAGING=true quasar build",
+    "build": "cross-env NODE_ENV=production node $NODE_DEBUG_OPTION ./node_modules/.bin/quasar build",
+    "build-staging": "cross-env NODE_ENV=production IS_STAGING=true node $NODE_DEBUG_OPTION ./node_modules/.bin/quasar build",
     "clean": "quasar clean",
-    "dev": "cross-env NODE_ENV=production quasar dev",
+    "dev": "cross-env NODE_ENV=production node $NODE_DEBUG_OPTION ./node_modules/.bin/quasar dev",
     "docker-build": "docker build -t motionbank/systems-frontend:latest .",
     "docker-build-staging": "docker build -t motionbank/systems-frontend:staging .",
     "docker-release": "npm run docker-build && docker push motionbank/systems-frontend:latest",
@@ -59,6 +59,7 @@
     "vuelidate": "0.7.4"
   },
   "devDependencies": {
+    "@babel/runtime": "^7.0.0-beta.54",
     "babel-eslint": "^8.2.6",
     "babel-plugin-dynamic-import-node": "^2.2.0",
     "babel-plugin-syntax-flow": "^6.18.0",
