@@ -33,7 +33,7 @@
 
         // BUTTONS: SHOW/HIDE ANNOTATIONS
 
-        q-btn.q-ml-xs.bg-dark(color="white", round, flat, icon="info")
+        q-btn.q-ml-xs.bg-dark(v-if="metadata", color="white", round, flat, icon="info")
           q-popover.bg-dark.q-py-sm
             q-item(multiline)
               q-item-side Title:
