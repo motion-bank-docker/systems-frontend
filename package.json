@@ -82,7 +82,7 @@
     "metapak-motionbank": "^1.11.8",
     "pug": "^2.0.3",
     "pug-plain-loader": "^1.0.0",
-    "quasar-cli": "0.17.22",
+    "quasar-cli": "0.17.20",
     "static-server": "^2.2.1",
     "strip-ansi": "^3.0.1"
   },
