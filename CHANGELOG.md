@@ -10,9 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Videos can now be tagged
+- Vuex module 'tags' - stores and retrieves tags as annotations
 
 ### Changed
 
+- External titles stored as annotations are now retrieved within the metadata store module
 - Readme info
 - Updated Quasar CLI to v0.17.22
 - Updated Quasar Framework to v0.17.18
