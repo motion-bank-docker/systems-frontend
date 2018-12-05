@@ -65,15 +65,18 @@
               v-if="annotation.target.selector", :color="currentIndex === i ? 'primary' : 'dark'",
               @click="gotoSelector(annotation.target.selector.value)", size="sm")
                 | {{ formatSelectorForList(annotation.target.selector.value) }}
+
               q-btn.float-right(@click="$refs.confirmModal.show('messages.confirm_delete', annotation, 'buttons.delete')", size="sm") {{ $t('buttons.delete') }}
-              q-btn.float-right(@click="updateAnnotation(annotation)", size="sm") {{ $t('buttons.save') }}
+              q-btn.float-right(v-if="(!isEditingAnnotations && annotation.body.type === 'TextualBody') || editAnnotationIndex !== i",
+                @click="setEditIndex(i)", size="sm") {{ $t('buttons.edit') }}
+              q-btn.float-right(v-if="annotation.body.type === 'TextualBody' && editAnnotationIndex === i",
+                @click="updateAnnotation(annotation)", size="sm", :color="isAnnotationDirty ? 'primary' : undefined") {{ $t('buttons.save') }}
             q-item-tile.q-caption.q-my-xs
               span {{ annotation.author.name }}
-            q-item-tile.q-caption
-              q-input(v-if="annotation.body.type === 'TextualBody'", color="white",
-              type="textarea", v-model="annotation.body.value", dark)
-              q-input(v-if="annotation.body.type === 'VocabularyEntry'", type="textarea",
-              v-model="annotation.body.value", dark, disabled)
+            q-item-tile
+              markdown-display.markdown-display.q-mt-sm(v-if="!isEditingAnnotations || editAnnotationIndex !== i", :content="annotation.body.value")
+              q-input.q-mt-sm.q-mb-sm(v-if="annotation.body.type === 'TextualBody' && editAnnotationIndex === i", color="white",
+                type="textarea", v-model="annotation.body.value", dark)
 
 </template>
 
@@ -117,7 +120,9 @@
         staging: process.env.IS_STAGING,
         timelineId: undefined,
         timeline: undefined,
-        video: undefined
+        video: undefined,
+        editAnnotationIndex: undefined,
+        editAnnotationBuffer: undefined
       }
     },
     computed: {
@@ -137,6 +142,13 @@
         return DateTime.fromISO(this.video.target.selector.value)
           .plus(this.playerTime * 1000)
           .toISO()
+      },
+      isEditingAnnotations () {
+        return typeof this.editAnnotationIndex === 'number'
+      },
+      isAnnotationDirty () {
+        return this.isEditingAnnotations &&
+          this.annotations[this.editAnnotationIndex].body.value !== this.editAnnotationBuffer
       }
     },
     methods: {
@@ -209,21 +221,25 @@
         setScrollPosition(getScrollTarget(el), el.offsetTop - el.scrollHeight, duration)
       },
       async updateAnnotation (annotation) {
-        try {
-          Assert.isType(annotation, 'object')
-          Assert.ok(uuidValidate(annotation.uuid))
-          Assert.isType(annotation.body.value, 'string')
-          await this.$store.dispatch('annotations/patch', [annotation.uuid, annotation])
-          await this.getAnnotations()
-          this.$store.commit('notifications/addMessage', {
-            body: 'messages.updated_annotation',
-            mode: 'alert',
-            type: 'success'
-          })
+        if (annotation.body.value !== this.editAnnotationBuffer) {
+          try {
+            Assert.isType(annotation, 'object')
+            Assert.ok(uuidValidate(annotation.uuid))
+            Assert.isType(annotation.body.value, 'string')
+            await this.$store.dispatch('annotations/patch', [annotation.uuid, annotation])
+            await this.getAnnotations()
+            this.$store.commit('notifications/addMessage', {
+              body: 'messages.updated_annotation',
+              mode: 'alert',
+              type: 'success'
+            })
+          }
+          catch (err) {
+            this.$handleError(this, err, 'errors.update_annotation_failed')
+          }
         }
-        catch (err) {
-          this.$handleError(this, err, 'errors.update_annotation_failed')
-        }
+        this.editAnnotationBuffer = undefined
+        this.editAnnotationIndex = undefined
       },
       async deleteAnnotation (uuid) {
         try {
@@ -252,6 +268,10 @@
       },
       onPlayerTime (seconds) {
         this.playerTime = seconds
+      },
+      setEditIndex (i) {
+        this.editAnnotationIndex = i
+        this.editAnnotationBuffer = this.annotations[i].body.value
       }
     }
   }
@@ -264,4 +284,7 @@
     display none
   .moba-vocabs:hover div:last-of-type
     display block
+
+  .markdown-display
+    padding-top: 2px
 </style>
