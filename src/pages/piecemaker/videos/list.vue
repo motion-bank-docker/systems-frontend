@@ -22,6 +22,10 @@
         timeline: undefined,
         query: undefined,
         config: {
+          pagination: {
+            sortBy: 'date',
+            descending: true
+          },
           columns: [
             {
               name: 'title',
