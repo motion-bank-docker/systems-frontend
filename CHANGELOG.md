@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Info button in the post-annotator shows video metadata (so far only title)
 - Hyperlinks in annotations are now clickable in the post-annotator
 - Limited markdown support for annotations (allowed tags: 'b', 'i', 'em', 'strong', 'a', 'br', 'p')
 - Videos can now be tagged
@@ -16,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Look of top right buttons in post-annotator
 - Users need to explicitly click 'edit' to change an annotation in the post-annotator
 - External titles stored as annotations are now retrieved within the metadata store module
 - BrowserWarning and MarkdownDisplay components moved to [mbjs-quasar](https://gitlab.rlp.net/motionbank/mbjs/quasar)
