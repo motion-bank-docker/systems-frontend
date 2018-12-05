@@ -48,4 +48,5 @@
 <style lang="stylus">
   .md-content
     font-size: 1rem
+    line-height: 24px
 </style>
