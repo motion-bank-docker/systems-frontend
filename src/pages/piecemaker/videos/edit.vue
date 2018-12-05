@@ -49,7 +49,6 @@
           }
         }
         const title = await this.$store.dispatch('annotations/post', titlePayload)
-        console.debug('created title', titlePayload, title)
         return title
       },
       async updateTitle (uuid, value) {
@@ -74,6 +73,9 @@
         }
       }
     },
+    async mounted () {
+      this.schema.fields.tags.autocompleteOptions = await this.$store.dispatch('tags/list')
+    },
     data () {
       const context = this
       return {
@@ -88,12 +90,16 @@
             this.meta = await this.$store.dispatch('metadata/get', { body: { source: { id: result.body.source.id } } })
             this.titlePayload = this.meta.titleAnnotation
             this.selectorValue = result.target.selector.value
+
+            const tags = await context.$store.dispatch('tags/get', result)
+
             return {
               gid: result.target.id,
               uuid: result.uuid,
               url: result.body.source.id,
               id: result.id,
-              title: this.meta.title
+              title: this.meta.title,
+              tags
             }
           }),
         schema: {
@@ -111,6 +117,12 @@
               fullWidth: true,
               type: 'text',
               label: 'labels.video_title'
+            },
+            tags: {
+              fullWidth: true,
+              type: 'chips',
+              label: 'labels.tags',
+              autocompleteOptions: []
             }
           },
           submit: {
@@ -138,6 +150,8 @@
                 }
               }
               await context.$store.dispatch('annotations/patch', [context.payload.uuid, context.apiPayload])
+              await context.$store.dispatch('tags/set', [context.payload, context.payload.tags])
+
               context.$router.push({
                 name: 'piecemaker.videos.list',
                 params: { timelineId: parseURI(context.payload.gid).uuid }

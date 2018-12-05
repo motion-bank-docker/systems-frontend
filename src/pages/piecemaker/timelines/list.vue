@@ -133,6 +133,7 @@
             mode: 'alert',
             type: 'success'
           })
+          this.$refs.listTable.request()
         }
         catch (err) {
           console.error('timeline delete failed', err.message)

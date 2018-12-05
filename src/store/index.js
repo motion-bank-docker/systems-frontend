@@ -7,6 +7,7 @@ import acl from './modules/acl'
 import timecodes from './modules/timecodes'
 import conversions from './modules/conversions'
 import metadata from './modules/metadata'
+import tags from './modules/tags'
 
 import WebAuth from 'mbjs-api-client/src/web'
 import Vue from 'vue'
@@ -48,6 +49,7 @@ const store = new Vuex.Store({
     sessions: makeResourceModule(apiClient, undefined, 'session'),
     // metadata: makeResourceModule(apiClient, undefined, 'metadata', 'metadata', process.env.TRANSCODER_HOST),
     metadata,
+    tags,
     auth
   }
 })
