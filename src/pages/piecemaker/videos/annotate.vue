@@ -17,14 +17,14 @@
       // TOP LEFT
       //
       //
-      .absolute-top-left.q-ma-md(style="z-index: 2100;")
+      q-page-sticky.q-pa-md(position="top-left", style="z-index: 2100;")
         // BUTTON: GO BACK
         back-button
 
       // TOP RIGHT
       //
       //
-      .absolute-top-right.cursor-pointer.q-pa-md(style="z-index: 2100;")
+      q-page-sticky.q-pa-md(position="top-right", style="z-index: 2100;")
 
         // BUTTONS: SWITCH TO FULLSCREEN
 
@@ -33,10 +33,15 @@
 
         // BUTTONS: SHOW/HIDE ANNOTATIONS
 
-        q-btn.q-ml-xs(v-if="!drawer", @click="drawer = true", color="dark", round)
-          q-icon(name="keyboard_backspace")
-        q-btn.q-ml-xs(v-else, @click="drawer = false", color="dark", round)
-          q-icon.flip-horizontal(name="keyboard_backspace")
+        q-btn.q-ml-xs.bg-dark(color="white", round, flat, icon="info")
+          q-popover.bg-dark.q-py-sm
+            q-item(multiline)
+              q-item-side Title:
+              q-item-main {{ metadata.title }}
+        q-btn.q-ml-xs.bg-dark(v-if="!drawer", @click="drawer = true", color="white", round, flat)
+          q-icon(name="fullscreen_exit")
+        q-btn.q-ml-xs.bg-dark(v-else, @click="drawer = false", color="white", round, flat)
+          q-icon.flip-horizontal(name="fullscreen")
 
       // TOP CENTER
       //
@@ -277,7 +282,7 @@
   }
 </script>
 
-<style lang="stylus">
+<style scoped lang="stylus">
   .moba-vocabs div:last-of-type
     display none
   .moba-vocabs:hover div:first-of-type
