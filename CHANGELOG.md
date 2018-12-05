@@ -9,11 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Hyperlinks in annotations are now clickable in the post-annotator
+- Limited markdown support for annotations (allowed tags: 'b', 'i', 'em', 'strong', 'a', 'br', 'p')
 - Videos can now be tagged
 - Vuex module 'tags' - stores and retrieves tags as annotations
 
 ### Changed
 
+- Users need to explicitly click 'edit' to change an annotation in the post-annotator
 - External titles stored as annotations are now retrieved within the metadata store module
 - Readme info
 - Updated Quasar CLI to v0.17.22
