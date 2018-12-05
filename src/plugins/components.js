@@ -1,16 +1,15 @@
 import {
+  BrowserWarning,
   BackButton,
   ConfirmModal,
   DataTable,
   FullScreen,
+  MarkdownDisplay,
   Uploader,
   Username,
   VideoPlayer,
   VideoTitle
 } from 'mbjs-quasar/src/components'
-
-import BrowserWarning from '../components/shared/partials/BrowserWarning'
-import MarkdownDisplay from '../components/shared/partials/MarkdownDisplay'
 
 export default ({ Vue }) => {
   Vue.component('back-button', BackButton)

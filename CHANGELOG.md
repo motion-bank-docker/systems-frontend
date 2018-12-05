@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Users need to explicitly click 'edit' to change an annotation in the post-annotator
 - External titles stored as annotations are now retrieved within the metadata store module
+- BrowserWarning and MarkdownDisplay components moved to [mbjs-quasar](https://gitlab.rlp.net/motionbank/mbjs/quasar)
 - Readme info
 - Updated Quasar CLI to v0.17.22
 - Updated Quasar Framework to v0.17.18
