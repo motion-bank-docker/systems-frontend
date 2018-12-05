@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Readme info
+- Updated Quasar CLI to v0.17.22
+- Updated Quasar Framework to v0.17.18
+- Pinned and updated runtime dependencies
 
 ### Fixed
 
