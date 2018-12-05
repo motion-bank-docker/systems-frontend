@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Video list is now sorted descending on reference date by default
 - Look of top right buttons in post-annotator
 - Users need to explicitly click 'edit' to change an annotation in the post-annotator
 - External titles stored as annotations are now retrieved within the metadata store module
