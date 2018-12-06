@@ -14,11 +14,6 @@
         @click="executeApp('mosys', 'mosys.grids.list')",
         big, flat
         ) Mosys
-      q-btn(v-if="env.IS_STAGING",
-        :color="currentApp === 'mocabulary' ? 'primary' : ''",
-        @click="executeApp('mocabulary', 'mocabulary.trees.list')",
-        big, flat
-        ) Mocabulary
 
     q-btn(color="primary", flat, icon="settings",
     v-if="userState", @click="$router.push({ name: 'users.manage' })") {{ userState.profile ? userState.profile.name : '' }}
