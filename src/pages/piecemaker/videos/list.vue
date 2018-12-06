@@ -6,7 +6,7 @@
     span(slot="form-logo")
     span(slot="form-title") {{ $t('routes.piecemaker.videos.list.title') }}
     data-table(v-if="query", ref="listTable", :config="config", :title="'routes.piecemaker.videos.list.title'",
-      path="annotations", :query="query", base-path="videos")
+      path="annotations", :query="query", base-path="videos", :request-transform="requestTransform")
       template(slot="buttons-left")
         q-btn(@click="$router.push({ name: 'piecemaker.videos.create', params: { timelineId: $route.params.timelineId } })",
           color="primary") {{ $t('buttons.add_video') }}
@@ -21,6 +21,23 @@
       return {
         timeline: undefined,
         query: undefined,
+        requestTransform: async rows => {
+          for (let i in rows) {
+            const transformed = {}
+            const row = rows[i]
+            const meta = await _this.$store.dispatch('metadata/get', row)
+            transformed.title = meta && meta.title ? meta.title : _this.$t('labels.title_unknown')
+            transformed.date = row.target.selector ? row.target.selector.value : undefined
+            transformed.last_updated = row.updated ? row.updated : row.created
+            const tags = await _this.$store.dispatch('tags/get', row)
+            transformed.tags = tags.join(', ')
+            transformed.author = row.author ? row.author.name : _this.$t('labels.unknown_author')
+            transformed.uuid = row.uuid
+            transformed.id = row.id
+            rows[i] = transformed
+          }
+          return rows
+        },
         config: {
           pagination: {
             sortBy: 'date',
@@ -30,20 +47,16 @@
             {
               name: 'title',
               label: _this.$t('labels.title'),
-              field: row => row,
+              field: 'title',
               sortable: true,
-              filter: true,
-              format: async (val) => {
-                const meta = await _this.$store.dispatch('metadata/get', val)
-                return meta && meta.title ? meta.title : _this.$t('labels.title_unknown')
-              }
+              filter: true
             },
             {
               name: 'date',
               label: _this.$t('labels.date'),
               sortable: true,
               sort: _this.$sort.onDateValue,
-              field: row => row.target.selector ? row.target.selector.value : undefined,
+              field: 'date',
               format: val => DateTime.fromISO(val)
                 .toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS)
             },
@@ -52,7 +65,7 @@
               label: _this.$t('labels.last_updated'),
               sortable: true,
               sort: _this.$sort.onDateValue,
-              field: row => row.updated ? row.updated : row.created,
+              field: 'last_updated',
               format: val => DateTime.fromISO(val)
                   .toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS)
             },
@@ -61,17 +74,14 @@
               label: _this.$t('labels.tags'),
               filter: true,
               sortable: false,
-              field: row => row,
-              format: async val => {
-                const tags = await _this.$store.dispatch('tags/get', val)
-                return tags.join(', ')
-              }
+              field: 'tags'
             },
             {
               name: 'author',
               label: _this.$t('labels.author'),
-              field: row => row.author ? row.author.name : _this.$t('labels.unknown_author'),
-              sortable: true
+              field: 'author',
+              sortable: true,
+              filter: true
             }
           ],
           actions: [
