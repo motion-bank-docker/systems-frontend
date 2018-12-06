@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Data tables now use an optional requestTransform function to process rows on each data update
 - Info button in the post-annotator shows video metadata (so far only title)
 - Hyperlinks in annotations are now clickable in the post-annotator
 - Limited markdown support for annotations (allowed tags: 'b', 'i', 'em', 'strong', 'a', 'br', 'p')
@@ -27,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Tables are now propely searchable
 - Timeline list now updates after deleting an item
 
 ### Removed

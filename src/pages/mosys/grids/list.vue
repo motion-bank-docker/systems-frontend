@@ -9,6 +9,7 @@
       :title="'routes.mosys.grids.list.title'",
       path="maps",
       :query="query",
+      :requestTransform="requestTransform"
       base-path="grids",
       :has-show="true")
         template(slot="buttons-left")
@@ -24,6 +25,19 @@
       const _this = this
       return {
         query: { type: constants.MAP_TYPE_2D_GRID },
+        requestTransform: async rows => {
+          for (let i in rows) {
+            const transformed = {}
+            const row = rows[i]
+            transformed.title = row.title
+            transformed.last_updated = row.updated ? row.updated : row.created
+            transformed.author = row.author ? row.author.name : _this.$t('labels.unknown_author')
+            transformed.uuid = row.uuid
+            transformed.id = row.id
+            rows[i] = transformed
+          }
+          return rows
+        },
         config: {
           columns: [
             {
@@ -37,15 +51,16 @@
               label: _this.$t('labels.last_updated'),
               sortable: true,
               sort: _this.$sort.onDateValue,
-              field: row => row.updated ? row.updated : row.created,
+              field: 'last_updated',
               format: val => DateTime.fromISO(val)
                 .toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS)
             },
             {
               name: 'author',
               label: _this.$t('labels.author'),
-              field: row => row.author ? row.author.name : _this.$t('labels.unknown_author'),
-              sortable: true
+              field: 'author',
+              sortable: true,
+              filter: true
             }
           ],
           actions: [

@@ -21,7 +21,7 @@
           // rect.moba-test(@click="testWidth = testWidth + 30", fill="red", :width="testWidth", height="30")
 
     data-table(:config="config", :title="'routes.piecemaker.timelines.list.title'", ref="listTable",
-      path="maps", :query="query", base-path="timelines", :has-show="isStaging")
+      path="maps", :query="query", base-path="timelines", :has-show="isStaging", :request-transform="requestTransform")
       template(slot="buttons-left")
         q-btn(@click="$router.push({ name: 'piecemaker.timelines.create' })", color="primary") {{ $t('buttons.create_timeline') }}
 </template>
@@ -66,12 +66,25 @@
           }
         ], */
         query: { type: constants.MAP_TYPE_TIMELINE },
+        requestTransform: async rows => {
+          for (let i in rows) {
+            const transformed = {}
+            const row = rows[i]
+            transformed.title = row.title
+            transformed.last_updated = row.updated ? row.updated : row.created
+            transformed.author = row.author ? row.author.name : _this.$t('labels.unknown_author')
+            transformed.uuid = row.uuid
+            transformed.id = row.id
+            rows[i] = transformed
+          }
+          return rows
+        },
         config: {
           columns: [
             {
               name: 'title',
               label: _this.$t('labels.title'),
-              field: row => row.title,
+              field: 'title',
               filter: true,
               sortable: true
             },
@@ -80,15 +93,16 @@
               label: _this.$t('labels.last_updated'),
               sortable: true,
               sort: _this.$sort.onDateValue,
-              field: row => row.updated ? row.updated : row.created,
+              field: 'last_updated',
               format: val => DateTime.fromISO(val)
                 .toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS)
             },
             {
               name: 'author',
               label: _this.$t('labels.author'),
-              field: row => row.author ? row.author.name : _this.$t('labels.unknown_author'),
-              sortable: true
+              field: 'author',
+              sortable: true,
+              filter: true
             }
           ],
           actions: [
