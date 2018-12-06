@@ -30,7 +30,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Tables are now propely searchable
+- Editing external title annotations
+- Tables are now properly searchable
 - Timeline list now updates after deleting an item
 
 ### Removed
