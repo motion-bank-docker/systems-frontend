@@ -4,7 +4,7 @@
 
     back-button(slot="backButton")
     span(slot="form-logo")
-    span(slot="form-title") {{ $t('routes.piecemaker.videos.list.title') }}
+    span(slot="form-title" v-if="timeline") {{ timeline.title }}: {{ $t('routes.piecemaker.videos.list.title') }}
     data-table(v-if="query", ref="listTable", :config="config", :title="'routes.piecemaker.videos.list.title'",
       path="annotations", :query="query", base-path="videos", :request-transform="requestTransform")
       template(slot="buttons-left")

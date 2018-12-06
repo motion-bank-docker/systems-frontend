@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Video list shows timeline title
 - Data tables now use an optional requestTransform function to process rows on each data update
 - Info button in the post-annotator shows video metadata (so far only title)
 - Hyperlinks in annotations are now clickable in the post-annotator
