@@ -98,7 +98,7 @@
         payload: context.$store.dispatch('annotations/get', context.$route.params.id)
           .then(async result => {
             this.map = await this.$store.dispatch('maps/get', parseURI(result.target.id).uuid)
-            this.meta = await this.$store.dispatch('metadata/get', { body: { source: { id: result.body.source.id } } })
+            this.meta = await this.$store.dispatch('metadata/get', result)
             this.titlePayload = this.meta.titleAnnotation
             this.selectorValue = result.target.selector.value
 
