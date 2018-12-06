@@ -76,6 +76,7 @@ export default {
     access_control_public: 'Public',
     access_control_add_group: 'Add to group',
     access_control_remove_group: 'Remove from group',
+    associated_timeline: 'Associated timeline',
     recursive: 'Apply to all contained annotations and videos',
     add_group: 'Add Group',
     add_term: 'Add Term',

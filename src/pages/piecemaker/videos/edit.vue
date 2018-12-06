@@ -75,6 +75,15 @@
     },
     async mounted () {
       this.schema.fields.tags.autocompleteOptions = await this.$store.dispatch('tags/list')
+      const timelinesResult = await this.$store.dispatch('maps/find', {
+        type: 'Timeline'
+      })
+      this.schema.fields.timeline.options = timelinesResult.items.map(item => {
+        return {
+          value: item.id,
+          label: item.title
+        }
+      }).sort((a, b) => (a.label || '').localeCompare(b.label || ''))
     },
     data () {
       const context = this
@@ -85,8 +94,10 @@
         selectorValue: undefined,
         titlePayload: undefined,
         meta: undefined,
+        map: undefined,
         payload: context.$store.dispatch('annotations/get', context.$route.params.id)
           .then(async result => {
+            this.map = await this.$store.dispatch('maps/get', parseURI(result.target.id).uuid)
             this.meta = await this.$store.dispatch('metadata/get', { body: { source: { id: result.body.source.id } } })
             this.titlePayload = this.meta.titleAnnotation
             this.selectorValue = result.target.selector.value
@@ -99,6 +110,7 @@
               url: result.body.source.id,
               id: result.id,
               title: this.meta.title,
+              timeline: result.target.id,
               tags
             }
           }),
@@ -123,6 +135,12 @@
               type: 'chips',
               label: 'labels.tags',
               autocompleteOptions: []
+            },
+            timeline: {
+              fullWidth: true,
+              type: 'select',
+              label: 'labels.associated_timeline',
+              options: []
             }
           },
           submit: {
@@ -138,6 +156,7 @@
               }
               context.apiPayload = {
                 target: {
+                  id: context.payload.timeline,
                   selector: {
                     value: context.selectorOverride || context.selectorValue
                   }
