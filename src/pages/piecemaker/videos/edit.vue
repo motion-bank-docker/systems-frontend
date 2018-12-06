@@ -140,6 +140,7 @@
               fullWidth: true,
               type: 'select',
               label: 'labels.associated_timeline',
+              helperLabel: 'labels.associated_timeline_warning',
               options: []
             }
           },

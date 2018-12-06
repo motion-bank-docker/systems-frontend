@@ -77,6 +77,7 @@ export default {
     access_control_add_group: 'Add to group',
     access_control_remove_group: 'Remove from group',
     associated_timeline: 'Associated timeline',
+    associated_timeline_warning: 'WARNING: If you already annotated this video, your annotations are linked to the original timeline. Changing the associated timeline will only reassign the video, not the existing annotations.',
     recursive: 'Apply to all contained annotations and videos',
     add_group: 'Add Group',
     add_term: 'Add Term',
