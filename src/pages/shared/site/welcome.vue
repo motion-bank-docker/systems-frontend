@@ -6,7 +6,7 @@
         img.responsive(src="~assets/motionbank-logo.png")
       h3.caption.text-white {{ $t('site.title') }}
       p.caption.text-white {{ $t('site.tagline') }}
-      q-btn(outline, size="big", color="primary", @click="openURL('http://www.motionbank.org')") {{ $t('buttons.more_info') }}
+      q-btn(outline, size="big", color="primary", @click="openURL('https://medium.com/motion-bank/motion-bank-at-hochschule-mainz-c89ef4a61643')") {{ $t('buttons.more_info') }}
     // .row.full-width
       .column.items-between
         .layout-padding.text-center

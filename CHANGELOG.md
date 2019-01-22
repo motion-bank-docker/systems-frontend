@@ -7,7 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-No changes yet.
+### Changed
+
+- "More Info" button on welcome page now links to medium article
 
 ## [1.1.0] - 2018-12-11
 
