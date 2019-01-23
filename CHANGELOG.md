@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Resource 'documents' available in the store
+
 ### Fixed
 
 - Perform date related queries to MongoDB with properly formatted timezones (see: [#106](https://gitlab.rlp.net/motionbank/systems-frontend/issues/106))

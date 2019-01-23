@@ -15,7 +15,8 @@ import Vuex from 'vuex'
 
 import {
   Annotation,
-  Map
+  Map,
+  Document
 } from 'mbjs-data-models/src/models'
 
 Vue.use(Vuex)
@@ -45,6 +46,7 @@ const store = new Vuex.Store({
     mosysGridEditorStore,
     annotations: makeResourceModule(apiClient, Annotation, 'annotation'),
     maps: makeResourceModule(apiClient, Map, 'map'),
+    documents: makeResourceModule(apiClient, Document, 'document'),
     profiles: makeResourceModule(apiClient, undefined, 'profile'),
     sessions: makeResourceModule(apiClient, undefined, 'session'),
     // metadata: makeResourceModule(apiClient, undefined, 'metadata', 'metadata', process.env.TRANSCODER_HOST),
