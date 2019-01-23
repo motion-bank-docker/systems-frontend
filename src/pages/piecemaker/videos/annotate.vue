@@ -181,9 +181,8 @@
             'body.type': { $in: ['TextualBody', 'VocabularyEntry'] }
           }
         if (this.metadata.duration) {
-          query['target.selector.value']['$lte'] = DateTime.fromISO(this.video.target.selector.value)
-            .plus(this.metadata.duration * 1000)
-            .toISO()
+          const start = DateTime.fromISO(this.video.target.selector.value, { setZone: true })
+          query['target.selector.value']['$lte'] = start.plus(this.metadata.duration * 1000).toISO()
         }
         const results = await this.$store.dispatch('annotations/find', query)
         for (let item of results.items) {

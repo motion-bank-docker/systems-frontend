@@ -150,7 +150,7 @@
             const videoAnnotation = result.items.shift()
             if (videoAnnotation) {
               _this.video = videoAnnotation
-              _this.videoTime = Date.parse(_this.video.target.selector.value)
+              _this.videoTime = DateTime.fromISO(_this.video.target.selector.value, { setZone: true })
               _this.contextTime = _this.videoTime
               const query = {
                 type: constants.MAP_TYPE_TIMELINE,
@@ -164,8 +164,8 @@
                   }
                 })
               const selectorValue = videoAnnotation.target.selector.value
-              const startDate = Date.parse(selectorValue)
-              const endDate = DateTime.fromMillis(startDate + (_this.videoMeta.duration * 1000))
+              const startDate = DateTime.fromISO(selectorValue, { setZone: true })
+              const endDate = startDate.plus(_this.videoMeta.duration * 1000)
               const endDateISO = endDate.toISO()
               const annotationsQuery = {
                 'target.id': videoAnnotation.target.id,
