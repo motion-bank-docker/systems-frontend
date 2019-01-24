@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Resource 'documents' available in the store
+- 'Assets' feature allows uploading of files to personal S3 compatible bucket
 
 ### Fixed
 

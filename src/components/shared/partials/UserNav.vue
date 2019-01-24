@@ -14,19 +14,26 @@
         @click="executeApp('mosys', 'mosys.grids.list')",
         big, flat
         ) Mosys
+      q-btn(v-if="userHasAssets",
+        :color="currentApp === 'assets' ? 'primary' : ''",
+        @click="executeApp('assets', 'assets.list')",
+        big, flat
+        ) Assets
 
     q-btn(color="primary", flat, icon="settings",
-    v-if="userState", @click="$router.push({ name: 'users.manage' })") {{ userState.profile ? userState.profile.name : '' }}
+    v-if="user", @click="$router.push({ name: 'users.manage' })") {{ user.profile ? user.profile.name : '' }}
 
     q-btn(color="primary", flat, icon="eject",
-      v-if="userState", @click="logout") {{ $t('navigation.logout') }}
+      v-if="user", @click="logout") {{ $t('navigation.logout') }}
 
     q-btn(color="primary", flat, icon="arrow_forward",
-      v-if="!userState", @click="login") {{ $t('navigation.login') }}
+      v-if="!user", @click="login") {{ $t('navigation.login') }}
 </template>
 
 <script>
   import { mapGetters } from 'vuex'
+  import userHasFeature from '../../../lib/user-has-feature'
+
   export default {
     data () {
       return {
@@ -36,8 +43,11 @@
     },
     computed: {
       ...mapGetters({
-        userState: 'auth/getUserState'
-      })
+        user: 'auth/getUserState'
+      }),
+      userHasAssets () {
+        return userHasFeature(this.user, 'assets')
+      }
     },
     methods: {
       executeApp (appName, routeName) {
