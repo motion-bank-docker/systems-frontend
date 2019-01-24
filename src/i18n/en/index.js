@@ -12,13 +12,16 @@ export default {
     add_and_go: 'Add & Go',
     back: 'Back',
     create_account: 'Create Account',
+    create_asset: 'Add asset',
     create_timeline: 'Create Timeline',
     create_grid: 'Create Grid',
     cancel: 'Cancel',
     change: 'Change',
     confirm: 'OK',
+    copy_url: 'Copy URL',
     delete: 'Delete',
     download_archive: 'Download Archive',
+    download: 'Download',
     done: 'Done',
     edit: 'Edit',
     export_timeline: 'Export Timeline',
@@ -53,6 +56,7 @@ export default {
     }
   },
   errors: {
+    asset_delete_failed: 'Failed to delete asset',
     item_exists: 'This item already exists.',
     unknown: 'Unknown Error',
     invalid_email: 'Please enter a valid email',
@@ -119,6 +123,7 @@ export default {
     set_title: 'Set Title',
     set_shortcut: 'Set Shortcut',
     starting_point: 'Starting point',
+    size: 'Size',
     tag: 'Tag',
     tags: 'Tags',
     title: 'Title',
@@ -130,10 +135,13 @@ export default {
     click_to_register: 'Click here to create an account.'
   },
   descriptions: {
-    access_control: 'Allow or disallow members of a group see your timeline and, optionally, the attached annotations.'
+    access_control: 'Allow or disallow members of a group see your timeline and, optionally, the attached annotations.',
+    access_control_assets: 'Allow or disallow members of a group and/or the public to see your asset'
   },
   messages: {
     acl_updated: 'Access settings updated',
+    asset_created: 'Asset created',
+    asset_deleted: 'Asset deleted',
     login_success: 'Login successful',
     logout_notice: 'You have been logged out',
     registration_success: 'Account was successfully created. You can log in now!',
@@ -147,6 +155,7 @@ export default {
     grid_deleted: 'Grid deleted',
     confirm_delete: 'Delete this item?',
     updated_annotation: 'Updated annotation',
+    url_copied: 'URL copied to clipboard',
     caution_video_time_override: 'Caution: Changing a video\'s time does not update existing annotations!',
     browser_unsupported_warning: '<strong>Unsupported browser:</strong> For optimal performance please use ' +
       '<a href="https://www.google.com/chrome" target="_blank">Google Chrome</a> or ' +
@@ -165,6 +174,17 @@ export default {
     terms: 'Terms'
   },
   routes: {
+    assets: {
+      edit: {
+        title: 'Edit asset'
+      },
+      create: {
+        title: 'Add asset'
+      },
+      list: {
+        title: 'Assets'
+      }
+    },
     annotate: {
       video: {
         title: 'Annotate Video',

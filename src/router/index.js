@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 
 import routes from './routes'
+// import userHasFeature from '../lib/user-has-feature'
 
 Vue.use(VueRouter)
 
@@ -40,7 +41,14 @@ Router.beforeEach((to, from, next) => {
             console.debug('Auth0 first login', user)
             next({ name: 'users.manage', params: { isFirst: true, redirect: to } })
           }
-          else next()
+          else {
+            // FIXME: block routes when feature not allowed
+            // if (to.meta.feature) {
+            //   if (userHasFeature(Router.app.$store.state.user, to.meta.feature)) next()
+            //   else next({ name: 'site.welcome' })
+            // }
+            next()
+          }
         }
         else if (to.meta.private) {
           Router.app.$store.commit('auth/setRedirect', to.fullPath)
@@ -52,7 +60,13 @@ Router.beforeEach((to, from, next) => {
         Router.app.$auth.logout()
       })
     }
-    else next()
+    else {
+      // if (to.meta.feature) {
+      //   if (userHasFeature(Router.app.$store.state.user, to.meta.feature)) next()
+      //   else next({ name: 'site.welcome' })
+      // }
+      next()
+    }
   })
 })
 

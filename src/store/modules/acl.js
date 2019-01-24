@@ -1,4 +1,5 @@
 import axios from 'axios'
+import * as utils from 'mbjs-utils'
 
 const acl = {
   namespaced: true,
@@ -10,19 +11,32 @@ const acl = {
       const headers = {
         Authorization: `Bearer ${localStorage.getItem('access_token')}`
       }
-      await axios.put(`${process.env.API_HOST}/acl/${role}/${uuid}`, permissions, { headers })
+      if (!utils.uuid.isUUID(uuid)) {
+        const query = `?role=${encodeURIComponent(role)}&resource=${encodeURIComponent(uuid)}`
+        await axios.put(`${process.env.API_HOST}/acl${query}`, permissions, { headers })
+      }
+      else await axios.put(`${process.env.API_HOST}/acl/${role}/${uuid}`, permissions, { headers })
     },
     async remove (context, { role, uuid, permission }) {
       const headers = {
         Authorization: `Bearer ${localStorage.getItem('access_token')}`
       }
-      await axios.delete(`${process.env.API_HOST}/acl/${role}/${uuid}/${permission}`, { headers })
+      if (!utils.uuid.isUUID(uuid)) {
+        const query = `?role=${encodeURIComponent(role)}&resource=${encodeURIComponent(uuid)}&permission=${encodeURIComponent(permission)}`
+        await axios.delete(`${process.env.API_HOST}/acl${query}`, { headers })
+      }
+      else await axios.delete(`${process.env.API_HOST}/acl/${role}/${uuid}/${permission}`, { headers })
     },
     async isRoleAllowed (context, { role, uuid, permission }) {
       const headers = {
         Authorization: `Bearer ${localStorage.getItem('access_token')}`
       }
-      const permissions = await axios.get(`${process.env.API_HOST}/acl/${role}/${uuid}/${permission}`, { headers })
+      let permissions
+      if (!utils.uuid.isUUID(uuid)) {
+        const query = `?role=${encodeURIComponent(role)}&resource=${encodeURIComponent(uuid)}&permission=${encodeURIComponent(permission)}`
+        permissions = await axios.get(`${process.env.API_HOST}/acl${query}`, { headers })
+      }
+      else permissions = await axios.get(`${process.env.API_HOST}/acl/${role}/${uuid}/${permission}`, { headers })
       return permissions.data
     }
   }
