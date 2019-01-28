@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 No changes yet.
 
+## [1.1.1] - 2019-01-28
+
+### Fixed
+
+- Recursive setting of ACL for a timeline's associated annotations now traverses the full relational depth.
+
 ## [1.1.0] - 2018-12-11
 
 ### Added
@@ -55,6 +61,7 @@ No changes yet.
 - Start proper versioning at 1.0.0
 
 
-[Unreleased]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.1.0...master
+[Unreleased]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.1.1...master
+[1.1.1]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.1.0...v1.1.1
 [1.1.0]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.0.0...v1.1.0
 [1.0.0]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/initial...v1.0.0

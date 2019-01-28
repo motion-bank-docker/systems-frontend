@@ -131,13 +131,21 @@
       async setACL (action, payload, recursive = false) {
         await this.$store.dispatch(action, payload)
         if (recursive) {
-          const results = await this.$store.dispatch('annotations/find', { 'target.id': payload.id })
-          for (let item of results.items) {
-            if (item.author.id === this.$store.state.auth.user.uuid) {
-              const itemPayload = ObjectUtil.merge({}, payload)
-              itemPayload.uuid = item.uuid
-              await this.$store.dispatch(action, itemPayload)
-            }
+          await this.setRelatedACLForTarget(payload.id, action, payload)
+        }
+      },
+      async setRelatedACLForTarget (targetId, action, payload) {
+        const results = await this.$store.dispatch('annotations/find', {
+          'target.id': targetId,
+          'author.id': this.$store.state.auth.user.uuid
+        })
+        for (let item of results.items) {
+          if (item.author.id === this.$store.state.auth.user.uuid) {
+            const itemPayload = ObjectUtil.merge({}, payload)
+            itemPayload.uuid = item.uuid
+            if (itemPayload.id) itemPayload.id = item.id
+            await this.$store.dispatch(action, itemPayload)
+            await this.setRelatedACLForTarget(item.id, action, itemPayload)
           }
         }
       },
