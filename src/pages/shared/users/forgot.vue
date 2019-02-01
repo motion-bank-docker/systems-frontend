@@ -9,7 +9,7 @@
 </template>
 
 <script>
-  import CenterCardThreeQuarter from 'mbjs-quasar/src/components/layouts/CenterCardThreeQuarter'
+  import CenterCardThreeQuarter from '../../../components/shared/layouts/CenterCardThreeQuarter'
   import { FormMain } from '../../../components/shared/forms'
   import { required, email } from 'vuelidate/lib/validators'
   export default {

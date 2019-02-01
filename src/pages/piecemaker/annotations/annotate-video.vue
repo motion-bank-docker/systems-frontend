@@ -6,7 +6,7 @@
 </template>
 
 <script>
-  import CenterCardThreeQuarter from 'mbjs-quasar/src/components/layouts/CenterCardThreeQuarter'
+  import CenterCardThreeQuarter from '../../../components/shared/layouts/CenterCardThreeQuarter'
   import { FormMain } from '../../../components/shared/forms/index'
   import { required, url } from 'vuelidate/lib/validators'
   export default {

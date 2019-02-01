@@ -9,7 +9,7 @@ import {
   Username,
   VideoPlayer,
   VideoTitle
-} from 'mbjs-quasar/src/components'
+} from '../components/shared'
 
 export default ({ Vue }) => {
   Vue.component('back-button', BackButton)

@@ -26,7 +26,7 @@
 </template>
 
 <script>
-  import CardFull from 'mbjs-quasar/src/components/layouts/CardFull'
+  import CardFull from '../../../components/shared/layouts/CardFull'
   import { FormMain } from '../../../components/shared/forms'
   // import { required, sameAs, minLength, email } from 'vuelidate/lib/validators'
   import { required, minLength } from 'vuelidate/lib/validators'
