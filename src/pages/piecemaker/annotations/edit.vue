@@ -23,7 +23,7 @@
 </template>
 
 <script>
-  import CenterCardFull from 'mbjs-quasar/src/components/layouts/CenterCardFull'
+  import CenterCardFull from '../../../components/shared/layouts/CenterCardFull'
   import { FormMain } from '../../../components/shared/forms/index'
   import { required } from 'vuelidate/lib/validators'
   export default {

@@ -50,7 +50,7 @@
 </template>
 
 <script>
-  import { FullScreen } from 'mbjs-quasar/src/components'
+  import { FullScreen } from '../../../components/shared'
 
   export default {
     components: {

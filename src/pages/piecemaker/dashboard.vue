@@ -29,8 +29,8 @@
 </template>
 
 <script>
-  import CardFull from 'mbjs-quasar/src/components/layouts/CardFull'
-  import CenterCardFull from 'mbjs-quasar/src/components/layouts/CenterCardFull'
+  import CardFull from '../../components/shared/layouts/CardFull'
+  import CenterCardFull from '../../components/shared/layouts/CenterCardFull'
   import constants from 'mbjs-data-models/src/constants'
   export default {
     components: {

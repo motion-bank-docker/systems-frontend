@@ -72,7 +72,7 @@
   import Vue from 'vue'
   import { ObjectUtil } from 'mbjs-utils'
   import { DateTime } from 'luxon'
-  import CardFull from 'mbjs-quasar/src/components/layouts/CardFull'
+  import CardFull from '../../../components/shared/layouts/CardFull'
   import constants from 'mbjs-data-models/src/constants'
   import {parseURI} from 'mbjs-data-models/src/lib'
 

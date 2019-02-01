@@ -24,7 +24,7 @@
 
 <script>
   import { openURL } from 'quasar'
-  import { FullScreen, SiteFooter } from 'mbjs-quasar/src/components'
+  import { FullScreen, SiteFooter } from '../../../components/shared'
   export default {
     name: 'PageWelcome',
     components: {
