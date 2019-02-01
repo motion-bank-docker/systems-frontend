@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- App startup no longer breaks on Microsoft Edge (works from version 15+)
 - Perform date related queries to MongoDB with properly formatted timezones (see: [#106](https://gitlab.rlp.net/motionbank/systems-frontend/issues/106))
 
 ### Changed
