@@ -6,6 +6,8 @@
       .row
         .col-md-12
           form-main(v-model="payload", :schema="schema")
+            q-btn.q-mr-md.bg-grey-9(q-if="$route.params.id && userHasPackager", slot="form-buttons-add",
+              :label="packageLabel", @click="createPackage")
 
       .row
         .col-md-12
@@ -36,6 +38,9 @@
 
   import { required } from 'vuelidate/lib/validators'
   import constants from 'mbjs-data-models/src/constants'
+  import { openURL } from 'quasar'
+  import { mapGetters } from 'vuex'
+  import userHasFeature from '../../../lib/user-has-feature'
 
   import { ObjectUtil } from 'mbjs-utils'
 
@@ -50,6 +55,8 @@
       return {
         grid: undefined,
         env: process.env,
+        packageLabel: this.$t('buttons.create_package'),
+        downloadURL: undefined,
         acl: {
           public: false,
           group: undefined,
@@ -82,12 +89,41 @@
     async mounted () {
       this.grid = await this.$store.dispatch('maps/get', this.$route.params.id)
       if (process.env.IS_STAGING) {
-        const aclQuery = {role: 'public', id: this.grid.id, permission: 'get'}
+        const aclQuery = {role: 'public', uuid: this.grid.uuid, id: this.grid.id, permission: 'get'}
         const permissions = await this.$store.dispatch('acl/isRoleAllowed', aclQuery)
         this.acl.public = permissions.get === true
       }
     },
+    computed: {
+      ...mapGetters({
+        user: 'auth/getUserState'
+      }),
+      userHasPackager () {
+        return userHasFeature(this.user, 'packager')
+      }
+    },
     methods: {
+      async createPackage () {
+        if (this.downloadURL) return openURL(this.downloadURL)
+        this.$q.loading.show()
+        try {
+          const result = await this.$axios.post(
+            `${process.env.PACKAGER_HOST}/packages`,
+            {id: this.grid.id},
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.access_token}`
+              }
+            }
+          )
+          this.downloadURL = result.data
+          this.packageLabel = this.$t('buttons.download_package')
+        }
+        catch (err) {
+          this.$handleError(this, err, 'errors.packaging_failed')
+        }
+        this.$q.loading.hide()
+      },
       async setACL (action, payload, recursive = false) {
         await this.$store.dispatch(action, payload)
         if (recursive) {

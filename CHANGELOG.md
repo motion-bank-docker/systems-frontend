@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Resource 'documents' available in the store
 - 'Assets' feature allows uploading of files to personal S3 compatible bucket
+- 'Packager' feature allows export of MoSys grids as static packages to be hosted in any webspace, without the need of Motion Bank APIs
 
 ### Fixed
 
