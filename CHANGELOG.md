@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- API client (and its associated resources' "find" actions) now accept regular expressions
 - Resource 'documents' available in the store
 - 'Assets' feature allows uploading of files to personal S3 compatible bucket
 - 'Packager' feature allows export of MoSys grids as static packages to be hosted in any webspace, without the need of Motion Bank APIs
@@ -25,6 +26,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - MoSys components now included through git submodule from [quasar-components-mosys](https://gitlab.rlp.net/motionbank/mbjs/quasar-components-mosys)
 - Shared components now included through git submodule from [quasar-components-shared](https://gitlab.rlp.net/motionbank/mbjs/quasar-components-shared)
 
+### Updated
+
+- [mbjs-api-client](https://gitlab.rlp.net/motionbank/mbjs/api-client) now at version 1.1.0
 
 ## [1.1.1] - 2019-01-28
 
