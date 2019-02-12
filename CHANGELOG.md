@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Parameter 'feature' can now be added to route metadata to allow access control through Auth0 app metadata
 - Exception when passing an id (URI) to ACL store instead of a UUID
 - Incompatibilities in MoSys cells (Video, AnnotationList)
 - App startup no longer breaks on Microsoft Edge (works from version 15+)

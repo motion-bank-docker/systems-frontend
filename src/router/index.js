@@ -2,7 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 
 import routes from './routes'
-// import userHasFeature from '../lib/user-has-feature'
+import userHasFeature from '../lib/user-has-feature'
 
 Vue.use(VueRouter)
 
@@ -28,7 +28,7 @@ Router.beforeEach((to, from, next) => {
     else cb()
   }
   waitForStore(Router.app, () => {
-    if (!Router.app.$store.state.user) {
+    if (!Router.app.$store.state.auth.user) {
       Router.app.$auth.checkSession(Router.app.$store).catch(() => {
         if (to.meta.private) {
           Router.app.$store.commit('auth/setRedirect', to.fullPath)
@@ -42,11 +42,10 @@ Router.beforeEach((to, from, next) => {
             next({ name: 'users.manage', params: { isFirst: true, redirect: to } })
           }
           else {
-            // FIXME: block routes when feature not allowed
-            // if (to.meta.feature) {
-            //   if (userHasFeature(Router.app.$store.state.user, to.meta.feature)) next()
-            //   else next({ name: 'site.welcome' })
-            // }
+            if (to.meta.feature) {
+              if (userHasFeature(Router.app.$store.state.auth.user, to.meta.feature)) next()
+              else next({ name: 'site.welcome' })
+            }
             next()
           }
         }
@@ -61,10 +60,10 @@ Router.beforeEach((to, from, next) => {
       })
     }
     else {
-      // if (to.meta.feature) {
-      //   if (userHasFeature(Router.app.$store.state.user, to.meta.feature)) next()
-      //   else next({ name: 'site.welcome' })
-      // }
+      if (to.meta.feature) {
+        if (userHasFeature(Router.app.$store.state.auth.user, to.meta.feature)) next()
+        else next({ name: 'site.welcome' })
+      }
       next()
     }
   })
