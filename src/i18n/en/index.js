@@ -37,6 +37,7 @@ export default {
     save_changes: 'Save changes',
     save: 'Save',
     set_marker: 'Set Marker',
+    search: 'Search',
     submit: 'Submit',
     synchronize: 'Sync',
     videos: 'Videos',
