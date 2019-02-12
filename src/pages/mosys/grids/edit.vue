@@ -40,7 +40,7 @@
   import constants from 'mbjs-data-models/src/constants'
   import { openURL } from 'quasar'
   import { mapGetters } from 'vuex'
-  import userHasFeature from '../../../lib/user-has-feature'
+  import { userHasFeature } from 'mbjs-quasar/src/lib'
 
   import { ObjectUtil } from 'mbjs-utils'
 

@@ -2,7 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 
 import routes from './routes'
-import userHasFeature from '../lib/user-has-feature'
+import { userHasFeature } from 'mbjs-quasar/src/lib'
 
 Vue.use(VueRouter)
 

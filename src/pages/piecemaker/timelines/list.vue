@@ -119,6 +119,13 @@
               click: (item) => _this.$router.push({ name: 'piecemaker.videos.list', params: { timelineId: item.uuid } })
             },
             {
+              type: 'search',
+              title: 'buttons.search',
+              color: 'primary',
+              feature: 'search',
+              click: (item) => _this.$router.push({ name: 'piecemaker.timelines.search', params: { timelineId: item.uuid } })
+            },
+            {
               type: 'edit',
               title: 'buttons.edit',
               click: (item) => _this.$router.push({ name: 'piecemaker.timelines.edit', params: { id: item.uuid } })

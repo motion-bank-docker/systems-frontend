@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- userHasFeature moved to [mbjs-quasar](https://gitlab.rlp.net/motionbank/mbjs/quasar) module
 - "More Info" button on welcome page now links to medium article
 - MoSys components now included through git submodule from [quasar-components-mosys](https://gitlab.rlp.net/motionbank/mbjs/quasar-components-mosys)
 - Shared components now included through git submodule from [quasar-components-shared](https://gitlab.rlp.net/motionbank/mbjs/quasar-components-shared)
