@@ -123,7 +123,7 @@
               title: 'buttons.search',
               color: 'primary',
               feature: 'search',
-              click: (item) => _this.$router.push({ name: 'piecemaker.timelines.search', params: { timelineId: item.uuid } })
+              click: (item) => _this.$router.push({ name: 'piecemaker.timelines.search', params: { id: item.uuid } })
             },
             {
               type: 'edit',
