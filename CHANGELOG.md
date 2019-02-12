@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Very basic search page for timelines added, not yet in navigation
+- Very basic search page for timelines added, accessible only with 'search' feature permission
 - API client (and its associated resources' "find" actions) now accept regular expressions
 - Resource 'documents' available in the store
 - 'Assets' feature allows uploading of files to personal S3 compatible bucket
