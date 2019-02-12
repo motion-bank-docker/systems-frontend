@@ -49,7 +49,7 @@ export default {
       path: '/piecemaker/timelines/:id/search',
       component: () => import('pages/piecemaker/timelines/search'),
       name: 'piecemaker.timelines.search',
-      meta: {private: true}
+      meta: {private: true, feature: 'search'}
     },
     {
       path: '/piecemaker/timelines/:timelineId/videos',
