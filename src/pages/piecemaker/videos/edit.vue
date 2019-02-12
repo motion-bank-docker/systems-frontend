@@ -149,7 +149,7 @@
               if (!context.titlePayload && context.payload.title !== context.meta.title) {
                 await context.createTitle(context.payload.id, context.payload.title)
               }
-              else if (context.titlePayload && context.payload.title === context.meta.title) {
+              else if (context.titlePayload && context.payload.title === context.meta.originalTitle) {
                 await context.removeTitle(context.titlePayload.uuid)
               }
               else if (context.titlePayload && context.payload.title !== context.titlePayload.body.value) {
