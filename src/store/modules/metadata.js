@@ -32,6 +32,7 @@ const metadata = {
       const titleResult = await context.dispatch('annotations/find', titleQuery, {root: true})
       if (titleResult && titleResult.items && titleResult.items.length) {
         metadata.titleAnnotation = titleResult.items[0]
+        if (metadata.title) metadata.originalTitle = metadata.title
         metadata.title = titleResult.items[0].body.value
       }
       console.debug('metadata', metadata)
