@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Post annotator now accepts annotation UUIDs as a hash value and automatically jumps there on load
 - Property 'originalTitle' (if title is overridden) added to result in metadata store
 - Very basic search page for timelines added, accessible only with 'search' feature permission
 - API client (and its associated resources' "find" actions) now accept regular expressions
@@ -18,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Automatic scrolling to annotations when video player plays in post annotator
 - Video titles are no longer removed when saving video with same title as before
 - Parameter 'feature' can now be added to route metadata to allow access control through Auth0 app metadata
 - Exception when passing an id (URI) to ACL store instead of a UUID

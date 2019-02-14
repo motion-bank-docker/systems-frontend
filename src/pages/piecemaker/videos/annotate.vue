@@ -12,7 +12,7 @@
       //
       //
       video-player(v-if="video", :annotation="video", :fine-controls="true",
-      @ready="playerReady($event)", @time="onPlayerTime($event)")
+      @ready="playerReady($event)", @time="onPlayerTime($event)", @canplay.once="gotoHashvalue")
 
       // TOP LEFT
       //
@@ -90,7 +90,7 @@
   import uuidValidate from 'uuid-validate'
   import { DateTime } from 'luxon'
 
-  import { ObjectUtil, Assert } from 'mbjs-utils'
+  import { ObjectUtil, Assert, uuid } from 'mbjs-utils'
   import constants from 'mbjs-data-models/src/constants'
   import parseURI from 'mbjs-data-models/src/lib/parse-uri'
 
@@ -127,10 +127,14 @@
         timeline: undefined,
         video: undefined,
         editAnnotationIndex: undefined,
-        editAnnotationBuffer: undefined
+        editAnnotationBuffer: undefined,
+        hashTimeout: undefined
       }
     },
     computed: {
+      hashValue () {
+        return this.$route.hash.length ? this.$route.hash.substr(1) : undefined
+      },
       currentIndex () {
         if (!this.annotations.length) return
 
@@ -154,6 +158,12 @@
       isAnnotationDirty () {
         return this.isEditingAnnotations &&
           this.annotations[this.editAnnotationIndex].body.value !== this.editAnnotationBuffer
+      }
+    },
+    watch: {
+      currentIndex (val) {
+        if (typeof this.editAnnotationIndex === 'number') return
+        this.scrollToAnnotation(this.annotations[val].uuid)
       }
     },
     methods: {
@@ -213,8 +223,7 @@
           }
           this.annotations.push(result)
           this.annotations = this.annotations.sort(this.$sort.onRef)
-          // FIXME: scroll seems broken, cannot find ref, dom element probably not available yet
-          // this.scrollToAnnotation(result.uuid)
+          setTimeout(() => this.scrollToAnnotation(result.uuid), 500)
         }
         catch (err) {
           this.$handleError(this, err, 'errors.create_annotation_failed')
@@ -258,7 +267,18 @@
       gotoSelector (selector) {
         const millis = DateTime.fromISO(selector).toMillis() -
           DateTime.fromISO(this.video.target.selector.value).toMillis()
-        this.player.currentTime(millis * 0.001)
+        const targetMillis = millis * 0.001
+        if (this.playerTime !== targetMillis) this.player.currentTime(targetMillis)
+      },
+      gotoHashvalue () {
+        if (this.hashValue && uuid.isUUID(this.hashValue)) {
+          const result = this.annotations.filter(annotation => annotation.uuid === this.hashValue)
+          if (result.length) {
+            this.scrollToAnnotation(this.hashValue)
+            this.gotoSelector(result[0].target.selector.value)
+            if (this.hashTimeout) this.hashTimeout = false
+          }
+        }
       },
       playerReady (player) {
         this.player = player
