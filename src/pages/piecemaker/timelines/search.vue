@@ -13,7 +13,7 @@
       .col-md-6
         p {{ formatDate(result.target.selector.value) }}
         p
-          a(:href="`/piecemaker/videos/${getVideo(result).annotation.uuid}/annotate`") Goto Video
+          a(:href="`/piecemaker/videos/${getVideo(result).annotation.uuid}/annotate#${result.uuid}`") Goto Video
 </template>
 
 <script>
