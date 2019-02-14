@@ -7,7 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-No updates yet.
+### Fixed
+
+- Timestamps in post-annotator are no longer being cut off, display hours as well
 
 ## [1.2.0] - 2019-02-14
 

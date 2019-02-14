@@ -288,7 +288,7 @@
         const videoDate = DateTime.fromISO(this.video.target.selector.value).toMillis()
         return annotationDate
           .minus(videoDate)
-          .toFormat(constants.TIMECODE_FORMAT).split(':').slice(1).join(':')
+          .toFormat(constants.TIMECODE_FORMAT)
       },
       onPlayerTime (seconds) {
         this.playerTime = seconds
