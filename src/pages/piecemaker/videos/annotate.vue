@@ -230,9 +230,9 @@
         }
       },
       scrollToAnnotation (uuid, duration = 100) {
-        const el = this.$refs[uuid]
-        if (el && el[0] && el[0].$el) {
-          setScrollPosition(getScrollTarget(el[0].$el), el.offsetTop - el.scrollHeight, duration)
+        const el = this.$refs[uuid] ? this.$refs[uuid].$el || this.$refs[uuid][0].$el : undefined
+        if (el) {
+          setScrollPosition(getScrollTarget(el), el.offsetTop - el.scrollHeight, duration)
         }
       },
       async updateAnnotation (annotation) {
