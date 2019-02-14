@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- currentIndex property no longer throws when attempting to scroll to invalid annotation index
 - Timestamps in post-annotator are no longer being cut off, display hours as well
 
 ## [1.2.0] - 2019-02-14

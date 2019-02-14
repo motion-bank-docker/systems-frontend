@@ -163,7 +163,7 @@
     watch: {
       currentIndex (val) {
         if (typeof this.editAnnotationIndex === 'number') return
-        this.scrollToAnnotation(this.annotations[val].uuid)
+        if (this.annotations[val]) this.scrollToAnnotation(this.annotations[val].uuid)
       }
     },
     methods: {
