@@ -13,7 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Moved delete map functionality to [mbjs-quasar](https://gitlab.rlp.net/motionbank/mbjs/quasar) module
 - Moved ACL functionality to [mbjs-quasar](https://gitlab.rlp.net/motionbank/mbjs/quasar) module
+
+### Fixed
+
+- Delete map no longer fails when encountering access denied errors (still suffers from [#119](https://gitlab.rlp.net/motionbank/systems-frontend/issues/119))
 
 
 ## [1.2.1] - 2019-02-15

@@ -29,6 +29,7 @@
 <script>
   import constants from 'mbjs-data-models/src/constants'
   import { DateTime } from 'luxon'
+  import { deleteHelper } from 'mbjs-quasar/src/lib'
 
   export default {
     data () {
@@ -143,27 +144,8 @@
     },
     methods: {
       async handleConfirmModal (item) {
-        try {
-          const result = await this.$store.dispatch('annotations/find', { 'target.id': item.id })
-          for (let a of result.items) {
-            await this.$store.dispatch('annotations/delete', a.uuid)
-          }
-          await this.$store.dispatch('maps/delete', item.uuid)
-          this.$store.commit('notifications/addMessage', {
-            body: 'messages.timeline_deleted',
-            mode: 'alert',
-            type: 'success'
-          })
-          this.$refs.listTable.request()
-        }
-        catch (err) {
-          console.error('timeline delete failed', err.message)
-          this.$store.commit('notifications/addMessage', {
-            body: 'errors.timeline_delete_failed',
-            mode: 'alert',
-            type: 'error'
-          })
-        }
+        await deleteHelper.deleteMap(this, item)
+        this.$refs.listTable.request()
       }
     }
   }
