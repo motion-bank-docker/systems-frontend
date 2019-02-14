@@ -229,7 +229,7 @@
           this.$handleError(this, err, 'errors.create_annotation_failed')
         }
       },
-      scrollToAnnotation (uuid, duration = 1000) {
+      scrollToAnnotation (uuid, duration = 100) {
         const el = this.$refs[uuid][0].$el
         setScrollPosition(getScrollTarget(el), el.offsetTop - el.scrollHeight, duration)
       },
