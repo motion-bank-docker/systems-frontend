@@ -53,7 +53,6 @@
         packageLabel: this.$t('buttons.create_package'),
         downloadURL: undefined,
         acl: {
-          public: false,
           group: undefined,
           group_remove: undefined,
           recursive: false

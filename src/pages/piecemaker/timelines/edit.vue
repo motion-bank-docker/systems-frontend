@@ -57,7 +57,6 @@
         type: constants.MAP_TYPE_TIMELINE,
         payload: this.$route.params.id ? _this.$store.dispatch('maps/get', _this.$route.params.id) : undefined,
         acl: {
-          public: false,
           group: undefined,
           group_remove: undefined,
           recursive: false
