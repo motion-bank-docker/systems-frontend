@@ -88,7 +88,7 @@
 <script>
   import { scroll, AppFullscreen } from 'quasar'
   import uuidValidate from 'uuid-validate'
-  import { DateTime } from 'luxon'
+  import { DateTime, Interval } from 'luxon'
 
   import { ObjectUtil, Assert, uuid } from 'mbjs-utils'
   import constants from 'mbjs-data-models/src/constants'
@@ -140,7 +140,8 @@
 
         let idx = -1, annotation = this.annotations[0]
         while (annotation && idx < this.annotations.length &&
-          DateTime.fromISO(this.baseSelector) >= DateTime.fromISO(annotation.target.selector.value)) {
+          DateTime.fromISO(this.baseSelector, { setZone: true }) >=
+            DateTime.fromISO(annotation.target.selector.value, { setZone: true })) {
           idx++
           annotation = this.annotations[idx + 1]
         }
@@ -148,7 +149,7 @@
       },
       baseSelector () {
         if (!this.video) return DateTime.local().toISO()
-        return DateTime.fromISO(this.video.target.selector.value)
+        return DateTime.fromISO(this.video.target.selector.value, { setZone: true })
           .plus(this.playerTime * 1000)
           .toISO()
       },
@@ -163,7 +164,7 @@
     watch: {
       currentIndex (val) {
         if (typeof this.editAnnotationIndex === 'number') return
-        this.scrollToAnnotation(this.annotations[val].uuid)
+        if (this.annotations[val]) this.scrollToAnnotation(this.annotations[val].uuid)
       }
     },
     methods: {
@@ -230,8 +231,10 @@
         }
       },
       scrollToAnnotation (uuid, duration = 100) {
-        const el = this.$refs[uuid][0].$el
-        setScrollPosition(getScrollTarget(el), el.offsetTop - el.scrollHeight, duration)
+        const el = this.$refs[uuid] ? this.$refs[uuid].$el || this.$refs[uuid][0].$el : undefined
+        if (el) {
+          setScrollPosition(getScrollTarget(el), el.offsetTop - el.scrollHeight, duration)
+        }
       },
       async updateAnnotation (annotation) {
         if (annotation.body.value !== this.editAnnotationBuffer) {
@@ -265,8 +268,8 @@
         }
       },
       gotoSelector (selector) {
-        const millis = DateTime.fromISO(selector).toMillis() -
-          DateTime.fromISO(this.video.target.selector.value).toMillis()
+        const millis = DateTime.fromISO(selector, { setZone: true }).toMillis() -
+          DateTime.fromISO(this.video.target.selector.value, { setZone: true }).toMillis()
         const targetMillis = millis * 0.001
         if (this.playerTime !== targetMillis) this.player.currentTime(targetMillis)
       },
@@ -284,11 +287,11 @@
         this.player = player
       },
       formatSelectorForList (val) {
-        const annotationDate = DateTime.fromISO(val)
-        const videoDate = DateTime.fromISO(this.video.target.selector.value).toMillis()
-        return annotationDate
-          .minus(videoDate)
-          .toFormat(constants.TIMECODE_FORMAT).split(':').slice(1).join(':')
+        const annotationDate = DateTime.fromISO(val, { setZone: true })
+        const videoDate = DateTime.fromISO(this.video.target.selector.value, { setZone: true })
+        return Interval.fromDateTimes(videoDate, annotationDate)
+          .toDuration()
+          .toFormat(constants.TIMECODE_FORMAT)
       },
       onPlayerTime (seconds) {
         this.playerTime = seconds

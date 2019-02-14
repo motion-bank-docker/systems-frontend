@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Post-annotator timestamps now display correct values, independent of timezone or DST
+- currentIndex property no longer throws when attempting to scroll to invalid annotation index
+- Timestamps in post-annotator are no longer being cut off, display hours as well
+
+## [1.2.0] - 2019-02-14
+
 ### Added
 
 - Post annotator now accepts annotation UUIDs as a hash value and automatically jumps there on load
@@ -91,7 +99,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Start proper versioning at 1.0.0
 
 
-[Unreleased]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.1.1...master
+[Unreleased]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.2.0...master
+[1.2.0]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.1.1...v1.2.0
 [1.1.1]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.1.0...v1.1.1
 [1.1.0]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.0.0...v1.1.0
 [1.0.0]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/initial...v1.0.0
