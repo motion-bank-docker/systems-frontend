@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Post-annotator timestamps now display correct values, independent of timezone or DST
 - currentIndex property no longer throws when attempting to scroll to invalid annotation index
 - Timestamps in post-annotator are no longer being cut off, display hours as well
 
