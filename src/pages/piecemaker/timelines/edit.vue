@@ -34,9 +34,9 @@
   import Tags from '../../../components/shared/partials/Tags'
   import FormMain from '../../../components/shared/forms/FormMain'
 
-  import { ObjectUtil } from 'mbjs-utils'
   import { required } from 'vuelidate/lib/validators'
   import constants from 'mbjs-data-models/src/constants'
+  import { aclHelper } from 'mbjs-quasar/src/lib'
 
   import { openURL } from 'quasar'
   import { mapGetters } from 'vuex'
@@ -128,47 +128,8 @@
         }
         this.$q.loading.hide()
       },
-      async setACL (action, payload, recursive = false) {
-        await this.$store.dispatch(action, payload)
-        if (recursive) {
-          await this.setRelatedACLForTarget(payload.id, action, payload)
-        }
-      },
-      async setRelatedACLForTarget (targetId, action, payload) {
-        const results = await this.$store.dispatch('annotations/find', {
-          'target.id': targetId,
-          'author.id': this.$store.state.auth.user.uuid
-        })
-        for (let item of results.items) {
-          if (item.author.id === this.$store.state.auth.user.uuid) {
-            const itemPayload = ObjectUtil.merge({}, payload)
-            itemPayload.uuid = item.uuid
-            if (itemPayload.id) itemPayload.id = item.id
-            await this.$store.dispatch(action, itemPayload)
-            await this.setRelatedACLForTarget(item.id, action, itemPayload)
-          }
-        }
-      },
       async updateACL () {
-        this.$q.loading.show()
-        console.debug('setting acl...', this.acl)
-        if (this.acl.public) {
-          await this.setACL('acl/set', { role: 'public', uuid: this.timeline.uuid, id: this.timeline.id, permissions: ['get'] }, this.acl.recursive)
-        }
-        else {
-          await this.setACL('acl/remove', { role: 'public', uuid: this.timeline.uuid, id: this.timeline.id, permission: 'get' }, this.acl.recursive)
-        }
-        if (this.acl.group) {
-          await this.setACL('acl/set', { role: this.acl.group, uuid: this.timeline.uuid, id: this.timeline.id, permissions: ['get'] }, this.acl.recursive)
-        }
-        if (this.acl.group_remove) {
-          await this.setACL('acl/remove', { role: this.acl.group_remove, uuid: this.timeline.uuid, id: this.timeline.id, permission: 'get' }, this.acl.recursive)
-        }
-        this.$q.loading.hide()
-        this.$store.commit('notifications/addMessage', {
-          body: 'messages.acl_updated',
-          type: 'success'
-        })
+        await aclHelper.updateACL(this, this.acl, this.timeline)
       }
     }
   }

@@ -9,26 +9,23 @@
             q-btn.q-mr-md.bg-grey-9(q-if="$route.params.id && userHasPackager", slot="form-buttons-add",
               :label="packageLabel", @click="createPackage")
 
-      .row
+      .row(v-if="availableRoles.length")
         .col-md-12
-          // access-control(:resource="grid")
-
-      .row(v-if="env.IS_STAGING")
-        .col-md-12
-          p {{ $t('labels.access_control') }}
-          q-checkbox(v-model="acl.public", :label="$t('labels.access_control_public')", dark)
-        .col-md-12
-          p {{ $t('labels.access_control_add_group') }}
-          q-input(v-model="acl.group", :label="$t('labels.access_control_add_group')", dark)
-        .col-md-12
-          p {{ $t('labels.access_control_remove_group') }}
-          q-input(v-model="acl.group_remove", :label="$t('labels.access_control_remove_group')", dark)
-        .col-md-12
-          p {{ $t('labels.recursive') }}
-          q-checkbox(v-model="acl.recursive", :label="$t('labels.recursive')", dark)
-        .col-md-12
-          q-btn.q-mr-md.bg-grey-9(:label="$t('buttons.update_access_control')", @click="updateACL")
-
+          h5.caption.text-light {{ $t('labels.access_control') }}
+          p {{ $t('descriptions.access_control') }}
+        .col-md-12.q-mb-md
+          q-field(orientation="vertical", dark)
+            q-select(v-model="acl.group", :clearable="true", :clear-value="undefined",
+            :float-label="$t('labels.access_control_add_group')", :options="availableRoles", dark)
+        .col-md-12.q-mb-md
+          q-field(orientation="vertical", dark)
+            q-select(v-model="acl.group_remove", :clearable="true", :clear-value="undefined",
+            :float-label="$t('labels.access_control_remove_group')", :options="availableRoles", dark)
+        .col-md-12.q-mb-md
+          q-field(dark)
+            q-checkbox(v-model="acl.recursive", :label="$t('labels.recursive')", dark)
+        .row.xs-gutter.full-width.justify-end.items-end
+          q-btn(:label="$t('buttons.update_access_control')", @click="updateACL", color="grey")
 </template>
 
 <script>
@@ -40,9 +37,7 @@
   import constants from 'mbjs-data-models/src/constants'
   import { openURL } from 'quasar'
   import { mapGetters } from 'vuex'
-  import { userHasFeature } from 'mbjs-quasar/src/lib'
-
-  import { ObjectUtil } from 'mbjs-utils'
+  import { userHasFeature, aclHelper } from 'mbjs-quasar/src/lib'
 
   export default {
     components: {
@@ -89,7 +84,7 @@
     async mounted () {
       this.grid = await this.$store.dispatch('maps/get', this.$route.params.id)
       if (process.env.IS_STAGING) {
-        const aclQuery = {role: 'public', uuid: this.grid.uuid, id: this.grid.id, permission: 'get'}
+        const aclQuery = {role: 'public', id: this.grid.id, permission: 'get'}
         const permissions = await this.$store.dispatch('acl/isRoleAllowed', aclQuery)
         this.acl.public = permissions.get === true
       }
@@ -98,6 +93,16 @@
       ...mapGetters({
         user: 'auth/getUserState'
       }),
+      availableRoles () {
+        try {
+          return this.user[`${process.env.AUTH0_APP_METADATA_PREFIX}roles`]
+            .filter(role => role !== 'user')
+            .map(role => { return { label: role, value: role } })
+        }
+        catch (e) {
+          return []
+        }
+      },
       userHasPackager () {
         return userHasFeature(this.user, 'packager')
       }
@@ -124,37 +129,8 @@
         }
         this.$q.loading.hide()
       },
-      async setACL (action, payload, recursive = false) {
-        await this.$store.dispatch(action, payload)
-        if (recursive) {
-          const results = await this.$store.dispatch('annotations/find', { 'target.id': payload.id })
-          for (let item of results.items) {
-            if (item.author.id === this.$store.state.auth.user.uuid) {
-              const itemPayload = ObjectUtil.merge({}, payload)
-              itemPayload.uuid = item.uuid
-              await this.$store.dispatch(action, itemPayload)
-            }
-          }
-        }
-      },
       async updateACL () {
-        console.debug('setting acl...', this.acl)
-        if (this.acl.public) {
-          await this.setACL('acl/set', { role: 'public', uuid: this.grid.uuid, permissions: ['get'] }, this.acl.recursive)
-        }
-        else {
-          await this.setACL('acl/remove', { role: 'public', uuid: this.grid.uuid, permission: 'get' }, this.acl.recursive)
-        }
-        if (this.acl.group) {
-          await this.setACL('acl/set', { role: this.acl.group, uuid: this.grid.uuid, permissions: ['get'] }, this.acl.recursive)
-        }
-        if (this.acl.group_remove) {
-          await this.setACL('acl/remove', { role: this.acl.group_remove, uuid: this.grid.uuid, permission: 'get' }, this.acl.recursive)
-        }
-        this.$store.commit('notifications/addMessage', {
-          body: 'messages.acl_updated',
-          type: 'success'
-        })
+        await aclHelper.updateACL(this, this.acl, this.grid)
       }
     }
   }

@@ -42,7 +42,7 @@
     "mbjs-api-client": "1.1.0",
     "mbjs-data-models": "0.0.12",
     "mbjs-media": "0.0.19",
-    "mbjs-quasar": "1.1.0",
+    "mbjs-quasar": "1.2.0",
     "mbjs-utils": "0.0.6",
     "raven-js": "3.27.0",
     "sanitize-html": "1.19.2",
