@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Renamed 'Assets' to 'Documents' in screens and navigation, Auth0 feature now also needs to be 'documents'
 - Moved delete map functionality to [mbjs-quasar](https://gitlab.rlp.net/motionbank/mbjs/quasar) module
 - Moved ACL functionality to [mbjs-quasar](https://gitlab.rlp.net/motionbank/mbjs/quasar) module
 

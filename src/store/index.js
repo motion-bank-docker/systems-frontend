@@ -8,7 +8,7 @@ import timecodes from './modules/timecodes'
 import conversions from './modules/conversions'
 import metadata from './modules/metadata'
 import tags from './modules/tags'
-import assets from './modules/assets'
+import files from './modules/files'
 
 import WebAuth from 'mbjs-api-client/src/web'
 import Vue from 'vue'
@@ -53,7 +53,7 @@ const store = new Vuex.Store({
     // metadata: makeResourceModule(apiClient, undefined, 'metadata', 'metadata', process.env.TRANSCODER_HOST),
     metadata,
     tags,
-    assets,
+    files,
     auth
   }
 })

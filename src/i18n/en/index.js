@@ -12,7 +12,7 @@ export default {
     add_and_go: 'Add & Go',
     back: 'Back',
     create_account: 'Create Account',
-    create_asset: 'Add asset',
+    create_document: 'Add Document',
     create_timeline: 'Create Timeline',
     create_grid: 'Create Grid',
     create_package: 'Create Package',
@@ -59,7 +59,7 @@ export default {
     }
   },
   errors: {
-    asset_delete_failed: 'Failed to delete asset',
+    document_delete_failed: 'Failed to delete Document',
     item_exists: 'This item already exists.',
     unknown: 'Unknown Error',
     invalid_email: 'Please enter a valid email',
@@ -141,12 +141,12 @@ export default {
   },
   descriptions: {
     access_control: 'Allow or disallow members of a group see your timeline and, optionally, the attached annotations.',
-    access_control_assets: 'Allow or disallow members of a group and/or the public to see your asset'
+    access_control_documents: 'Allow or disallow members of a group and/or the public to see your Document'
   },
   messages: {
     acl_updated: 'Access settings updated',
-    asset_created: 'Asset created',
-    asset_deleted: 'Asset deleted',
+    document_created: 'Document created',
+    document_deleted: 'Document deleted',
     login_success: 'Login successful',
     logout_notice: 'You have been logged out',
     registration_success: 'Account was successfully created. You can log in now!',
@@ -179,15 +179,15 @@ export default {
     terms: 'Terms'
   },
   routes: {
-    assets: {
+    documents: {
       edit: {
-        title: 'Edit asset'
+        title: 'Edit Document'
       },
       create: {
-        title: 'Add asset'
+        title: 'Add Document'
       },
       list: {
-        title: 'Assets'
+        title: 'Documents'
       }
     },
     annotate: {

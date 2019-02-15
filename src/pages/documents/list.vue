@@ -3,11 +3,11 @@
     confirm-modal(ref="confirmModal", @confirm="handleConfirmModal")
 
     span(slot="form-logo")
-    span(slot="form-title") {{ $t('routes.assets.list.title') }}
+    span(slot="form-title") {{ $t('routes.documents.list.title') }}
 
-    data-table(v-if="user", :config="config", :title="'routes.assets.list.title'", ref="listTable")
+    data-table(v-if="user", :config="config", :title="'routes.documents.list.title'", ref="listTable")
       template(slot="buttons-left")
-        q-btn(@click="$router.push({ name: 'assets.create' })", color="primary") {{ $t('buttons.create_asset') }}
+        q-btn(@click="$router.push({ name: 'documents.create' })", color="primary") {{ $t('buttons.create_document') }}
 </template>
 
 <script>
@@ -55,7 +55,7 @@
             {
               type: 'edit',
               title: 'buttons.edit',
-              click: item => _this.$router.push({ name: 'assets.edit', params: { asset: item.name, bucket: _this.bucketName } })
+              click: item => _this.$router.push({ name: 'documents.edit', params: { asset: item.name, bucket: _this.bucketName } })
             },
             {
               type: 'delete',
@@ -64,7 +64,7 @@
             }
           ],
           async request () {
-            return _this.$store.dispatch('assets/list', _this.bucketName)
+            return _this.$store.dispatch('files/list', _this.bucketName)
           }
         }
       }
@@ -79,7 +79,7 @@
     },
     methods: {
       getAssetURL (asset, download = false) {
-        const url = `${process.env.ASSETS_HOST}/assets/user-${this.user.uuid}/${asset}`
+        const url = `${process.env.STORAGE_HOST}/files/user-${this.user.uuid}/${asset}`
         if (download) return `${url}?dl=1`
         return url
       },
@@ -100,16 +100,16 @@
       },
       async handleConfirmModal (item) {
         try {
-          await this.$store.dispatch('assets/delete', [this.bucketName, item.name])
+          await this.$store.dispatch('files/delete', [this.bucketName, item.name])
           this.$store.commit('notifications/addMessage', {
-            body: 'messages.asset_deleted',
+            body: 'messages.document_deleted',
             type: 'success'
           })
           this.$refs.listTable.request()
         }
         catch (err) {
           this.$store.commit('notifications/addMessage', {
-            body: 'errors.asset_delete_failed',
+            body: 'errors.document_delete_failed',
             type: 'error'
           })
         }

@@ -1,8 +1,8 @@
 <template lang="pug">
   full-screen
-    q-btn(slot="backButton", @click="$router.push({ name: 'assets.list' })", icon="keyboard_backspace", round, small)
+    q-btn(slot="backButton", @click="$router.push({ name: 'documents.list' })", icon="keyboard_backspace", round, small)
 
-    h5.caption(dark) {{ $t('routes.assets.create.title') }}
+    h5.caption(dark) {{ $t('routes.documents.create.title') }}
       .row
         .col-md-12
           uploader(v-if="user", dark, :url="url", @finish="onFinish", :headers="headers", :fields="uploadFields")
@@ -24,7 +24,7 @@
         user: 'auth/getUserState'
       }),
       url () {
-        return this.user ? `${process.env.ASSETS_HOST}/assets/user-${this.user.uuid}` : undefined
+        return this.user ? `${process.env.STORAGE_HOST}/files/user-${this.user.uuid}` : undefined
       }
     },
     methods: {
@@ -39,11 +39,11 @@
           }
           else {
             this.$store.commit('notifications/addMessage', {
-              body: 'messages.asset_created',
+              body: 'messages.document_created',
               mode: 'alert',
               type: 'success'
             })
-            this.$router.push({ name: 'assets.list' })
+            this.$router.push({ name: 'documents.list' })
           }
         }
       }

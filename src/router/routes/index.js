@@ -1,4 +1,4 @@
-import assets from './assets'
+import documents from './documents'
 import mocabulary from './mocabulary'
 import mosys from './mosys'
 import piecemaker from './piecemaker'
@@ -6,7 +6,7 @@ import site from './site'
 import users from './users'
 
 export default [
-  assets,
+  documents,
   mocabulary,
   mosys,
   piecemaker,

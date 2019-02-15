@@ -1,12 +1,12 @@
 <template lang="pug">
   full-screen
-    q-btn(slot="backButton", @click="$router.push({ name: 'assets.list' })", icon="keyboard_backspace", round, small)
+    q-btn(slot="backButton", @click="$router.push({ name: 'documents.list' })", icon="keyboard_backspace", round, small)
 
-    h5.caption(dark) {{ $t('routes.assets.edit.title') }}
+    h5.caption(dark) {{ $t('routes.documents.edit.title') }}
     .row(v-if="availableRoles.length")
       .col-md-12
         h5.caption.text-light {{ $t('labels.access_control') }}
-        p {{ $t('descriptions.access_control_assets') }}
+        p {{ $t('descriptions.access_control_documents') }}
       .col-md-12.q-mb-md
         q-field(dark)
           q-checkbox(v-model="acl.public", :label="$t('labels.public')", dark)

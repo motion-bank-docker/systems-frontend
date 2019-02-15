@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const assets = {
+const files = {
   namespaced: true,
   state: {
     assets: []
@@ -14,7 +14,7 @@ const assets = {
       }
       let result
       try {
-        result = await axios.get(`${process.env.ASSETS_HOST}/assets/${bucketName}`, config)
+        result = await axios.get(`${process.env.STORAGE_HOST}/files/${bucketName}`, config)
         return result.data
       }
       catch (err) {
@@ -27,9 +27,9 @@ const assets = {
           Authorization: `Bearer ${localStorage.getItem('access_token')}`
         }
       }
-      await axios.delete(`${process.env.ASSETS_HOST}/assets/${bucketName}/${assetName}`, config)
+      await axios.delete(`${process.env.STORAGE_HOST}/files/${bucketName}/${assetName}`, config)
     }
   }
 }
 
-export default assets
+export default files

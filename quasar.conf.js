@@ -52,7 +52,7 @@ module.exports = function (ctx) {
         // Hosts
         //
         API_HOST: JSON.stringify(process.env.API_HOST || 'https://api.motionbank.org'),
-        ASSETS_HOST: JSON.stringify(process.env.ASSETS_HOST || 'https://storage.motionbank.org'),
+        STORAGE_HOST: JSON.stringify(process.env.STORAGE_HOST || 'https://storage.motionbank.org'),
         PACKAGER_HOST: JSON.stringify(process.env.PACKAGER_HOST || 'https://packager.motionbank.org'),
         TRANSCODER_HOST: JSON.stringify(process.env.TRANSCODER_HOST || 'https://transcoder.motionbank.org'),
         UI_HOST: JSON.stringify(process.env.UI_HOST || 'https://app.motionbank.org'),
