@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- 'Documents' source tab now available in MoSys (so far only shows images)
 - Access control menu available for MoSys grids
 
 ### Changed
