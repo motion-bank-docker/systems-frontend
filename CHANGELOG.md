@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Deep links into post-annotator now no longer fail when lots of annotations need to be loaded
 - Delete map no longer fails when encountering access denied errors (still suffers from [#119](https://gitlab.rlp.net/motionbank/systems-frontend/issues/119))
 
 

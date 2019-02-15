@@ -11,7 +11,7 @@
       // VIDEO
       //
       //
-      video-player(v-if="video", :annotation="video", :fine-controls="true",
+      video-player(v-if="video && annotations", :annotation="video", :fine-controls="true",
       @ready="playerReady($event)", @time="onPlayerTime($event)", @canplay.once="gotoHashvalue")
 
       // TOP LEFT
@@ -56,7 +56,7 @@
     // ANNOTATIONS
     //
     //
-    q-layout-drawer.bg-dark(v-model="drawer", side="right")
+    q-layout-drawer.bg-dark(v-if="annotations", v-model="drawer", side="right")
       .absolute.fit.bg-dark
       q-list.no-border.bg-dark(dark)
         // q-item
@@ -114,7 +114,7 @@
     data () {
       return {
         active: false,
-        annotations: [],
+        annotations: undefined,
         drawer: true,
         fullscreen: false,
         inputStyle: true,
@@ -136,7 +136,7 @@
         return this.$route.hash.length ? this.$route.hash.substr(1) : undefined
       },
       currentIndex () {
-        if (!this.annotations.length) return
+        if (!this.annotations || !this.annotations.length) return
 
         let idx = -1, annotation = this.annotations[0]
         while (annotation && idx < this.annotations.length &&
