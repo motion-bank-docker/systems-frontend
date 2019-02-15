@@ -132,6 +132,7 @@ export default {
     tags: 'Tags',
     title: 'Title',
     title_unknown: 'Unknown Title',
+    type: 'Type',
     video_title: 'Video title',
     video_url: 'Video URL'
   },

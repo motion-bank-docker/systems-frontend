@@ -29,6 +29,11 @@
               sortable: true
             },
             {
+              name: 'type',
+              label: this.$t('labels.type'),
+              field: row => row.metaData && row.metaData['content-type'] ? row.metaData['content-type'] : 'unknown'
+            },
+            {
               name: 'size',
               label: this.$t('labels.size'),
               field: 'size',
