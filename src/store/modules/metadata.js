@@ -4,8 +4,15 @@ import { Assert } from 'mbjs-utils'
 
 const metadata = {
   namespaced: true,
-  state: {},
-  mutations: {},
+  state: {
+    cache: {}
+  },
+  mutations: {
+    setCache (state, args) {
+      if (args.length !== 2) throw new Error('metadata/setCache: Invalid arguments')
+      state.cache[args[0]] = args[1]
+    }
+  },
   actions: {
     async get (context, payload) {
       Assert.ok(typeof payload === 'string' || typeof payload.body.source.id === 'string',
@@ -16,13 +23,18 @@ const metadata = {
       let metadataURL
       if (typeof payload === 'string') metadataURL = `${process.env.TRANSCODER_HOST}/metadata/${payload}`
       else metadataURL = `${process.env.TRANSCODER_HOST}/metadata/url?url=${encodeURIComponent(payload.body.source.id)}`
-      let metadata = {}
-      try {
-        let result = await axios.get(metadataURL, { headers })
-        metadata = result.data
-      }
-      catch (err) {
-        if (!err.response || err.response.status > 404) console.error(err.message)
+      let metadata
+      metadata = context.state.cache[metadataURL] || metadata
+      if (!metadata) {
+        metadata = {}
+        try {
+          let result = await axios.get(metadataURL, {headers})
+          metadata = result.data
+          context.commit('setCache', [metadataURL, metadata])
+        }
+        catch (err) {
+          if (!err.response || err.response.status > 404) console.error(err.message)
+        }
       }
       const titleQuery = {
         'target.id': typeof payload === 'string' ? `${BASE_URI}/annotations/${payload}` : payload.id,

@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Metadata store module now caches responses from the transcoder service until app reload
 - 'Documents' source tab now available in MoSys (so far only shows images)
 - Access control menu available for MoSys grids
 
