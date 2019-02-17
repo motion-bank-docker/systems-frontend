@@ -104,8 +104,10 @@
     },
     async mounted () {
       if (this.$route.params.id) {
+        this.$q.loading.show()
         await this.getVideo()
         await this.getAnnotations()
+        this.$q.loading.hide()
       }
     },
     beforeDestroy () {

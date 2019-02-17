@@ -74,6 +74,7 @@
       }
     },
     async mounted () {
+      this.$q.loading.show()
       this.schema.fields.tags.autocompleteOptions = await this.$store.dispatch('tags/list')
       const timelinesResult = await this.$store.dispatch('maps/find', {
         type: 'Timeline'
@@ -84,6 +85,7 @@
           label: item.title
         }
       }).sort((a, b) => (a.label || '').localeCompare(b.label || ''))
+      this.$q.loading.hide()
     },
     data () {
       const context = this

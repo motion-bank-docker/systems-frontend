@@ -1,27 +1,33 @@
-import mosysGridEditorStore from './modules/mosys-grid-editor-store'
-import notifications from './modules/notifications'
-import forms from './modules/forms'
-import makeResourceModule from './modules/make-resource-module'
-import auth from './modules/auth'
-import acl from './modules/acl'
-import timecodes from './modules/timecodes'
-import conversions from './modules/conversions'
-import metadata from './modules/metadata'
-import tags from './modules/tags'
-import files from './modules/files'
-
-import WebAuth from 'mbjs-api-client/src/web'
 import Vue from 'vue'
 import Vuex from 'vuex'
 
+Vue.use(Vuex)
+
+import WebAuth from 'mbjs-api-client/src/web'
+import { makeResourceModule } from 'mbjs-quasar/src/lib'
+
+/** Import resource Data Models */
 import {
   Annotation,
   Map,
   Document
 } from 'mbjs-data-models/src/models'
 
-Vue.use(Vuex)
+/** Import custom modules */
+import {
+  auth,
+  acl,
+  conversions,
+  files,
+  forms,
+  tags,
+  timecodes,
+  metadata,
+  mosysGridEditorStore,
+  notifications
+} from './modules'
 
+/** Instantiate Motion Bank API Client */
 const apiClient = new WebAuth({
   auth: {
     domain: process.env.AUTH0_DOMAIN,
@@ -35,26 +41,28 @@ const apiClient = new WebAuth({
 })
 
 /**
- * Set up VueX store with API service backends
+ * Set up VueX store
  */
 const store = new Vuex.Store({
   modules: {
-    acl,
-    conversions,
-    notifications,
-    forms,
-    timecodes,
-    mosysGridEditorStore,
+    /** Basic resources using API Client */
     annotations: makeResourceModule(apiClient, Annotation, 'annotation'),
     maps: makeResourceModule(apiClient, Map, 'map'),
     documents: makeResourceModule(apiClient, Document, 'document'),
     profiles: makeResourceModule(apiClient, undefined, 'profile'),
     sessions: makeResourceModule(apiClient, undefined, 'session'),
-    // metadata: makeResourceModule(apiClient, undefined, 'metadata', 'metadata', process.env.TRANSCODER_HOST),
-    metadata,
-    tags,
+
+    /** Custom stores */
+    acl,
+    auth,
+    conversions,
     files,
-    auth
+    forms,
+    tags,
+    timecodes,
+    metadata,
+    mosysGridEditorStore,
+    notifications
   }
 })
 
