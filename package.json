@@ -46,7 +46,7 @@
     "mbjs-utils": "0.0.6",
     "raven-js": "3.27.0",
     "sanitize-html": "1.19.2",
-    "sift": "5.1.0",
+    "sift": "^5.1.0",
     "tiny-emitter": "2.0.2",
     "uuid-validate": "0.0.2",
     "videojs-framebyframe": "git+https://github.com/fjenett/videojs-framebyframe.git#fa81d657c50067bb5af07c9cf5e42924b353a70e",
