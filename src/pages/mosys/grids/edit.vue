@@ -81,12 +81,14 @@
       }
     },
     async mounted () {
+      this.$q.loading.show()
       this.grid = await this.$store.dispatch('maps/get', this.$route.params.id)
       if (process.env.IS_STAGING) {
         const aclQuery = {role: 'public', id: this.grid.id, permission: 'get'}
         const permissions = await this.$store.dispatch('acl/isRoleAllowed', aclQuery)
         this.acl.public = permissions.get === true
       }
+      this.$q.loading.hide()
     },
     computed: {
       ...mapGetters({
@@ -129,7 +131,9 @@
         this.$q.loading.hide()
       },
       async updateACL () {
+        this.$q.loading.show()
         await aclHelper.updateACL(this, this.acl, this.grid)
+        this.$q.loading.hide()
       }
     }
   }
