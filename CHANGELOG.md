@@ -24,6 +24,7 @@ only shows images)
 
 ### Changed
 
+- Renamed 'mosysGridEditorStore' vuex module to 'mosys'
 - Updated
 [mbjs-api-client](https://gitlab.rlp.net/motionbank/mbjs/api-client)
 to version 2.0.0
