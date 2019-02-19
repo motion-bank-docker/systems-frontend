@@ -23,7 +23,7 @@ import {
   tags,
   timecodes,
   metadata,
-  mosysGridEditorStore,
+  mosys,
   notifications
 } from './modules'
 
@@ -61,7 +61,7 @@ const store = new Vuex.Store({
     tags,
     timecodes,
     metadata,
-    mosysGridEditorStore,
+    mosys,
     notifications
   }
 })

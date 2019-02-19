@@ -1,4 +1,4 @@
-import mosysGridEditorStore from './mosys-grid-editor-store'
+import mosys from './mosys'
 import notifications from './notifications'
 import forms from './forms'
 import auth from './auth'
@@ -18,6 +18,6 @@ export {
   tags,
   timecodes,
   metadata,
-  mosysGridEditorStore,
+  mosys,
   notifications
 }

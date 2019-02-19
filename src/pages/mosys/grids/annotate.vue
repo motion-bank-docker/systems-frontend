@@ -1,10 +1,10 @@
 <template lang="pug">
-  .grid-editor-container(:class="{'sources-open': $store.state.mosysGridEditorStore.showSources}")
+  .grid-editor-container(:class="{'sources-open': $store.state.mosys.showSources}")
     div.backbutton
       q-btn(slot="backButton", @click="$router.push('/mosys/grids')", icon="keyboard_backspace", round, small, color="black")
-    div.grid-editor-shadow-right(v-if="$store.state.mosysGridEditorStore.showSources")
+    div.grid-editor-shadow-right(v-if="$store.state.mosys.showSources")
     grid-editor.grid-editor(:gridUuid="$route.params.id")
-    grid-editor-sources.grid-editor-sources(v-if="$store.state.mosysGridEditorStore.showSources")
+    grid-editor-sources.grid-editor-sources(v-if="$store.state.mosys.showSources")
 </template>
 
 <script>

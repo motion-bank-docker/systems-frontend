@@ -1,4 +1,4 @@
-const mosysGridEditorStore = {
+const mosys = {
   namespaced: true,
   state: {
     sourcesTabName: '',
@@ -24,4 +24,4 @@ const mosysGridEditorStore = {
   }
 }
 
-export default mosysGridEditorStore
+export default mosys
