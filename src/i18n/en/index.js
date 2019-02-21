@@ -26,6 +26,7 @@ export default {
     download: 'Download',
     done: 'Done',
     edit: 'Edit',
+    export_grid: 'Export Grid',
     export_timeline: 'Export Timeline',
     forgot_password: 'Forgot Password',
     live_annotate: 'Live Annotate',
@@ -52,6 +53,14 @@ export default {
     timelines: {
       import: {
         title: 'Upload timeline archive',
+        fields: {
+          title: 'New title (optional, creates a copy)'
+        }
+      }
+    },
+    grids: {
+      import: {
+        title: 'Upload grid archive',
         fields: {
           title: 'New title (optional, creates a copy)'
         }
@@ -353,7 +362,7 @@ export default {
     license: 'License',
     tagline: 'Digital Research and Annotation Platform for Contemporary Dance.',
     title: 'Web Systems',
-    version: 'UI Version:'
+    version: 'UI Version'
   },
   table: {
     no_data: 'No data to display.',
