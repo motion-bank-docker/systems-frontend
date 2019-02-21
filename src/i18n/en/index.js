@@ -123,6 +123,7 @@ export default {
     participants: 'Participants',
     password: 'Password',
     password_confirmation: 'Password confirmation',
+    public: 'Public',
     status: 'Status',
     set_title: 'Set Title',
     set_shortcut: 'Set Shortcut',
