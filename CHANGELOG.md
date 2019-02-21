@@ -12,6 +12,7 @@ and this project adheres to
 
 ### Added
 
+- MoSys grids can be exported and imported like timelines
 - Docker image already builds with the nginx SPA config
 - The generic Vuex modules use caching in memory
 - Generic vuex resources allow selection of returned
@@ -21,6 +22,7 @@ transcoder service until app reload
 - 'Documents' source tab available in MoSys (so far
 only shows images)
 - Access control menu available for MoSys grids
+- UI version in site footer links to changelog
 
 ### Changed
 
