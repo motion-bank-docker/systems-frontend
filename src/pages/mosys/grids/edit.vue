@@ -6,6 +6,8 @@
       .row
         .col-md-12
           form-main(v-model="payload", :schema="schema")
+            q-btn.q-mr-md.bg-grey-9(q-if="$route.params.id", slot="form-buttons-add",
+              :label="exportLabel", @click="exportGrid")
             q-btn.q-mr-md.bg-grey-9(q-if="$route.params.id && userHasPackager", slot="form-buttons-add",
               :label="packageLabel", @click="createPackage")
 
@@ -50,8 +52,10 @@
       return {
         grid: undefined,
         env: process.env,
+        exportDownloadURL: undefined,
+        exportLabel: this.$t('buttons.export_grid'),
         packageLabel: this.$t('buttons.create_package'),
-        downloadURL: undefined,
+        packageDownloadURL: undefined,
         acl: {
           group: undefined,
           group_remove: undefined,
@@ -109,8 +113,29 @@
       }
     },
     methods: {
+      async exportGrid () {
+        if (this.exportDownloadURL) return openURL(this.exportDownloadURL)
+        this.$q.loading.show()
+        try {
+          const result = await this.$axios.post(
+            `${process.env.API_HOST}/archives/maps`,
+            {id: this.grid.uuid},
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.access_token}`
+              }
+            }
+          )
+          this.exportDownloadURL = result.data
+          this.exportLabel = this.$t('buttons.download_archive')
+        }
+        catch (err) {
+          this.$handleError(this, err, 'errors.export_archive_failed')
+        }
+        this.$q.loading.hide()
+      },
       async createPackage () {
-        if (this.downloadURL) return openURL(this.downloadURL)
+        if (this.packageDownloadURL) return openURL(this.packageDownloadURL)
         this.$q.loading.show()
         try {
           const result = await this.$axios.post(
@@ -122,7 +147,7 @@
               }
             }
           )
-          this.downloadURL = result.data
+          this.packageDownloadURL = result.data
           this.packageLabel = this.$t('buttons.download_package')
         }
         catch (err) {

@@ -5,6 +5,14 @@
       .row
         .col-md-12
           form-main(v-model="payload", :schema="schema")
+      .row
+        .col-12
+          h5.caption(dark) {{ $t('forms.grids.import.title') }}
+      .column
+        .col-12.q-pa-md
+          q-input(dark, :placeholder="$t('forms.grids.import.fields.title')", v-model="uploadTitle")
+        .col-12.q-pa-md
+          uploader(dark, :url="url", @finish="onFinish", allowed=".zip", :headers="headers", :fields="uploadFields")
 </template>
 
 <script>
@@ -22,6 +30,13 @@
     data () {
       const _this = this
       return {
+        url: `${process.env.API_HOST}/archives/maps/upload`,
+        responses: {},
+        uploadFields: [],
+        uploadTitle: undefined,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('access_token')}`
+        },
         type: constants.MAP_TYPE_2D_GRID,
         payload: undefined,
         schema: {
@@ -42,6 +57,33 @@
               return _this.$store.dispatch('maps/post', _this.payload)
                 .then(() => _this.$router.push({ name: 'mosys.grids.list' }))
             }
+          }
+        }
+      }
+    },
+    watch: {
+      uploadTitle () {
+        if (this.uploadTitle) this.uploadFields = [{ name: 'title', value: this.uploadTitle }]
+        else this.uploadFields = []
+      }
+    },
+    methods: {
+      onFinish (responses) {
+        for (let key of Object.keys(responses)) {
+          if (responses[key] && responses[key].message) {
+            this.$store.commit('notifications/addMessage', {
+              body: responses[key].message,
+              mode: 'alert',
+              type: 'error'
+            })
+          }
+          else {
+            this.$store.commit('notifications/addMessage', {
+              body: 'messages.grid_imported',
+              mode: 'alert',
+              type: 'success'
+            })
+            this.$router.push({ name: 'mosys.grids.list' })
           }
         }
       }
