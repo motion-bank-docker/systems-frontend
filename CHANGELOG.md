@@ -26,6 +26,7 @@ only shows images)
 
 ### Changed
 
+- Layout for MoSys Cells: AnnotationList, Title, Video and InternalLink
 - Renamed 'mosysGridEditorStore' vuex module to 'mosys'
 - Updated
 [mbjs-api-client](https://gitlab.rlp.net/motionbank/mbjs/api-client)
