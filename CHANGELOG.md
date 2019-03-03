@@ -14,8 +14,8 @@ and this project adheres to
 
 - MoSys grids can have stylesheets defined on their 'edit' page
 (requires 'cssediting' feature)
-- MoSys cells additionally use their annotation's
-`target.stylesheet.value`
+- MoSys cells additionally use their annotation target's
+`styleClass` property
 - MoSys grids can be exported and imported like timelines
 - Docker image already builds with the nginx SPA config
 - The generic Vuex modules use caching in memory
