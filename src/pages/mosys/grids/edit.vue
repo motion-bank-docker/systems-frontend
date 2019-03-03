@@ -11,6 +11,10 @@
             q-btn.q-mr-md.bg-grey-9(q-if="$route.params.id && userHasPackager", slot="form-buttons-add",
               :label="packageLabel", @click="createPackage")
 
+      .row(v-if="userHasCSSEditing")
+        .col-md-12
+          q-input(v-model="stylesheet", dark, type="textarea", float-label="CSS Stylesheet", rows="6")
+
       .row(v-if="availableRoles.length")
         .col-md-12
           h5.caption.text-light {{ $t('labels.access_control') }}
@@ -51,6 +55,7 @@
       const _this = this
       return {
         grid: undefined,
+        stylesheet: undefined,
         env: process.env,
         exportDownloadURL: undefined,
         exportLabel: this.$t('buttons.export_grid'),
@@ -77,7 +82,13 @@
           },
           submit: {
             handler () {
-              return _this.$store.dispatch('maps/patch', [_this.payload.uuid, _this.payload])
+              const stylesheet = _this.userHasCSSEditing && _this.stylesheet ? {
+                stylesheet: {
+                  value: _this.stylesheet
+                }
+              } : undefined
+              const apiPayload = Object.assign({}, _this.payload, stylesheet)
+              return _this.$store.dispatch('maps/patch', [_this.payload.uuid, apiPayload])
                 .then(() => _this.$router.push({ name: 'mosys.grids.list' }))
             }
           }
@@ -87,6 +98,7 @@
     async mounted () {
       this.$q.loading.show()
       this.grid = await this.$store.dispatch('maps/get', this.$route.params.id)
+      this.stylesheet = this.userHasCSSEditing && this.grid.stylesheet ? this.grid.stylesheet.value : undefined
       if (process.env.IS_STAGING) {
         const aclQuery = {role: 'public', id: this.grid.id, permission: 'get'}
         const permissions = await this.$store.dispatch('acl/isRoleAllowed', aclQuery)
@@ -110,6 +122,9 @@
       },
       userHasPackager () {
         return userHasFeature(this.user, 'packager')
+      },
+      userHasCSSEditing () {
+        return userHasFeature(this.user, 'cssediting')
       }
     },
     methods: {

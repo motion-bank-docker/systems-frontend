@@ -12,6 +12,8 @@ and this project adheres to
 
 ### Added
 
+- MoSys grids can have stylesheets defined on their 'edit' page
+(requires 'cssediting' feature)
 - MoSys grids can be exported and imported like timelines
 - Docker image already builds with the nginx SPA config
 - The generic Vuex modules use caching in memory
