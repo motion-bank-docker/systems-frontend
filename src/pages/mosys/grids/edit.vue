@@ -11,13 +11,7 @@
             q-btn.q-mr-md.bg-grey-9(q-if="$route.params.id && userHasPackager", slot="form-buttons-add",
               :label="packageLabel", @click="createPackage")
 
-      .row(v-if="userHasCSSEditing")
-        .col-md-12.q-mb-md
-          q-input(v-model="stylesheetUrl", dark, type="text", float-label="External CSS Stylesheet URL")
-        .col-md-12
-          q-input(v-model="stylesheet", dark, type="textarea", float-label="Embedded CSS Stylesheet", rows="6")
-
-      .row(v-if="availableRoles.length")
+      .row.q-mb-lg(v-if="availableRoles.length")
         .col-md-12
           h5.caption.text-light {{ $t('labels.access_control') }}
           p {{ $t('descriptions.access_control') }}
@@ -34,6 +28,17 @@
             q-checkbox(v-model="acl.recursive", :label="$t('labels.recursive')", dark)
         .row.xs-gutter.full-width.justify-end.items-end
           q-btn(:label="$t('buttons.update_access_control')", @click="updateACL", color="grey")
+
+      .row.q-mb-lg(v-if="userHasCSSEditing")
+        .col-md-12.q-mb-md
+          h5.caption.text-light {{ $t('labels.css_stylesheet') }}
+          p {{ $t('descriptions.css_stylesheet') }}
+        .col-md-12.q-mb-md
+          q-input(v-model="stylesheetUrl", dark, type="text", float-label="External CSS Stylesheet URL")
+        .col-md-12.q-mb-md
+          q-input(v-model="stylesheet", dark, type="textarea", float-label="Embedded CSS Stylesheet", rows="4")
+        .col-md-12
+          q-btn.float-right(q-if="$route.params.id", color="primary", label="Submit", @click="submit")
 </template>
 
 <script>
@@ -85,18 +90,7 @@
           },
           submit: {
             handler () {
-              let stylesheet
-              if (_this.userHasCSSEditing) {
-                stylesheet = {
-                  stylesheet: {
-                    id: _this.stylesheetUrl && _this.stylesheetUrl.length ? _this.stylesheetUrl : null,
-                    value: _this.stylesheet && _this.stylesheet.length ? _this.stylesheet : null
-                  }
-                }
-              }
-              const apiPayload = Object.assign({}, _this.payload, stylesheet)
-              return _this.$store.dispatch('maps/patch', [_this.payload.uuid, apiPayload])
-                .then(() => _this.$router.push({ name: 'mosys.grids.list' }))
+              return _this.submit(false).then(() => _this.$router.push({ name: 'mosys.grids.list' }))
             }
           }
         }
@@ -140,6 +134,27 @@
       }
     },
     methods: {
+      async submit (message = true) {
+        let stylesheet
+        if (this.userHasCSSEditing) {
+          stylesheet = {
+            stylesheet: {
+              id: this.stylesheetUrl && this.stylesheetUrl.length ? this.stylesheetUrl : null,
+              value: this.stylesheet && this.stylesheet.length ? this.stylesheet : null
+            }
+          }
+        }
+        const apiPayload = Object.assign({}, this.payload, stylesheet)
+        let result
+        result = await this.$store.dispatch('maps/patch', [this.payload.uuid, apiPayload])
+        if (message) {
+          this.$store.commit('notifications/addMessage', {
+            type: 'success',
+            body: 'messages.submit_success'
+          })
+        }
+        return result
+      },
       async exportGrid () {
         if (this.exportDownloadURL) return openURL(this.exportDownloadURL)
         this.$q.loading.show()

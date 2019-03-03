@@ -108,6 +108,7 @@ export default {
     author: 'Author',
     unknown_author: 'Unknown Author',
     created: 'Created',
+    css_stylesheet: 'CSS Stylesheet',
     updated: 'Updated',
     last_updated: 'Last updated',
     date: 'Date',
@@ -155,7 +156,8 @@ export default {
   },
   descriptions: {
     access_control: 'Allow or disallow members of a group see your timeline and, optionally, the attached annotations.',
-    access_control_documents: 'Allow or disallow members of a group and/or the public to see your Document'
+    access_control_documents: 'Allow or disallow members of a group and/or the public to see your Document',
+    css_stylesheet: 'Either link an external stylesheet or set an inline value'
   },
   messages: {
     acl_updated: 'Access settings updated',
