@@ -26,6 +26,9 @@ only shows images)
 
 ### Changed
 
+- Updated [mbjs-data-models](https://gitlab.rlp.net/motionbank/mbjs/data-models)
+to 0.1.0 ([release_0_1](https://gitlab.rlp.net/motionbank/mbjs/data-models/commits/release_0_1)
+branch)
 - Layout for MoSys Cells: AnnotationList, Title, Video and InternalLink
 - Renamed 'mosysGridEditorStore' vuex module to 'mosys'
 - Updated
