@@ -38,6 +38,7 @@ export default {
     save_changes: 'Save changes',
     save: 'Save',
     set_marker: 'Set Marker',
+    set_css_class: 'Set CSS class',
     search: 'Search',
     submit: 'Submit',
     synchronize: 'Sync',
@@ -65,6 +66,9 @@ export default {
           title: 'New title (optional, creates a copy)'
         }
       }
+    },
+    edit_css_class: {
+      title: 'Edit CSS class name'
     }
   },
   errors: {
