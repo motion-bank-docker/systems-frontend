@@ -12,8 +12,8 @@ and this project adheres to
 
 ### Added
 
-- MoSys grids can have stylesheets defined on their 'edit' page
-(requires 'cssediting' feature)
+- MoSys grids can have external and embedded stylesheets
+defined on their 'edit' page (requires 'cssediting' feature)
 - MoSys cells additionally use their annotation target's
 `styleClass` property (can be set in cell context menu,
 requires 'cssediting' feature)

@@ -12,8 +12,10 @@
               :label="packageLabel", @click="createPackage")
 
       .row(v-if="userHasCSSEditing")
+        .col-md-12.q-mb-md
+          q-input(v-model="stylesheetUrl", dark, type="text", float-label="External CSS Stylesheet URL")
         .col-md-12
-          q-input(v-model="stylesheet", dark, type="textarea", float-label="CSS Stylesheet", rows="6")
+          q-input(v-model="stylesheet", dark, type="textarea", float-label="Embedded CSS Stylesheet", rows="6")
 
       .row(v-if="availableRoles.length")
         .col-md-12
@@ -56,6 +58,7 @@
       return {
         grid: undefined,
         stylesheet: undefined,
+        stylesheetUrl: undefined,
         env: process.env,
         exportDownloadURL: undefined,
         exportLabel: this.$t('buttons.export_grid'),
@@ -82,11 +85,15 @@
           },
           submit: {
             handler () {
-              const stylesheet = _this.userHasCSSEditing && _this.stylesheet ? {
-                stylesheet: {
-                  value: _this.stylesheet
+              let stylesheet
+              if (_this.userHasCSSEditing) {
+                stylesheet = {
+                  stylesheet: {
+                    id: _this.stylesheetUrl && _this.stylesheetUrl.length ? _this.stylesheetUrl : null,
+                    value: _this.stylesheet && _this.stylesheet.length ? _this.stylesheet : null
+                  }
                 }
-              } : undefined
+              }
               const apiPayload = Object.assign({}, _this.payload, stylesheet)
               return _this.$store.dispatch('maps/patch', [_this.payload.uuid, apiPayload])
                 .then(() => _this.$router.push({ name: 'mosys.grids.list' }))
@@ -98,7 +105,12 @@
     async mounted () {
       this.$q.loading.show()
       this.grid = await this.$store.dispatch('maps/get', this.$route.params.id)
-      this.stylesheet = this.userHasCSSEditing && this.grid.stylesheet ? this.grid.stylesheet.value : undefined
+
+      if (this.userHasCSSEditing) {
+        this.stylesheet = this.grid.stylesheet ? this.grid.stylesheet.value : undefined
+        this.stylesheetUrl = this.grid.stylesheet ? this.grid.stylesheet.id : undefined
+      }
+
       if (process.env.IS_STAGING) {
         const aclQuery = {role: 'public', id: this.grid.id, permission: 'get'}
         const permissions = await this.$store.dispatch('acl/isRoleAllowed', aclQuery)
