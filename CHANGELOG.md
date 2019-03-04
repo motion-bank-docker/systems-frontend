@@ -12,23 +12,27 @@ and this project adheres to
 
 ### Added
 
-- CellText in MoSys uses [Markdown](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet)
+#### MoSys
+
+- CellText uses [Markdown](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet)
 to format text content
-- MoSys grids can have external and embedded stylesheets
+- Grids can have external and embedded stylesheets
 defined on their 'edit' page (requires 'cssediting' feature)
-- MoSys cells additionally use their annotation target's
+- Cells additionally use their annotation target's
 `styleClass` property (can be set in cell context menu,
 requires 'cssediting' feature)
-- MoSys grids can be exported and imported like timelines
+- Grids can be exported and imported like timelines
+- Access control menu available for MoSys grids
+- 'Documents' source tab (so far only shows images)
+
+#### General
+
 - Docker image already builds with the nginx SPA config
 - The generic Vuex modules use caching in memory
 - Generic vuex resources allow selection of returned
 properties through array of strings
 - Metadata store module caches responses from the
 transcoder service until app reload
-- 'Documents' source tab available in MoSys (so far
-only shows images)
-- Access control menu available for MoSys grids
 - UI version in site footer links to changelog
 
 ### Changed
