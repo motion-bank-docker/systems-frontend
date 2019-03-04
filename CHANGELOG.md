@@ -76,6 +76,11 @@ lots of annotations need to be loaded
 denied errors (still suffers from
 [#119](https://gitlab.rlp.net/motionbank/systems-frontend/issues/119))
 
+### Removed
+
+- Obsolete `MessengerComponent` as component events travel
+via `this.$root`
+
 
 ## [1.2.1] - 2019-02-15
 
