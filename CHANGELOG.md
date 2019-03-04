@@ -14,6 +14,7 @@ and this project adheres to
 
 #### MoSys
 
+- Cells display additional info in editor (class name)
 - CellText uses [Markdown](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet)
 to format text content
 - Grids can have external and embedded stylesheets
