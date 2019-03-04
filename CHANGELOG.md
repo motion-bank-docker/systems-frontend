@@ -14,6 +14,8 @@ and this project adheres to
 
 #### MoSys
 
+- CellEditor adds start and duration filters for AnnotationList
+and Video cells
 - Cells display additional info in editor (class name)
 - CellText uses [Markdown](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet)
 to format text content
