@@ -14,6 +14,8 @@ and this project adheres to
 
 #### MoSys
 
+- Grid URLs accept the query parameter `x` specifying an initial
+horizontal cell index
 - Image cells can have links
 - AnnotationList cell allows filtering annotations by simple
 string or [Regular Expression](https://www.regular-expressions.info/quickstart.html)
