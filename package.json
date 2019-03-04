@@ -40,7 +40,7 @@
     "luxon": "1.8.2",
     "marked": "0.5.2",
     "mbjs-api-client": "2.0.0",
-    "mbjs-data-models": "0.1.2",
+    "mbjs-data-models": "0.1.3",
     "mbjs-media": "0.0.19",
     "mbjs-quasar": "1.4.3",
     "mbjs-utils": "0.0.6",
