@@ -14,6 +14,8 @@ and this project adheres to
 
 #### MoSys
 
+- AnnotationList cell allows filtering annotations by simple
+string or [Regular Expression](https://www.regular-expressions.info/quickstart.html)
 - CellEditor adds start and duration filters for AnnotationList
 and Video cells
 - Cells display additional info in editor (class name)
