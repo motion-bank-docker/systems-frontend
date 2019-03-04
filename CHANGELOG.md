@@ -14,6 +14,9 @@ and this project adheres to
 
 #### MoSys
 
+- Grid URLs accept the query parameter `datetime` specifying an
+ISO datetime string (urlencoded) to set the time for video
+player cells
 - Grid URLs accept the query parameter `x` specifying an initial
 horizontal cell index
 - Image and Title cells can have links
@@ -48,6 +51,8 @@ transcoder service until app reload
 - Updated [mbjs-data-models](https://gitlab.rlp.net/motionbank/mbjs/data-models)
 to 0.1.2 ([release_0_1](https://gitlab.rlp.net/motionbank/mbjs/data-models/commits/release_0_1)
 branch)
+- Video and AnnotationList cells now use [luxon](https://moment.github.io/luxon/)
+DateTime and Interval objects
 - AnnotationList cell's input field is now optional, defaults to off 
 - Layout for MoSys Cells: AnnotationList, Title, Video and InternalLink
 - Renamed 'mosysGridEditorStore' vuex module to 'mosys'
