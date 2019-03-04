@@ -70,6 +70,7 @@ module
 
 ### Fixed
 
+- Active annotation highlighting in MoSys AnnotationList
 - Deep links into post-annotator no longer fail when
 lots of annotations need to be loaded
 - Delete map no longer fails when encountering access
