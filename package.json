@@ -44,6 +44,7 @@
     "mbjs-media": "0.0.19",
     "mbjs-quasar": "1.4.3",
     "mbjs-utils": "0.0.6",
+    "qs": "^6.6.0",
     "raven-js": "3.27.0",
     "sanitize-html": "1.19.2",
     "sift": "^7.0.1",
