@@ -135,6 +135,7 @@
     },
     computed: {
       hashValue () {
+        console.log(this.$route.hash)
         return this.$route.hash.length ? this.$route.hash.substr(1) : undefined
       },
       currentIndex () {
@@ -270,12 +271,14 @@
         }
       },
       gotoSelector (selector) {
+        this.$router.push({ query: { datetime: selector } })
         const millis = DateTime.fromISO(selector, { setZone: true }).toMillis() -
           DateTime.fromISO(this.video.target.selector.value, { setZone: true }).toMillis()
         const targetMillis = millis * 0.001
         if (this.playerTime !== targetMillis) this.player.currentTime(targetMillis)
       },
       gotoHashvalue () {
+        console.log(this.hashValue)
         if (this.hashValue && uuid.isUUID(this.hashValue)) {
           const result = this.annotations.filter(annotation => annotation.uuid === this.hashValue)
           if (result.length) {
