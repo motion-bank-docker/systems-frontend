@@ -135,7 +135,6 @@
     },
     computed: {
       hashValue () {
-        console.log(this.$route.hash)
         return this.$route.hash.length ? this.$route.hash.substr(1) : undefined
       },
       currentIndex () {
@@ -278,7 +277,6 @@
         if (this.playerTime !== targetMillis) this.player.currentTime(targetMillis)
       },
       gotoHashvalue () {
-        console.log(this.hashValue)
         if (this.hashValue && uuid.isUUID(this.hashValue)) {
           const result = this.annotations.filter(annotation => annotation.uuid === this.hashValue)
           if (result.length) {
