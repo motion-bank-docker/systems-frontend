@@ -12,6 +12,8 @@ and this project adheres to
 
 ### Added
 
+- CellText in MoSys uses [Markdown](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet)
+to format text content
 - MoSys grids can have external and embedded stylesheets
 defined on their 'edit' page (requires 'cssediting' feature)
 - MoSys cells additionally use their annotation target's
