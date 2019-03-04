@@ -14,6 +14,7 @@ and this project adheres to
 
 #### MoSys
 
+- Image cells can have links
 - AnnotationList cell allows filtering annotations by simple
 string or [Regular Expression](https://www.regular-expressions.info/quickstart.html)
 - CellEditor adds start and duration filters for AnnotationList
