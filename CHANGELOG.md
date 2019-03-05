@@ -14,6 +14,7 @@ and this project adheres to
 
 #### MoSys
 
+- Exported Grid packages contain all linked grids as well
 - Grid URLs accept the query parameter `datetime` specifying an
 ISO datetime string (urlencoded) to set the time for video
 player cells
