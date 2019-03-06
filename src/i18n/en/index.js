@@ -55,7 +55,9 @@ export default {
       import: {
         title: 'Upload timeline archive',
         fields: {
-          title: 'New title (optional, creates a copy)'
+          title: 'New title (optional, creates a copy)',
+          override_author: 'Set ownership to yourself for all imported items',
+          skip_acl: 'Do not import access control settings'
         }
       }
     },
@@ -63,7 +65,9 @@ export default {
       import: {
         title: 'Upload grid archive',
         fields: {
-          title: 'New title (optional, creates a copy)'
+          title: 'New title (optional, creates a copy)',
+          override_author: 'Set ownership to yourself for all imported items',
+          skip_acl: 'Do not import access control settings'
         }
       }
     },
