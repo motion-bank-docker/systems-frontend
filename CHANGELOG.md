@@ -39,6 +39,7 @@ requires 'cssediting' feature)
 
 #### General
 
+- Import timeline/grid now allows overriding author for all items
 - Docker image already builds with the nginx SPA config
 - The generic Vuex modules use caching in memory
 - Generic vuex resources allow selection of returned
