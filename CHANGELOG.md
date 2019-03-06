@@ -25,7 +25,7 @@ horizontal cell index
 string or [Regular Expression](https://www.regular-expressions.info/quickstart.html)
 - CellEditor adds start and duration filters for AnnotationList
 and Video cells
-- Cells display additional info in editor (class name)
+- Cells display additional info in editor (class name, author name)
 - CellText uses [Markdown](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet)
 to format text content
 - Grids can have external and embedded stylesheets
