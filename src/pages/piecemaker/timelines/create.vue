@@ -70,18 +70,29 @@
       }
     },
     watch: {
-      uploadTitle () {
-        if (this.uploadTitle) {
-          this.uploadFields = [
-            { name: 'title', value: this.uploadTitle },
-            { name: 'overrideAuthor', value: this.overrideAuthor },
-            { name: 'skipAcl', value: this.skipAcl }
-          ]
-        }
-        else this.uploadFields = []
+      uploadTitle (val) {
+        this.setOrAddField('title', val)
+      },
+      overrideAuthor (val) {
+        this.setOrAddField('overrideAuthor', val)
+      },
+      skipAcl (val) {
+        this.setOrAddField('skipAcl', val)
       }
     },
     methods: {
+      setOrAddField (name, value) {
+        let containsField = false
+        for (let index in this.uploadFields) {
+          if (!containsField && name === this.uploadFields[index].name) {
+            containsField = true
+            if (value) this.uploadFields[index].value = value
+            else this.uploadFields[index] = undefined
+          }
+        }
+        if (value && !containsField) this.uploadFields.push({ name, value })
+        this.uploadFields = this.uploadFields.filter(field => field)
+      },
       onFinish (responses) {
         for (let key of Object.keys(responses)) {
           if (responses[key] && responses[key].message) {
