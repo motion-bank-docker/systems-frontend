@@ -14,6 +14,7 @@ and this project adheres to
 
 #### MoSys
 
+- AnnotationList has an additional tab layout
 - AnnotationList shows formatted Markdown
 - Exported Grid packages contain all linked grids as well
 - Grid URLs accept the query parameter `datetime` specifying an
@@ -51,6 +52,8 @@ transcoder service until app reload
 
 ### Changed
 
+- MoSys cell styling
+- VideoPlayer styling
 - Updated [mbjs-data-models](https://gitlab.rlp.net/motionbank/mbjs/data-models)
 to 0.1.3 ([release_0_1](https://gitlab.rlp.net/motionbank/mbjs/data-models/commits/release_0_1)
 branch)
