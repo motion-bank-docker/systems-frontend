@@ -14,6 +14,7 @@ and this project adheres to
 
 #### MoSys
 
+- AnnotationList and Video cells deactivate off visible area
 - AnnotationList has an additional tab layout
 - AnnotationList shows formatted Markdown
 - Exported Grid packages contain all linked grids as well
