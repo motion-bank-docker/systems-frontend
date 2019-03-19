@@ -79,7 +79,8 @@
             q-item-tile.q-caption.q-my-xs
               span {{ annotation.author.name }}
             q-item-tile
-              markdown-display.markdown-display.q-mt-sm(v-if="!isEditingAnnotations || editAnnotationIndex !== i", :content="annotation.body.value")
+              markdown-display.markdown-display.q-mt-sm(v-if="!isEditingAnnotations || editAnnotationIndex !== i",
+                :content="annotation.body.value", :options="mdOptions")
               q-input.q-mt-sm.q-mb-sm(v-if="annotation.body.type === 'TextualBody' && editAnnotationIndex === i", color="white",
                 type="textarea", v-model="annotation.body.value", dark)
 
@@ -130,7 +131,10 @@
         video: undefined,
         editAnnotationIndex: undefined,
         editAnnotationBuffer: undefined,
-        hashTimeout: undefined
+        hashTimeout: undefined,
+        mdOptions: {
+          target: '_blank'
+        }
       }
     },
     computed: {

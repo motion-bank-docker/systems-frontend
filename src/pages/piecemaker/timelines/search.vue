@@ -8,7 +8,7 @@
         q-btn(@click="search", color="primary") Search
     .row.q-mt-md(v-for="result in results")
       .col-md-6
-        markdown-display.markdown-display(:content="result.body.value")
+        markdown-display.markdown-display(:content="result.body.value", :options="mdOptions")
         small {{ getVideo(result).metadata.title }}
       .col-md-6
         p {{ formatDate(result.target.selector.value) }}
@@ -25,7 +25,10 @@
         query: undefined,
         map: undefined,
         videos: [],
-        results: []
+        results: [],
+        mdOptions: {
+          target: '_blank'
+        }
       }
     },
     async mounted () {
