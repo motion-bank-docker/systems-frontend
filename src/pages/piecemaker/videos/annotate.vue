@@ -321,4 +321,8 @@
 
   .markdown-display
     padding-top: 2px
+
+  .md-content
+    font-size: 1rem
+    line-height: 24px
 </style>
