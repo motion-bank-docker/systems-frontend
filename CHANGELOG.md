@@ -53,6 +53,7 @@ transcoder service until app reload
 
 ### Changed
 
+- Text size in grids is relative to window height
 - MoSys cell styling
 - VideoPlayer styling
 - Updated [mbjs-data-models](https://gitlab.rlp.net/motionbank/mbjs/data-models)
