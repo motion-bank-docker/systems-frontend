@@ -54,6 +54,7 @@ transcoder service until app reload
 
 ### Changed
 
+- VideoCell hides volume control
 - Text size in grids is relative to window height
 - MoSys cell styling
 - VideoPlayer styling
