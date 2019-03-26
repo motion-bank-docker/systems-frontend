@@ -10,7 +10,10 @@ and this project adheres to
 
 ## [Unreleased]
 
-No changes yet.
+### Fixed
+
+- Resource cache uses the right env variable
+
 
 ## [1.3.0] - 2019-03-26
 
