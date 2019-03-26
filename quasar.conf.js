@@ -77,6 +77,7 @@ module.exports = function (ctx) {
         // App config
         //
         IS_STAGING: JSON.stringify(process.env.IS_STAGING || false),
+        USE_RESOURCE_CACHE: JSON.stringify(process.env.USE_RESOURCE_CACHE || false),
         UI_VERSION: JSON.stringify(process.env.UI_VERSION || require('./package.json').version)
       }
     },

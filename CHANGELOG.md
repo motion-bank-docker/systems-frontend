@@ -44,7 +44,8 @@ requires 'cssediting' feature)
 
 - Import timeline/grid now allows overriding author for all items
 - Docker image already builds with the nginx SPA config
-- The generic Vuex modules use caching in memory
+- The generic Vuex modules can use optional caching in memory
+(activate with USE_RESOURCE_CACHE env variable)
 - Generic vuex resources allow selection of returned
 properties through array of strings
 - Metadata store module caches responses from the
