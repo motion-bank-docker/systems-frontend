@@ -10,6 +10,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+No changes yet.
+
+## [1.3.0] - 2019-03-26
+
 ### Added
 
 #### MoSys
@@ -224,7 +228,8 @@ of a video cannot be retrieved
 - Start proper versioning at 1.0.0
 
 
-[Unreleased]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.2.1...master
+[Unreleased]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.0...master
+[1.3.0]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.2.1...v1.3.0
 [1.2.1]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.2.0...v1.2.1
 [1.2.0]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.1.1...v1.2.0
 [1.1.1]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.1.0...v1.1.1
