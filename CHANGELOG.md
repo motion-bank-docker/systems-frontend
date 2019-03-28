@@ -10,6 +10,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Changed
+
+- MoSys VideoCells only load content when visible
+
 ### Fixed
 
 - Resource cache uses the right env variable
