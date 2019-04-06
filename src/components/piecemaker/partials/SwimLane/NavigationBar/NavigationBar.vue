@@ -65,7 +65,6 @@
         return this.root.toAbsComp(this.scrollPosition.x)
       },
       navHandleWidth () {
-        // return this.root.toAbsComp(this.scaleFactor)
         return this.root.toAbsComp(this.scaleFactor)
       },
       timecodeCurrentX () {
@@ -112,6 +111,7 @@
           sp = this.navHandleX
           // scaleFactor
           min = this.root.toAbsComp(this.root.scaleFactorMin)
+          // max = this.root.el.width - this.navHandleX
           max = this.root.el.width - this.navHandleX
           raw = this.root.inputPosition.x - this.navHandleX
           w = this.root.restrict(raw, min, max)

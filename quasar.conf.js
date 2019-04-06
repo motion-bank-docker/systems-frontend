@@ -27,7 +27,7 @@ module.exports = function (ctx) {
       ctx.theme.mat ? 'roboto-font' : null,
       'material-icons'
     ],
-    supportIE: false,
+    supportIE: true,
     build: {
       scopeHoisting: true,
       vueRouterMode: 'history',
@@ -104,6 +104,7 @@ module.exports = function (ctx) {
         // Buttons
         //
         'QBtn',
+        'QBtnToggle',
         'QBtnDropdown',
         //
         // Navigation
@@ -178,6 +179,7 @@ module.exports = function (ctx) {
         'Ripple',
         'Scroll',
         'TouchHold',
+        'TouchPan',
         'CloseOverlay'
       ],
       // Quasar plugins

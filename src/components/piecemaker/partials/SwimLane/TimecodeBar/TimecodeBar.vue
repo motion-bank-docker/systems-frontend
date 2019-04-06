@@ -8,6 +8,8 @@
     )
     rect.fill-medium(width="100%", height="100%")
     timecode-bar-section(v-for="(n, index) in numSections", :index="index", :numSections="numSections", :root="root")
+
+    // popping up rectangle
     svg.timecode-pointer.no-event(
       v-if="(root.isFocused('timecodeBar') && !root.isDragged()) || root.isDragged('timecodeBar')",
       :x="timecodeMarkerHover.x", y="0"
@@ -21,7 +23,7 @@
   import { mapGetters } from 'vuex'
 
   export default {
-    props: ['root'],
+    props: ['root', 'offset'],
     components: {
       TimecodeBarSection
     },
