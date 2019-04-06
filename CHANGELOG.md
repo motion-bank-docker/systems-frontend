@@ -8,6 +8,13 @@ The format is based on
 and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- SwimLane component in post-annotator and on standalone page
+
+
 ## [1.3.1] - 2019-04-06
 
 ### Changed
@@ -17,10 +24,6 @@ and this project adheres to
 ### Fixed
 
 - Resource cache uses the right env variable
-
-### Added
-
-- SwimLane component to post-annotator and as standalone page
 
 
 ## [1.3.0] - 2019-03-26
