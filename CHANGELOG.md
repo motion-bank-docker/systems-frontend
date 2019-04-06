@@ -18,6 +18,10 @@ and this project adheres to
 
 - Resource cache uses the right env variable
 
+### Added
+
+- SwimLane component to post-annotator and as standalone page
+
 
 ## [1.3.0] - 2019-03-26
 
