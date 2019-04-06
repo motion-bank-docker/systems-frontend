@@ -1,18 +1,27 @@
 <template lang="pug">
   // q-list.sl-marker-details-selected(color="dark")
-  q-list(color="dark")
+  //
+    div
+    // previous or next entry
+      .q-mb-sm
+        q-icon(name="keyboard_arrow_left")
+        q-icon(name="keyboard_arrow_right")
+  q-list.q-pa-none(color="dark", no-border)
     template(v-if="annotationData")
-      q-item( v-for="(value, key) in annotationData" )
-        q-item-side {{ key }}
-        q-item-main {{ value }}
+      q-item.q-pa-none.items-start( v-for="(value, key) in annotationData" )
+        q-item-side.q-pa-none(:class="{'q-captionXXXXXXXXXX': resizable}") {{ key }}
+        q-item-main.q-pa-none(:class="{'q-captionXXXXXXXXXX': resizable}") {{ value }}
+    template(v-else)
+      q-item.q-pa-none.items-start
+        q-item-side.q-pa-none(:class="{'q-captionXXXXXXXXXX': resizable}") no selection
 </template>
 
 <script>
-  import { EventHub } from '../SwimLane/EventHub'
+  import { EventHub } from './EventHub'
   import { DateTime } from 'luxon'
 
   export default {
-    props: ['root'],
+    props: ['root', 'resizable'],
     data () {
       return {
         annotationData: null
@@ -24,7 +33,7 @@
       }
     },
     async mounted () {
-      EventHub.$on('markerUnselect', this.onMarkerUnselect)
+      // EventHub.$on('markerUnselect', this.onMarkerUnselect)
       EventHub.$on('markerDown', this.onMarkerDown)
     },
     beforeDestroy () {
@@ -59,4 +68,7 @@
 
   .q-item-side
     width: 100px
+
+  .q-list-header
+    min-height none!important
 </style>

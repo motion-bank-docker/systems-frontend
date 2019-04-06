@@ -8,6 +8,7 @@ import conversions from './conversions'
 import metadata from './metadata'
 import tags from './tags'
 import files from './files'
+import swimLaneSettings from './swim-lane-settings'
 
 export {
   auth,
@@ -19,5 +20,6 @@ export {
   timecodes,
   metadata,
   mosys,
-  notifications
+  notifications,
+  swimLaneSettings
 }

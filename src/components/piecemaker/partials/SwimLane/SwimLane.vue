@@ -1,65 +1,79 @@
 <template lang="pug">
   .swim-lane-component(:class="[cursorGlobalResize, cursorGlobalGrabbing]", style="position: relative;")
-    div
-      q-btn.q-mr-sm(slot="", @click="createMarker", label="Add annotation", color="primary")
-      q-btn.q-mr-sm(slot="", @click="", label="Jump to selected annotation", color="primary")
-      q-btn.q-mr-sm(slot="", @click="", label="Jump to current timecode", color="primary")
+    .row.q-my-md
+      //
+        q-btn.q-mr-sm(slot="", @click="createMarker", label="Add annotation", color="primary")
+        q-btn.q-mr-sm(slot="", @click="", label="Jump to selected annotation", color="primary")
+        q-btn.q-mr-sm(slot="", @click="", label="Jump to current timecode", color="primary")
 
-      .float-right(v-if="resizable")
-        q-btn.q-ml-lg.q-px-sm(@click="", v-touch-pan="handlerResize", color="dark")
-          q-icon.rotate-90(name="code")
-        q-btn.q-ml-sm.q-px-sm(@click="handlerToggle('swimlanes')", color="dark", icon="clear")
-      <!--q-btn.float-right(@click="handlerToggle('markerDetails')", :label="[markerDetails ? 'hide details' : 'show details']", color="primary")-->
-      q-btn.float-right(@click="handlerToggle('markerDetails')", label="details", color="primary")
-
-      // TODO: use input field here to set the timecode to an exact value
-      <!--q-input.timecode-display-current.no-select(v-model="timecode.currentText")-->
-      <!--.timecode-display-current.no-select Selected timecode: {{timecode.currentText}}-->
       marker-context-menu(:root="self")
-      marker-details-selected.q-mt-md(v-if="markerDetails", :root="self")
       marker-details-hover(:root="self")
-      .row.justify-between.q-my-md
-        div.q-pt-xs
-          | Selected timecode: {{ timecode.currentText }}
-        div
+
+      //.row.justify-between.q-my-md
+      .col-8.row.gutter-sm
+        .q-pt-xs(:class="{'col-6' : showDetails}")
+          q-btn.q-px-sm(@click="handlerToggle('markerDetails')", icon="expand_more",
+          :class="[showDetails ? 'rotate-90' : 'rotate-270 text-white']", size="sm", round)
+
+          // TODO: use input field here to set the timecode to an exact value
+          <!--| Selected timecode: {{ timecode.currentText }}-->
+        .col-6
           settings(ref="settings")
-    .swim-lane-wrapper.wrapper
-      .timecode-display-hover.no-select.no-event.p-abs(
-        ref="timecodeDisplayHover",
-        :class="(isFocused('timecodeBar') && !isDragged()) || isDragged('timecodeBar') ? '' : 'is-hidden'",
-        :style="{left: timecodeBar.displayHover.x + 'px'}"
-        ) {{timecode.hoverText}}
-      // ----------------------------------------------------------------------------------------------------- Outer SVG
-      svg.swim-lane(
-        @mousedown.left.prevent,
-        width="100%", height="50vh",
-        ref="root"
-        )
-        graph(
-          ref="graph",
-          :annotationsGrouped="annotationsGrouped",
-          :root="self"
-          )
-        timecode-bar(
-          ref="timecodeBar",
-          :root="self"
-          )
-        // TODO: own component
-        line.sl-graph-timecode-current.stroke-neutral.no-event(
-          :x1="timecodeMarkerCurrentX", y1="0",
-          :x2="timecodeMarkerCurrentX", y2="100%"
-          )
-        navigation-bar(
-          ref="nav",
-          :root="self"
-          )
+
+      // resize and hide swimlanes
+      .col-4.text-right(v-if="resizable")
+        q-btn.q-ml-lg.q-px-sm(@click="", v-touch-pan="handlerResize", color="dark", round, size="sm")
+          q-icon.rotate-90(name="code")
+        q-btn.q-ml-sm.q-px-sm(@click="handlerToggle('swimlanes')", color="dark", icon="clear", round, size="sm")
+
+    .row(:class="[showDetails ? 'gutter-sm' : '']")
+      div(:class="[showDetails ? 'col-4' : '']")
+        marker-details-selected(v-if="showDetails", :root="self", :resizable="resizable")
+      <!--div(ref="swimlanewrap", :class="[showMarkerDetails ? 'col-8' : 'col-12']")-->
+      div(ref="swimlanewrap", :class="[showDetails ? 'col-8' : 'col-12']")
+        .swim-lane-wrapper.wrapper
+          .timecode-display-hover.no-select.no-event.p-abs(
+            ref="timecodeDisplayHover",
+            :class="(isFocused('timecodeBar') && !isDragged()) || isDragged('timecodeBar') ? '' : 'is-hidden'",
+            :style="{left: timecodeBar.displayHover.x + 'px'}"
+            ) {{ timecode.hoverText }}
+          // ----------------------------------------------------------------------------------------------------- Outer SVG
+          svg.swim-lane(
+            @mousedown.left.prevent,
+            width="100%", height="50vh",
+            ref="root"
+            )
+            // swimlanes
+            graph(
+              ref="graph",
+              :annotationsGrouped="annotationsGrouped",
+              :root="self",
+              :offset="offset"
+              )
+            // sections bar
+            timecode-bar(
+              ref="timecodeBar",
+              :root="self",
+              :offset="offset"
+              )
+            // TODO: own component
+            line.sl-graph-timecode-current.stroke-neutral.no-event(
+              :x1="timecodeMarkerCurrentX", y1="0",
+              :x2="timecodeMarkerCurrentX", y2="100%"
+              )
+            // scroll and zoom bar
+            navigation-bar(
+              ref="nav",
+              :root="self",
+              :offset="offset"
+              )
 
 </template>
 
 <script>
   import { mapGetters } from 'vuex'
   import { DateTime } from 'luxon'
-  import { EventHub } from '../SwimLane/EventHub'
+  import { EventHub } from './EventHub'
   import SwimLaneMarker from './Graph/GraphMarker'
   import NavigationBar from './NavigationBar/NavigationBar'
   import TimecodeBar from './TimecodeBar/TimecodeBar'
@@ -80,7 +94,7 @@
       MarkerDetailsSelected,
       MarkerContextMenu
     },
-    props: ['timelineUuid', 'markerDetails', 'resizable'],
+    props: ['timelineUuid', 'markerDetails', 'resizable', 'visibilityDetails'],
     data () {
       return {
         self: this,
@@ -115,7 +129,13 @@
         currentKeyDown: null,
         annotations: [],
         // store all marker for collision detection later on
-        markerList: []
+        markerList: [],
+        showMarkerDetails: undefined,
+        offset: {
+          gutter: undefined,
+          swimlanewrap: undefined
+        },
+        showDetails: this.visibilityDetails
       }
     },
     async mounted () {
@@ -204,14 +224,19 @@
       }
     },
     methods: {
+      // toggleDetails () {
+      //   this.$emit('toggleDetails', 'bla')
+      // },
       handlerResize (obj) {
-        console.log(obj.position.top)
+        // console.log(obj.position.top)
         this.$emit('emitResize', obj.position.top)
       },
       handlerToggle (val) {
         switch (val) {
         case 'markerDetails':
-          this.markerDetails = !this.markerDetails
+          this.showMarkerDetails = !this.showMarkerDetails
+          if (!this.resizable) this.showDetails = this.showMarkerDetails
+          this.$emit('emitToggleDetails', this.showMarkerDetails)
           break
         case 'swimlanes':
           this.$emit('emitHandler')
@@ -285,8 +310,18 @@
 
         // TODO: make own component
         let el = this.$refs.timecodeDisplayHover
+
+        // if (this.showDetails) {
+        //   this.offset.gutter = 16
+        // }
+        // else this.offset.gutter = 0
+        // this.offset.swimlanewrap = this.$refs.swimlanewrap.offsetLeft
+
         if (el) {
-          this.timecodeBar.displayHover.x = this.restrict(this.inputPosition.x, 0, this.el.width - el.clientWidth)
+          this.timecodeBar.displayHover.x = this.restrict(
+            this.inputPosition.x,
+            0,
+            this.el.width - el.clientWidth)
         }
       },
       // ---------------------------------------------------------------------------------------------------- E Input Up
@@ -362,6 +397,7 @@
       },
       // ----------------------------------------------------------------------------------------------------------- Set
       setScrollPosition (sp) { // 0 - 1
+        // let offset = this.offset.swimlanewrap + this.offset.gutter
         let x = this.restrict(sp, 0, this.toRelComp(this.el.width - this.$refs.nav.navHandleWidth))
         let y = 0
         this.$store.commit('swimLaneSettings/setScrollPosition', x, y)
@@ -470,7 +506,9 @@
       },
       // ---------------------------------------------------------------------------------------------------- Conversion
       toAbsComp (rel) {
+        // let offset = this.offset.swimlanewrap + this.offset.gutter
         return rel * this.el.width
+        // return rel * this.$refs.swimlanewrap.clientWidth
       },
       toAbsGraph (rel) {
         if (this.$refs.graph) return rel * this.$refs.graph.width

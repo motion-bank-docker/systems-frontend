@@ -1,34 +1,29 @@
 <template lang="pug">
 
-  // TOP CENTER
-  //
-  //
-  .row.q-mt-md(v-shortkey="shortcuts.focusInput", @shortkey="setFocusOnInput()")
+  .row.q-mt-md.q-pl-sm.round-borders#hover(v-shortkey="shortcuts.focusInput", @shortkey="setFocusOnInput()")
 
-    // q-btn.fixed-bottom-left.q-ma-md(color="primary", outline) alt
+    // button toggles vocabulary
 
-    // BUTTON - SWITCH BETWEEN TEXT INPUT AND VOCABULARY
+    q-btn.text-primary.q-mr-sm.q-mt-sm(v-if="!vocabularyVisible && staging", round, icon="local_offer",
+      v-shortkey="shortcuts.showVocabulary", @shortkey.native="toggleVocabulary()", @click="toggleVocabulary()")
 
-    .col-xs-2.offset-xs-1.col-md-1.offset-md-1.col-lg-1.offset-lg-2.text-right.q-pa-sm.q-pr-md
-      q-btn.text-primary.bg-grey-10(v-if="!vocabularyVisible && staging", round, icon="local_offer",
-        v-shortkey="shortcuts.showVocabulary", @shortkey.native="toggleVocabulary()", @click="toggleVocabulary()")
+    // input area
 
-    .col-xs-8.col-md-8.col-lg-6.bg-grey-10.relative-position(:class="{ 'shadow-4': vocabularyVisible }")
-
-      // TEXT INPUT
+    div.round-borders(:class="{ 'shadow-4': vocabularyVisible }", style="width: 40vw;")
 
       q-input.q-pa-md(v-on:keydown="onKeyDown", @focus="onInputFocus", @blur="onInputBlur",
-        v-model="annotationText", ref="textInput", type="textarea", autofocus, dark,
-        :class="[vocabularyVisible ? 'q-pl-xl text-primary' : 'text-white']")
+        v-model="annotationText", ref="textInput", type="textarea", autofocus, dark
+        :class="[vocabularyVisible ? 'q-pl-xl text-primary' : 'text-white']"
+        )
 
-      // CLOSE BUTTON
+      // CLOSE BUTTON (unused?)
 
       .absolute-top.q-mt-sm(v-if="staging", style="width: 3rem;")
         q-btn.q-ml-sm.q-mt-xs.q-mr-none.text-primary(round, flat, icon="clear", size="sm",
           v-if="vocabularyVisible", v-shortkey="shortcuts.showVocabulary",
           @shortkey.native="toggleVocabulary()", @click="toggleVocabulary()")
 
-      // VOCABULARY (staging)
+      // vocabularies
 
       div(v-if="staging")
         vocabulary(
@@ -199,3 +194,9 @@
     }
   }
 </script>
+
+<style lang="stylus">
+  @import '~variables'
+  #hover:hover
+    background-color $dark
+</style>

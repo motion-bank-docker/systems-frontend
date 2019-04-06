@@ -4,58 +4,58 @@
   //
   //
   .bg-dark(style="height: calc(100vh - 52px); overflow: hidden;")
+
+    q-window-resize-observable(@resize="onResize")
+
     confirm-modal(ref="confirmModal", @confirm="handleConfirmModal")
 
     .bg-dark.relative-position(style="height: calc(100vh - 52px);")
 
-      // VIDEO
-      //
-      //
-      video-player(v-if="video && annotations", :annotation="video", :fine-controls="true",
-      @ready="playerReady($event)", @time="onPlayerTime($event)", @canplay.once="gotoHashvalue")
+      // video player
 
-      // TOP LEFT
-      //
-      //
-      q-page-sticky.q-pa-md(position="top-left", style="z-index: 2100;")
-        // BUTTON: GO BACK
-        back-button
+      div.bg-red(:style="{width: videoWidth}")
+        video-player(v-if="video", :annotation="video", :fine-controls="true",
+        @ready="playerReady($event)", @time="onPlayerTime($event)")
 
-      // TOP RIGHT
-      //
-      //
-      q-page-sticky.q-pa-md(position="top-right", style="z-index: 2100;")
+      // back button
 
-        // BUTTONS: SWITCH TO FULLSCREEN
+      q-page-sticky(position="top-left", style="z-index: 2100;")
+        back-button.q-ma-md
 
-        // q-btn(v-if="!fullscreen", @click="toggleFullscreen()", icon="fullscreen", round)
-        // q-btn(v-if="fullscreen", @click="toggleFullscreen()", icon="fullscreen_exit", round)
+      // button toggles annotations
 
-        // BUTTONS: SHOW/HIDE ANNOTATIONS
+      q-page-sticky(position="top-right", style="z-index: 2100;")
+        q-btn.q-ma-md(@click="handlerToggle('annotations')", color="dark", round,
+        :class="[drawer ? 'rotate-180' : '']", icon="keyboard_backspace", size="sm")
 
-        q-btn.q-ml-xs.bg-dark(v-if="metadata", color="white", round, flat, icon="info")
-          q-popover.bg-dark.q-py-sm
-            q-item(multiline)
-              q-item-side Title:
-              q-item-main {{ metadata.title }}
-        q-btn.q-ml-xs.bg-dark(v-if="!drawer", @click="drawer = true", color="white", round, flat)
-          q-icon(name="fullscreen_exit")
-        q-btn.q-ml-xs.bg-dark(v-else, @click="drawer = false", color="white", round, flat)
-          q-icon.flip-horizontal(name="fullscreen")
+      // swimlane content
 
-      // TOP CENTER
-      //
-      //
-      .absolute-top(style="width: 100%;")
+      .absolute-bottom-right.bg-dark.full-width.shadow-up-4.q-px-md.q-pb-sm.scroll(v-if="swimlanes",
+      :style="{height: swimlanesHeight + 'px', borderTop: '1px solid #333'}")
+        swim-lane(v-if="timeline", :timelineUuid="timeline.uuid", :markerDetails="false", :resizable="true",
+        @emitHandler="handlerToggle('swimlanes')", @emitResize="onEmitResize",
+        :key="visibilityDetails", @emitToggleDetails="onToggleDetails", :visibilityDetails="visibilityDetails"
+        )
+
+      q-page-sticky.q-pa-md(position="bottom-right")
+
+        // button toggles swimlanes visibility
+
+        q-btn(v-if="!swimlanes && userHasSwimlane", @click="handlerToggle('swimlanes')", color="dark", round,
+        :class="[swimlanes ? 'rotate-270' : 'rotate-90']", icon="keyboard_backspace", size="sm")
+
+      // input field for new annotations
+
+      <!--.absolute-top(style="width: 100%;")-->
+      q-page-sticky(position="top")
         annotation-field(
         @annotation="onAnnotation",
         ref="annotationField",
         :submit-on-num-enters="1",
         :selector-value="baseSelector")
 
-    // ANNOTATIONS
-    //
-    //
+    // annotations list
+
     q-layout-drawer.bg-dark(v-if="annotations", v-model="drawer", side="right")
       .absolute.fit.bg-dark
       q-list.no-border.bg-dark(dark)
@@ -87,21 +87,25 @@
 </template>
 
 <script>
+  import { mapGetters } from 'vuex'
   import { scroll, AppFullscreen } from 'quasar'
   import uuidValidate from 'uuid-validate'
   import { DateTime, Interval } from 'luxon'
 
   import { ObjectUtil, Assert, uuid } from 'mbjs-utils'
+  import { userHasFeature } from 'mbjs-quasar/src/lib'
   import constants from 'mbjs-data-models/src/constants'
   import parseURI from 'mbjs-data-models/src/lib/parse-uri'
 
   import AnnotationField from '../../../components/piecemaker/partials/AnnotationField'
+  import SwimLane from '../../../components/piecemaker/partials/SwimLane/SwimLane'
 
   const { getScrollTarget, setScrollPosition } = scroll
 
   export default {
     components: {
-      AnnotationField
+      AnnotationField,
+      SwimLane
     },
     async mounted () {
       if (this.$route.params.id) {
@@ -117,18 +121,25 @@
     data () {
       return {
         active: false,
-        annotations: undefined,
+        annotations: [],
         drawer: true,
         fullscreen: false,
+        headerHeight: 52,
         inputStyle: true,
         metadata: undefined,
         player: undefined,
         playerTime: 0.0,
         selector: undefined,
         staging: process.env.IS_STAGING,
+        swimlanes: false,
+        swimlanesHeight: undefined,
         timelineId: undefined,
         timeline: undefined,
         video: undefined,
+        videoWidth: undefined,
+        viewport: {height: undefined, width: undefined},
+        visibilityDetails: false,
+        detailsSize: 300,
         editAnnotationIndex: undefined,
         editAnnotationBuffer: undefined,
         hashTimeout: undefined,
@@ -138,6 +149,12 @@
       }
     },
     computed: {
+      ...mapGetters({
+        user: 'auth/getUserState'
+      }),
+      userHasSwimlane () {
+        return userHasFeature(this.user, 'swimlane')
+      },
       hashValue () {
         return this.$route.hash.length ? this.$route.hash.substr(1) : undefined
       },
@@ -174,6 +191,42 @@
       }
     },
     methods: {
+      onToggleDetails (val) {
+        this.visibilityDetails = !this.visibilityDetails
+        this.detailsSize += 100
+        console.log(val, this.detailsSize, this.visibilityDetails)
+      },
+      onTtoggleDetails (val) {
+        alert(val)
+      },
+      onEmitResize (val) {
+        if (this.swimlanes) {
+          this.videoWidth = (val - this.headerHeight * 2) * 1.777 + 'px'
+          this.swimlanesHeight = (this.viewport.height + this.headerHeight - val)
+        }
+      },
+      onResize (size) {
+        console.log(size)
+        this.viewport.height = size.height
+        this.viewport.width = size.width
+      },
+      handlerToggle (val) {
+        switch (val) {
+        case 'annotations':
+          this.drawer = !this.drawer
+          break
+        case 'swimlanes':
+          this.swimlanes = !this.swimlanes
+
+          if (this.swimlanes) this.videoWidth = (this.viewport.height - this.headerHeight) / 2 * 1.777 + 'px'
+          else this.videoWidth = undefined
+
+          if (this.swimlanes) this.swimlanesHeight = (this.viewport.height - this.headerHeight) / 2
+          else this.swimlanesHeight = 0
+
+          break
+        }
+      },
       async handleConfirmModal (annotation) {
         await this.deleteAnnotation(annotation.uuid)
       },

@@ -24,7 +24,8 @@ import {
   timecodes,
   metadata,
   mosys,
-  notifications
+  notifications,
+  swimLaneSettings
 } from './modules'
 
 /** Instantiate Motion Bank API Client */
@@ -62,7 +63,8 @@ const store = new Vuex.Store({
     timecodes,
     metadata,
     mosys,
-    notifications
+    notifications,
+    swimLaneSettings
   }
 })
 

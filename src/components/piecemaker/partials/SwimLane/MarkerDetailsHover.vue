@@ -11,7 +11,7 @@
 </template>
 
 <script>
-  import { EventHub } from '../SwimLane/EventHub'
+  import { EventHub } from './EventHub'
   import { DateTime } from 'luxon'
 
   export default {

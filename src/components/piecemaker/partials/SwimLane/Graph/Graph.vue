@@ -4,14 +4,9 @@
     width="100%", height="100%"
     )
     // Graph
-      svg.sl-graph(
-        @mousewheel="onGraphMouseWheel ($event)",
-        // :width="width", height="100%"
-        // :x="x", y="0"
-        )
     svg.sl-graph(
       @mousewheel="onGraphMouseWheel ($event)",
-      width="100%", height="100%",
+      :width="width", height="100%",
       :x="x", y="0"
       )
       // Graph Background

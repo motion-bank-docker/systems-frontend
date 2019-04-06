@@ -16,7 +16,8 @@
     // TOP CENTER: INPUT AREA
     //
     //
-    .fixed-top.bg-dark.q-pb-md(style="top: 50px; width: 100%; z-index: 1000;")
+    <!--.fixed-top.bg-dark.q-pb-md(style="top: 50px; width: 100%; z-index: 1000;")-->
+    q-page-sticky(position="top")
       annotation-field(@annotation="onAnnotation", ref="annotationField", :submit-on-num-enters="2")
 
     // CENTER: SHOW ANNOTATIONS

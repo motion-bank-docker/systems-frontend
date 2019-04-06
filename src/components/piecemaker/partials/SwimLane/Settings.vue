@@ -1,22 +1,39 @@
 <template lang="pug">
   //.settings
   .row
+    div
+      <!--| Group annotations by:&nbsp;-->
+      <!--q-tooltip.bg-grey-9 Group annotations by-->
+      <!--q-popover(@mouseover.native="toggleSettingsPopover()")-->
+      //  q-list
+      //    q-item(v-for="(g, i) in groupAnnotationsBy") {{ groupAnnotationsBy[i] }}
+      //
+        q-btn-toggle.bg-grey-8.q-ma-xs(
+          v-model="groupAnnotationsBy",
+          toggle-color="primary",
+          // :options="options",
+          size="sm"
+          )
+      q-btn-dropdown.q-mt-xs.bg-grey-9(:label="groupAnnotationsBy", size="sm", flat)
+        q-list.q-py-none
+          q-item.cursor-pointer(v-for="o in options", :key="o.value",
+          @click.native="groupAnnotationsBy = o.value", v-close-overlay) {{ o.label }}
+        <!--q-btn.q-ma-none(v-for="o in options", @click="groupAnnotationsBy = o.value", flat, size="sm") {{ o.label }}-->
+
     div.q-pl-sm
-      | Group annotations by:&nbsp;
-      q-btn-toggle.bg-grey-8.q-ma-xs(
-        v-model="groupAnnotationsBy",
-        toggle-color="primary",
-        :options="options",
-        size="sm", rounded
-        )
-    div.q-pl-sm.q-ml-md
-      | Lane mode:&nbsp;
-      q-btn-toggle.bg-grey-8.q-ma-xs(
-        v-model="laneMode",
-        toggle-color="primary",
-        :options="optionsLaneMode",
-        size="sm", rounded
-        )
+      <!--| Lane mode:&nbsp;-->
+      //
+        q-tooltip.bg-grey-9 Lane mode
+        q-btn-toggle.bg-grey-8.q-ma-xs(
+          v-model="laneMode",
+          toggle-color="primary",
+          // :options="optionsLaneMode",
+          size="sm"
+          )
+      q-btn-dropdown.q-mt-xs.bg-grey-9(:label="laneMode", size="sm", flat)
+        q-list.q-py-none
+          q-item.cursor-pointer(v-for="o in optionsLaneMode", :key="o.value",
+          @click.native="laneMode = o.value", v-close-overlay) {{ o.label }}
 </template>
 
 <script>
