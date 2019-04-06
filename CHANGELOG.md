@@ -10,6 +10,13 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+- SwimLane component in post-annotator and on standalone page
+
+
+## [1.3.1] - 2019-04-06
+
 ### Changed
 
 - MoSys VideoCells only load content when visible
@@ -235,7 +242,8 @@ of a video cannot be retrieved
 - Start proper versioning at 1.0.0
 
 
-[Unreleased]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.0...master
+[Unreleased]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.1...master
+[1.3.1]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.0...v1.3.1
 [1.3.0]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.2.1...v1.3.0
 [1.2.1]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.2.0...v1.2.1
 [1.2.0]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.1.1...v1.2.0
