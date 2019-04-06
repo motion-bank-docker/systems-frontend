@@ -17,7 +17,7 @@
 </template>
 
 <script>
-  import AccessControl from '../../../components/shared/partials/AccessControl'
+  import AccessControl from '../../../components/shared/forms/AccessControl'
   import CalendarTimeMain from '../../../components/shared/forms/CalendarTimeMain'
   import FormMain from '../../../components/shared/forms/FormMain'
 
