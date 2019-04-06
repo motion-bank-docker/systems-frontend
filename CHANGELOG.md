@@ -10,6 +10,10 @@ and this project adheres to
 
 ## [1.3.1] - 2019-04-06
 
+### Changed
+
+- MoSys VideoCells only load content when visible
+
 ### Fixed
 
 - Resource cache uses the right env variable
