@@ -7,7 +7,7 @@
 </template>
 
 <script>
-  import UserNav from '../components/shared/partials/UserNav'
+  import UserNav from '../components/shared/navigation/UserNav'
 
   export default {
     name: 'LayoutDefault',

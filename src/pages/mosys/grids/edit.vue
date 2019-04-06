@@ -42,7 +42,7 @@
 </template>
 
 <script>
-  import AccessControl from '../../../components/shared/partials/AccessControl'
+  import AccessControl from '../../../components/shared/forms/AccessControl'
   import Tags from '../../../components/shared/partials/Tags'
   import FormMain from '../../../components/shared/forms/FormMain'
 

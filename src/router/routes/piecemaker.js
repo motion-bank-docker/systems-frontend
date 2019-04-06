@@ -34,8 +34,14 @@ export default {
       meta: {private: true}
     },
     {
+      path: '/piecemaker/timelines/:id/sessions',
+      component: () => import('pages/piecemaker/timelines/sessions'),
+      name: 'piecemaker.timelines.sessions',
+      meta: {private: true}
+    },
+    {
       path: '/piecemaker/timelines/:id',
-      component: () => import('pages/piecemaker/timelines/show'),
+      component: () => import('pages/piecemaker/timelines/swimlanes'),
       name: 'piecemaker.timelines.show',
       meta: {private: true}
     },

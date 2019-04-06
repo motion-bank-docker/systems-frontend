@@ -18,7 +18,7 @@
 
 <script>
   import CardFull from '../../../components/shared/layouts/CardFull'
-  import UserRights from '../../../components/shared/partials/UserRights'
+  import UserRights from '../../../components/shared/forms/UserRights'
   export default {
     components: {
       CardFull,

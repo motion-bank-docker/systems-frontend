@@ -66,7 +66,7 @@
 </template>
 
 <script>
-  import ModalConfirm from '../../shared/partials/ModalConfirm'
+  import ModalConfirm from '../../shared/dialogs/ModalConfirm'
 
   export default {
     components: {

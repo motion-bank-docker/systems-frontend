@@ -72,7 +72,7 @@
 
 <script>
   // import FormMain from '../../../components/shared/forms/FormMain'
-  import ModalConfirm from '../../../components/shared/partials/ModalConfirm'
+  import ModalConfirm from '../../../components/shared/dialogs/ModalConfirm'
 
   export default {
     components: {
