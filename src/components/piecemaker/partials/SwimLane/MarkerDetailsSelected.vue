@@ -9,11 +9,11 @@
   q-list.q-pa-none(color="dark", no-border)
     template(v-if="annotationData")
       q-item.q-pa-none.items-start( v-for="(value, key) in annotationData" )
-        q-item-side.q-pa-none.q-caption(:class="{'q-captionXXXXXXXXXX': resizable}") {{ key }}
-        q-item-main.q-pa-none.q-caption(:class="{'q-captionXXXXXXXXXX': resizable}") {{ value }}
+        q-item-side.q-pa-none(:class="{'q-caption': resizable}") {{ key }}
+        q-item-main.q-pa-none(:class="{'q-caption': resizable}") {{ value }}
     template(v-else)
       q-item.q-pa-none.items-start
-        q-item-side.q-pa-none.q-caption(:class="{'q-captionXXXXXXXXXX': resizable}") {{ $t('labels.no_selection') }}
+        q-item-side.q-pa-none(:class="{'q-caption': resizable}") {{ $t('labels.no_selection') }}
 </template>
 
 <script>
