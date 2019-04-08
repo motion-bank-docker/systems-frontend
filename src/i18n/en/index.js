@@ -155,7 +155,7 @@ export default {
     type: 'Type',
     video_title: 'Video title',
     video_url: 'Video URL',
-    videos: 'Videos',
+    video: 'Video',
     vocabulary_entry: 'Vocabulary entry'
   },
   links: {
