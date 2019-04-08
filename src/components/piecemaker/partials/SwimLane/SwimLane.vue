@@ -598,6 +598,12 @@
       },
       restrict (p, min, max) {
         return Math.min(Math.max(p, min), max)
+      },
+      disableWindowScroll () {
+        document.body.style.overflow = 'hidden'
+      },
+      enableWindowScroll () {
+        document.body.style.overflow = 'auto'
       }
     }
   }
