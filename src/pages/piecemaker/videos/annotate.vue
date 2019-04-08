@@ -63,30 +63,38 @@
           q-btn.full-width(@click="drawer = false")
             q-icon.flip-horizontal(name="keyboard_backspace")
         q-item.bg-dark(dark, v-for="(annotation, i) in annotations", :key="annotation.uuid", :ref="annotation.uuid",
-        :class="[currentIndex === i ? 'bg-grey-9' : '']", style="border-left: 1px solid #333;")
+        :class="[currentIndex === i ? 'bg-grey-9' : '']", style="border-left: 1px solid #333;",
+        @mouseover.native="setHover(annotation.uuid)", @mouseleave.native="currentHover === undefined")
           q-item-main
             q-item-tile
-              q-btn(
+              q-btn.float-left(
               v-if="annotation.target.selector", :color="currentIndex === i ? 'primary' : 'dark'",
               @click="gotoSelector(annotation.target.selector.value)", size="sm")
                 | {{ formatSelectorForList(annotation.target.selector.value) }}
+              q-btn.q-caption.float-left.text-grey-7(size="sm", flat) {{ getInitials(annotation.author.name) }}
+                q-tooltip.bg-grey-10.shadow-6(:offset="[0, 5]") {{ annotation.author.name }}
 
-              q-btn.float-right(@click="$refs.confirmModal.show('messages.confirm_delete', annotation, 'buttons.delete')",
-              size="sm", icon="delete", round)
-                // | {{ $t('buttons.delete') }}
+              <!--div.float-right(v-if="currentHover === annotation.uuid")-->
+              div.float-right(:class="[currentHover !== annotation.uuid ? 'invisible' : '']")
+                q-btn.float-right(@click="$refs.confirmModal.show('messages.confirm_delete', annotation, 'buttons.delete')",
+                size="sm", icon="delete", round)
+                  // | {{ $t('buttons.delete') }}
 
-              q-btn.float-right.q-mr-sm(
-              v-if="(!isEditingAnnotations && annotation.body.type === 'TextualBody' || editAnnotationIndex !== i && annotation.body.type !== 'VocabularyEntry')",
-              @click="setEditIndex(i)", size="sm", icon="edit", round)
-                // | {{ $t('buttons.edit') }}
+                q-btn.q-mr-sm(
+                v-if="(!isEditingAnnotations && annotation.body.type === 'TextualBody' || editAnnotationIndex !== i && annotation.body.type !== 'VocabularyEntry')",
+                @click="setEditIndex(i)", size="sm", icon="edit", round)
+                  // | {{ $t('buttons.edit') }}
 
-              q-btn.float-right.q-mr-sm(v-if="annotation.body.type === 'TextualBody' && editAnnotationIndex === i",
-              @click="updateAnnotation(annotation)", size="sm", :color="isAnnotationDirty ? 'primary' : undefined",
-              icon="save", round)
-                // | {{ $t('buttons.save') }}
+                q-btn.float-right.q-mr-sm(v-if="annotation.body.type === 'TextualBody' && editAnnotationIndex === i",
+                @click="updateAnnotation(annotation)", size="sm", :color="isAnnotationDirty ? 'primary' : undefined",
+                icon="save", round)
+                  // | {{ $t('buttons.save') }}
 
-            q-item-tile.q-caption.q-my-xs
-              span.text-grey-6 {{ annotation.author.name }}
+            //
+              q-item-tile.q-caption.q-my-xs
+                span.text-grey-6 {{ annotation.author.name }}
+            br
+
             q-item-tile
               markdown-display.markdown-display.q-mt-sm(v-if="!isEditingAnnotations || editAnnotationIndex !== i",
                 :content="annotation.body.value", :options="mdOptions")
@@ -131,6 +139,7 @@
       return {
         active: false,
         annotations: [],
+        currentHover: undefined,
         drawer: true,
         fullscreen: false,
         headerHeight: 52,
@@ -200,6 +209,13 @@
       }
     },
     methods: {
+      setHover (val) {
+        this.currentHover = val
+      },
+      getInitials (val) {
+        let matches = val.split(' ').map((n) => n[0]).join('')
+        return matches
+      },
       onToggleDetails (val) {
         this.visibilityDetails = !this.visibilityDetails
         this.detailsSize += 100
