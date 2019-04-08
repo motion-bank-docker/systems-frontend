@@ -13,9 +13,10 @@
 
       // video player
 
-      div.bg-red(:style="{width: videoWidth}")
-        video-player(v-if="video", :annotation="video", :fine-controls="true",
-        @ready="playerReady($event)", @time="onPlayerTime($event)")
+      <!--div.bg-red(:style="{width: videoWidth}")-->
+      div.bg-red.relative(:style="{height: videoHeight + 'px'}")
+        video-player.full-height.relative-position(v-if="video", :annotation="video", :fine-controls="true",
+        @ready="playerReady($event)", @time="onPlayerTime($event)", @emitVideoPlayer="onVideoPlayer")
 
       // back button
 
@@ -155,6 +156,7 @@
         timeline: undefined,
         video: undefined,
         videoWidth: undefined,
+        videoHeight: undefined,
         viewport: {height: undefined, width: undefined},
         visibilityDetails: false,
         detailsSize: 300,
@@ -209,6 +211,9 @@
       }
     },
     methods: {
+      onVideoPlayer (obj) {
+        console.log('obj', obj)
+      },
       setHover (val) {
         this.currentHover = val
       },
@@ -226,8 +231,14 @@
       },
       onEmitResize (val) {
         if (this.swimlanes) {
-          this.videoWidth = (val - this.headerHeight * 2) * 1.777 + 'px'
+          // this.videoWidth = (val - this.headerHeight * 2) * 1.777 + 'px'
+          this.videoWidth = (val - this.headerHeight * 2) * 1.777
           this.swimlanesHeight = (this.viewport.height + this.headerHeight - val)
+          this.videoHeight = this.viewport.height - 52 - this.swimlanesHeight
+          console.log(this.videoHeight)
+        }
+        else {
+          this.videoHeight = this.viewport.height - 52
         }
       },
       onResize (size) {
