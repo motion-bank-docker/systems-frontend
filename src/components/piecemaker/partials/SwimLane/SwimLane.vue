@@ -35,7 +35,7 @@
       <!--div(ref="swimlanewrap", :class="[showMarkerDetails ? 'col-8' : 'col-12']")-->
       div(ref="swimlanewrap", :class="[showDetails ? 'col-8' : 'col-12']")
         .swim-lane-wrapper.wrapper
-          .timecode-display-hover.no-select.no-event.p-abs(
+          .timecode-display-hover.no-select.no-event.p-abs.q-caption(
             ref="timecodeDisplayHover",
             :class="(isFocused('timecodeBar') && !isDragged()) || isDragged('timecodeBar') ? '' : 'is-hidden'",
             :style="{left: timecodeBar.displayHover.x + 'px'}"
