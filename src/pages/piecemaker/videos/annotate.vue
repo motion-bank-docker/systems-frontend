@@ -58,12 +58,12 @@
 
     q-layout-drawer.bg-dark(v-if="annotations", v-model="drawer", side="right")
       .absolute.fit.bg-dark
-      q-list.no-border.bg-dark(dark)
+      q-list.no-border.bg-dark.q-py-none(dark)
         // q-item
           q-btn.full-width(@click="drawer = false")
             q-icon.flip-horizontal(name="keyboard_backspace")
         q-item.bg-dark(dark, v-for="(annotation, i) in annotations", :key="annotation.uuid", :ref="annotation.uuid",
-        :class="[currentIndex === i ? 'bg-grey-9' : '']")
+        :class="[currentIndex === i ? 'bg-grey-9' : '']", style="border-left: 1px solid #333;")
           q-item-main
             q-item-tile
               q-btn(
@@ -71,13 +71,21 @@
               @click="gotoSelector(annotation.target.selector.value)", size="sm")
                 | {{ formatSelectorForList(annotation.target.selector.value) }}
 
-              q-btn.float-right(@click="$refs.confirmModal.show('messages.confirm_delete', annotation, 'buttons.delete')", size="sm") {{ $t('buttons.delete') }}
-              q-btn.float-right(v-if="(!isEditingAnnotations && annotation.body.type === 'TextualBody') || editAnnotationIndex !== i",
-                @click="setEditIndex(i)", size="sm") {{ $t('buttons.edit') }}
-              q-btn.float-right(v-if="annotation.body.type === 'TextualBody' && editAnnotationIndex === i",
-                @click="updateAnnotation(annotation)", size="sm", :color="isAnnotationDirty ? 'primary' : undefined") {{ $t('buttons.save') }}
+              q-btn.float-right(@click="$refs.confirmModal.show('messages.confirm_delete', annotation, 'buttons.delete')",
+              size="sm", icon="delete", round)
+                // | {{ $t('buttons.delete') }}
+
+              q-btn.float-right.q-mr-sm(v-if="(!isEditingAnnotations && annotation.body.type === 'TextualBody') || editAnnotationIndex !== i",
+              @click="setEditIndex(i)", size="sm", icon="edit", round)
+                // | {{ $t('buttons.edit') }}
+
+              q-btn.float-right.q-mr-sm(v-if="annotation.body.type === 'TextualBody' && editAnnotationIndex === i",
+              @click="updateAnnotation(annotation)", size="sm", :color="isAnnotationDirty ? 'primary' : undefined",
+              icon="save", round)
+                // | {{ $t('buttons.save') }}
+
             q-item-tile.q-caption.q-my-xs
-              span {{ annotation.author.name }}
+              span.text-grey-6 {{ annotation.author.name }}
             q-item-tile
               markdown-display.markdown-display.q-mt-sm(v-if="!isEditingAnnotations || editAnnotationIndex !== i",
                 :content="annotation.body.value", :options="mdOptions")
