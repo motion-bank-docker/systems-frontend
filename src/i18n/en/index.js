@@ -156,7 +156,7 @@ export default {
     video_title: 'Video title',
     video_url: 'Video URL',
     videos: 'Videos',
-    vocabularies: 'Vocabularies'
+    vocabulary_entry: 'Vocabulary entry'
   },
   links: {
     click_to_register: 'Click here to create an account.'
