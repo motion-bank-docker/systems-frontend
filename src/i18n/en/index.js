@@ -149,11 +149,14 @@ export default {
     size: 'Size',
     tag: 'Tag',
     tags: 'Tags',
+    textual_body: 'Textual annotations',
     title: 'Title',
     title_unknown: 'Unknown Title',
     type: 'Type',
     video_title: 'Video title',
-    video_url: 'Video URL'
+    video_url: 'Video URL',
+    videos: 'Videos',
+    vocabularies: 'Vocabularies'
   },
   links: {
     click_to_register: 'Click here to create an account.'
