@@ -75,7 +75,8 @@
               size="sm", icon="delete", round)
                 // | {{ $t('buttons.delete') }}
 
-              q-btn.float-right.q-mr-sm(v-if="(!isEditingAnnotations && annotation.body.type === 'TextualBody') || editAnnotationIndex !== i",
+              q-btn.float-right.q-mr-sm(
+              v-if="(!isEditingAnnotations && annotation.body.type === 'TextualBody' || editAnnotationIndex !== i && annotation.body.type !== 'VocabularyEntry')",
               @click="setEditIndex(i)", size="sm", icon="edit", round)
                 // | {{ $t('buttons.edit') }}
 
