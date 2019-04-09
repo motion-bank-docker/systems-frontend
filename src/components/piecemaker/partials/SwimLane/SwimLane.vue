@@ -12,13 +12,20 @@
       .col-8.row
         .q-pt-xs(:class="{'col-6' : showDetails}")
 
-          // buttons shows/hides details
+          // button show/hide details
 
           q-btn.q-px-sm.q-mr-sm(@click="handlerToggle('markerDetails')", icon="expand_more",
           :class="[showDetails ? 'rotate-90' : 'rotate-270 text-white']", size="sm", round)
 
-          // TODO: use input field here to set the timecode to an exact value
-          <!--| Selected timecode: {{ timecode.currentText }}-->
+          q-btn.q-px-sm.q-mr-sm.float-right(v-if="showDetails", @click="", icon="code",
+          size="sm", round)
+
+          //
+            TODO: use input field here to set the timecode to an exact value
+            | Selected timecode: {{ timecode.currentText }}
+
+        // settings
+
         .q-pl-xs
           settings(ref="settings")
 
@@ -30,8 +37,14 @@
         q-btn.q-ml-sm(@click="handlerToggle('swimlanes')", color="dark", icon="clear", round, size="sm")
 
     .row(:class="[showDetails ? 'gutter-sm' : '']")
+
+      // details
+
       div(:class="[showDetails ? 'col-4' : '']")
         marker-details-selected(v-if="showDetails", :root="self", :resizable="resizable")
+
+      // swim lane
+
       <!--div(ref="swimlanewrap", :class="[showMarkerDetails ? 'col-8' : 'col-12']")-->
       div(ref="swimlanewrap", :class="[showDetails ? 'col-8' : 'col-12']")
         .swim-lane-wrapper.wrapper
