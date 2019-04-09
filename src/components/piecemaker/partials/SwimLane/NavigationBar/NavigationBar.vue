@@ -82,7 +82,7 @@
         this.inputOffset.x = this.navHandleWidth / 2
         let p = this.root.toRelComp(this.root.inputPosition.x - this.inputOffset.x)
         EventHub.$emit('UIDown', 'navBackground')
-        EventHub.$emit('scrollPositionChange', p)
+        EventHub.$emit('scrollPositionChange', {x: p, y: 0})
       },
       onNavHandleBackgroundDown () {
         this.inputOffset.x = this.root.inputPosition.x - this.navHandleX
@@ -97,7 +97,7 @@
       },
       onDoubleClick () {
         EventHub.$emit('scaleFactorChange', 1)
-        EventHub.$emit('scrollPositionChange', 0)
+        EventHub.$emit('scrollPositionChange', {x: 0, y: 0})
       },
       update () {
         let sp, w, min, max, raw
@@ -125,7 +125,7 @@
           w = this.navHandle.boundRight - sp
           EventHub.$emit('scaleFactorChange', this.root.toRelComp(w))
         }
-        EventHub.$emit('scrollPositionChange', this.root.toRelComp(sp))
+        EventHub.$emit('scrollPositionChange', {x: this.root.toRelComp(sp), y: 0})
       },
       onGlobalUp () {
         this.inputOffset = {x: 0, y: 0}

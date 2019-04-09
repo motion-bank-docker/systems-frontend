@@ -162,7 +162,7 @@
       EventHub.$emit('afterComponentMounted')
     },
     beforeDestroy () {
-      this.setScrollPosition(0)
+      this.setScrollPosition({x: 0, y: 0})
       this.setScaleFactor(1)
       window.removeEventListener('mousemove', this.onGlobalMove)
       window.removeEventListener('mouseup', this.onGlobalUp)
@@ -398,8 +398,14 @@
       // ----------------------------------------------------------------------------------------------------------- Set
       setScrollPosition (sp) { // 0 - 1
         // let offset = this.offset.swimlanewrap + this.offset.gutter
-        let x = this.restrict(sp, 0, this.toRelComp(this.el.width - this.$refs.nav.navHandleWidth))
-        let y = 0
+        let x = sp.x || null
+        let y = sp.y || null
+        if (x) {
+          x = this.restrict(x, 0, this.toRelComp(this.el.width - this.$refs.nav.navHandleWidth))
+        }
+        if (y) {
+          // y = y
+        }
         this.$store.commit('swimLaneSettings/setScrollPosition', x, y)
       },
       setTimecode (tc) { // int ms
