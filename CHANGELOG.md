@@ -14,6 +14,11 @@ and this project adheres to
 
 - SwimLane component in post-annotator and on standalone page
 
+### Updated
+
+- [mbjs-data-models](https://gitlab.rlp.net/motionbank/mbjs/data-models)
+  to version 1.0.0
+
 
 ## [1.3.1] - 2019-04-06
 
