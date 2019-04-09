@@ -34,6 +34,12 @@
         q-list.q-py-none
           q-item.cursor-pointer(v-for="o in optionsLaneMode", :key="o.value",
           @click.native="laneMode = o.value", v-close-overlay) {{ o.label }}
+    // undo
+    div.q-pl-sm
+      q-btn.q-mt-xs.bg-grey-9(icon="undo", size="sm", flat)
+    // redo
+    div.q-pl-sm
+      q-btn.q-mt-xs.bg-grey-9(icon="redo", size="sm", flat)
 </template>
 
 <script>
