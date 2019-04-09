@@ -16,7 +16,7 @@
       <!--div.bg-red(:style="{width: videoWidth}")-->
       div.bg-red.relative(:style="{height: videoHeight + 'px'}")
         video-player.full-height.relative-position(v-if="video", :annotation="video", :fine-controls="true",
-        @ready="playerReady($event)", @time="onPlayerTime($event)", @emitVideoPlayer="onVideoPlayer")
+        @ready="playerReady($event)", @time="onPlayerTime($event)")
 
       // back button
 
@@ -59,13 +59,13 @@
 
     q-layout-drawer.bg-dark(v-if="annotations", v-model="drawer", side="right")
       .absolute.fit.bg-dark
-      q-list.no-border.bg-dark.q-py-none(dark)
+      q-list.no-border.bg-dark.q-py-none(dark, @mouseleave.native="currentHover === undefined")
         // q-item
           q-btn.full-width(@click="drawer = false")
             q-icon.flip-horizontal(name="keyboard_backspace")
         q-item.bg-dark(dark, v-for="(annotation, i) in annotations", :key="annotation.uuid", :ref="annotation.uuid",
         :class="[currentIndex === i ? 'bg-grey-9' : '']", style="border-left: 1px solid #333;",
-        @mouseover.native="setHover(annotation.uuid)", @mouseleave.native="currentHover === undefined")
+        @mouseover.native="setHover(annotation.uuid)")
           q-item-main
             q-item-tile
               q-btn.float-left(
@@ -76,7 +76,7 @@
                 q-tooltip.bg-grey-10.shadow-6(:offset="[0, 5]") {{ annotation.author.name }}
 
               <!--div.float-right(v-if="currentHover === annotation.uuid")-->
-              div.float-right(:class="[currentHover !== annotation.uuid ? 'invisible' : '']")
+              div.float-right(:class="[currentHover === annotation.uuid ? '' : 'invisible']")
                 q-btn.float-right(@click="$refs.confirmModal.show('messages.confirm_delete', annotation, 'buttons.delete')",
                 size="sm", icon="delete", round)
                   // | {{ $t('buttons.delete') }}
@@ -132,6 +132,7 @@
         await this.getAnnotations()
         this.$q.loading.hide()
       }
+      this.videoHeight = this.viewport.height - 52
     },
     beforeDestroy () {
       AppFullscreen.exit()
@@ -211,9 +212,6 @@
       }
     },
     methods: {
-      onVideoPlayer (obj) {
-        console.log('obj', obj)
-      },
       setHover (val) {
         this.currentHover = val
       },
