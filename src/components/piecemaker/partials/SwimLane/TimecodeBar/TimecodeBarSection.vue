@@ -1,7 +1,7 @@
 <template lang="pug">
   svg.timecode-bar-section(v-if="!root.isDragged(['navHandleLeft', 'navHandleRight'])", :x="xMapped", y="0")
     line.stroke-black(x1="0", y1="0", x2="0", y2="100%")
-    text.no-select.fill-light(y="18", x="10") {{time}}
+    text.no-select.fill-light.q-caption(y="18", x="10") {{ time }}
 </template>
 
 <script>
