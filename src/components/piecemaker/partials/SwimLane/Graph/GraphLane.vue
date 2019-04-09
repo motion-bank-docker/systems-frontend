@@ -8,7 +8,7 @@
       x1="0", y1="0",
       x2="100%", y2="0"
       )
-    text.fill-neutral.no-event.no-select(:x="root.toAbsGraph(scrollPosition.x) + 10", y="18") {{type + ': ' +  annotations.length}}
+    text.fill-neutral.no-event.no-select(:x="root.toAbsGraphX(scrollPosition.x) + 10", y="18") {{type + ': ' +  annotations.length}}
     graph-marker(
       v-for="(a, index) in annotations",
       :annotationData="a",

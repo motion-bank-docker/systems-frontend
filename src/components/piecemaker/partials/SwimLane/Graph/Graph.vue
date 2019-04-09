@@ -103,19 +103,22 @@
         // CTRL/STRG pressed => scroll horizotnally regardless of scroll direction
         if (EventHub.keyIsPressed('Control')) {
           let d = (Math.abs(event.deltaX) > Math.abs(event.deltaY)) ? event.deltaX : event.deltaY
-          d = this.root.toRelGraph(d) * -1
+          d = this.root.toRelGraphX(d) * -1
           EventHub.$emit('scrollPositionChange', {x: this.root.scrollPosition.x + d})
         }
         // else if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) {
         //   let d = event.deltaX
-        //   d = this.root.toRelGraph(d) * -1
+        //   d = this.root.toRelGraphX(d) * -1
         //   EventHub.$emit('scrollPositionChange', this.root.scrollPosition.x + d)
         // }
         // standard scroll
         else {
           this.scrollY = this.root.restrict(this.scrollY + event.deltaY, (this.height - this.root.el.height) * -1, 0)
           let d = event.deltaX
-          d = this.root.toRelGraph(d) * -1
+          d = this.root.toRelGraphX(d) * -1
+          // this.scrollY = this.root.restrict(this.scrollY + event.deltaY, (this.height - this.root.el.height) * -1, 0)
+          // let x = this.root.toRelGraphX(event.deltaX) * -1
+          // let y = this.root.restrict(this.scrollY + event.deltaY, (this.height - this.root.el.height) * -1, 0)
           EventHub.$emit('scrollPositionChange', {x: this.root.scrollPosition.x + d, y: 0})
         }
       },
@@ -125,7 +128,7 @@
       // TODO implement also y movement on dragging
       update () {
         let p = Math.min(this.root.inputPosition.x - this.inputOffset.x, this.width - this.root.el.width)
-        EventHub.$emit('scrollPositionChange', {x: this.root.toRelGraph(p) * -1, y: 0})
+        EventHub.$emit('scrollPositionChange', {x: this.root.toRelGraphX(p) * -1, y: 0})
       },
       onGlobalUp () {
         this.inputOffset = {x: 0, y: 0}

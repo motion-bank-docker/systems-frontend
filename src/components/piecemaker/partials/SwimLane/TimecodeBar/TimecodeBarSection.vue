@@ -22,7 +22,7 @@
         scaleFactor: 'swimLaneSettings/getScaleFactor'
       }),
       time () {
-        let p = this.xMapped + this.root.toAbsGraph(this.scrollPosition.x)
+        let p = this.xMapped + this.root.toAbsGraphX(this.scrollPosition.x)
         let ms = this.root.getTimecodeFromGraphPositionAbs(p)
         return this.root.millisToText(ms, 'HH:mm:ss')
       }
@@ -43,7 +43,7 @@
         let s = this.scrollPosition.x || 0
         let w = this.root.el.width
         let r = w / (this.numSections - 1)
-        this.xCached = r * (this.numSections - this.index) + this.root.toAbsGraph(s)
+        this.xCached = r * (this.numSections - this.index) + this.root.toAbsGraphX(s)
         this.xCached %= w + r + 1
         this.xMapped = w - this.xCached
       }

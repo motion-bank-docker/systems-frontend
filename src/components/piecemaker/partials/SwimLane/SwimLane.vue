@@ -211,8 +211,8 @@
       },
       timecodeMarkerCurrentX () {
         if (this.timecodeCurrent) {
-          let r = this.millisToRelGraph(this.timecodeCurrent) - this.scrollPosition.x
-          let p = this.toAbsGraph(r)
+          let r = this.millistoRelGraph(this.timecodeCurrent) - this.scrollPosition.x
+          let p = this.toAbsGraphX(r)
           return p
         }
         return 0
@@ -401,7 +401,7 @@
         let x = sp.x || null
         let y = sp.y || null
         if (x) {
-          x = this.restrict(x, 0, this.toRelComp(this.el.width - this.$refs.nav.navHandleWidth))
+          x = this.restrict(x, 0, this.toRelCompX(this.el.width - this.$refs.nav.navHandleWidth))
         }
         if (y) {
           // y = y
@@ -436,17 +436,17 @@
       },
       // TODO add y value
       getInputPositionRelGraph () {
-        return {x: this.toRelGraph(this.getInputPositionAbsGraph().x)}
+        return {x: this.toRelGraphX(this.getInputPositionAbsGraph().x)}
       },
       getTimecodeFromInputPosition () {
-        let tc = Math.round(this.toRelGraph(this.inputPosition.x - this.$refs.graph.x) * this.timeline.duration)
+        let tc = Math.round(this.toRelGraphX(this.inputPosition.x - this.$refs.graph.x) * this.timeline.duration)
         return this.restrict(tc, 0, this.timeline.duration)
       },
       getTimecodeFromInputPositionTotal () {
         return this.getTimecodeFromInputPosition() + this.timeline.start
       },
       getTimecodeFromGraphPositionAbs (pos) {
-        let tc = Math.round(this.toRelGraph(pos) * this.timeline.duration)
+        let tc = Math.round(this.toRelGraphX(pos) * this.timeline.duration)
         return this.restrict(tc, 0, this.timeline.duration)
       },
       getTimecodeCurrentTotal () {
@@ -461,7 +461,7 @@
       },
       getVisibleTimecodeRange () {
         let t0 = this.relToMillis(this.scrollPosition.x)
-        let t1 = this.relToMillis(this.toRelGraph(this.el.width))
+        let t1 = this.relToMillis(this.toRelGraphX(this.el.width))
         return {start: t0, length: t1}
       },
       // ---------------------------------------------------------------------------------------------------------- Misc
@@ -506,40 +506,40 @@
       },
       // checking for visibility seems to be slower than just rendering everything D=
       isVisible (bounds) {
-        let spa = this.toAbsGraph(this.scrollPosition.x)
+        let spa = this.toAbsGraphX(this.scrollPosition.x)
         let offset = bounds.offset || 0
         return bounds.left - spa >= -offset && bounds.right - spa <= this.el.width + offset
       },
       // ---------------------------------------------------------------------------------------------------- Conversion
-      toAbsComp (rel) {
+      toAbsCompX (rel) {
         // let offset = this.offset.swimlanewrap + this.offset.gutter
         return rel * this.el.width
         // return rel * this.$refs.swimlanewrap.clientWidth
       },
-      toAbsGraph (rel) {
+      toAbsGraphX (rel) {
         if (this.$refs.graph) return rel * this.$refs.graph.width
         else return rel * 1
       },
-      toRelComp (abs) { // return 0 - 1
+      toRelCompX (abs) { // return 0 - 1
         return abs / this.el.width
       },
-      toRelGraph (abs) { // return 0 - 1
+      toRelGraphX (abs) { // return 0 - 1
         if (this.$refs.graph) {
           if (this.$refs.graph.width > 0) return abs / this.$refs.graph.width
           else return 0
         }
         else return 0
       },
-      // relCompToRelGraph (rel) {
+      // relComptoRelGraphX (rel) {
       //   return rel + this.scroll
       // },
-      millisToRelGraph (ms) {
+      millistoRelGraph (ms) {
         return ms / this.timeline.duration
       },
-      millisTotalToRelGraph (ms) {
+      millisTotaltoRelGraph (ms) {
         return (ms - this.timeline.start) / this.timeline.duration
       },
-      millisTotalToAbsGraph (ms) {
+      millisTotaltoAbsGraph (ms) {
         if (this.$refs.graph) return (ms - this.timeline.start) / this.timeline.duration * this.$refs.graph.width
         else return 0
       },
@@ -553,7 +553,7 @@
         return Math.round(rel * this.timeline.duration)
       },
       absToMillis (abs) {
-        return Math.round(this.toRelGraph(abs) * this.timeline.duration)
+        return Math.round(this.toRelGraphX(abs) * this.timeline.duration)
       },
       // ---------------------------------------------------------------------------------------------------- Formatting
       // formatTimecode (tc) {

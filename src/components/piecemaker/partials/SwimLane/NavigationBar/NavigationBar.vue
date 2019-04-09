@@ -61,14 +61,14 @@
         scrollPosition: 'swimLaneSettings/getScrollPosition'
       }),
       navHandleX () {
-        // return this.root.toAbsComp(this.scrollPosition.x)
-        return this.root.toAbsComp(this.scrollPosition.x)
+        // return this.root.toAbsCompX(this.scrollPosition.x)
+        return this.root.toAbsCompX(this.scrollPosition.x)
       },
       navHandleWidth () {
-        return this.root.toAbsComp(this.scaleFactor)
+        return this.root.toAbsCompX(this.scaleFactor)
       },
       timecodeCurrentX () {
-        if (this.timecodeCurrent) return this.root.millisToRelGraph(this.timecodeCurrent) * 100 + '%'
+        if (this.timecodeCurrent) return this.root.millistoRelGraph(this.timecodeCurrent) * 100 + '%'
         return 0
       }
     },
@@ -80,7 +80,7 @@
     methods: {
       onNavBackgroundDown () {
         this.inputOffset.x = this.navHandleWidth / 2
-        let p = this.root.toRelComp(this.root.inputPosition.x - this.inputOffset.x)
+        let p = this.root.toRelCompX(this.root.inputPosition.x - this.inputOffset.x)
         EventHub.$emit('UIDown', 'navBackground')
         EventHub.$emit('scrollPositionChange', {x: p, y: 0})
       },
@@ -110,22 +110,22 @@
           // scrollPosition
           sp = this.navHandleX
           // scaleFactor
-          min = this.root.toAbsComp(this.root.scaleFactorMin)
+          min = this.root.toAbsCompX(this.root.scaleFactorMin)
           // max = this.root.el.width - this.navHandleX
           max = this.root.el.width - this.navHandleX
           raw = this.root.inputPosition.x - this.navHandleX
           w = this.root.restrict(raw, min, max)
-          EventHub.$emit('scaleFactorChange', this.root.toRelComp(w))
+          EventHub.$emit('scaleFactorChange', this.root.toRelCompX(w))
         }
         else if (this.root.isDragged('navHandleLeft')) {
           // scrollPosition
-          max = this.navHandle.boundRight - this.root.toAbsComp(this.root.scaleFactorMin)
+          max = this.navHandle.boundRight - this.root.toAbsCompX(this.root.scaleFactorMin)
           sp = this.root.restrict(this.root.inputPosition.x, 0, max)
           // scaleFactor
           w = this.navHandle.boundRight - sp
-          EventHub.$emit('scaleFactorChange', this.root.toRelComp(w))
+          EventHub.$emit('scaleFactorChange', this.root.toRelCompX(w))
         }
-        EventHub.$emit('scrollPositionChange', {x: this.root.toRelComp(sp), y: 0})
+        EventHub.$emit('scrollPositionChange', {x: this.root.toRelCompX(sp), y: 0})
       },
       onGlobalUp () {
         this.inputOffset = {x: 0, y: 0}
