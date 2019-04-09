@@ -22,7 +22,7 @@
       // zoomRect
       zoom-rect(:root="root")
       // -------------------------------------------------------------------------------------------------- Marker Lanes
-      svg.graph-lane-wrapper(ref="graphLaneWrapper", overflow="visible", , :y="scrollY ")
+      svg.graph-lane-wrapper(ref="graphLaneWrapper", overflow="visible", , :y="y")
         // TODO: rethink lane logic:
         graph-lane(
           v-for="(annotations, type, index) in annotationsGrouped",
@@ -49,11 +49,11 @@
     },
     data () {
       return {
-        y: 0,
+        // y: 0,
         inputOffset: {
           x: 0
         },
-        scrollY: 0,
+        // scrollY: 0,
         laneList: []
       }
     },
@@ -65,6 +65,9 @@
       }),
       x () {
         return this.width * this.scrollPosition.x * -1
+      },
+      y () {
+        return this.height * this.scrollPosition.y * -1
       },
       width () {
         return this.root.el.width / this.scaleFactor
@@ -113,13 +116,16 @@
         // }
         // standard scroll
         else {
-          this.scrollY = this.root.restrict(this.scrollY + event.deltaY, (this.height - this.root.el.height) * -1, 0)
-          let d = event.deltaX
-          d = this.root.toRelGraphX(d) * -1
           // this.scrollY = this.root.restrict(this.scrollY + event.deltaY, (this.height - this.root.el.height) * -1, 0)
-          // let x = this.root.toRelGraphX(event.deltaX) * -1
-          // let y = this.root.restrict(this.scrollY + event.deltaY, (this.height - this.root.el.height) * -1, 0)
-          EventHub.$emit('scrollPositionChange', {x: this.root.scrollPosition.x + d, y: 0})
+          // let d = event.deltaX
+          // d = this.root.toRelGraphX(d) * -1
+          // this.scrollY = this.root.restrict(this.scrollY + event.deltaY, (this.height - this.root.el.height) * -1, 0)
+          let x = this.root.toRelGraphX(event.deltaX) * -1
+
+          // let y = this.root.restrict(this.root.scrollPosition.y + event.deltaY, (this.height - this.root.el.height) * -1, 0)
+          let y = this.root.toRelGraphY(event.deltaY) * -1
+          console.log('sy', y)
+          EventHub.$emit('scrollPositionChange', {x: this.root.scrollPosition.x + x, y: this.root.scrollPosition.y + y})
         }
       },
       trigger (event, args) {

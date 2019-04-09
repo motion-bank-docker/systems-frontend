@@ -404,9 +404,9 @@
           x = this.restrict(x, 0, this.toRelCompX(this.el.width - this.$refs.nav.navHandleWidth))
         }
         if (y) {
-          // y = y
+          y = this.restrict(y, 0, this.toRelGraphY(this.$refs.graph.height - this.el.height))
         }
-        this.$store.commit('swimLaneSettings/setScrollPosition', x, y)
+        this.$store.commit('swimLaneSettings/setScrollPosition', {x: x, y: y})
       },
       setTimecode (tc) { // int ms
         this.$store.commit('swimLaneSettings/setTimecode', tc)
@@ -523,9 +523,19 @@
       toRelCompX (abs) { // return 0 - 1
         return abs / this.el.width
       },
+      toRelCompY (abs) { // return 0 - 1
+        return abs / this.el.height
+      },
       toRelGraphX (abs) { // return 0 - 1
         if (this.$refs.graph) {
           if (this.$refs.graph.width > 0) return abs / this.$refs.graph.width
+          else return 0
+        }
+        else return 0
+      },
+      toRelGraphY (abs) { // return 0 - 1
+        if (this.$refs.graph) {
+          if (this.$refs.graph.height > 0) return abs / this.$refs.graph.height
           else return 0
         }
         else return 0

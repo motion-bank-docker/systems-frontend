@@ -37,9 +37,9 @@ const swimLaneSettings = {
     setScaleFactor (state, v) {
       state.scaleFactor = v
     },
-    setScrollPosition (state, x, y) {
-      if (x) state.scrollPosition.x = x
-      if (y) state.scrollPosition.y = y
+    setScrollPosition (state, p) {
+      if (p.x) state.scrollPosition.x = p.x
+      if (p.y) state.scrollPosition.y = p.y
     }
   }
 }
