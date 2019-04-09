@@ -32,7 +32,8 @@
       // swimlane content
 
       .absolute-bottom-right.bg-dark.full-width.shadow-up-4.q-px-md.q-pb-sm.scroll(v-if="swimlanes",
-      :style="{height: swimlanesHeight + 'px', borderTop: '1px solid #333', minHeight: '52px'}")
+      :style="{height: swimlanesHeight + 'px', borderTop: '1px solid #333', minHeight: '52px'}",
+      ref="swimlaneWrap")
         swim-lane(v-if="timeline", :timelineUuid="timeline.uuid", :markerDetails="false", :resizable="true",
         @emitHandler="handlerToggle('swimlanes')", @emitResize="onEmitResize",
         :key="visibilityDetails", @emitToggleDetails="onToggleDetails", :visibilityDetails="visibilityDetails"
@@ -212,6 +213,10 @@
       }
     },
     methods: {
+      slParent () {
+        // alert('this.$refs.swimlaneWrap.clientWidth' + this.$refs.swimlaneWrap.clientWidth)
+        // return this.$refs.swimlaneWrap.clientWidth
+      },
       setHover (val) {
         this.currentHover = val
       },

@@ -1,5 +1,6 @@
 <template lang="pug">
-  .swim-lane-component(:class="[cursorGlobalResize, cursorGlobalGrabbing]", style="position: relative;")
+  .swim-lane-component.bg-orange(ref="wrapper", :class="[cursorGlobalResize, cursorGlobalGrabbing]", style="position: relative;")
+    q-resize-observable(@resize="onViewportResize")
     .row.q-my-md
       //
         q-btn.q-mr-sm(slot="", @click="createMarker", label="Add annotation", color="primary")
@@ -17,7 +18,9 @@
           q-btn.q-px-sm.q-mr-sm(@click="handlerToggle('markerDetails')", icon="expand_more",
           :class="[showDetails ? 'rotate-90' : 'rotate-270 text-white']", size="sm", round)
 
-          q-btn.q-px-sm.q-mr-sm.float-right(v-if="showDetails", @click="", icon="code",
+          // button change horizontal dimensions
+
+          q-btn.q-px-sm.q-mr-sm.float-right(v-if="showDetails", @click="", v-touch-pan="handlerResizeX", icon="code",
           size="sm", round)
 
           //
@@ -36,23 +39,38 @@
           q-icon.rotate-90(name="code")
         q-btn.q-ml-sm(@click="handlerToggle('swimlanes')", color="dark", icon="clear", round, size="sm")
 
-    .row(:class="[showDetails ? 'gutter-sm' : '']")
+    <!--.row(:class="[showDetails ? 'gutter-sm' : '']")-->
+    .row
 
       // details
 
-      div(:class="[showDetails ? 'col-4' : '']")
+      div.bg-green(
+      :class="[showDetails ? '' : 'hidden']",
+      :style="{width: detailsWidth + 'px', minWidth: '100px'}"
+      )
         marker-details-selected(v-if="showDetails", :root="self", :resizable="resizable")
 
       // swim lane
 
-      <!--div(ref="swimlanewrap", :class="[showMarkerDetails ? 'col-8' : 'col-12']")-->
-      div(ref="swimlanewrap", :class="[showDetails ? 'col-8' : 'col-12']")
+      // div.bg-red(
+        ref="swimlanewrap",
+        // :class="[showDetails ? 'col-8' : 'col-12']",
+        // :style="{width: parentWidth - cursorPos.x - 50 + 'px', minWidth: '100px'}"
+        )
+      div.bg-black(
+      ref="swimlanewrap",
+      :style="{width: swimlaneWidth + 'px', minWidth: '100px'}"
+      )
         .swim-lane-wrapper.wrapper
+
+          // hovering timecode
+
           .timecode-display-hover.no-select.no-event.p-abs.q-caption(
             ref="timecodeDisplayHover",
             :class="(isFocused('timecodeBar') && !isDragged()) || isDragged('timecodeBar') ? '' : 'is-hidden'",
             :style="{left: timecodeBar.displayHover.x + 'px'}"
             ) {{ timecode.hoverText }}
+
           // ----------------------------------------------------------------------------------------------------- Outer SVG
           svg.swim-lane(
             @mousedown.left.prevent,
@@ -151,10 +169,14 @@
           gutter: undefined,
           swimlanewrap: undefined
         },
-        showDetails: this.visibilityDetails
+        showDetails: this.visibilityDetails,
+        cursorPos: {x: 0, y: 0},
+        swimlaneWidth: 0,
+        detailsWidth: 0
       }
     },
     async mounted () {
+      this.swimlaneWidth = this.$refs.wrapper.clientWidth
       await this.loadData()
 
       window.addEventListener('mousemove', this.onGlobalMove)
@@ -240,12 +262,17 @@
       }
     },
     methods: {
-      // toggleDetails () {
-      //   this.$emit('toggleDetails', 'bla')
-      // },
+      onViewportResize (obj) {
+        console.log(obj)
+        this.parentWidth = obj.width
+      },
       handlerResize (obj) {
-        // console.log(obj.position.top)
         this.$emit('emitResize', obj.position.top)
+      },
+      handlerResizeX (obj) {
+        this.cursorPos.x = obj.position.left
+        this.swimlaneWidth = this.parentWidth - this.cursorPos.x
+        this.detailsWidth = this.cursorPos.x
       },
       handlerToggle (val) {
         switch (val) {
