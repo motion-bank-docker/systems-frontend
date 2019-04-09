@@ -5,7 +5,7 @@
   //
   .bg-dark(style="height: calc(100vh - 52px); overflow: hidden;")
 
-    q-window-resize-observable(@resize="onResize")
+    q-window-resize-observable(@resize="onViewportResize")
 
     confirm-modal(ref="confirmModal", @confirm="handleConfirmModal")
 
@@ -13,7 +13,8 @@
 
       // video player
 
-      div.relative(:style="{height: videoHeight + 'px'}", :class="[!swimlanes ? 'fit' : '']")
+      div.relative(:style="{height: videoHeight + 'px', maxHeight: viewport.height - 52 - 52 + 'px'}",
+      :class="[!swimlanes ? 'fit' : '']")
         video-player.full-height.relative-position(v-if="video", :annotation="video", :fine-controls="true",
         @ready="playerReady($event)", @time="onPlayerTime($event)")
 
@@ -31,7 +32,7 @@
       // swimlane content
 
       .absolute-bottom-right.bg-dark.full-width.shadow-up-4.q-px-md.q-pb-sm.scroll(v-if="swimlanes",
-      :style="{height: swimlanesHeight + 'px', borderTop: '1px solid #333'}")
+      :style="{height: swimlanesHeight + 'px', borderTop: '1px solid #333', minHeight: '52px'}")
         swim-lane(v-if="timeline", :timelineUuid="timeline.uuid", :markerDetails="false", :resizable="true",
         @emitHandler="handlerToggle('swimlanes')", @emitResize="onEmitResize",
         :key="visibilityDetails", @emitToggleDetails="onToggleDetails", :visibilityDetails="visibilityDetails"
@@ -57,7 +58,7 @@
     // annotations list
 
     q-layout-drawer.bg-dark(v-if="annotations", v-model="drawer", side="right")
-      //.absolute.fit.bg-dark
+      .absolute.fit.bg-dark
       q-list.no-border.bg-dark.q-py-none(dark, @mouseleave.native="currentHover === undefined")
 
         q-item.bg-dark(dark, v-for="(annotation, i) in annotations", :key="annotation.uuid", :ref="annotation.uuid",
@@ -233,9 +234,10 @@
           this.videoHeight = this.viewport.height - 52 - this.swimlanesHeight
         }
       },
-      onResize (size) {
+      onViewportResize (size) {
         this.viewport.height = size.height
         this.viewport.width = size.width
+        this.videoHeight = this.viewport.height - 52 - this.swimlanesHeight
       },
       handlerToggle (val) {
         switch (val) {
@@ -402,4 +404,6 @@
   .md-content
     font-size: 1rem
     line-height: 24px
+  .fit
+    max-height 100%!important
 </style>
