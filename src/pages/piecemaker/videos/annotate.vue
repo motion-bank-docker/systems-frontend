@@ -38,16 +38,14 @@
         :key="visibilityDetails", @emitToggleDetails="onToggleDetails", :visibilityDetails="visibilityDetails"
         )
 
+      // button toggles swimlanes visibility
+
       q-page-sticky.q-pa-md(position="bottom-right")
-
-        // button toggles swimlanes visibility
-
         q-btn(v-if="!swimlanes && userHasSwimlane", @click="handlerToggle('swimlanes')", color="dark", round,
         :class="[swimlanes ? 'rotate-270' : 'rotate-90']", icon="keyboard_backspace", size="sm")
 
       // input field for new annotations
 
-      <!--.absolute-top(style="width: 100%;")-->
       q-page-sticky(position="top")
         annotation-field(
         @annotation="onAnnotation",
