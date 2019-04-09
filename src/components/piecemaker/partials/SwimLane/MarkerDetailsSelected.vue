@@ -8,7 +8,7 @@
         q-icon(name="keyboard_arrow_right")
   q-list.q-pa-none(color="dark", no-border)
     template(v-if="annotationData")
-      q-item.q-pa-none.items-start( v-for="(value, key) in annotationData" )
+      q-item.q-pa-none.items-start.q-pb-md( v-for="(value, key) in annotationData" )
         q-item-side.q-pa-none(:class="{'q-caption': resizable}") {{ key }}
         q-item-main.q-pa-none(:class="{'q-caption': resizable}") {{ value }}
     template(v-else)
@@ -71,4 +71,7 @@
 
   .q-list-header
     min-height none!important
+
+  .q-item
+    min-height auto!important
 </style>
