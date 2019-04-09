@@ -53,7 +53,8 @@
         @annotation="onAnnotation",
         ref="annotationField",
         :submit-on-num-enters="1",
-        :selector-value="baseSelector")
+        :selector-value="baseSelector",
+        :hasTransparency="true")
 
     // annotations list
 
