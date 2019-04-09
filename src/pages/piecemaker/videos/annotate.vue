@@ -13,8 +13,7 @@
 
       // video player
 
-      <!--div.bg-red(:style="{width: videoWidth}")-->
-      div.bg-red.relative(:style="{height: videoHeight + 'px'}")
+      div.relative(:style="{height: videoHeight + 'px'}", :class="[!swimlanes ? 'fit' : '']")
         video-player.full-height.relative-position(v-if="video", :annotation="video", :fine-controls="true",
         @ready="playerReady($event)", @time="onPlayerTime($event)")
 
@@ -132,7 +131,7 @@
         await this.getAnnotations()
         this.$q.loading.hide()
       }
-      this.videoHeight = this.viewport.height - 52
+      this.videoHeight = this.viewport.height / 2 - 52
     },
     beforeDestroy () {
       AppFullscreen.exit()
@@ -156,7 +155,7 @@
         timelineId: undefined,
         timeline: undefined,
         video: undefined,
-        videoWidth: undefined,
+        // videoWidth: undefined,
         videoHeight: undefined,
         viewport: {height: undefined, width: undefined},
         visibilityDetails: false,
@@ -224,25 +223,25 @@
         this.detailsSize += 100
         console.log(val, this.detailsSize, this.visibilityDetails)
       },
-      onTtoggleDetails (val) {
-        alert(val)
-      },
+      // onTtoggleDetails (val) {
+      //   alert(val)
+      // },
       onEmitResize (val) {
         if (this.swimlanes) {
-          // this.videoWidth = (val - this.headerHeight * 2) * 1.777 + 'px'
-          this.videoWidth = (val - this.headerHeight * 2) * 1.777
+          // this.videoWidth = (val - this.headerHeight * 2) * 1.777
           this.swimlanesHeight = (this.viewport.height + this.headerHeight - val)
           this.videoHeight = this.viewport.height - 52 - this.swimlanesHeight
-          console.log(this.videoHeight)
+          // console.log(this.videoHeight)
         }
         else {
-          this.videoHeight = this.viewport.height - 52
+          // this.videoHeight = this.viewport.height - 52
         }
       },
       onResize (size) {
-        console.log(size)
+        // console.log(size)
         this.viewport.height = size.height
         this.viewport.width = size.width
+        // this.videoHeight = this.viewport.height - 52
       },
       handlerToggle (val) {
         switch (val) {
@@ -252,10 +251,13 @@
         case 'swimlanes':
           this.swimlanes = !this.swimlanes
 
-          if (this.swimlanes) this.videoWidth = (this.viewport.height - this.headerHeight) / 2 * 1.777 + 'px'
-          else this.videoWidth = undefined
+          // if (this.swimlanes) this.videoWidth = (this.viewport.height - this.headerHeight) / 2 * 1.777 + 'px'
+          // else this.videoWidth = undefined
 
-          if (this.swimlanes) this.swimlanesHeight = (this.viewport.height - this.headerHeight) / 2
+          if (this.swimlanes) {
+            // this.swimlanesHeight = (this.viewport.height - this.headerHeight) / 2
+            this.swimlanesHeight = this.viewport.height - this.headerHeight - this.videoHeight
+          }
           else this.swimlanesHeight = 0
 
           break
