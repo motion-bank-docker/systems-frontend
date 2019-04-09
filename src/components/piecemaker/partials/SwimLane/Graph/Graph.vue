@@ -1,13 +1,17 @@
 <template lang="pug">
   svg.sl-graph-wrapper(
+    @mousewheel="onGraphMouseWheel ($event)",
     @mousedown="onGraphDown ($event)",
+    @mouseenter="root.disableWindowScroll()",
+    @mouseleave="root.enableWindowScroll()"
     width="100%", height="100%"
     )
     // Graph
     svg.sl-graph(
-      @mousewheel="onGraphMouseWheel ($event)",
-      :width="width", height="100%",
-      :x="x", y="0"
+      ref="graph",
+      :width="width",
+      :height="height",
+      :x="x", :y="49"
       )
       // Graph Background
       rect.sl-graph-background.fill-faded(
@@ -18,7 +22,7 @@
       // zoomRect
       zoom-rect(:root="root")
       // -------------------------------------------------------------------------------------------------- Marker Lanes
-      svg.graph-lane-wrapper(ref="graphLaneWrapper", overflow="visible", y="50")
+      svg.graph-lane-wrapper(ref="graphLaneWrapper", overflow="visible", , :y="y")
         // TODO: rethink lane logic:
         graph-lane(
           v-for="(annotations, type, index) in annotationsGrouped",
@@ -45,9 +49,10 @@
     },
     data () {
       return {
-        y: 0,
+        // y: 0,
         inputOffset: {
-          x: 0
+          x: 0,
+          y: 0
         },
         laneList: []
       }
@@ -59,14 +64,25 @@
         scrollPosition: 'swimLaneSettings/getScrollPosition'
       }),
       x () {
-        return this.calculateX()
+        return this.width * this.scrollPosition.x * -1
+      },
+      y () {
+        return this.height * this.scrollPosition.y * -1
       },
       width () {
         return this.root.el.width / this.scaleFactor
+      },
+      height () {
+        let h = 0
+        for (let lane of this.laneList) {
+          h += lane.height
+        }
+        return Math.max(this.root.el.height, h + 50)
       }
     },
     async mounted () {
       EventHub.$on('globalUp', this.onGlobalUp)
+      EventHub.$on('laneModeChanged', this.onLaneModeChange)
     },
     beforeDestroy () {
     },
@@ -81,31 +97,47 @@
       },
       onGraphBackgroundDown () {
         if (!EventHub.keyIsPressed(' ')) {
-          this.inputOffset.x = this.root.getInputPositionAbsGraph().x
+          this.inputOffset = this.root.getInputPositionAbsGraph()
           EventHub.$emit('UIDown', 'graphBackground')
           EventHub.$emit('markerUnselect')
-          this.calculateX()
         }
       },
       onGraphMouseWheel (event) {
+        // CTRL/STRG pressed => scroll horizotnally regardless of scroll direction
         if (EventHub.keyIsPressed('Control')) {
           let d = (Math.abs(event.deltaX) > Math.abs(event.deltaY)) ? event.deltaX : event.deltaY
-          d = this.root.toRelGraph(d) * -1
-          EventHub.$emit('scrollPositionChange', this.root.scrollPosition.x + d)
+          d = this.root.toRelGraphX(d) * -1
+          EventHub.$emit('scrollPositionChange', {x: this.scrollPosition.x + d})
+        }
+        // Zoom
+        if (EventHub.keyIsPressed('Alt')) {
+          // TODO seems more complicated than initially thought D=
+          // let d = event.deltaY
+          // let f = this.root.toRelGraphX(d) / 10
+          // EventHub.$emit('scaleFactorChange', this.scaleFactor + (f * -1))
+          // EventHub.$emit('scrollPositionChange', this.scrollPosition.x + (f * -1))
+        }
+        // standard scroll
+        else {
+          let x = this.root.toRelGraphX(event.deltaX) * -1
+          let y = this.root.toRelGraphY(event.deltaY) * -1
+          EventHub.$emit('scrollPositionChange', {x: this.scrollPosition.x + x, y: this.scrollPosition.y + y})
         }
       },
       trigger (event, args) {
         EventHub.$emit(event, args)
       },
-      calculateX () {
-        return this.width * this.scrollPosition.x * -1
-      },
+      // TODO implement also y movement on dragging
       update () {
-        let p = Math.min(this.root.inputPosition.x - this.inputOffset.x, this.width - this.root.el.width)
-        EventHub.$emit('scrollPositionChange', this.root.toRelGraph(p) * -1)
+        let x = Math.min(this.root.inputPosition.x - this.inputOffset.x, this.width - this.root.el.width)
+        let y = Math.min(this.root.inputPosition.y - this.inputOffset.y, this.height - this.root.el.height)
+        EventHub.$emit('scrollPositionChange', {x: this.root.toRelGraphX(x) * -1, y: this.root.toRelGraphY(y) * -1})
       },
       onGlobalUp () {
         this.inputOffset = {x: 0, y: 0}
+      },
+      onLaneModeChange () {
+        this.scrollY = 0
       },
       // interim solution
       // TODO: rethink lane logic:

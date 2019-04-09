@@ -99,17 +99,17 @@
         return this.isHovered || this.isSelected ? 1 : 0.5
       },
       xAbs () {
-        return this.root.millisTotalToAbsGraph(this.millis)
+        return this.root.millisTotaltoAbsGraph(this.millis)
       },
       xRel () {
-        return this.root.millisTotalToRelGraph(this.millis)
+        return this.root.millisTotaltoRelGraph(this.millis)
       },
       xRelCircle () {
-        return this.root.millisTotalToRelGraph(this.millis) - this.root.toRelGraph(this.circleR)
+        return this.root.millisTotaltoRelGraph(this.millis) - this.root.toRelGraphX(this.circleR)
       },
       widthRel () {
-        // return this.root.millisToRelGraph(this.annotationData.body.duration)
-        return this.root.millisToRelGraph(this.duration)
+        // return this.root.millistoRelGraph(this.annotationData.body.duration)
+        return this.root.millistoRelGraph(this.duration)
       },
       x () {
         return this.xRel * 100 + '%'

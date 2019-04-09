@@ -45,7 +45,7 @@
         return 5
       },
       timecodeMarkerCurrentX () {
-        if (this.timecodeCurrent) return this.root.millisToRelGraph(this.timecodeCurrent) * 100 + '%'
+        if (this.timecodeCurrent) return this.root.millistoRelGraph(this.timecodeCurrent) * 100 + '%'
         return 0
       }
     },
