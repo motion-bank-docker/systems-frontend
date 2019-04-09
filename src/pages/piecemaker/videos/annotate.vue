@@ -5,7 +5,7 @@
   //
   .bg-dark(style="height: calc(100vh - 52px); overflow: hidden;")
 
-    q-window-resize-observable(@resize="onResize")
+    q-window-resize-observable(@resize="onViewportResize")
 
     confirm-modal(ref="confirmModal", @confirm="handleConfirmModal")
 
@@ -13,8 +13,9 @@
 
       // video player
 
-      div.bg-red(:style="{width: videoWidth}")
-        video-player(v-if="video", :annotation="video", :fine-controls="true",
+      div.relative(:style="{height: videoHeight + 'px', maxHeight: viewport.height - 52 - 52 + 'px'}",
+      :class="[!swimlanes ? 'fit' : '']")
+        video-player.full-height.relative-position(v-if="video", :annotation="video", :fine-controls="true",
         @ready="playerReady($event)", @time="onPlayerTime($event)")
 
       // back button
@@ -31,7 +32,7 @@
       // swimlane content
 
       .absolute-bottom-right.bg-dark.full-width.shadow-up-4.q-px-md.q-pb-sm.scroll(v-if="swimlanes",
-      :style="{height: swimlanesHeight + 'px', borderTop: '1px solid #333'}")
+      :style="{height: swimlanesHeight + 'px', borderTop: '1px solid #333', minHeight: '52px'}")
         swim-lane(v-if="timeline", :timelineUuid="timeline.uuid", :markerDetails="false", :resizable="true",
         @emitHandler="handlerToggle('swimlanes')", @emitResize="onEmitResize",
         :key="visibilityDetails", @emitToggleDetails="onToggleDetails", :visibilityDetails="visibilityDetails"
@@ -58,26 +59,45 @@
 
     q-layout-drawer.bg-dark(v-if="annotations", v-model="drawer", side="right")
       .absolute.fit.bg-dark
-      q-list.no-border.bg-dark(dark)
-        // q-item
-          q-btn.full-width(@click="drawer = false")
-            q-icon.flip-horizontal(name="keyboard_backspace")
+      q-list.no-border.bg-dark.q-py-none(dark, @mouseleave.native="currentHover === undefined")
+
         q-item.bg-dark(dark, v-for="(annotation, i) in annotations", :key="annotation.uuid", :ref="annotation.uuid",
-        :class="[currentIndex === i ? 'bg-grey-9' : '']")
+        :class="[currentIndex === i ? 'bg-grey-9' : '']", style="border-left: 1px solid #333;",
+        @mouseover.native="setHover(annotation.uuid)")
           q-item-main
             q-item-tile
-              q-btn(
+
+              // timestamp
+
+              q-btn.float-left(
               v-if="annotation.target.selector", :color="currentIndex === i ? 'primary' : 'dark'",
               @click="gotoSelector(annotation.target.selector.value)", size="sm")
                 | {{ formatSelectorForList(annotation.target.selector.value) }}
 
-              q-btn.float-right(@click="$refs.confirmModal.show('messages.confirm_delete', annotation, 'buttons.delete')", size="sm") {{ $t('buttons.delete') }}
-              q-btn.float-right(v-if="(!isEditingAnnotations && annotation.body.type === 'TextualBody') || editAnnotationIndex !== i",
-                @click="setEditIndex(i)", size="sm") {{ $t('buttons.edit') }}
-              q-btn.float-right(v-if="annotation.body.type === 'TextualBody' && editAnnotationIndex === i",
-                @click="updateAnnotation(annotation)", size="sm", :color="isAnnotationDirty ? 'primary' : undefined") {{ $t('buttons.save') }}
-            q-item-tile.q-caption.q-my-xs
-              span {{ annotation.author.name }}
+              // author
+
+              q-btn.q-caption.float-left.text-grey-7(size="sm", flat) {{ getInitials(annotation.author.name) }}
+                q-tooltip.bg-grey-10.shadow-6(:offset="[0, 5]") {{ annotation.author.name }}
+
+              // buttons
+
+              <!--div.float-right(v-if="currentHover === annotation.uuid")-->
+              div.float-right(:class="[currentHover === annotation.uuid ? '' : 'invisible']")
+                q-btn.float-right(@click="$refs.confirmModal.show('messages.confirm_delete', annotation, 'buttons.delete')",
+                size="sm", icon="delete", round)
+
+                q-btn.q-mr-sm(
+                v-if="(!isEditingAnnotations && annotation.body.type === 'TextualBody' || editAnnotationIndex !== i && annotation.body.type !== 'VocabularyEntry')",
+                @click="setEditIndex(i)", size="sm", icon="edit", round)
+
+                q-btn.float-right.q-mr-sm(v-if="annotation.body.type === 'TextualBody' && editAnnotationIndex === i",
+                @click="updateAnnotation(annotation)", size="sm", :color="isAnnotationDirty ? 'primary' : undefined",
+                icon="save", round)
+
+            br
+
+            // text content
+
             q-item-tile
               markdown-display.markdown-display.q-mt-sm(v-if="!isEditingAnnotations || editAnnotationIndex !== i",
                 :content="annotation.body.value", :options="mdOptions")
@@ -114,6 +134,7 @@
         await this.getAnnotations()
         this.$q.loading.hide()
       }
+      this.videoHeight = this.viewport.height / 2 - 52
     },
     beforeDestroy () {
       AppFullscreen.exit()
@@ -122,6 +143,7 @@
       return {
         active: false,
         annotations: [],
+        currentHover: undefined,
         drawer: true,
         fullscreen: false,
         headerHeight: 52,
@@ -136,7 +158,7 @@
         timelineId: undefined,
         timeline: undefined,
         video: undefined,
-        videoWidth: undefined,
+        videoHeight: undefined,
         viewport: {height: undefined, width: undefined},
         visibilityDetails: false,
         detailsSize: 300,
@@ -191,24 +213,31 @@
       }
     },
     methods: {
+      setHover (val) {
+        this.currentHover = val
+      },
+      getInitials (val) {
+        let matches = val.split(' ').map((n) => n[0]).join('')
+        return matches
+      },
       onToggleDetails (val) {
         this.visibilityDetails = !this.visibilityDetails
         this.detailsSize += 100
         console.log(val, this.detailsSize, this.visibilityDetails)
       },
-      onTtoggleDetails (val) {
-        alert(val)
-      },
+      // onTtoggleDetails (val) {
+      //   alert(val)
+      // },
       onEmitResize (val) {
         if (this.swimlanes) {
-          this.videoWidth = (val - this.headerHeight * 2) * 1.777 + 'px'
           this.swimlanesHeight = (this.viewport.height + this.headerHeight - val)
+          this.videoHeight = this.viewport.height - 52 - this.swimlanesHeight
         }
       },
-      onResize (size) {
-        console.log(size)
+      onViewportResize (size) {
         this.viewport.height = size.height
         this.viewport.width = size.width
+        this.videoHeight = this.viewport.height - 52 - this.swimlanesHeight
       },
       handlerToggle (val) {
         switch (val) {
@@ -218,10 +247,7 @@
         case 'swimlanes':
           this.swimlanes = !this.swimlanes
 
-          if (this.swimlanes) this.videoWidth = (this.viewport.height - this.headerHeight) / 2 * 1.777 + 'px'
-          else this.videoWidth = undefined
-
-          if (this.swimlanes) this.swimlanesHeight = (this.viewport.height - this.headerHeight) / 2
+          if (this.swimlanes) this.swimlanesHeight = this.viewport.height - this.headerHeight - this.videoHeight
           else this.swimlanesHeight = 0
 
           break
@@ -378,4 +404,6 @@
   .md-content
     font-size: 1rem
     line-height: 24px
+  .fit
+    max-height 100%!important
 </style>

@@ -9,22 +9,25 @@
       marker-context-menu(:root="self")
       marker-details-hover(:root="self")
 
-      //.row.justify-between.q-my-md
-      .col-8.row.gutter-sm
+      .col-8.row
         .q-pt-xs(:class="{'col-6' : showDetails}")
-          q-btn.q-px-sm(@click="handlerToggle('markerDetails')", icon="expand_more",
+
+          // buttons shows/hides details
+
+          q-btn.q-px-sm.q-mr-sm(@click="handlerToggle('markerDetails')", icon="expand_more",
           :class="[showDetails ? 'rotate-90' : 'rotate-270 text-white']", size="sm", round)
 
           // TODO: use input field here to set the timecode to an exact value
           <!--| Selected timecode: {{ timecode.currentText }}-->
-        .col-6
+        .q-pl-xs
           settings(ref="settings")
 
       // resize and hide swimlanes
+
       .col-4.text-right(v-if="resizable")
-        q-btn.q-ml-lg.q-px-sm(@click="", v-touch-pan="handlerResize", color="dark", round, size="sm")
+        q-btn.q-ml-lg(@click="", v-touch-pan="handlerResize", color="dark", round, size="sm")
           q-icon.rotate-90(name="code")
-        q-btn.q-ml-sm.q-px-sm(@click="handlerToggle('swimlanes')", color="dark", icon="clear", round, size="sm")
+        q-btn.q-ml-sm(@click="handlerToggle('swimlanes')", color="dark", icon="clear", round, size="sm")
 
     .row(:class="[showDetails ? 'gutter-sm' : '']")
       div(:class="[showDetails ? 'col-4' : '']")
@@ -32,7 +35,7 @@
       <!--div(ref="swimlanewrap", :class="[showMarkerDetails ? 'col-8' : 'col-12']")-->
       div(ref="swimlanewrap", :class="[showDetails ? 'col-8' : 'col-12']")
         .swim-lane-wrapper.wrapper
-          .timecode-display-hover.no-select.no-event.p-abs(
+          .timecode-display-hover.no-select.no-event.p-abs.q-caption(
             ref="timecodeDisplayHover",
             :class="(isFocused('timecodeBar') && !isDragged()) || isDragged('timecodeBar') ? '' : 'is-hidden'",
             :style="{left: timecodeBar.displayHover.x + 'px'}"
