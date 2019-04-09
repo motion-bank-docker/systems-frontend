@@ -397,15 +397,16 @@
       },
       // ----------------------------------------------------------------------------------------------------------- Set
       setScrollPosition (sp) { // 0 - 1
-        // let offset = this.offset.swimlanewrap + this.offset.gutter
-        let x = sp.x || null
-        let y = sp.y || null
-        if (x) {
-          x = this.restrict(x, 0, this.toRelCompX(this.el.width - this.$refs.nav.navHandleWidth))
+        let x = null
+        let y = null
+
+        if (!isNaN(sp.x)) {
+          x = this.restrict(sp.x, 0, this.toRelCompX(this.el.width - this.$refs.nav.navHandleWidth))
         }
-        if (y) {
-          y = this.restrict(y, 0, this.toRelGraphY(this.$refs.graph.height - this.el.height))
+        if (!isNaN(sp.y)) {
+          y = this.restrict(sp.y, 0, this.toRelGraphY(this.$refs.graph.height - this.el.height))
         }
+
         this.$store.commit('swimLaneSettings/setScrollPosition', {x: x, y: y})
       },
       setTimecode (tc) { // int ms
@@ -436,7 +437,7 @@
       },
       // TODO add y value
       getInputPositionRelGraph () {
-        return {x: this.toRelGraphX(this.getInputPositionAbsGraph().x)}
+        return {x: this.toRelGraphX(this.getInputPositionAbsGraph().x), y: this.toRelGraphY(this.getInputPositionAbsGraph().y)}
       },
       getTimecodeFromInputPosition () {
         let tc = Math.round(this.toRelGraphX(this.inputPosition.x - this.$refs.graph.x) * this.timeline.duration)

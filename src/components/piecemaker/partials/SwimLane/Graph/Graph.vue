@@ -51,9 +51,9 @@
       return {
         // y: 0,
         inputOffset: {
-          x: 0
+          x: 0,
+          y: 0
         },
-        // scrollY: 0,
         laneList: []
       }
     },
@@ -97,7 +97,7 @@
       },
       onGraphBackgroundDown () {
         if (!EventHub.keyIsPressed(' ')) {
-          this.inputOffset.x = this.root.getInputPositionAbsGraph().x
+          this.inputOffset = this.root.getInputPositionAbsGraph()
           EventHub.$emit('UIDown', 'graphBackground')
           EventHub.$emit('markerUnselect')
         }
@@ -107,25 +107,21 @@
         if (EventHub.keyIsPressed('Control')) {
           let d = (Math.abs(event.deltaX) > Math.abs(event.deltaY)) ? event.deltaX : event.deltaY
           d = this.root.toRelGraphX(d) * -1
-          EventHub.$emit('scrollPositionChange', {x: this.root.scrollPosition.x + d})
+          EventHub.$emit('scrollPositionChange', {x: this.scrollPosition.x + d})
         }
-        // else if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) {
-        //   let d = event.deltaX
-        //   d = this.root.toRelGraphX(d) * -1
-        //   EventHub.$emit('scrollPositionChange', this.root.scrollPosition.x + d)
-        // }
+        // Zoom
+        if (EventHub.keyIsPressed('Alt')) {
+          // TODO seems more complicated than initially thought D=
+          // let d = event.deltaY
+          // let f = this.root.toRelGraphX(d) / 10
+          // EventHub.$emit('scaleFactorChange', this.scaleFactor + (f * -1))
+          // EventHub.$emit('scrollPositionChange', this.scrollPosition.x + (f * -1))
+        }
         // standard scroll
         else {
-          // this.scrollY = this.root.restrict(this.scrollY + event.deltaY, (this.height - this.root.el.height) * -1, 0)
-          // let d = event.deltaX
-          // d = this.root.toRelGraphX(d) * -1
-          // this.scrollY = this.root.restrict(this.scrollY + event.deltaY, (this.height - this.root.el.height) * -1, 0)
           let x = this.root.toRelGraphX(event.deltaX) * -1
-
-          // let y = this.root.restrict(this.root.scrollPosition.y + event.deltaY, (this.height - this.root.el.height) * -1, 0)
           let y = this.root.toRelGraphY(event.deltaY) * -1
-          console.log('sy', y)
-          EventHub.$emit('scrollPositionChange', {x: this.root.scrollPosition.x + x, y: this.root.scrollPosition.y + y})
+          EventHub.$emit('scrollPositionChange', {x: this.scrollPosition.x + x, y: this.scrollPosition.y + y})
         }
       },
       trigger (event, args) {
@@ -133,8 +129,9 @@
       },
       // TODO implement also y movement on dragging
       update () {
-        let p = Math.min(this.root.inputPosition.x - this.inputOffset.x, this.width - this.root.el.width)
-        EventHub.$emit('scrollPositionChange', {x: this.root.toRelGraphX(p) * -1, y: 0})
+        let x = Math.min(this.root.inputPosition.x - this.inputOffset.x, this.width - this.root.el.width)
+        let y = Math.min(this.root.inputPosition.y - this.inputOffset.y, this.height - this.root.el.height)
+        EventHub.$emit('scrollPositionChange', {x: this.root.toRelGraphX(x) * -1, y: this.root.toRelGraphY(y) * -1})
       },
       onGlobalUp () {
         this.inputOffset = {x: 0, y: 0}
