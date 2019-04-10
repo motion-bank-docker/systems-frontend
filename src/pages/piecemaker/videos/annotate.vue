@@ -66,13 +66,13 @@
       .absolute.fit.bg-dark
       q-list.no-border.bg-dark.q-py-none(dark, @mouseleave.native="currentHover === undefined")
 
-        q-item.bg-dark(
+        q-item.bg-dark.q-pb-lg(
           dark,
           v-for="(annotation, i) in annotations",
           :key="annotation.uuid",
           :ref="annotation.uuid",
           :class="[currentIndex === i ? 'bg-grey-9' : '']",
-          style="border-left: 1px solid #444; border-top: 1px solid #444",
+          style="border-left: 1px solid #444; border-top: 1px solid #444;",
           @mouseover.native="setHover(annotation.uuid)"
           )
           q-item-main
@@ -431,5 +431,6 @@
     margin-right 8px
     margin-top: 5px
     float left
-    opacity: 0.5
+    opacity: 0.3
+
 </style>
