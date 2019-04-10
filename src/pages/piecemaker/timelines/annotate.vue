@@ -120,7 +120,7 @@
       },
       formatSelectorForList (val) {
         const selector = DateTime.fromISO(val)
-        return selector.toFormat(constants.TIMECODE_FORMAT)
+        return selector.toFormat(constants.config.TIMECODE_FORMAT)
       }
     }
   }

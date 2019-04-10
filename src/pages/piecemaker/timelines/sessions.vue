@@ -115,7 +115,7 @@
         })
       const videos = await fetchMetaData(videosBase)
 
-      const millisDist = (3600 || constants.SESSION_DISTANCE_SECONDS) * 1000
+      const millisDist = (3600 || constants.config.SESSION_DISTANCE_SECONDS) * 1000
       const sessions = []
       const defaultSession = { start: undefined, end: undefined, duration: undefined, annotations: [], videos: [] }
       let session = ObjectUtil.merge({}, defaultSession)

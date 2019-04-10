@@ -393,7 +393,7 @@
         const videoDate = DateTime.fromISO(this.video.target.selector.value, { setZone: true })
         return Interval.fromDateTimes(videoDate, annotationDate)
           .toDuration()
-          .toFormat(constants.TIMECODE_FORMAT)
+          .toFormat(constants.config.TIMECODE_FORMAT)
       },
       onPlayerTime (seconds) {
         this.playerTime = seconds

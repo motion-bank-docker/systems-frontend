@@ -82,7 +82,7 @@
     },
     data () {
       return {
-        tcformat: constants.TIMECODE_FORMAT,
+        tcformat: constants.config.TIMECODE_FORMAT,
 
         timeline: undefined,
         timelineUuid: undefined,
@@ -159,11 +159,11 @@
         const markerSelector = DateTime.fromMillis(player.currentTime() * 1000.0)
         if (target === 1) {
           this.refVidMarkerSelector = markerSelector
-          this.refVidMarkerTimecode = markerSelector.toFormat(constants.TIMECODE_FORMAT)
+          this.refVidMarkerTimecode = markerSelector.toFormat(constants.config.TIMECODE_FORMAT)
         }
         else {
           this.vidMarkerSelector = markerSelector
-          this.vidMarkerTimecode = markerSelector.toFormat(constants.TIMECODE_FORMAT)
+          this.vidMarkerTimecode = markerSelector.toFormat(constants.config.TIMECODE_FORMAT)
         }
       },
       async applySync () {
