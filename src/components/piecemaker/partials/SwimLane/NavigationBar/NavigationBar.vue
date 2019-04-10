@@ -82,7 +82,7 @@
         this.inputOffset.x = this.navHandleWidth / 2
         let p = this.root.toRelCompX(this.root.inputPosition.x - this.inputOffset.x)
         EventHub.$emit('UIDown', 'navBackground')
-        EventHub.$emit('scrollPositionChange', {x: p, y: 0})
+        EventHub.$emit('scrollPositionChange', {x: p})
       },
       onNavHandleBackgroundDown () {
         this.inputOffset.x = this.root.inputPosition.x - this.navHandleX
