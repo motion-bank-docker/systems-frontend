@@ -175,13 +175,17 @@
     },
     async mounted () {
       this.showDetails = this.visibilityDetails
-      if (this.detailsW) {
+      if (this.visibilityDetails && this.detailsW) {
         this.detailsWidth = this.detailsW
         this.swimlaneWidth = this.$refs.wrapper.clientWidth - this.detailsWidth
       }
       else {
         this.swimlaneWidth = this.$refs.wrapper.clientWidth
       }
+      if (!this.visibilityDetails || this.detailsW === 0) {
+        this.swimlaneWidth = this.$refs.wrapper.clientWidth
+      }
+      console.log(this.swimlaneWidth)
 
       await this.loadData()
 
@@ -294,7 +298,8 @@
         case 'markerDetails':
           this.showMarkerDetails = !this.showMarkerDetails
           if (!this.resizable) this.showDetails = this.showMarkerDetails
-          if (this.showMarkerDetails) this.swimlaneWidth = this.parentWidth
+          // alert(this.visibilityDetails)
+          // if (!this.visibilityDetails) this.swimlaneWidth = this.parentWidth
           this.$emit('emitToggleDetails', this.showMarkerDetails)
           break
         case 'swimlanes':
