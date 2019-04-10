@@ -12,7 +12,7 @@
     props: ['index', 'numSections', 'root'],
     data () {
       return {
-        xCached: 0,
+        // xCached: 0,
         xMapped: 0,
         // hideIfDragged: ['navHandleBackground', 'navBackground', 'navHandleLeft', 'navHandleRight', 'graphBackground']
         hideIfDragged: ['navHandleLeft', 'navHandleRight']
@@ -40,19 +40,22 @@
       //   this.calculateX()
       // },
       // scaleFactor () {
-      //
+      //   console.log('current time viewport', this.root.getVisibleTimeFrame())
       // }
     },
     methods: {
       calculateX () {
-        let s = this.scrollPosition.x || 0
-        let m, c
-        let w = this.root.el.width
-        let r = w / (this.numSections - 1)
-        c = r * (this.numSections - this.index) + this.root.toAbsGraphX(s)
-        c %= w + r + 1
-        m = w - c
-        this.xCached = c
+        let sp = this.scrollPosition.x || 0
+        let m, x
+        let compWidth = this.root.el.width
+        let elWdith = compWidth / (this.numSections - 1)
+        // width + index position + scroll position
+        x = elWdith * (this.numSections - this.index) + this.root.toAbsGraphX(sp)
+        // modulo
+        x %= compWidth + elWdith + 1
+        // map to root component width
+        m = compWidth - x
+        // this.xCached = c
         this.xMapped = m
         return m
       }

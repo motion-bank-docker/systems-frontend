@@ -7,7 +7,7 @@
     y="25"
     )
     rect.fill-medium(width="100%", height="100%")
-    timecode-bar-section(v-for="(n, index) in numSections", :index="index", :numSections="numSections", :root="root")
+    timecode-bar-section(v-for="(n, index) in numSections", :index="index", :numSections="numSections", :duration="0", :root="root")
 
     // popping up rectangle
     svg.timecode-pointer.no-event(
@@ -39,7 +39,8 @@
     },
     computed: {
       ...mapGetters({
-        timecodeCurrent: 'swimLaneSettings/getTimecode'
+        timecodeCurrent: 'swimLaneSettings/getTimecode',
+        scaleFactor: 'swimLaneSettings/getScaleFactor'
       }),
       numSections () {
         return 5
@@ -47,6 +48,17 @@
       timecodeMarkerCurrentX () {
         if (this.timecodeCurrent) return this.root.millistoRelGraph(this.timecodeCurrent) * 100 + '%'
         return 0
+      }
+    },
+    watch: {
+      scaleFactor () {
+        // TODO: calculate "good" time span for each section to display
+        let tf = this.root.getVisibleTimeFrame().millis
+        let s = Math.floor(tf / 1000)
+        let m = Math.floor(tf / 1000 / 60)
+        let mr = m % (tf / 1000 / 60) // not working why?
+        let h = Math.floor(tf / 1000 / 60 / 60)
+        console.log(h, m, s, 'mr', mr)
       }
     },
     async mounted () {
