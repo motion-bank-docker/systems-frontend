@@ -11,7 +11,7 @@
       marker-details-hover(:root="self")
 
       .col-8.row
-        .q-pt-xs(:class="{'col-6' : showDetails}")
+        div(:class="{'col-6' : showDetails}")
 
           // button show/hide details
 
