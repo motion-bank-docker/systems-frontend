@@ -175,17 +175,18 @@
     },
     async mounted () {
       this.showDetails = this.visibilityDetails
+      // console.log('this.detailsW', this.detailsW)
       if (this.visibilityDetails && this.detailsW) {
         this.detailsWidth = this.detailsW
         this.swimlaneWidth = this.$refs.wrapper.clientWidth - this.detailsWidth
       }
-      else {
-        this.swimlaneWidth = this.$refs.wrapper.clientWidth
+      else if (this.visibilityDetails && !this.detailsW) {
+        this.swimlaneWidth = this.$refs.wrapper.clientWidth - (this.$refs.wrapper.clientWidth / 4)
       }
       if (!this.visibilityDetails || this.detailsW === 0) {
         this.swimlaneWidth = this.$refs.wrapper.clientWidth
       }
-      console.log(this.swimlaneWidth)
+      // console.log(this.swimlaneWidth)
 
       await this.loadData()
 

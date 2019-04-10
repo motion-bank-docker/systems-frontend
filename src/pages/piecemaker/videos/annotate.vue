@@ -216,7 +216,6 @@
     },
     methods: {
       onDetailsWidth (val) {
-        console.log('detailsWidth', val)
         this.detailsW = val
       },
       slParent () {
@@ -230,11 +229,11 @@
         let matches = val.split(' ').map((n) => n[0]).join('')
         return matches
       },
-      onToggleDetails (val) {
+      onToggleDetails () {
         this.visibilityDetails = !this.visibilityDetails
         // this.detailsSize += 100
         // console.log(val, this.detailsSize, this.visibilityDetails)
-        console.log(val)
+        // console.log(val)
       },
       // onTtoggleDetails (val) {
       //   alert(val)
