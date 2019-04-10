@@ -8,7 +8,7 @@
       .row
         .col-md-12
           form-main(v-model="payload", :schema="schema")
-            q-btn.q-mr-md.bg-grey-9(q-if="$route.params.id", slot="form-buttons-add", :label="exportLabel", @click="exportTimeline")
+            q-btn.q-mr-md.bg-grey-9(q-if="$route.params.uuid", slot="form-buttons-add", :label="exportLabel", @click="exportTimeline")
 
       .row(v-if="availableRoles.length")
         .col-md-12
@@ -55,7 +55,7 @@
         downloadURL: undefined,
         exportLabel: this.$t('buttons.export_timeline'),
         type: constants.MAP_TYPE_TIMELINE,
-        payload: this.$route.params.id ? _this.$store.dispatch('maps/get', _this.$route.params.id) : undefined,
+        payload: this.$route.params.uuid ? _this.$store.dispatch('maps/get', _this.$route.params.uuid) : undefined,
         acl: {
           group: undefined,
           group_remove: undefined,
@@ -75,7 +75,7 @@
           },
           submit: {
             handler () {
-              return _this.$store.dispatch('maps/patch', [_this.payload.uuid, _this.payload])
+              return _this.$store.dispatch('maps/patch', [_this.payload._uuid, _this.payload])
                 .then(() => _this.$router.push({ name: 'piecemaker.timelines.list' }))
             }
           }
@@ -84,7 +84,7 @@
     },
     async mounted () {
       this.$q.loading.show()
-      this.timeline = await this.$store.dispatch('maps/get', this.$route.params.id)
+      this.timeline = await this.$store.dispatch('maps/get', this.$route.params.uuid)
       if (process.env.IS_STAGING) {
         const aclQuery = {role: 'public', id: this.timeline.id, permission: 'get'}
         const permissions = await this.$store.dispatch('acl/isRoleAllowed', aclQuery)
@@ -114,7 +114,7 @@
         try {
           const result = await this.$axios.post(
             `${process.env.API_HOST}/archives/maps`,
-            {id: this.timeline.uuid},
+            {uuid: this.timeline._uuid},
             {
               headers: {
                 Authorization: `Bearer ${localStorage.access_token}`

@@ -26,7 +26,7 @@
     .row.q-pb-xl
       .col-xs-12.offset-xs-none.col-md-10.offset-md-1.col-lg-8.offset-lg-2
         q-list(v-if="inputStyle", no-border, style="margin-top: 8rem;")
-          q-item(v-for="(annotation, i) in annotations", :key="annotation.uuid", :id="annotation.uuid")
+          q-item(v-for="(annotation, i) in annotations", :key="annotation._uuid", :id="annotation._uuid")
             q-item-side(v-if="annotation.target.selector")
               | {{ formatSelectorForList(annotation.target.selector.value) }}
             q-item-main
@@ -40,7 +40,7 @@
               :disabled="annotation.body.type !== 'TextualBody'",
               @click="$refs.annotationField.addToVocabulary(annotation)")
                 // q-tooltip.q-caption.bg-dark(:offset="[0,5]") alt + e
-              q-btn(@click="deleteAnnotation(annotation.uuid, i)", icon="clear", round, small)
+              q-btn(@click="deleteAnnotation(annotation._uuid, i)", icon="clear", round, small)
 
 </template>
 
@@ -65,7 +65,7 @@
       }
     },
     async mounted () {
-      this.timeline = await this.$store.dispatch('maps/get', this.$route.params.id)
+      this.timeline = await this.$store.dispatch('maps/get', this.$route.params.uuid)
     },
     methods: {
       async cloneEntry (annotation) {

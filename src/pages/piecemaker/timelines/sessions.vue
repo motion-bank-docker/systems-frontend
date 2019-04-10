@@ -68,7 +68,7 @@
   //   }
   //   for (let v of videos) {
   //     try {
-  //       const meta = await axios.get(`${process.env.TRANSCODER_HOST}/metadata/${v.annotation.uuid}`, {headers})
+  //       const meta = await axios.get(`${process.env.TRANSCODER_HOST}/metadata/${v.annotation._uuid}`, {headers})
   //       Object.assign(v.meta, meta.data)
   //       videosMeta.push(v)
   //     }
@@ -84,11 +84,11 @@
       SessionStream
     },
     async mounted () {
-      this.map = await this.$store.dispatch('maps/get', this.$route.params.id)
+      this.map = await this.$store.dispatch('maps/get', this.$route.params.uuid)
       this.sessions = await this.generateSessions(this.map.id)
 
       /*
-      this.map = await this.$store.dispatch('maps/get', this.$route.params.id)
+      this.map = await this.$store.dispatch('maps/get', this.$route.params.uuid)
       // const grouped = await this.$store.dispatch('sessions/get', uuid)
       // grouped.sessions = grouped.sessions.map(session => {
       //   session.start = DateTime.fromISO(session.start)
@@ -129,7 +129,7 @@
         // TODO: handle other annotations with a duration here
         if (a.body.type === 'Video') {
           video = videos.find(v => {
-            return a.uuid === v.annotation.uuid
+            return a._uuid === v.annotation._uuid
           })
           if (video) {
             if (video.meta && video.meta.duration) {
@@ -281,7 +281,7 @@
         const _this = this
         switch (type) {
         case 'annotate':
-          return _this.$router.push(`/piecemaker/videos/${data.row.uuid}/annotate`)
+          return _this.$router.push(`/piecemaker/videos/${data.row._uuid}/annotate`)
         }
       }
     },

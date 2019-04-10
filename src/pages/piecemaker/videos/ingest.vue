@@ -31,7 +31,7 @@
         _this.checkResults()
       })
       let result = await this.$store.dispatch('maps/find', {type: 'Timeline'})
-      this.timelines = result.items.map(timeline => { return { label: timeline.title, value: timeline.uuid } })
+      this.timelines = result.items.map(timeline => { return { label: timeline.title, value: timeline._uuid } })
     },
     watch: {
       async selectedTimeline (val) {

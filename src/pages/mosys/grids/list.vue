@@ -33,7 +33,7 @@
             transformed.title = row.title
             transformed.last_updated = row.updated ? row.updated : row.created
             transformed.author = row.author ? row.author.name : _this.$t('labels.unknown_author')
-            transformed.uuid = row.uuid
+            transformed._uuid = row._uuid
             transformed.id = row.id
             rows[i] = transformed
           }
@@ -69,12 +69,12 @@
               type: 'annotate',
               title: 'routes.mosys.grids.buttons.annotate',
               color: 'primary',
-              click: (item) => _this.$router.push({ name: 'mosys.grids.annotate', params: { id: item.uuid } })
+              click: (item) => _this.$router.push({ name: 'mosys.grids.annotate', params: { uuid: item._uuid } })
             },
             {
               type: 'edit',
               title: 'buttons.edit',
-              click: (item) => _this.$router.push({ name: 'mosys.grids.edit', params: { id: item.uuid } })
+              click: (item) => _this.$router.push({ name: 'mosys.grids.edit', params: { uuid: item._uuid } })
             },
             {
               type: 'delete',

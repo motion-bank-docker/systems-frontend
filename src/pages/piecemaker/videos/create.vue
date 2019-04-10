@@ -66,14 +66,14 @@
                 target
               }
               const annotation = await _this.$store.dispatch('annotations/post', _this.apiPayload)
-              _this.$router.push(`/piecemaker/videos/${annotation.uuid}/edit`)
+              _this.$router.push(`/piecemaker/videos/${annotation._uuid}/edit`)
             }
           }
         }
       }
     },
     async mounted () {
-      this.timeline = await this.$store.dispatch('maps/get', this.$route.params.timelineId)
+      this.timeline = await this.$store.dispatch('maps/get', this.$route.params.timelineUuid)
     }
   }
 </script>

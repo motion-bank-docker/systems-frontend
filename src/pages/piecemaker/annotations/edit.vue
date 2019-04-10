@@ -9,7 +9,8 @@
       .col-4
         q-list(highlight, separator, no-border)#test
           q-list-header {{ $t('labels.annotations') }}
-          q-item(v-for="annotation in annotations", :key="annotation.uuid",
+          // FIXME: what is this playerTime comparison?!
+          q-item(v-for="annotation in annotations", :key="annotation._uuid",
           :class="{ 'bg-faded': playerTime >= annotation.object.sel }",
           link, multiline, @click="onAnnotationClick(annotation)")
             q-item

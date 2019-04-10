@@ -33,7 +33,7 @@
 
       .absolute-bottom-right.bg-dark.full-width.shadow-up-4.q-px-md.q-pb-sm.scroll(v-if="swimlanes",
       :style="{height: swimlanesHeight + 'px', borderTop: '1px solid #333', minHeight: '52px'}")
-        swim-lane(v-if="timeline", :timelineUuid="timeline.uuid", :markerDetails="false", :resizable="true",
+        swim-lane(v-if="timeline", :timelineUuid="timeline._uuid", :markerDetails="false", :resizable="true",
         @emitHandler="handlerToggle('swimlanes')", @emitResize="onEmitResize",
         :key="visibilityDetails", @emitToggleDetails="onToggleDetails", :visibilityDetails="visibilityDetails"
         )
@@ -61,9 +61,9 @@
       .absolute.fit.bg-dark
       q-list.no-border.bg-dark.q-py-none(dark, @mouseleave.native="currentHover === undefined")
 
-        q-item.bg-dark(dark, v-for="(annotation, i) in annotations", :key="annotation.uuid", :ref="annotation.uuid",
+        q-item.bg-dark(dark, v-for="(annotation, i) in annotations", :key="annotation._uuid", :ref="annotation._uuid",
         :class="[currentIndex === i ? 'bg-grey-9' : '']", style="border-left: 1px solid #333;",
-        @mouseover.native="setHover(annotation.uuid)")
+        @mouseover.native="setHover(annotation._uuid)")
           q-item-main
             q-item-tile
 
@@ -81,8 +81,8 @@
 
               // buttons
 
-              <!--div.float-right(v-if="currentHover === annotation.uuid")-->
-              div.float-right(:class="[currentHover === annotation.uuid ? '' : 'invisible']")
+              <!--div.float-right(v-if="currentHover === annotation._uuid")-->
+              div.float-right(:class="[currentHover === annotation._uuid ? '' : 'invisible']")
                 q-btn.float-right(@click="$refs.confirmModal.show('messages.confirm_delete', annotation, 'buttons.delete')",
                 size="sm", icon="delete", round)
 
@@ -128,7 +128,7 @@
       SwimLane
     },
     async mounted () {
-      if (this.$route.params.id) {
+      if (this.$route.params.uuid) {
         this.$q.loading.show()
         await this.getVideo()
         await this.getAnnotations()
@@ -155,7 +155,7 @@
         staging: process.env.IS_STAGING,
         swimlanes: false,
         swimlanesHeight: undefined,
-        timelineId: undefined,
+        timelineUuid: undefined,
         timeline: undefined,
         video: undefined,
         videoHeight: undefined,
@@ -209,7 +209,7 @@
     watch: {
       currentIndex (val) {
         if (typeof this.editAnnotationIndex === 'number') return
-        if (this.annotations[val]) this.scrollToAnnotation(this.annotations[val].uuid)
+        if (this.annotations[val]) this.scrollToAnnotation(this.annotations[val]._uuid)
       }
     },
     methods: {
@@ -254,14 +254,14 @@
         }
       },
       async handleConfirmModal (annotation) {
-        await this.deleteAnnotation(annotation.uuid)
+        await this.deleteAnnotation(annotation._uuid)
       },
       toggleFullscreen () {
         AppFullscreen.toggle()
         this.fullscreen = !this.fullscreen
       },
       async getVideo () {
-        this.video = await this.$store.dispatch('annotations/get', this.$route.params.id)
+        this.video = await this.$store.dispatch('annotations/get', this.$route.params.uuid)
         this.timeline = await this.$store.dispatch('maps/get', parseURI(this.video.target.id).uuid)
         if (this.video) {
           this.metadata = await this.$store.dispatch('metadata/get', this.video)
@@ -309,7 +309,7 @@
           }
           this.annotations.push(result)
           this.annotations = this.annotations.sort(this.$sort.onRef)
-          setTimeout(() => this.scrollToAnnotation(result.uuid), 500)
+          setTimeout(() => this.scrollToAnnotation(result._uuid), 500)
         }
         catch (err) {
           this.$handleError(this, err, 'errors.create_annotation_failed')
@@ -325,9 +325,9 @@
         if (annotation.body.value !== this.editAnnotationBuffer) {
           try {
             Assert.isType(annotation, 'object')
-            Assert.ok(uuidValidate(annotation.uuid))
+            Assert.ok(uuidValidate(annotation._uuid))
             Assert.isType(annotation.body.value, 'string')
-            await this.$store.dispatch('annotations/patch', [annotation.uuid, annotation])
+            await this.$store.dispatch('annotations/patch', [annotation._uuid, annotation])
             await this.getAnnotations()
             this.$store.commit('notifications/addMessage', {
               body: 'messages.updated_annotation',
@@ -361,7 +361,7 @@
       },
       gotoHashvalue () {
         if (this.hashValue && uuid.isUUID(this.hashValue)) {
-          const result = this.annotations.filter(annotation => annotation.uuid === this.hashValue)
+          const result = this.annotations.filter(annotation => annotation._uuid === this.hashValue)
           if (result.length) {
             this.scrollToAnnotation(this.hashValue)
             this.gotoSelector(result[0].target.selector.value)

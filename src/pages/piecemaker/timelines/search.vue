@@ -13,7 +13,7 @@
       .col-md-6
         p {{ formatDate(result.target.selector.value) }}
         p
-          a(:href="`/piecemaker/videos/${getVideo(result).annotation.uuid}/annotate#${result.uuid}`") Goto Video
+          a(:href="`/piecemaker/videos/${getVideo(result).annotation._uuid}/annotate#${result._uuid}`") Goto Video
 </template>
 
 <script>
@@ -33,7 +33,7 @@
     },
     async mounted () {
       this.$q.loading.show()
-      this.map = await this.$store.dispatch('maps/get', this.$route.params.id)
+      this.map = await this.$store.dispatch('maps/get', this.$route.params.uuid)
       const videos = await this.$store.dispatch('annotations/find', {
         'target.id': this.map.id,
         'body.type': 'Video'

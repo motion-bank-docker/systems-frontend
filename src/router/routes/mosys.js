@@ -18,18 +18,18 @@ export default {
       meta: {private: true}
     },
     {
-      path: 'grids/:id',
+      path: 'grids/:uuid',
       component: () => import('pages/mosys/grids/show'),
       name: 'mosys.grids.show'
     },
     {
-      path: 'grids/:id/edit',
+      path: 'grids/:uuid/edit',
       component: () => import('pages/mosys/grids/edit'),
       name: 'mosys.grids.edit',
       meta: {private: true}
     },
     {
-      path: 'grids/:id/annotate',
+      path: 'grids/:uuid/annotate',
       component: () => import('pages/mosys/grids/annotate'),
       name: 'mosys.grids.annotate',
       meta: {private: true}

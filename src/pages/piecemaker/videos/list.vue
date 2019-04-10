@@ -8,7 +8,7 @@
     data-table(v-if="query", ref="listTable", :config="config", :title="'routes.piecemaker.videos.list.title'",
       path="annotations", :query="query", base-path="videos", :request-transform="requestTransform")
       template(slot="buttons-left")
-        q-btn(@click="$router.push({ name: 'piecemaker.videos.create', params: { timelineId: $route.params.timelineId } })",
+        q-btn(@click="$router.push({ name: 'piecemaker.videos.create', params: { timelineUuid: $route.params.timelineUuid } })",
           color="primary") {{ $t('buttons.add_video') }}
 </template>
 
@@ -32,7 +32,7 @@
             const tags = await _this.$store.dispatch('tags/get', row)
             transformed.tags = tags.join(', ')
             transformed.author = row.author ? row.author.name : _this.$t('labels.unknown_author')
-            transformed.uuid = row.uuid
+            transformed._uuid = row._uuid
             transformed.id = row.id
             rows[i] = transformed
           }
@@ -89,13 +89,12 @@
               type: 'live-annotate',
               title: 'buttons.annotate',
               color: 'primary',
-              click: (item) => _this.$router.push({ name: 'piecemaker.videos.annotate', params: { id: item.uuid } })
+              click: (item) => _this.$router.push({ name: 'piecemaker.videos.annotate', params: { uuid: item._uuid } })
             },
             {
               type: 'edit',
               title: 'buttons.edit',
-              // click: (item) => _this.$router.push({ name: 'piecemaker.videos.edit', params: { id: item.uuid } })
-              click: (item) => _this.$router.push({ name: 'piecemaker.videos.edit', params: { id: item.uuid } })
+              click: (item) => _this.$router.push({ name: 'piecemaker.videos.edit', params: { uuid: item._uuid } })
             },
             {
               type: 'sync',
@@ -103,7 +102,7 @@
               click: (item) => {
                 _this.$router.push({
                   name: 'piecemaker.videos.sync',
-                  params: { id: item.uuid }
+                  params: { uuid: item._uuid }
                 })
               }
             },
@@ -119,7 +118,7 @@
       }
     },
     async mounted () {
-      this.timeline = await this.$store.dispatch('maps/get', this.$route.params.timelineId)
+      this.timeline = await this.$store.dispatch('maps/get', this.$route.params.timelineUuid)
       if (this.timeline) {
         this.query = {
           'body.purpose': 'linking',
@@ -130,7 +129,7 @@
     },
     methods: {
       async handleConfirmModal (item) {
-        await this.$store.dispatch('annotations/delete', item.uuid)
+        await this.$store.dispatch('annotations/delete', item._uuid)
         if (item.id) {
           const results = await this.$store.dispatch('annotations/find', {
             'target.id': item.id,
@@ -138,7 +137,7 @@
             'body.type': 'TextualBody'
           })
           for (let a of results.items) {
-            await this.$store.dispatch('annotations/delete', a.uuid)
+            await this.$store.dispatch('annotations/delete', a._uuid)
           }
         }
         this.$refs.listTable.request()

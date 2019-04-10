@@ -6,9 +6,9 @@
       .row
         .col-md-12
           form-main(v-model="payload", :schema="schema")
-            q-btn.q-mr-md.bg-grey-9(q-if="$route.params.id", slot="form-buttons-add",
+            q-btn.q-mr-md.bg-grey-9(q-if="$route.params.uuid", slot="form-buttons-add",
               :label="exportLabel", @click="exportGrid")
-            q-btn.q-mr-md.bg-grey-9(q-if="$route.params.id && userHasPackager", slot="form-buttons-add",
+            q-btn.q-mr-md.bg-grey-9(q-if="$route.params.uuid && userHasPackager", slot="form-buttons-add",
               :label="packageLabel", @click="createPackage")
 
       .row.q-mb-lg(v-if="availableRoles.length")
@@ -38,7 +38,7 @@
         .col-md-12.q-mb-md
           q-input(v-model="stylesheet", dark, type="textarea", float-label="Embedded CSS Stylesheet", rows="4")
         .col-md-12
-          q-btn.float-right(q-if="$route.params.id", color="primary", label="Submit", @click="submit")
+          q-btn.float-right(q-if="$route.params.uuid", color="primary", label="Submit", @click="submit")
 </template>
 
 <script>
@@ -75,7 +75,7 @@
           recursive: false
         },
         type: constants.MAP_TYPE_2D_GRID,
-        payload: this.$route.params.id ? _this.$store.dispatch('maps/get', _this.$route.params.id) : undefined,
+        payload: this.$route.params.uuid ? _this.$store.dispatch('maps/get', _this.$route.params.uuid) : undefined,
         schema: {
           fields: {
             title: {
@@ -98,7 +98,7 @@
     },
     async mounted () {
       this.$q.loading.show()
-      this.grid = await this.$store.dispatch('maps/get', this.$route.params.id)
+      this.grid = await this.$store.dispatch('maps/get', this.$route.params.uuid)
 
       if (this.userHasCSSEditing) {
         this.stylesheet = this.grid.stylesheet ? this.grid.stylesheet.value : undefined
@@ -146,7 +146,7 @@
         }
         const apiPayload = Object.assign({}, this.payload, stylesheet)
         let result
-        result = await this.$store.dispatch('maps/patch', [this.payload.uuid, apiPayload])
+        result = await this.$store.dispatch('maps/patch', [this.payload._uuid, apiPayload])
         if (message) {
           this.$store.commit('notifications/addMessage', {
             type: 'success',
@@ -161,7 +161,7 @@
         try {
           const result = await this.$axios.post(
             `${process.env.API_HOST}/archives/maps`,
-            {id: this.grid.uuid},
+            {uuid: this.grid._uuid},
             {
               headers: {
                 Authorization: `Bearer ${localStorage.access_token}`
@@ -182,7 +182,7 @@
         try {
           const result = await this.$axios.post(
             `${process.env.PACKAGER_HOST}/packages`,
-            {id: this.grid.id},
+            {uuid: this.grid._uuid},
             {
               headers: {
                 Authorization: `Bearer ${localStorage.access_token}`

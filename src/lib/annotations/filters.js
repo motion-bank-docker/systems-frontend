@@ -6,7 +6,7 @@ const indexer = annotations => {
   annotations.forEach(annotation => {
     let addAuthor = true
     results.authors.forEach(author => {
-      if (annotation.author.uuid === author.uuid) addAuthor = false
+      if (annotation.author.id === author.id) addAuthor = false
     })
     if (addAuthor) results.authors.push(annotation.author)
 

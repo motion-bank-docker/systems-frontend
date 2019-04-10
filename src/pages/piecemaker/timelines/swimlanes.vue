@@ -11,7 +11,7 @@
     // btn: back
     q-btn.absolute-top-left(slot="backButton", @click="$router.push({ name: 'piecemaker.timelines.list' })", icon="keyboard_backspace", round, small, style="top: 66px; left: 16px;")
 
-    swim-lane(v-if="map", :timelineUuid="map.uuid", :markerDetails="true",
+    swim-lane(v-if="map", :timelineUuid="map._uuid", :markerDetails="true",
     @emitToggleDetails="onToggleDetails", :visibilityDetails="visibilityDetails", :key="visibilityDetails")
 </template>
 
@@ -23,7 +23,7 @@
       SwimLane
     },
     async mounted () {
-      this.map = await this.$store.dispatch('maps/get', this.$route.params.id)
+      this.map = await this.$store.dispatch('maps/get', this.$route.params.uuid)
     },
     data () {
       return {

@@ -14,7 +14,7 @@
     graph-marker(
       v-for="(a, index) in annotations",
       :annotationData="a",
-      :key="a.uuid",
+      :key="a._uuid",
       :index="index",
       :root="root"
       )

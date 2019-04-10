@@ -97,7 +97,7 @@
         titlePayload: undefined,
         meta: undefined,
         map: undefined,
-        payload: context.$store.dispatch('annotations/get', context.$route.params.id)
+        payload: context.$store.dispatch('annotations/get', context.$route.params.uuid)
           .then(async result => {
             this.map = await this.$store.dispatch('maps/get', parseURI(result.target.id).uuid)
             this.meta = await this.$store.dispatch('metadata/get', result)
@@ -108,7 +108,7 @@
 
             return {
               gid: result.target.id,
-              uuid: result.uuid,
+              _uuid: result._uuid,
               url: result.body.source.id,
               id: result.id,
               title: this.meta.title,
@@ -152,10 +152,10 @@
                 await context.createTitle(context.payload.id, context.payload.title)
               }
               else if (context.titlePayload && context.payload.title === context.meta.originalTitle) {
-                await context.removeTitle(context.titlePayload.uuid)
+                await context.removeTitle(context.titlePayload._uuid)
               }
               else if (context.titlePayload && context.payload.title !== context.titlePayload.body.value) {
-                await context.updateTitle(context.titlePayload.uuid, context.payload.title)
+                await context.updateTitle(context.titlePayload._uuid, context.payload.title)
               }
               context.apiPayload = {
                 target: {
@@ -171,12 +171,12 @@
                   }
                 }
               }
-              await context.$store.dispatch('annotations/patch', [context.payload.uuid, context.apiPayload])
+              await context.$store.dispatch('annotations/patch', [context.payload._uuid, context.apiPayload])
               await context.$store.dispatch('tags/set', [context.payload, context.payload.tags])
 
               context.$router.push({
                 name: 'piecemaker.videos.list',
-                params: { timelineId: parseURI(context.payload.gid).uuid }
+                params: { timelineUuid: parseURI(context.payload.gid).uuid }
               })
             }
           }

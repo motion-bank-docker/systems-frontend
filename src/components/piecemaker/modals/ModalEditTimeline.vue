@@ -75,7 +75,7 @@
     methods: {
       submit () {
         return Promise.resolve().then(() => {
-          if (this.map.uuid) {
+          if (this.map._uuid) {
             return this.$store.dispatch('maps/update', this.map)
           }
           else {
