@@ -45,7 +45,7 @@
     },
     mounted () {
       const _this = this
-      this.$store.dispatch('maps/find', { type: constants.MAP_TYPE_TIMELINE })
+      this.$store.dispatch('maps/find', { type: constants.mapTypes.MAP_TYPE_TIMELINE })
         .then(results => {
           _this.timelines = results
         })

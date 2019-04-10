@@ -288,7 +288,7 @@
           _this = this,
           query = {
             'target.id': this.timeline.id,
-            'target.type': constants.MAP_TYPE_TIMELINE,
+            'target.type': constants.mapTypes.MAP_TYPE_TIMELINE,
             'target.selector.value': { $gte: this.video.target.selector.value },
             'body.type': { $in: ['TextualBody', 'VocabularyEntry'] }
           }

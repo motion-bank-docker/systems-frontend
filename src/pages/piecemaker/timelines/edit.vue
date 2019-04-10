@@ -54,7 +54,7 @@
         env: process.env,
         downloadURL: undefined,
         exportLabel: this.$t('buttons.export_timeline'),
-        type: constants.MAP_TYPE_TIMELINE,
+        type: constants.mapTypes.MAP_TYPE_TIMELINE,
         payload: this.$route.params.uuid ? _this.$store.dispatch('maps/get', _this.$route.params.uuid) : undefined,
         acl: {
           group: undefined,

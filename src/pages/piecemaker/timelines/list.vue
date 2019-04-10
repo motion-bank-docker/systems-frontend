@@ -66,7 +66,7 @@
             created: 800
           }
         ], */
-        query: { type: constants.MAP_TYPE_TIMELINE },
+        query: { type: constants.mapTypes.MAP_TYPE_TIMELINE },
         requestTransform: async rows => {
           for (let i in rows) {
             const transformed = {}
