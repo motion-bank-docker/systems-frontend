@@ -1,5 +1,5 @@
 <template lang="pug">
-  .swim-lane-component.bg-orange(ref="wrapper", :class="[cursorGlobalResize, cursorGlobalGrabbing]", style="position: relative;")
+  .swim-lane-component(ref="wrapper", :class="[cursorGlobalResize, cursorGlobalGrabbing]", style="position: relative;")
     q-resize-observable(@resize="onViewportResize")
     .row.q-my-md
       //
@@ -10,20 +10,13 @@
       marker-context-menu(:root="self")
       marker-details-hover(:root="self")
 
-      .col-8.row
-        div(:class="{'col-6' : showDetails}")
+      .col-12.row
+        div(:style="{width: detailsWidth + 'px', minWidth: '50px'}")
 
           // button show/hide details
 
           q-btn.q-px-sm.q-mr-sm(@click="handlerToggle('markerDetails')", icon="expand_more",
           :class="[showDetails ? 'rotate-90' : 'rotate-270 text-white']", size="sm", round)
-
-          // button change horizontal dimensions
-
-          q-btn.q-px-sm.q-mr-sm.float-right(
-          v-if="showDetails", v-touch-pan="handlerResizeX",
-          @mousedown.native="onMousedown", @mouseup.native="onMousedown",
-          size="sm", icon="code", round)
 
           //
             TODO: use input field here to set the timecode to an exact value
@@ -31,12 +24,20 @@
 
         // settings
 
-        .q-pl-xs
+        .row
+
+          // button change horizontal dimensions
+
+          q-btn.q-px-sm.q-mr-sm(
+          v-if="showDetails", v-touch-pan="handlerResizeX",
+          @mousedown.native="onMouse", @mouseup.native="onMouseUp",
+          size="sm", icon="code", round)
+
           settings(ref="settings")
 
       // resize and hide swimlanes
 
-      .col-4.text-right(v-if="resizable")
+      .absolute-top-right.text-right(v-if="resizable")
         q-btn.q-ml-lg(@click="", v-touch-pan="handlerResize", color="dark", round, size="sm")
           q-icon.rotate-90(name="code")
         q-btn.q-ml-sm(@click="handlerToggle('swimlanes')", color="dark", icon="clear", round, size="sm")
@@ -45,8 +46,8 @@
 
       // details
 
-      div.bg-green(
-      :class="[showDetails ? '' : 'hidden']",
+      div(
+      :class="[showDetails ? '' : 'hidden', hideSwimlanes ? 'bg-grey-9' : '']",
       :style="{width: detailsWidth + 'px', minWidth: '100px'}"
       )
         marker-details-selected(v-if="showDetails", :root="self", :resizable="resizable")
@@ -273,8 +274,11 @@
       }
     },
     methods: {
-      onMousedown () {
+      onMouse () {
         this.hideSwimlanes = !this.hideSwimlanes
+      },
+      onMouseUp () {
+        this.$emit('forceRenderer')
       },
       onViewportResize (obj) {
         this.parentWidth = obj.width
@@ -290,7 +294,7 @@
         this.cursorPos.x = obj.position.left
         // this.swimlaneWidth = this.parentWidth - this.cursorPos.x
         this.swimlaneWidth = this.parentWidth - this.detailsW
-        this.detailsWidth = this.cursorPos.x
+        this.detailsWidth = this.cursorPos.x - 16 - 15
         this.$emit('detailsWidth', this.detailsWidth)
         console.log('detailsW', this.detailsW)
       },

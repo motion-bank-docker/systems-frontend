@@ -34,10 +34,15 @@
       .absolute-bottom-right.bg-dark.full-width.shadow-up-4.q-px-md.q-pb-sm.scroll(v-if="swimlanes",
       :style="{height: swimlanesHeight + 'px', borderTop: '1px solid #333', minHeight: '52px'}",
       ref="swimlaneWrap")
-        swim-lane(v-if="timeline", :timelineUuid="timeline.uuid", :markerDetails="false", :resizable="true",
+        swim-lane(
+        v-if="timeline",
+        :timelineUuid="timeline.uuid",
+        :markerDetails="false",
+        :resizable="true",
         @emitHandler="handlerToggle('swimlanes')", @emitResize="onEmitResize",
-        :key="visibilityDetails", @emitToggleDetails="onToggleDetails", :visibilityDetails="visibilityDetails",
-        @detailsWidth="onDetailsWidth", :detailsW="detailsW"
+        :key="componentKey", @emitToggleDetails="onToggleDetails", :visibilityDetails="visibilityDetails",
+        @detailsWidth="onDetailsWidth", :detailsW="detailsW",
+        @forceRenderer="onForceRenderer"
         )
 
       // button toggles swimlanes visibility
@@ -169,7 +174,8 @@
         mdOptions: {
           target: '_blank'
         },
-        detailsW: undefined
+        detailsW: undefined,
+        componentKey: 0
       }
     },
     computed: {
@@ -215,6 +221,9 @@
       }
     },
     methods: {
+      onForceRenderer () {
+        this.componentKey += 1
+      },
       onDetailsWidth (val) {
         this.detailsW = val
       },
@@ -234,6 +243,7 @@
         // this.detailsSize += 100
         // console.log(val, this.detailsSize, this.visibilityDetails)
         // console.log(val)
+        this.onForceRenderer()
       },
       // onTtoggleDetails (val) {
       //   alert(val)
