@@ -20,8 +20,10 @@
 
           // button change horizontal dimensions
 
-          q-btn.q-px-sm.q-mr-sm.float-right(v-if="showDetails", @click="", v-touch-pan="handlerResizeX", icon="code",
-          size="sm", round)
+          q-btn.q-px-sm.q-mr-sm.float-right(
+          v-if="showDetails", v-touch-pan="handlerResizeX",
+          @mousedown.native="onMousedown", @mouseup.native="onMousedown",
+          size="sm", icon="code", round)
 
           //
             TODO: use input field here to set the timecode to an exact value
@@ -39,7 +41,6 @@
           q-icon.rotate-90(name="code")
         q-btn.q-ml-sm(@click="handlerToggle('swimlanes')", color="dark", icon="clear", round, size="sm")
 
-    <!--.row(:class="[showDetails ? 'gutter-sm' : '']")-->
     .row
 
       // details
@@ -52,13 +53,9 @@
 
       // swim lane
 
-      // div.bg-red(
-        ref="swimlanewrap",
-        // :class="[showDetails ? 'col-8' : 'col-12']",
-        // :style="{width: parentWidth - cursorPos.x - 50 + 'px', minWidth: '100px'}"
-        )
       div.bg-black(
       ref="swimlanewrap",
+      v-if="!hideSwimlanes",
       :style="{width: swimlaneWidth + 'px', minWidth: '100px'}"
       )
         .swim-lane-wrapper.wrapper
@@ -128,7 +125,7 @@
       MarkerDetailsSelected,
       MarkerContextMenu
     },
-    props: ['timelineUuid', 'markerDetails', 'resizable', 'visibilityDetails'],
+    props: ['timelineUuid', 'markerDetails', 'resizable', 'visibilityDetails', 'detailsW'],
     data () {
       return {
         self: this,
@@ -172,11 +169,20 @@
         showDetails: this.visibilityDetails,
         cursorPos: {x: 0, y: 0},
         swimlaneWidth: 0,
-        detailsWidth: 0
+        detailsWidth: 0,
+        hideSwimlanes: false
       }
     },
     async mounted () {
-      this.swimlaneWidth = this.$refs.wrapper.clientWidth
+      this.showDetails = this.visibilityDetails
+      if (this.detailsW) {
+        this.detailsWidth = this.detailsW
+        this.swimlaneWidth = this.$refs.wrapper.clientWidth - this.detailsWidth
+      }
+      else {
+        this.swimlaneWidth = this.$refs.wrapper.clientWidth
+      }
+
       await this.loadData()
 
       window.addEventListener('mousemove', this.onGlobalMove)
@@ -262,23 +268,33 @@
       }
     },
     methods: {
+      onMousedown () {
+        this.hideSwimlanes = !this.hideSwimlanes
+      },
       onViewportResize (obj) {
-        console.log(obj)
         this.parentWidth = obj.width
+        if (this.detailsWidth === 0 && this.showDetails) {
+          this.detailsWidth = this.parentWidth / 4
+          this.swimlaneWidth = this.parentWidth / 4 * 3
+        }
       },
       handlerResize (obj) {
         this.$emit('emitResize', obj.position.top)
       },
       handlerResizeX (obj) {
         this.cursorPos.x = obj.position.left
-        this.swimlaneWidth = this.parentWidth - this.cursorPos.x
+        // this.swimlaneWidth = this.parentWidth - this.cursorPos.x
+        this.swimlaneWidth = this.parentWidth - this.detailsW
         this.detailsWidth = this.cursorPos.x
+        this.$emit('detailsWidth', this.detailsWidth)
+        console.log('detailsW', this.detailsW)
       },
       handlerToggle (val) {
         switch (val) {
         case 'markerDetails':
           this.showMarkerDetails = !this.showMarkerDetails
           if (!this.resizable) this.showDetails = this.showMarkerDetails
+          if (this.showMarkerDetails) this.swimlaneWidth = this.parentWidth
           this.$emit('emitToggleDetails', this.showMarkerDetails)
           break
         case 'swimlanes':

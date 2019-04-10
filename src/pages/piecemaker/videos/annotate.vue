@@ -36,7 +36,8 @@
       ref="swimlaneWrap")
         swim-lane(v-if="timeline", :timelineUuid="timeline.uuid", :markerDetails="false", :resizable="true",
         @emitHandler="handlerToggle('swimlanes')", @emitResize="onEmitResize",
-        :key="visibilityDetails", @emitToggleDetails="onToggleDetails", :visibilityDetails="visibilityDetails"
+        :key="visibilityDetails", @emitToggleDetails="onToggleDetails", :visibilityDetails="visibilityDetails",
+        @detailsWidth="onDetailsWidth", :detailsW="detailsW"
         )
 
       // button toggles swimlanes visibility
@@ -161,13 +162,14 @@
         videoHeight: undefined,
         viewport: {height: undefined, width: undefined},
         visibilityDetails: false,
-        detailsSize: 300,
+        // detailsSize: 300,
         editAnnotationIndex: undefined,
         editAnnotationBuffer: undefined,
         hashTimeout: undefined,
         mdOptions: {
           target: '_blank'
-        }
+        },
+        detailsW: undefined
       }
     },
     computed: {
@@ -213,6 +215,10 @@
       }
     },
     methods: {
+      onDetailsWidth (val) {
+        console.log('detailsWidth', val)
+        this.detailsW = val
+      },
       slParent () {
         // alert('this.$refs.swimlaneWrap.clientWidth' + this.$refs.swimlaneWrap.clientWidth)
         // return this.$refs.swimlaneWrap.clientWidth
@@ -226,8 +232,9 @@
       },
       onToggleDetails (val) {
         this.visibilityDetails = !this.visibilityDetails
-        this.detailsSize += 100
-        console.log(val, this.detailsSize, this.visibilityDetails)
+        // this.detailsSize += 100
+        // console.log(val, this.detailsSize, this.visibilityDetails)
+        console.log(val)
       },
       // onTtoggleDetails (val) {
       //   alert(val)
