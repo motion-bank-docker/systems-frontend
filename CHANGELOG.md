@@ -17,7 +17,7 @@ and this project adheres to
 ### Updated
 
 - [mbjs-data-models](https://gitlab.rlp.net/motionbank/mbjs/data-models)
-  to version 1.0.0
+  to version 1.2.0
 
 
 ## [1.3.1] - 2019-04-06
