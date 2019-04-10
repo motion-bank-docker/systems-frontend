@@ -1,10 +1,11 @@
 <template lang="pug">
 
-  .row.q-mt-md.q-pl-sm.round-borders#hover(v-shortkey="shortcuts.focusInput", @shortkey="setFocusOnInput()")
+  .row.q-mt-sm.q-pl-sm.q-pr-md.round-borders(v-shortkey="shortcuts.focusInput", @shortkey="setFocusOnInput()",
+  :class="[hasTransparency && !isFocused && !isVisible ? 'bg-with-transparency' : 'bg-dark']")
 
     // button toggles vocabulary
 
-    q-btn.text-primary.q-mr-sm.q-mt-sm(v-if="!vocabularyVisible && staging", round, icon="local_offer",
+    q-btn.text-primary.q-mr-sm.q-mt-sm(v-if="!vocabularyVisible && staging", round, flat, icon="local_offer",
       v-shortkey="shortcuts.showVocabulary", @shortkey.native="toggleVocabulary()", @click="toggleVocabulary()")
 
     // input area
@@ -50,7 +51,8 @@
         type: Number,
         default: 2
       },
-      selectorValue: String
+      selectorValue: String,
+      hasTransparency: Boolean
     },
     data () {
       const defaultBodyText = {
@@ -82,7 +84,9 @@
         },
         enterDown: 0,
         selectedEntry: undefined,
-        staging: process.env.IS_STAGING
+        staging: process.env.IS_STAGING,
+        isFocused: Boolean,
+        isVisible: false
       }
     },
     mounted () {
@@ -126,6 +130,7 @@
       toggleVocabulary () {
         if (!this.$refs.vocabulary) return
         this.$refs.vocabulary.toggle()
+        this.isVisible = this.$refs.vocabulary.visible
         this.setFocusOnInput()
       },
       selectEntry (entry, andCreate = false) {
@@ -173,9 +178,11 @@
       },
       onInputFocus () {
         window.removeEventListener('keydown', this.onKeyDown)
+        this.isFocused = true
       },
       onInputBlur () {
         window.addEventListener('keydown', this.onKeyDown)
+        this.isFocused = false
       },
       createAnnotation () {
         const text = this.annotationText && this.annotationText.trim()
@@ -197,6 +204,10 @@
 
 <style lang="stylus">
   @import '~variables'
-  #hover:hover
+
+  .bg-with-transparency
+    background-color rgba(0, 0, 0, .25)
+
+  .bg-with-transparency:hover
     background-color $dark
 </style>

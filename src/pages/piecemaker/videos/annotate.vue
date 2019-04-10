@@ -53,31 +53,47 @@
         @annotation="onAnnotation",
         ref="annotationField",
         :submit-on-num-enters="1",
-        :selector-value="baseSelector")
+        :selector-value="baseSelector",
+        :hasTransparency="true")
+
+    // anntoation list filters, settings, etc.
+
+    div.fixed-right-top.bg-light.q-pr-md.q-pl-md(style="width: 400px; top: 50px; z-index: 1010; border-bottom: 1px solid #444")
+      q-input(float-label="Filter", value="")
 
     // annotations list
-
-    q-layout-drawer.bg-dark(v-if="annotations", v-model="drawer", side="right")
+    q-layout-drawer.bg-dark(v-if="annotations", v-model="drawer", side="right", :width="400")
       .absolute.fit.bg-dark
       q-list.no-border.bg-dark.q-py-none(dark, @mouseleave.native="currentHover === undefined")
 
-        q-item.bg-dark(dark, v-for="(annotation, i) in annotations", :key="annotation._uuid", :ref="annotation._uuid",
-        :class="[currentIndex === i ? 'bg-grey-9' : '']", style="border-left: 1px solid #333;",
-        @mouseover.native="setHover(annotation._uuid)")
+        q-item.bg-dark.q-pb-lg(
+          dark,
+          v-for="(annotation, i) in annotations",
+          :key="annotation._uuid",
+          :ref="annotation._uuid",
+          :class="[currentIndex === i ? 'bg-grey-9' : '']",
+          style="border-left: 1px solid #444; border-top: 1px solid #444;",
+          @mouseover.native="setHover(annotation._uuid)"
+          )
           q-item-main
             q-item-tile
+
+              // annotation "icon"
+              div.annotation-graphic
 
               // timestamp
 
               q-btn.float-left(
-              v-if="annotation.target.selector", :color="currentIndex === i ? 'primary' : 'dark'",
-              @click="gotoSelector(annotation.target.selector.value)", size="sm")
-                | {{ formatSelectorForList(annotation.target.selector.value) }}
+                v-if="annotation.target.selector",
+                :color="currentIndex === i ? 'primary' : 'dark'",
+                @click="gotoSelector(annotation.target.selector.value)",
+                size="sm"
+                ) {{ formatSelectorForList(annotation.target.selector.value) }}
 
               // author
 
-              q-btn.q-caption.float-left.text-grey-7(size="sm", flat) {{ getInitials(annotation.author.name) }}
-                q-tooltip.bg-grey-10.shadow-6(:offset="[0, 5]") {{ annotation.author.name }}
+              <!--q-btn.q-caption.float-left.text-grey-7(size="sm", flat) {{ getInitials(annotation.author.name) }}-->
+                <!--q-tooltip.bg-grey-10.shadow-6(:offset="[0, 5]") {{ annotation.author.name }}-->
 
               // buttons
 
@@ -406,4 +422,15 @@
     line-height: 24px
   .fit
     max-height 100%!important
+
+  .annotation-graphic
+    width: 16px
+    height: 16px
+    background: #57AEFF
+    border-radius: 8px
+    margin-right 8px
+    margin-top: 5px
+    float left
+    opacity: 0.3
+
 </style>
