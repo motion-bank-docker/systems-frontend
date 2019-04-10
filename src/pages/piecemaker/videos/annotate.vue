@@ -263,6 +263,7 @@
         switch (val) {
         case 'annotations':
           this.drawer = !this.drawer
+          setTimeout(() => this.onForceRenderer(), 200)
           break
         case 'swimlanes':
           this.swimlanes = !this.swimlanes
