@@ -37,6 +37,7 @@
   import { required } from 'vuelidate/lib/validators'
   import constants from 'mbjs-data-models/src/constants'
   import { aclHelper } from 'mbjs-quasar/src/lib'
+  import { Map } from 'mbjs-data-models'
 
   import { openURL } from 'quasar'
   import { mapGetters } from 'vuex'
@@ -75,7 +76,8 @@
           },
           submit: {
             handler () {
-              return _this.$store.dispatch('maps/patch', [_this.payload._uuid, _this.payload])
+              const instance = new Map(_this.payload)
+              return _this.$store.dispatch('maps/patch', [instance._uuid, _this.payload])
                 .then(() => _this.$router.push({ name: 'piecemaker.timelines.list' }))
             }
           }

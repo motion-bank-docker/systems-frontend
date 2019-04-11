@@ -52,8 +52,7 @@
           },
           submit: {
             async handler () {
-              const target = _this.timeline.getTimelineTarget(DateTime.local().toString())
-              if (_this.selectorTime) target.selector.value = _this.selectorTime
+              const target = _this.timeline.getInterval(_this.selectorTime || DateTime.local().toString())
               _this.apiPayload = {
                 body: {
                   source: {

@@ -63,6 +63,12 @@
     computed: {
       url () {
         if (this.payload) return this.payload.url
+      },
+      selectorValue () {
+        if (this.annotation) {
+          const parsed = this.annotation.target.selector.parse()
+          return parsed['date-time:t'].toISO()
+        }
       }
     },
     watch: {
@@ -90,25 +96,24 @@
     data () {
       const context = this
       return {
-        // FIXME: i know this is bullshit!!! (but i hope it works for now)
         apiPayload: undefined,
         selectorOverride: undefined,
-        selectorValue: undefined,
         titlePayload: undefined,
         meta: undefined,
         map: undefined,
-        payload: context.$store.dispatch('annotations/get', context.$route.params.uuid)
+        annotation: undefined,
+        payload: this.$store.dispatch('annotations/get', this.$route.params.uuid)
           .then(async result => {
+            this.annotation = result
             this.map = await this.$store.dispatch('maps/get', parseURI(result.target.id).uuid)
             this.meta = await this.$store.dispatch('metadata/get', result)
             this.titlePayload = this.meta.titleAnnotation
-            this.selectorValue = result.target.selector.value
 
-            const tags = await context.$store.dispatch('tags/get', result)
+            const tags = await this.$store.dispatch('tags/get', result)
 
             return {
               gid: result.target.id,
-              _uuid: result._uuid,
+              _uuid: parseURI(result.target.id).uuid,
               url: result.body.source.id,
               id: result.id,
               title: this.meta.title,
@@ -157,12 +162,16 @@
               else if (context.titlePayload && context.payload.title !== context.titlePayload.body.value) {
                 await context.updateTitle(context.titlePayload._uuid, context.payload.title)
               }
+              let selector
+              if (context.selectorOverride) {
+                const target = context.map.getInterval(context.selectorOverride)
+                selector = target.selector.toObject()
+              }
+              else selector = context.annotation.target.selector.toObject()
               context.apiPayload = {
                 target: {
                   id: context.payload.timeline,
-                  selector: {
-                    value: context.selectorOverride || context.selectorValue
-                  }
+                  selector
                 },
                 body: {
                   source: {
@@ -171,7 +180,7 @@
                   }
                 }
               }
-              await context.$store.dispatch('annotations/patch', [context.payload._uuid, context.apiPayload])
+              await context.$store.dispatch('annotations/patch', [context.annotation._uuid, context.apiPayload])
               await context.$store.dispatch('tags/set', [context.payload, context.payload.tags])
 
               context.$router.push({
