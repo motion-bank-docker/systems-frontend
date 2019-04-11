@@ -118,7 +118,6 @@
     },
     methods: {
       getSelectorValue () {
-        console.log('get selector', this.currentSelectorValue, this.selectorValue)
         return this.currentSelectorValue || this.selectorValue || DateTime.local().toISO()
       },
       setFocusOnInput () {

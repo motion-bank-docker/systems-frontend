@@ -239,10 +239,9 @@
         let matches = val.split(' ').map((n) => n[0]).join('')
         return matches
       },
-      onToggleDetails (val) {
+      onToggleDetails () {
         this.visibilityDetails = !this.visibilityDetails
         this.detailsSize += 100
-        console.log(val, this.detailsSize, this.visibilityDetails)
       },
       // onTtoggleDetails (val) {
       //   alert(val)
