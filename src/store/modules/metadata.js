@@ -36,16 +36,18 @@ const metadata = {
           if (!err.response || err.response.status > 404) console.error(err.message)
         }
       }
-      const titleQuery = {
-        'target.id': typeof payload === 'string' ? `${BASE_URI}/annotations/${payload}` : payload.id,
-        'body.purpose': 'describing',
-        'body.type': 'TextualBody'
-      }
-      const titleResult = await context.dispatch('annotations/find', titleQuery, {root: true})
-      if (titleResult && titleResult.items && titleResult.items.length) {
-        metadata.titleAnnotation = titleResult.items[0]
-        if (metadata.title) metadata.originalTitle = metadata.title
-        metadata.title = titleResult.items[0].body.value
+      if (typeof payload === 'string' || payload.id) {
+        const titleQuery = {
+          'target.id': typeof payload === 'string' ? `${BASE_URI}/annotations/${payload}` : payload.id,
+          'body.purpose': 'describing',
+          'body.type': 'TextualBody'
+        }
+        const titleResult = await context.dispatch('annotations/find', titleQuery, {root: true})
+        if (titleResult && titleResult.items && titleResult.items.length) {
+          metadata.titleAnnotation = titleResult.items[0]
+          if (metadata.title) metadata.originalTitle = metadata.title
+          metadata.title = titleResult.items[0].body.value
+        }
       }
       console.debug('metadata', metadata)
       return metadata
