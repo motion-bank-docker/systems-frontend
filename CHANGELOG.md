@@ -19,7 +19,7 @@ and this project adheres to
 - [mbjs-data-models](https://gitlab.rlp.net/motionbank/mbjs/data-models)
   to version 1.2.1
 - [mbjs-quasar](https://gitlab.rlp.net/motionbank/mbjs/quasar)
-  to version 2.1.0
+  to version 2.1.1
 
 
 ## [1.3.1] - 2019-04-06
