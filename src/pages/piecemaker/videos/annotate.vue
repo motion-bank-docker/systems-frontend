@@ -31,7 +31,7 @@
 
       // swimlane content
 
-      .absolute-bottom-right.bg-dark.full-width.shadow-up-4.q-pb-sm.scroll(v-if="swimlanes",
+      .absolute-bottom-right.bg-dark.full-width.shadow-up-4.scroll(v-if="swimlanes",
       :style="{height: swimlanesHeight + 'px', borderTop: '1px solid #333', minHeight: '52px'}",
       ref="swimlaneWrap")
         swim-lane(

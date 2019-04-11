@@ -1,7 +1,9 @@
 <template lang="pug">
   .swim-lane-component.fit(ref="wrapper", :class="[cursorGlobalResize, cursorGlobalGrabbing]",
   style="position: relative;")
-    .row
+    q-resize-observable(@resize="onWrapperResize")
+
+    .row.full-height
 
       marker-context-menu(:root="self")
       marker-details-hover(:root="self")
@@ -12,13 +14,13 @@
 
         div.shadow-10.full-height.q-pa-md(
         v-if="showDetails",
-        :style="{width: dimensions.details.width.current + '%', minWidth: dimensions.details.width.min + '%', maxWidth: dimensions.details.width.max + '%', borderRight: '1px solid #333', minHeight: '100%'}")
+        :style="{width: dimensions.details.width.current + '%', minWidth: dimensions.details.width.min + '%', maxWidth: dimensions.details.width.max + '%', borderRight: '1px solid #333'}")
 
           // button show/hide details
 
           .text-right
             q-btn.q-px-sm(@click="handlerToggle('markerDetails')", icon="clear",
-            :class="[showDetails ? 'rotate-90' : 'rotate-270 text-white']", size="sm", round)
+            :class="[showDetails ? 'rotate-90' : 'rotate-270']", size="sm", round)
 
           // details content
 
@@ -27,7 +29,7 @@
 
         // -------------------------------------------------------------------------------------------------- right side
 
-        .row.q-px-md.q-pt-md(
+        .row.q-px-md.q-pt-md.q-mb-md(
         :style="{width: dimensions.swimlanes.width.current + '%', minWidth: dimensions.swimlanes.width.min + '%', maxWidth: dimensions.swimlanes.width.max + '%'}"
         )
 
@@ -44,7 +46,7 @@
             q-btn.q-px-sm.q-mr-sm(
             v-if="!showDetails",
             @click="handlerToggle('markerDetails')", icon="expand_more",
-            :class="[showDetails ? 'rotate-90' : 'rotate-270 text-white']", size="sm", round)
+            :class="[showDetails ? 'rotate-90' : 'rotate-270']", size="sm", round)
 
             // button change horizontal dimensions
 
@@ -60,9 +62,9 @@
             // resize and hide swimlanes
 
             .absolute-top-right.text-right.q-ma-md(v-if="resizable")
-              q-btn.q-ml-lg(@click="", v-touch-pan="handlerResizeY", color="dark", round, size="sm")
+              q-btn.q-ml-lg(@click="", v-touch-pan="handlerResizeY", round, size="sm")
                 q-icon.rotate-90(name="code")
-              q-btn.q-ml-sm(@click="handlerToggle('swimlanes')", color="dark", icon="clear", round, size="sm")
+              q-btn.q-ml-sm(@click="handlerToggle('swimlanes')", icon="clear", round, size="sm")
 
           // swim lane
 
@@ -309,6 +311,9 @@
       }
     },
     methods: {
+      onWrapperResize (obj) {
+        this.dimensions.details.height.current = obj.height
+      },
       onMouse () {
         this.hideSwimlanes = !this.hideSwimlanes
       },
