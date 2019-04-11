@@ -195,6 +195,7 @@
               max: 100
             }
           }
+          // storeDimenions: this.$store.state.swimLaneDimensions.dimensions
         }
       }
     },
