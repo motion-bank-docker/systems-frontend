@@ -200,9 +200,7 @@
         if (!this.annotations || !this.annotations.length) return
 
         let idx = -1, annotation = this.annotations[0]
-        while (annotation && idx < this.annotations.length &&
-          DateTime.fromISO(this.baseSelector, { setZone: true }) >=
-            DateTime.fromISO(annotation.target.selector.value, { setZone: true })) {
+        while (annotation && idx < this.annotations.length && this.baseMillis >= annotation.target.selector._valueMillis) {
           idx++
           annotation = this.annotations[idx + 1]
         }
@@ -214,6 +212,10 @@
           parsed = this.video.target.selector.parse(),
           start = Array.isArray(parsed['date-time:t']) ? parsed['date-time:t'][0] : parsed['date-time:t']
         return start.plus(this.playerTime * 1000).toISO()
+      },
+      baseMillis () {
+        if (!this.video) return DateTime.local().toMillis()
+        return this.video.target.selector._valueMillis + this.playerTime * 1000
       },
       isEditingAnnotations () {
         return typeof this.editAnnotationIndex === 'number'
