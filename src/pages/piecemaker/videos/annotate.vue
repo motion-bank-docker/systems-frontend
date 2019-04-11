@@ -381,7 +381,7 @@
           const result = this.annotations.filter(annotation => annotation._uuid === this.hashValue)
           if (result.length) {
             this.scrollToAnnotation(this.hashValue)
-            this.gotoSelector(result[0].target.selector.value)
+            this.gotoSelector(result[0].target.selector)
             if (this.hashTimeout) this.hashTimeout = false
           }
         }
