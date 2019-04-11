@@ -1,12 +1,12 @@
 <template lang="pug">
-  q-list.sl-marker-details-hover.popup-shadow.bg-grey.no-select.no-event(
+  q-list.sl-marker-details-hover.popup-shadow.bg-grey.no-select.no-event.q-pa-md(
     :class="render",
     :style="{top: px(top), left: px(left), width: px(width)}",
     dark
     )
-    q-item( v-for="(value, key) in annotationData" )
-      q-item-side {{key}}
-      q-item-main {{value}}
+    q-item.q-pa-none.items-start.q-caption(v-for="(value, key) in annotationData")
+      q-item-side.q-pa-none {{ key }}
+      q-item-main.q-pa-none {{ value }}
 
 </template>
 
@@ -108,4 +108,6 @@
   .q-item-side
     width: 100px
 
+  .q-item
+    min-height none
 </style>
