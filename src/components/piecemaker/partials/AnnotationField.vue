@@ -66,17 +66,13 @@
         purpose: 'linking',
         type: 'VocabularyEntry'
       }
-      const defaultSelector = {
-        type: 'Fragment'
-      }
       return {
         defaultBodyText,
         defaultBodyVocabulary,
-        defaultSelector,
 
         annotationText: undefined,
         currentBody: ObjectUtil.merge({}, defaultBodyText),
-        currentSelector: ObjectUtil.merge({}, defaultSelector),
+        currentSelectorValue: undefined,
 
         shortcuts: {
           focusInput: ['tab'],
@@ -107,14 +103,14 @@
         this.$refs.vocabularyModal.show(val)
       },
       annotationText (text) {
-        if (!text) this.currentSelector.value = undefined
+        if (!text) this.currentSelectorValue = undefined
         else if (!this.selectedEntry) {
-          this.currentSelector.value = this.getSelectorValue()
+          this.currentSelectorValue = this.getSelectorValue()
         }
       },
       selectedEntry (entry) {
         if (entry) {
-          this.currentSelector.value = this.getSelectorValue()
+          this.currentSelectorValue = this.getSelectorValue()
           this.annotationText = entry.value
         }
         else this.annotationText = undefined
@@ -122,7 +118,8 @@
     },
     methods: {
       getSelectorValue () {
-        return this.currentSelector.value || this.selectorValue || DateTime.local().toISO()
+        console.log('get selector', this.currentSelectorValue, this.selectorValue)
+        return this.currentSelectorValue || this.selectorValue || DateTime.local().toISO()
       },
       setFocusOnInput () {
         if (this.$refs.textInput) this.$refs.textInput.focus()
@@ -154,7 +151,7 @@
         this.selectedEntry = undefined
         this.annotationText = undefined
         this.currentBody = ObjectUtil.merge({}, this.defaultBodyText)
-        this.currentSelector = ObjectUtil.merge({}, this.defaultSelector)
+        this.currentSelectorValue = undefined
       },
       onKeyDown (event) {
         const key = event.key.toLowerCase().replace(/\s/g, '')
@@ -190,7 +187,11 @@
           const annotation = {
             body: ObjectUtil.merge({}, this.currentBody),
             target: {
-              selector: ObjectUtil.merge({}, this.currentSelector)
+              selector: {
+                value: {
+                  'date-time:t': this.currentSelectorValue
+                }
+              }
             }
           }
           if (!this.selectedEntry && this.annotationText) annotation.body.value = this.annotationText.trim()

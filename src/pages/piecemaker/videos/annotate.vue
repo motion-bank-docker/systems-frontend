@@ -210,9 +210,10 @@
       },
       baseSelector () {
         if (!this.video) return DateTime.local().toISO()
-        return DateTime.fromISO(this.video.target.selector.value, { setZone: true })
-          .plus(this.playerTime * 1000)
-          .toISO()
+        const
+          parsed = this.video.target.selector.parse(),
+          start = Array.isArray(parsed['date-time:t']) ? parsed['date-time:t'][0] : parsed['date-time:t']
+        return start.plus(this.playerTime * 1000).toISO()
       },
       isEditingAnnotations () {
         return typeof this.editAnnotationIndex === 'number'
@@ -280,7 +281,7 @@
         this.video = await this.$store.dispatch('annotations/get', this.$route.params.uuid)
         this.timeline = await this.$store.dispatch('maps/get', parseURI(this.video.target.id).uuid)
         if (this.video) {
-          this.metadata = await this.$store.dispatch('metadata/get', this.video)
+          this.metadata = await this.$store.dispatch('metadata/getLocal', this.video)
         }
       },
       async getAnnotations () {
@@ -289,12 +290,12 @@
           query = {
             'target.id': this.timeline.id,
             'target.type': constants.mapTypes.MAP_TYPE_TIMELINE,
-            'target.selector.value': { $gte: this.video.target.selector.value },
+            'target.selector._valueMillis': { $gte: this.video.target.selector._valueMillis },
             'body.type': { $in: ['TextualBody', 'VocabularyEntry'] }
           }
-        if (this.metadata.duration) {
-          const start = DateTime.fromISO(this.video.target.selector.value, { setZone: true })
-          query['target.selector.value']['$lte'] = start.plus(this.metadata.duration * 1000).toISO()
+        if (this.video.target.selector._valueDuration) {
+          query['target.selector._valueMillis']['$lte'] = this.video.target.selector._valueMillis +
+            this.video.target.selector._valueDuration
         }
         const results = await this.$store.dispatch('annotations/find', query)
         for (let item of results.items) {
@@ -313,10 +314,8 @@
       },
       async createAnnotation (annotation = {}) {
         try {
-          const target = this.timeline.getTimelineTarget(annotation.target.selector.value)
-          const payload = ObjectUtil.merge(annotation, {
-            target: ObjectUtil.merge({}, annotation.target, target)
-          })
+          const target = this.timeline.getInterval(annotation.target.selector.value['date-time:t'])
+          const payload = ObjectUtil.merge(annotation, { target })
           console.debug('create annotation', target, payload)
           const result = await this.$store.dispatch('annotations/post', payload)
           if (result.body.type === 'VocabularyEntry') {
@@ -343,7 +342,7 @@
             Assert.isType(annotation, 'object')
             Assert.ok(uuidValidate(annotation._uuid))
             Assert.isType(annotation.body.value, 'string')
-            await this.$store.dispatch('annotations/patch', [annotation._uuid, annotation])
+            await this.$store.dispatch('annotations/patch', [annotation.id, annotation])
             await this.getAnnotations()
             this.$store.commit('notifications/addMessage', {
               body: 'messages.updated_annotation',
