@@ -10,7 +10,8 @@ import { makeResourceModule } from 'mbjs-quasar/src/lib'
 import {
   Annotation,
   Map,
-  Document
+  Document,
+  Cell
 } from 'mbjs-data-models/src/models'
 
 /** Import custom modules */
@@ -49,6 +50,7 @@ const store = new Vuex.Store({
     /** Basic resources using API Client */
     annotations: makeResourceModule(apiClient, Annotation, 'annotation'),
     maps: makeResourceModule(apiClient, Map, 'map'),
+    cells: makeResourceModule(apiClient, Cell, 'cell'),
     documents: makeResourceModule(apiClient, Document, 'document'),
     profiles: makeResourceModule(apiClient, undefined, 'profile'),
     sessions: makeResourceModule(apiClient, undefined, 'session'),
