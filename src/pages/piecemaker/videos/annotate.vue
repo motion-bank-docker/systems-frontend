@@ -64,11 +64,11 @@
     // annotations list
 
     q-layout-drawer.bg-dark(v-if="annotations", v-model="drawer", side="right")
-      .absolute.fit.bg-dark
+      .absolute.fit.bg-dark(style="border-left: 1px solid #333;")
       q-list.no-border.bg-dark.q-py-none(dark, @mouseleave.native="currentHover === undefined")
 
         q-item.bg-dark(dark, v-for="(annotation, i) in annotations", :key="annotation.uuid", :ref="annotation.uuid",
-        :class="[currentIndex === i ? 'bg-grey-9' : '']", style="border-left: 1px solid #333;",
+        :class="[currentIndex === i ? 'bg-grey-9' : '']",
         @mouseover.native="setHover(annotation.uuid)")
           q-item-main
             q-item-tile

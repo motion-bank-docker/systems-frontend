@@ -1,10 +1,7 @@
 <template lang="pug">
-  .swim-lane-component(ref="wrapper", :class="[cursorGlobalResize, cursorGlobalGrabbing]", style="position: relative;")
+  .swim-lane-component.fit(ref="wrapper", :class="[cursorGlobalResize, cursorGlobalGrabbing]",
+  style="position: relative;")
     .row
-      //
-        q-btn.q-mr-sm(slot="", @click="createMarker", label="Add annotation", color="primary")
-        q-btn.q-mr-sm(slot="", @click="", label="Jump to selected annotation", color="primary")
-        q-btn.q-mr-sm(slot="", @click="", label="Jump to current timecode", color="primary")
 
       marker-context-menu(:root="self")
       marker-details-hover(:root="self")
@@ -15,20 +12,18 @@
 
         div.shadow-10.full-height.q-pa-md(
         v-if="showDetails",
-        :style="{width: dimensions.details.width.current + '%', minWidth: dimensions.details.width.min + '%', maxWidth: dimensions.details.width.max + '%', borderRight: '1px solid #333'}")
+        :style="{width: dimensions.details.width.current + '%', minWidth: dimensions.details.width.min + '%', maxWidth: dimensions.details.width.max + '%', borderRight: '1px solid #333', minHeight: '100%'}")
 
           // button show/hide details
 
-          q-btn.q-px-sm.q-mr-sm(@click="handlerToggle('markerDetails')", icon="expand_more",
-          :class="[showDetails ? 'rotate-90' : 'rotate-270 text-white']", size="sm", round)
-
-          //
-            TODO: use input field here to set the timecode to an exact value
-            | Selected timecode: {{ timecode.currentText }}
+          .text-right
+            q-btn.q-px-sm(@click="handlerToggle('markerDetails')", icon="clear",
+            :class="[showDetails ? 'rotate-90' : 'rotate-270 text-white']", size="sm", round)
 
           // details content
 
-          marker-details-selected(v-if="showDetails", :root="self", :resizable="resizable")
+          .q-my-md
+            marker-details-selected(v-if="showDetails", :root="self", :resizable="resizable")
 
         // -------------------------------------------------------------------------------------------------- right side
 
@@ -39,6 +34,10 @@
           // settings
 
           div.row.q-mb-md
+
+            // fix: mouse up in offset from resizeX button
+
+            .fit.bg-transparent.absolute-top-left(v-if="hideSwimlanes", @mouseup="onMouseUp")
 
             // button show/hide details
 
@@ -68,9 +67,10 @@
           // swim lane
 
           div.bg-black.full-width(
-          ref="swimlanewrap"
+          ref="swimlanewrap",
+          v-if="!hideSwimlanes"
           )
-            .swim-lane-wrapper.wrapper(v-if="!hideSwimlanes")
+            .swim-lane-wrapper.wrapper()
 
               // hovering timecode
 
@@ -193,7 +193,7 @@
             width: {
               min: 5,
               current: undefined,
-              max: 50
+              max: 70
             }
           },
           swimlanes: {
@@ -203,7 +203,7 @@
               max: undefined
             },
             width: {
-              min: 50,
+              min: 30,
               current: 100,
               max: 100
             }
