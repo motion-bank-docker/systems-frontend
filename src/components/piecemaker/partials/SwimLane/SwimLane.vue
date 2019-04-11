@@ -265,11 +265,20 @@
         //   return this.isoToMillis(obj1.target.selector.value) - this.isoToMillis(obj2.target.selector.value)
         // })
 
-        const duration = annotations[0].getDurationTo(annotations[annotations.length - 1])
+        let
+          start = annotations[0].target.selector._valueMillis,
+          end = start
+        for (let annotation of annotations) {
+          let ms = annotation.target.selector._valueMillis
+          if (annotation.target.selector._valueDuration) ms += annotation.target.selector._valueDuration
+          if (ms > end) end = ms
+        }
+
+        const duration = end - start
         // TODO: find better way to set a padding so that annotations don't sit on the edges of the graph
         const padding = 120000 // 2 seconds
-        this.timeline.duration = duration.as('milliseconds') + padding * 2
-        this.timeline.start = DateTime.fromISO(annotations[0].target.selector.value).toMillis() - padding
+        this.timeline.duration = duration + padding * 2
+        this.timeline.start = annotations[0].target.selector._valueMillis - padding
 
         this.annotations = annotations
 
@@ -286,7 +295,7 @@
 
         for (let a in this.annotations) {
           let ann = this.annotations[a]
-          console.debug('a:', ann, ann.body.duration)
+          console.debug('a:', ann)
         }
         console.log('annotations', this.annotations.length, DateTime.fromMillis(this.timeline.duration).toFormat('HH:mm:ss.SSS'), this.timelineUuid)
       },

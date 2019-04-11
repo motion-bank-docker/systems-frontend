@@ -127,9 +127,9 @@
       }
     },
     async mounted () {
-      this.millis = this.annotationData.target.selector ? this.root.isoToMillis(this.annotationData.target.selector.value) : 0
+      this.millis = this.annotationData.target.selector ? this.annotationData.target.selector._valueMillis : 0
       // TODO: TEMP: save duration to test resizing per drag and shift + click
-      this.duration = this.annotationData.body.duration || 0
+      this.duration = this.annotationData.target.selector ? this.annotationData.target.selector._valueDuration : 0
       EventHub.$on('globalUp', this.onGlobalUp)
       EventHub.$on('componentMove', this.onComponentMove)
       EventHub.$on('markerUnselect', this.onUnselect)
