@@ -25,7 +25,7 @@
     data () {
       const _this = this
       return {
-        query: { type: constants.mapTypes.MAP_TYPE_2D_GRID },
+        query: { type: constants.mapTypes.MAP_TYPE_2DGRID },
         requestTransform: async rows => {
           for (let i in rows) {
             const transformed = {}
