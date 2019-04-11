@@ -37,7 +37,7 @@
       // resize and hide swimlanes
 
       .absolute-top-right.text-right(v-if="resizable")
-        q-btn.q-ml-lg(@click="", v-touch-pan="handlerResize", color="dark", round, size="sm")
+        q-btn.q-ml-lg(@click="", v-touch-pan="handlerResizeY", color="dark", round, size="sm")
           q-icon.rotate-90(name="code")
         q-btn.q-ml-sm(@click="handlerToggle('swimlanes')", color="dark", icon="clear", round, size="sm")
 
@@ -304,7 +304,7 @@
       onMouseUp () {
         this.$emit('forceRenderer')
       },
-      handlerResize (obj) {
+      handlerResizeY (obj) {
         this.$emit('emitResize', obj.position.top)
       },
       handlerResizeX (obj) {
