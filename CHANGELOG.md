@@ -13,6 +13,13 @@ and this project adheres to
 ### Added
 
 - SwimLane component in post-annotator and on standalone page
+- Annotations can have durations through target.selector.value
+
+### Changed
+
+- Videos always have title annotations
+- Metadata uses video duration from annotation
+- Annotation's target.selector.value conforms to standard
 
 ### Updated
 
