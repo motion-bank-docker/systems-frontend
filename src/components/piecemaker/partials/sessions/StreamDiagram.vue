@@ -116,7 +116,6 @@
 </template>
 
 <script>
-  import { DateTime } from 'luxon'
   export default {
     props: [
       'session',
@@ -143,7 +142,7 @@
         return this.session ? this.session.annotations : []
       },
       duration () {
-        return (DateTime.fromISO(this.session.end).toMillis() - DateTime.fromISO(this.session.start).toMillis()) * 0.001
+        return (this.session.end - this.session.start) * 0.001
       }
     },
     methods: {
@@ -164,7 +163,7 @@
         return this.currentVideo && this.currentVideo === vid.annotation._uuid
       },
       getSwimlaneY (annotation) {
-        return (((DateTime.fromISO(annotation.target.selector.value).toMillis() - DateTime.fromISO(this.session.start).toMillis()) / this.duration) * 100).toFixed(3) + '%'
+        return (((annotation.target.selector._valueMillis - this.session.start) / this.duration) * 100).toFixed(3) + '%'
       }
     }
   }

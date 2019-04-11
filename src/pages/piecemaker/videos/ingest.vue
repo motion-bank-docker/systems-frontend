@@ -79,7 +79,7 @@
       async checkResults () {
         if (this.extractResults.length === this.extractJobs.length) {
           console.log('extraction complete', this.extractResults)
-          const rootTime = DateTime.fromISO(this.timecodeAnnotations[0].target.selector.value)
+          const rootTime = DateTime.fromMillis(this.timecodeAnnotations[0].target.selector._valueMillis)
           for (let message of this.extractResults) {
             const frameTime = this.timecodeToMillis(message.result[0][2])
             const refDate = rootTime.plus(frameTime).minus(message.result[0][0] * 1000)

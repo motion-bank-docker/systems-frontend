@@ -11,8 +11,8 @@
     methods: {
       sessionBarEnter () {
         const hoverVal = {}
-        hoverVal.start = this.getTime(DateTime.fromISO(this.session.start))
-        hoverVal.end = this.getTime(DateTime.fromISO(this.session.end))
+        hoverVal.start = this.getTime(DateTime.fromMillis(this.session.start))
+        hoverVal.end = this.getTime(DateTime.fromMillis(this.session.end))
         hoverVal.duration = this.duration
         this.$emit('hover', hoverVal)
       },
@@ -35,7 +35,7 @@
     },
     computed: {
       duration () {
-        return (DateTime.fromISO(this.session.end).toMillis() - DateTime.fromISO(this.session.start).toMillis()) * 0.001
+        return (this.session.end - this.session.start) * 0.001
       },
       isConfigured () {
         return this.session && this.dimensions
@@ -51,7 +51,7 @@
       },
       y () {
         return this.isConfigured ? this.dimensions.height - this.height +
-          // (this.getActiveSessionDuration(this.session.start.millis, this.session.end.millis) / 1000)) +
+          // (this.getActiveSessionDuration(this.session.start, this.session.end) / 1000)) +
           this.dimensions.offsetY : 0
       }
     }

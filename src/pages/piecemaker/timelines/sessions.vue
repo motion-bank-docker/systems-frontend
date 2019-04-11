@@ -41,7 +41,6 @@
 
 <script>
   // import axios from 'axios'
-  import { DateTime } from 'luxon'
   import {
     SessionDiagram,
     SessionFilter,
@@ -91,8 +90,8 @@
       this.map = await this.$store.dispatch('maps/get', this.$route.params.uuid)
       // const grouped = await this.$store.dispatch('sessions/get', uuid)
       // grouped.sessions = grouped.sessions.map(session => {
-      //   session.start = DateTime.fromISO(session.start)
-      //   session.end = DateTime.fromISO(session.end)
+      //   session.start = session.start
+      //   session.end = session.end
       //   return session
       // })
       const result = await this.$store.dispatch('annotations/find', {
@@ -155,20 +154,20 @@
 
         if (annotationInside) {
           // only set end if past current session.end
-          if (annotationEnd.toMillis() > session.end.toMillis()) {
+          if (annotationEnd > session.end) {
             session.end = annotationEnd
           }
           session.annotations.push({
             annotation: a,
             duration: annotationDuration,
-            relativeTime: annotationStart.toMillis() - session.start.toMillis(),
+            relativeTime: annotationStart - session.start,
             active: false
           })
           if (video) session.videos.push(video)
         }
         if (!annotationInside || isLastAnnotation) {
           // store current annotation
-          session.duration = session.end.toMillis() - session.start.toMillis()
+          session.duration = session.end - session.start
           if (isNaN(session.duration)) {
             console.error('duration NaN', session)
             session.duration = 0
@@ -215,17 +214,17 @@
         const annotations = result.items.sort(this.$sort.onRef)
         let lastRef, session
         for (let annotation of annotations) {
-          const ref = DateTime.fromISO(annotation.target.selector.value)
-          if (lastRef) console.debug('dist', ref.toMillis() - lastRef.toMillis(), ref.minus(lastRef).toMillis(), maxDist)
-          if (!lastRef || ref.toMillis() - lastRef.toMillis() >= maxDist) {
+          const ref = annotation.target.selector._valueMillis
+          if (lastRef) console.debug('dist', ref - lastRef, maxDist)
+          if (!lastRef || ref - lastRef >= maxDist) {
             session = storeSession(sessions, session)
-            session.start = annotation.target.selector.value
-            session.end = annotation.target.selector.value
+            session.start = annotation.target.selector._valueMillis
+            session.end = annotation.target.selector._valueMillis
           }
-          let sessionEnd = DateTime.fromISO(session.end)
+          let sessionEnd = session.end
           if (lastRef && lastRef > sessionEnd) {
             sessionEnd = lastRef
-            session.end = sessionEnd.toISO()
+            session.end = sessionEnd
           }
           if (annotation.body.type === 'Video') {
             const metadata = await this.$store.dispatch('metadata/get', annotation)
@@ -234,8 +233,8 @@
               annotation
             }
             if (metadata && metadata.duration) {
-              const videoEnd = DateTime.fromISO(annotation.target.selector.value).plus(metadata.duration * 1000)
-              if (videoEnd > ref && videoEnd > sessionEnd) session.end = videoEnd.toISO()
+              const videoEnd = annotation.target.selector._valueMillis + metadata.duration * 1000
+              if (videoEnd > ref && videoEnd > sessionEnd) session.end = videoEnd
             }
             session.videos.push(video)
           }

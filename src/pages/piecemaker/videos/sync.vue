@@ -171,9 +171,9 @@
         // diff = (reference_annotation - reference_marker) - (video_annotation + video_marker)
         const
           _this = this,
-          vidSelector = DateTime.fromISO(_this.video.target.selector.value),
+          vidSelector = DateTime.fromMillis(_this.video.target.selector._valueMillis),
           refVideo = this.refVideos[this.refIndex],
-          refVideoSelector = DateTime.fromISO(refVideo.target.selector.value),
+          refVideoSelector = DateTime.fromMillis(refVideo.target.selector._valueMillis),
           refVideoMarkerGlobalTime = refVideoSelector.plus(this.refVidMarkerSelector.toMillis()),
           videoMarkerGlobalTime = vidSelector.plus(this.vidMarkerSelector.toMillis()),
           markerDiff = refVideoMarkerGlobalTime.toMillis() - videoMarkerGlobalTime.toMillis()
