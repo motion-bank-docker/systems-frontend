@@ -6,7 +6,7 @@
     .row.full-height
 
       marker-context-menu(:root="self")
-      marker-details-hover(:root="self")
+      marker-details-hover(:root="self", v-if="!showDetails")
 
       .row.full-width
 
@@ -16,11 +16,15 @@
         v-if="showDetails",
         :style="{width: dimensions.details.width.current + '%', minWidth: dimensions.details.width.min + '%', maxWidth: dimensions.details.width.max + '%', borderRight: '1px solid #333'}")
 
-          // button show/hide details
+          div
+            q-btn.bg-grey-9.q-mr-xs(icon="navigate_before", round, size="sm")
+            q-btn.bg-grey-9(icon="navigate_next", round, size="sm")
 
-          .text-right
-            q-btn.q-px-sm(@click="handlerToggle('markerDetails')", icon="clear",
-            :class="[showDetails ? 'rotate-90' : 'rotate-270']", size="sm", round)
+            // button show/hide details
+
+            .float-right
+              q-btn.q-px-sm(@click="handlerToggle('markerDetails')", icon="clear",
+              :class="[showDetails ? 'rotate-90' : 'rotate-270']", size="sm", round)
 
           // details content
 
