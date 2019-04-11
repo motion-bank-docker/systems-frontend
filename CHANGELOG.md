@@ -12,6 +12,7 @@ and this project adheres to
 
 ### Added
 
+- Cell datatype available as vuex store module
 - SwimLane component in post-annotator and on standalone page
 - Annotations can have durations through target.selector.value
 
