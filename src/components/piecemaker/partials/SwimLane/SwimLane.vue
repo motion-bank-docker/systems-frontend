@@ -1,6 +1,6 @@
 <template lang="pug">
   .swim-lane-component(ref="wrapper", :class="[cursorGlobalResize, cursorGlobalGrabbing]", style="position: relative;")
-    q-resize-observable(@resize="onViewportResize")
+    <!--q-resize-observable(@resize="onViewportResize")-->
     .row.q-my-md
       //
         q-btn.q-mr-sm(slot="", @click="createMarker", label="Add annotation", color="primary")
@@ -10,8 +10,8 @@
       marker-context-menu(:root="self")
       marker-details-hover(:root="self")
 
-      .col-12.row
-        div(:style="{width: detailsWidth + 'px', minWidth: '50px'}")
+      .col-12.row.bg-green
+        div(:style="{width: dimensions.details.width.current + '%', minWidth: dimensions.details.width.min + '%', maxWidth: dimensions.details.width.max + '%'}")
 
           // button show/hide details
 
@@ -46,20 +46,24 @@
 
       // details
 
-      div(
-      :class="[showDetails ? '' : 'hidden', hideSwimlanes ? 'bg-grey-9' : '']",
-      :style="{width: detailsWidth + 'px', minWidth: '100px'}"
+      div.bg-orange(
+      :class="[showDetails ? '' : 'hidden']",
+      :style="{width: dimensions.details.width.current + '%', minWidth: dimensions.details.width.min + '%', maxWidth: dimensions.details.width.max + '%'}"
       )
+        //
+          | details {{ detailsWidth }} - parent {{ parentWidth }} - swimlane {{ parentWidth - detailsWidth }}
+          | details {{ detailsWidth / parentWidth * 100 }}
+          | swimlane {{ (parentWidth - detailsWidth) / parentWidth * 100 }}
         marker-details-selected(v-if="showDetails", :root="self", :resizable="resizable")
 
       // swim lane
 
       div.bg-black(
       ref="swimlanewrap",
-      v-if="!hideSwimlanes",
-      :style="{width: swimlaneWidth + 'px', minWidth: '100px'}"
+      :style="{width: dimensions.swimlanes.width.current + '%', minWidth: dimensions.swimlanes.width.min + '%', maxWidth: dimensions.swimlanes.width.max + '%'}"
       )
-        .swim-lane-wrapper.wrapper
+        <!--.swim-lane-wrapper.wrapper(v-if="!hideSwimlanes || !drawerMovement")-->
+        .swim-lane-wrapper.wrapper(v-if="!hideSwimlanes")
 
           // hovering timecode
 
@@ -126,7 +130,7 @@
       MarkerDetailsSelected,
       MarkerContextMenu
     },
-    props: ['timelineUuid', 'markerDetails', 'resizable', 'visibilityDetails', 'detailsW'],
+    props: ['timelineUuid', 'markerDetails', 'resizable', 'visibilityDetails', 'detailsW', 'drawerMovement'],
     data () {
       return {
         self: this,
@@ -169,25 +173,48 @@
         },
         showDetails: this.visibilityDetails,
         cursorPos: {x: 0, y: 0},
-        swimlaneWidth: 0,
-        detailsWidth: 0,
-        hideSwimlanes: false
+        swimlaneWidth: undefined,
+        detailsWidth: undefined,
+        hideSwimlanes: false,
+        parentWidth: undefined,
+        dimensions: {
+          details: {
+            height: {
+              min: undefined,
+              current: undefined,
+              max: undefined
+            },
+            width: {
+              min: 20,
+              current: 20,
+              max: 50
+            }
+          },
+          swimlanes: {
+            height: {
+              min: undefined,
+              current: undefined,
+              max: undefined
+            },
+            width: {
+              min: undefined,
+              current: 100,
+              max: 100
+            }
+          }
+        }
       }
     },
     async mounted () {
       this.showDetails = this.visibilityDetails
-      // console.log('this.detailsW', this.detailsW)
+
+      // let clWidth = this.$refs.wrapper.clientWidth
+      let clWidth = 100
       if (this.visibilityDetails && this.detailsW) {
-        this.detailsWidth = this.detailsW
-        this.swimlaneWidth = this.$refs.wrapper.clientWidth - this.detailsWidth
+        console.log(this.detailsW)
+        this.dimensions.details.width.current = this.detailsW
+        this.dimensions.swimlanes.width.current = clWidth - this.dimensions.details.width.current
       }
-      else if (this.visibilityDetails && !this.detailsW) {
-        this.swimlaneWidth = this.$refs.wrapper.clientWidth - (this.$refs.wrapper.clientWidth / 4)
-      }
-      if (!this.visibilityDetails || this.detailsW === 0) {
-        this.swimlaneWidth = this.$refs.wrapper.clientWidth
-      }
-      // console.log(this.swimlaneWidth)
 
       await this.loadData()
 
@@ -271,40 +298,54 @@
     watch: {
       timecodeCurrent (tc) {
         this.timecode.currentText = this.millisToText(tc)
+      },
+      parentWidth (val) {
+        this.parentWidth = val
+        console.log('watch parentWidth', val)
+        // this.$emit('forceRenderer')
       }
     },
     methods: {
+      setWrapperDimensions () {
+      },
       onMouse () {
         this.hideSwimlanes = !this.hideSwimlanes
       },
       onMouseUp () {
         this.$emit('forceRenderer')
       },
-      onViewportResize (obj) {
+      /* onViewportResize (obj) {
         this.parentWidth = obj.width
         if (this.detailsWidth === 0 && this.showDetails) {
           this.detailsWidth = this.parentWidth / 4
           this.swimlaneWidth = this.parentWidth / 4 * 3
         }
-      },
+      }, */
       handlerResize (obj) {
         this.$emit('emitResize', obj.position.top)
       },
       handlerResizeX (obj) {
-        this.cursorPos.x = obj.position.left
-        // this.swimlaneWidth = this.parentWidth - this.cursorPos.x
-        this.swimlaneWidth = this.parentWidth - this.detailsW
-        this.detailsWidth = this.cursorPos.x - 16 - 15
-        this.$emit('detailsWidth', this.detailsWidth)
-        console.log('detailsW', this.detailsW)
+        let clWidth = this.$refs.wrapper.clientWidth
+        // this.detailsWidth = obj.position.left - 16 - 15
+        this.dimensions.details.width.current = (obj.position.left - 16 - 15) / clWidth * 100
+        this.dimensions.swimlanes.width.current = (clWidth - this.dimensions.details.width.current) / clWidth * 100
+        // this.swimlaneWidth = clWidth - this.detailsWidth
+        // this.$emit('detailsWidth', this.detailsWidth)
+        this.$emit('detailsWidth', this.dimensions.details.width.current)
       },
       handlerToggle (val) {
         switch (val) {
         case 'markerDetails':
           this.showMarkerDetails = !this.showMarkerDetails
           if (!this.resizable) this.showDetails = this.showMarkerDetails
-          // alert(this.visibilityDetails)
-          // if (!this.visibilityDetails) this.swimlaneWidth = this.parentWidth
+          if (this.showMarkerDetails) {
+            this.dimensions.details.width.min = 20
+            this.dimensions.swimlanes.width.current = 60
+          }
+          else {
+            this.dimensions.details.width.min = undefined
+            this.dimensions.swimlanes.width.min = undefined
+          }
           this.$emit('emitToggleDetails', this.showMarkerDetails)
           break
         case 'swimlanes':

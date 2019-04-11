@@ -42,7 +42,8 @@
         @emitHandler="handlerToggle('swimlanes')", @emitResize="onEmitResize",
         :key="componentKey", @emitToggleDetails="onToggleDetails", :visibilityDetails="visibilityDetails",
         @detailsWidth="onDetailsWidth", :detailsW="detailsW",
-        @forceRenderer="onForceRenderer"
+        @forceRenderer="onForceRenderer",
+        :drawerMovement="drawerM"
         )
 
       // button toggles swimlanes visibility
@@ -175,7 +176,8 @@
           target: '_blank'
         },
         detailsW: undefined,
-        componentKey: 0
+        componentKey: 0,
+        drawerM: false
       }
     },
     computed: {
@@ -263,7 +265,11 @@
         switch (val) {
         case 'annotations':
           this.drawer = !this.drawer
-          setTimeout(() => this.onForceRenderer(), 200)
+          this.drawerM = true
+          setTimeout(() => {
+            this.onForceRenderer()
+            this.drawerM = false
+          }, 200)
           break
         case 'swimlanes':
           this.swimlanes = !this.swimlanes
