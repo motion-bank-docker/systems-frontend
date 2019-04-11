@@ -27,7 +27,11 @@
             const row = rows[i]
             const meta = await _this.$store.dispatch('metadata/get', row)
             transformed.title = meta && meta.title ? meta.title : _this.$t('labels.title_unknown')
-            transformed.date = row.target.selector ? row.target.selector.parse()['date-time:t'] : undefined
+            if (row.target.selector) {
+              const parsed = row.target.selector.parse()
+              if (Array.isArray(parsed['date-time:t'])) transformed.date = parsed['date-time:t'][0]
+              else transformed.date = parsed['date-time:t']
+            }
             transformed.last_updated = row.updated ? row.updated : row.created
             const tags = await _this.$store.dispatch('tags/get', row)
             transformed.tags = tags.join(', ')

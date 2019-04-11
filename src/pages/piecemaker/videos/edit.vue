@@ -8,6 +8,7 @@
       .row
         .col-md-12
           calendar-time-main(:datetime="selectorValue", @update="onCalendarUpdate")
+          p {{ duration }}ms
           p.q-mb-lg(v-if="selectorOverride !== selectorValue") {{ $t('messages.caution_video_time_override') }}
           form-main(v-model.lazy="payload", :schema="schema", ref="videoForm")
 
@@ -25,6 +26,7 @@
   import guessType from 'mbjs-media/src/util/guess-type'
 
   import { parseURI } from 'mbjs-data-models/src/lib'
+  import { DateTime } from 'luxon'
 
   export default {
     components: {
@@ -67,7 +69,12 @@
       selectorValue () {
         if (this.annotation) {
           const parsed = this.annotation.target.selector.parse()
-          return parsed['date-time:t'].toISO()
+          return Array.isArray(parsed['date-time:t']) ? parsed['date-time:t'][0].toISO() : parsed['date-time:t'].toISO()
+        }
+      },
+      duration () {
+        if (this.annotation) {
+          return this.annotation.target.selector._valueDuration
         }
       }
     },
@@ -164,7 +171,11 @@
               }
               let selector
               if (context.selectorOverride) {
-                const target = context.map.getInterval(context.selectorOverride)
+                const
+                  durationMs = context.annotation.target.selector._valueDuration,
+                  end = durationMs ? DateTime.fromISO(context.selectorOverride, {setZone: true})
+                    .plus(durationMs).toISO() : undefined
+                const target = context.map.getInterval(context.selectorOverride, end)
                 selector = target.selector.toObject()
               }
               else selector = context.annotation.target.selector.toObject()

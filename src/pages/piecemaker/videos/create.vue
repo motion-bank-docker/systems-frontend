@@ -52,7 +52,20 @@
           },
           submit: {
             async handler () {
-              const target = _this.timeline.getInterval(_this.selectorTime || DateTime.local().toString())
+              const metadata = await _this.$store.dispatch('metadata/get', {
+                body: {
+                  source: {
+                    id: _this.payload.url
+                  }
+                }
+              })
+              let
+                start = _this.selectorTime || DateTime.local().toString(),
+                end
+              if (metadata && metadata.duration) {
+                end = DateTime.fromISO(start, {setZone: true}).plus(metadata.duration * 1000).toISO()
+              }
+              const target = _this.timeline.getInterval(start, end)
               _this.apiPayload = {
                 body: {
                   source: {
