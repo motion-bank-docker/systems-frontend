@@ -25,7 +25,7 @@
           for (let i in rows) {
             const transformed = {}
             const row = rows[i]
-            const meta = await _this.$store.dispatch('metadata/get', row)
+            const meta = await _this.$store.dispatch('metadata/getLocal', row)
             transformed.title = meta && meta.title ? meta.title : _this.$t('labels.title_unknown')
             if (row.target.selector) {
               const parsed = row.target.selector.parse()
