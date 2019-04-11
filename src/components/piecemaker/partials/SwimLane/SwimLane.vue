@@ -332,7 +332,7 @@
         this.$emit('forceRenderer')
       },
       handlerResizeY (obj) {
-        this.$emit('emitResize', obj.position.top)
+        this.$emit('emitResize', obj.position.top + 15)
       },
       handlerResizeX (obj) {
         let clWidth = this.$refs.wrapper.clientWidth
