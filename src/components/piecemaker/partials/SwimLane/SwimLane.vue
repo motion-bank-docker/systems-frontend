@@ -276,9 +276,9 @@
 
         const duration = end - start
         // TODO: find better way to set a padding so that annotations don't sit on the edges of the graph
-        const padding = 120000 // 2 seconds
-        this.timeline.duration = duration + padding * 2
-        this.timeline.start = annotations[0].target.selector._valueMillis - padding
+        // const padding = 120000 // 2 seconds
+        this.timeline.duration = duration // + padding * 2
+        this.timeline.start = annotations[0].target.selector._valueMillis // - padding
 
         this.annotations = annotations
 
