@@ -6,8 +6,8 @@ class Sort {
   }
   static onCreated (a, b, mod = 1) {
     const
-      dateA = DateTime.fromISO(a.created),
-      dateB = DateTime.fromISO(b.created)
+      dateA = a._created,
+      dateB = b._created
     if (dateA > dateB) return 1 * mod
     else if (dateA < dateB) return -1 * mod
     return 0
@@ -18,8 +18,8 @@ class Sort {
   }
   static onRef (a, b, mod = 1) {
     const
-      dateA = DateTime.fromISO(a.target.selector.value),
-      dateB = DateTime.fromISO(b.target.selector.value)
+      dateA = a.target.selector._valueMillis,
+      dateB = b.target.selector._valueMillis
     if (dateA > dateB) return 1 * mod
     else if (dateA < dateB) return -1 * mod
     return 0
