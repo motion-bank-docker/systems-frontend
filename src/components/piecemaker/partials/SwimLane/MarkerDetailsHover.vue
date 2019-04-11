@@ -1,5 +1,5 @@
 <template lang="pug">
-  q-list.sl-marker-details-hover.popup-shadow.bg-grey.no-select.no-event.q-pa-md(
+  q-list.sl-marker-details-hover.popup-shadow.bg-grey.no-select.no-event.q-px-md.q-pt-md(
     :class="render",
     :style="{top: px(top), left: px(left), width: px(width)}",
     dark
