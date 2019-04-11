@@ -236,8 +236,8 @@
         this.dimensions.swimlanes.width.current = 100 - this.dimensions.details.width.current
       }
       else if (this.visibilityDetails && !this.detailsW) {
-        this.dimensions.details.width.current = 20
-        this.dimensions.swimlanes.width.current = 80
+        this.dimensions.details.width.current = 30
+        this.dimensions.swimlanes.width.current = 70
       }
 
       await this.loadData()
