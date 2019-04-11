@@ -19,6 +19,7 @@
   import { DateTime } from 'luxon'
   import { required } from 'vuelidate/lib/validators'
   import guessType from 'mbjs-media/src/util/guess-type'
+  import titleHelper from 'mbjs-quasar/src/lib/title-helper'
 
   export default {
     components: {
@@ -78,6 +79,9 @@
                 target
               }
               const annotation = await _this.$store.dispatch('annotations/post', _this.apiPayload)
+              if (metadata) {
+                await titleHelper.create(_this.$store, annotation.id, metadata.title)
+              }
               _this.$router.push(`/piecemaker/videos/${annotation._uuid}/edit`)
             }
           }

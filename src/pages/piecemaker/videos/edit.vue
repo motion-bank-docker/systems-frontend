@@ -24,6 +24,7 @@
 
   import { required } from 'vuelidate/lib/validators'
   import guessType from 'mbjs-media/src/util/guess-type'
+  import titleHelper from 'mbjs-quasar/src/lib/title-helper'
 
   import constants from 'mbjs-data-models/src/constants'
   import { parseURI } from 'mbjs-data-models/src/lib'
@@ -38,29 +39,6 @@
     methods: {
       onCalendarUpdate (val) {
         this.selectorOverride = val
-      },
-      async createTitle (id, value) {
-        const titlePayload = {
-          body: {
-            value,
-            type: 'TextualBody',
-            purpose: 'describing'
-          },
-          target: {
-            type: 'Annotation',
-            id
-          }
-        }
-        const title = await this.$store.dispatch('annotations/post', titlePayload)
-        return title
-      },
-      async updateTitle (uuid, value) {
-        const titlePayload = { body: { value } }
-        const title = await this.$store.dispatch('annotations/patch', [uuid, titlePayload])
-        return title
-      },
-      async removeTitle (uuid) {
-        await this.$store.dispatch('annotations/delete', uuid)
       }
     },
     computed: {
@@ -162,13 +140,13 @@
           submit: {
             async handler () {
               if (!context.titlePayload && context.payload.title !== context.meta.title) {
-                await context.createTitle(context.payload.id, context.payload.title)
+                await titleHelper.create(context.$store, context.payload.id, context.payload.title)
               }
-              else if (context.titlePayload && context.payload.title === context.meta.originalTitle) {
-                await context.removeTitle(context.titlePayload._uuid)
-              }
+              // else if (context.titlePayload && context.payload.title === context.meta.originalTitle) {
+              //   await titleHelper.remove(context.$store, context.titlePayload.id)
+              // }
               else if (context.titlePayload && context.payload.title !== context.titlePayload.body.value) {
-                await context.updateTitle(context.titlePayload._uuid, context.payload.title)
+                await titleHelper.update(context.$store, context.titlePayload.id, context.payload.title)
               }
               let selector
               if (context.selectorOverride) {
