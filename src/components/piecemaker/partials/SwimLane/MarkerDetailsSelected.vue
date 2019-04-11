@@ -10,7 +10,7 @@
     template(v-if="annotationData")
       q-item.q-pa-none.items-start.q-pb-md( v-for="(value, key) in annotationData" )
         q-item-side.q-pa-none(:class="{'q-caption': resizable}") {{ key }}
-        q-item-main.q-pa-none.q-pr-md(:class="{'q-caption': resizable}") {{ value }}
+        q-item-main.q-pa-none.q-pr-md.ellipsis(:class="{'q-caption': resizable}") {{ value }}
     template(v-else)
       q-item.q-pa-none.items-start
         q-item-side.q-pa-none(:class="{'q-caption': resizable}") {{ $t('labels.no_selection') }}

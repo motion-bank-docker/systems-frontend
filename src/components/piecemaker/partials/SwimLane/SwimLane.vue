@@ -17,8 +17,8 @@
         :style="{width: dimensions.details.width.current + '%', minWidth: dimensions.details.width.min + '%', maxWidth: dimensions.details.width.max + '%', borderRight: '1px solid #333'}")
 
           div
-            q-btn.bg-grey-9.q-mr-xs(icon="navigate_before", round, size="sm")
-            q-btn.bg-grey-9(icon="navigate_next", round, size="sm")
+            q-btn.bg-grey-9.q-mr-xs(icon="navigate_before", round, size="sm", flat)
+            q-btn.bg-grey-9(icon="navigate_next", round, size="sm", flat)
 
             // button show/hide details
 
@@ -197,9 +197,9 @@
               max: undefined
             },
             width: {
-              min: 5,
+              min: 20,
               current: undefined,
-              max: 70
+              max: 50
             }
           },
           swimlanes: {
@@ -209,9 +209,9 @@
               max: undefined
             },
             width: {
-              min: 30,
+              min: 50,
               current: 100,
-              max: 100
+              max: 80
             }
           }
           // storeDimenions: this.$store.state.swimLaneDimensions.dimensions
@@ -220,6 +220,13 @@
     },
     async mounted () {
       this.showDetails = this.visibilityDetails
+
+      if (this.visibilityDetails) {
+        this.dimensions.swimlanes.width.max = 80
+      }
+      else {
+        this.dimensions.swimlanes.width.max = 100
+      }
 
       if (this.visibilityDetails && this.detailsW) {
         this.dimensions.details.width.current = this.detailsW
