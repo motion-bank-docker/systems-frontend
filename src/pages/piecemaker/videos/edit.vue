@@ -8,7 +8,7 @@
       .row
         .col-md-12
           calendar-time-main(:datetime="selectorValue", @update="onCalendarUpdate")
-          p {{ duration }}ms
+          p {{ $t('labels.video_duration') }}: {{ duration }}
           p.q-mb-lg(v-if="selectorOverride !== selectorValue") {{ $t('messages.caution_video_time_override') }}
           form-main(v-model.lazy="payload", :schema="schema", ref="videoForm")
 
@@ -25,6 +25,7 @@
   import { required } from 'vuelidate/lib/validators'
   import guessType from 'mbjs-media/src/util/guess-type'
 
+  import constants from 'mbjs-data-models/src/constants'
   import { parseURI } from 'mbjs-data-models/src/lib'
   import { DateTime } from 'luxon'
 
@@ -73,8 +74,8 @@
         }
       },
       duration () {
-        if (this.annotation) {
-          return this.annotation.target.selector._valueDuration
+        if (this.annotation && this.annotation.target.selector) {
+          return this.annotation.target.selector.getDuration().toFormat(constants.config.TIMECODE_FORMAT)
         }
       }
     },
