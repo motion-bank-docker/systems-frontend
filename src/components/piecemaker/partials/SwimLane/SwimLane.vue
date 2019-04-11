@@ -309,8 +309,10 @@
       },
       handlerResizeX (obj) {
         let clWidth = this.$refs.wrapper.clientWidth
-        this.dimensions.details.width.current = (obj.position.left - 16 - 15) / clWidth * 100
-        this.dimensions.swimlanes.width.current = (clWidth - this.dimensions.details.width.current) / clWidth * 100
+        let cursorPosLeft = obj.position.left - 16 - 15
+        this.dimensions.details.width.current = cursorPosLeft / clWidth * 100
+        this.dimensions.swimlanes.width.current = (clWidth - cursorPosLeft) / clWidth * 100
+        console.log(this.dimensions.details.width.current, this.dimensions.swimlanes.width.current)
         this.$emit('detailsWidth', this.dimensions.details.width.current)
       },
       handlerToggle (val) {
