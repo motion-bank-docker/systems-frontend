@@ -17,6 +17,9 @@
         :style="{width: dimensions.details.width.current + '%', minWidth: dimensions.details.width.min + '%', maxWidth: dimensions.details.width.max + '%', borderRight: '1px solid #333'}")
 
           div
+
+            // go to prev/next annotation
+
             q-btn.bg-grey-9.q-mr-xs(icon="navigate_before", round, size="sm", flat)
             q-btn.bg-grey-9(icon="navigate_next", round, size="sm", flat)
 
@@ -49,8 +52,8 @@
 
             q-btn.q-px-sm.q-mr-sm(
             v-if="!showDetails",
-            @click="handlerToggle('markerDetails')", icon="expand_more",
-            :class="[showDetails ? 'rotate-90' : 'rotate-270']", size="sm", round)
+            @click="handlerToggle('markerDetails')", icon="keyboard_backspace",
+            :class="[showDetails ? '' : 'rotate-180']", size="sm", round)
 
             // button change horizontal dimensions
 
