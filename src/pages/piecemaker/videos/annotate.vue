@@ -86,9 +86,9 @@
               q-btn.float-left(
                 v-if="annotation.target.selector",
                 :color="currentIndex === i ? 'primary' : 'dark'",
-                @click="gotoSelector(annotation.target.selector.value)",
+                @click="gotoSelector(annotation.target.selector)",
                 size="sm"
-                ) {{ formatSelectorForList(annotation.target.selector.value) }}
+                ) {{ formatSelectorForList(annotation.target.selector) }}
 
               // author
 
@@ -368,9 +368,11 @@
         }
       },
       gotoSelector (selector) {
-        this.$router.push({ query: { datetime: selector } })
-        const millis = DateTime.fromISO(selector, { setZone: true }).toMillis() -
-          DateTime.fromISO(this.video.target.selector.value, { setZone: true }).toMillis()
+        const
+          parsed = selector.parse(),
+          start = Array.isArray(parsed['date-time:t']) ? parsed['date-time:t'][0] : parsed['date-time:t']
+        this.$router.push({ query: { datetime: start } })
+        const millis = selector._valueMillis - this.video.target.selector._valueMillis
         const targetMillis = millis * 0.001
         if (this.playerTime !== targetMillis) this.player.currentTime(targetMillis)
       },
@@ -388,8 +390,8 @@
         this.player = player
       },
       formatSelectorForList (val) {
-        const annotationDate = DateTime.fromISO(val, { setZone: true })
-        const videoDate = DateTime.fromISO(this.video.target.selector.value, { setZone: true })
+        const annotationDate = DateTime.fromMillis(val._valueMillis)
+        const videoDate = DateTime.fromMillis(this.video.target.selector._valueMillis)
         return Interval.fromDateTimes(videoDate, annotationDate)
           .toDuration()
           .toFormat(constants.config.TIMECODE_FORMAT)
