@@ -155,6 +155,7 @@
         this.$q.loading.hide()
       }
       this.videoHeight = this.viewport.height / 2 - 52
+      this.$store.state.swimLaneSettings.selectedAnnotation = null
     },
     beforeDestroy () {
       AppFullscreen.exit()
