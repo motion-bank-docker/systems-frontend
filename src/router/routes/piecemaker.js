@@ -40,12 +40,6 @@ export default {
       meta: {private: true}
     },
     {
-      path: '/piecemaker/timelines/:uuid',
-      component: () => import('pages/piecemaker/timelines/swimlanes'),
-      name: 'piecemaker.timelines.show',
-      meta: {private: true}
-    },
-    {
       path: '/piecemaker/timelines/:uuid/annotate',
       component: () => import('pages/piecemaker/timelines/annotate'),
       name: 'piecemaker.timelines.annotate',
