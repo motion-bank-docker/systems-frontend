@@ -17,7 +17,8 @@ const swimLaneSettings = {
     visibilityDetails: false,
     detailsWidth: 20,
     selectedAnnotation: undefined,
-    visibilityDrawer: true
+    visibilityDrawer: true,
+    cursorTop: undefined
   },
   getters: {
     getOptions: state => state.options,
@@ -30,9 +31,13 @@ const swimLaneSettings = {
     getVisibilityDetails: state => state.visibilityDetails,
     getDetailsWidth: state => state.detailsWidth,
     getSelectedAnnotation: state => state.selectedAnnotation,
-    getVisibilityDrawer: state => state.visibilityDrawer
+    getVisibilityDrawer: state => state.visibilityDrawer,
+    getCursorTop: state => state.cursorTop
   },
   mutations: {
+    setCursorTop (state, val) {
+      state.cursorTop = val
+    },
     setVisibilityDrawer (state) {
       state.visibilityDrawer = !state.visibilityDrawer
     },

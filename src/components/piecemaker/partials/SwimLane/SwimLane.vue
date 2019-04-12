@@ -255,6 +255,9 @@
         scaleFactor: 'swimLaneSettings/getScaleFactor',
         groupAnnotationsBy: 'swimLaneSettings/getGroupAnnotationsBy'
       }),
+      storeCursorTop () {
+        return this.$store.state.swimLaneSettings.cursorTop
+      },
       storeDetailsWidth () {
         return this.$store.state.swimLaneSettings.detailsWidth
       },
@@ -329,7 +332,8 @@
         this.$emit('forceRenderer')
       },
       handlerResizeY (obj) {
-        this.$emit('emitResize', obj.position.top + 15)
+        // this.$emit('emitResize', obj.position.top + 15)
+        this.$store.commit('swimLaneSettings/setCursorTop', obj.position.top)
       },
       handlerResizeX (obj) {
         let

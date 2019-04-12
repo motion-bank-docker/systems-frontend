@@ -39,7 +39,7 @@
         :timelineUuid="timeline.uuid",
         :markerDetails="false",
         :resizable="true",
-        @emitHandler="handlerToggle('swimlanes')", @emitResize="onEmitResize",
+        @emitHandler="handlerToggle('swimlanes')",
         :key="componentKey",
         @forceRenderer="onForceRenderer"
         )
@@ -154,8 +154,10 @@
         await this.getAnnotations()
         this.$q.loading.hide()
       }
-      this.videoHeight = this.viewport.height / 2 - 52
       this.$store.state.swimLaneSettings.selectedAnnotation = null
+
+      this.videoHeight = this.$store.state.swimLaneSettings.cursorTop - this.headerHeight
+      this.swimlanesHeight = (this.viewport.height - this.$store.state.swimLaneSettings.cursorTop)
     },
     beforeDestroy () {
       AppFullscreen.exit()
@@ -174,13 +176,9 @@
         playerTime: 0.0,
         selector: undefined,
         staging: process.env.IS_STAGING,
-        swimlanes: false,
-        swimlanesHeight: undefined,
         timelineId: undefined,
         timeline: undefined,
         video: undefined,
-        videoHeight: undefined,
-        viewport: {height: undefined, width: undefined},
         // detailsSize: 300,
         editAnnotationIndex: undefined,
         editAnnotationBuffer: undefined,
@@ -188,6 +186,10 @@
         mdOptions: {
           target: '_blank'
         },
+        viewport: {height: undefined, width: undefined},
+        swimlanes: true,
+        swimlanesHeight: undefined,
+        videoHeight: this.$store.state.swimLaneSettings.cursorTop - this.headerHeight,
         visibilityDetails: this.$store.state.swimLaneSettings.visibilityDetails,
         detailsWidth: undefined,
         componentKey: 0
@@ -197,6 +199,9 @@
       ...mapGetters({
         user: 'auth/getUserState'
       }),
+      storeCursorTop () {
+        return this.$store.state.swimLaneSettings.cursorTop
+      },
       storeVisibilityDrawer () {
         return this.$store.state.swimLaneSettings.visibilityDrawer
       },
@@ -239,6 +244,10 @@
       }
     },
     watch: {
+      storeCursorTop (val) {
+        this.videoHeight = val - this.headerHeight
+        this.swimlanesHeight = (this.viewport.height - val)
+      },
       storeVisibilityDrawer (val) {
         this.drawer = val
       },
@@ -261,12 +270,14 @@
         let matches = val.split(' ').map((n) => n[0]).join('')
         return matches
       },
+      /*
       onEmitResize (val) {
         if (this.swimlanes) {
           this.swimlanesHeight = (this.viewport.height + this.headerHeight - val)
           this.videoHeight = this.viewport.height - 52 - this.swimlanesHeight
         }
       },
+      */
       onViewportResize (size) {
         this.viewport.height = size.height
         this.viewport.width = size.width
@@ -283,8 +294,8 @@
         case 'swimlanes':
           this.swimlanes = !this.swimlanes
 
-          if (this.swimlanes) this.swimlanesHeight = this.viewport.height - this.headerHeight - this.videoHeight
-          else this.swimlanesHeight = 0
+          // if (this.swimlanes) this.swimlanesHeight = this.viewport.height - this.headerHeight - this.videoHeight
+          // else this.swimlanesHeight = 0
 
           break
         }
