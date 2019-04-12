@@ -164,7 +164,7 @@
         active: false,
         annotations: [],
         currentHover: undefined,
-        drawer: true,
+        drawer: this.$store.state.swimLaneSettings.visibilityDrawer,
         fullscreen: false,
         headerHeight: 52,
         inputStyle: true,
@@ -196,6 +196,9 @@
       ...mapGetters({
         user: 'auth/getUserState'
       }),
+      storeVisibilityDrawer () {
+        return this.$store.state.swimLaneSettings.visibilityDrawer
+      },
       storeDetailsWidth () {
         return this.$store.state.swimLaneSettings.detailsWidth
       },
@@ -235,6 +238,9 @@
       }
     },
     watch: {
+      storeVisibilityDrawer (val) {
+        this.drawer = val
+      },
       storeVisibilityDetails () {
         this.onForceRenderer()
       },
@@ -268,7 +274,7 @@
       handlerToggle (val) {
         switch (val) {
         case 'annotations':
-          this.drawer = !this.drawer
+          this.$store.commit('swimLaneSettings/setVisibilityDrawer')
           setTimeout(() => {
             this.onForceRenderer()
           }, 200)

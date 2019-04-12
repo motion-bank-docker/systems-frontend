@@ -16,7 +16,8 @@ const swimLaneSettings = {
     scrollPosition: {x: 0, y: 0},
     visibilityDetails: false,
     detailsWidth: 20,
-    selectedAnnotation: undefined
+    selectedAnnotation: undefined,
+    visibilityDrawer: true
   },
   getters: {
     getOptions: state => state.options,
@@ -28,9 +29,13 @@ const swimLaneSettings = {
     getScrollPosition: state => state.scrollPosition,
     getVisibilityDetails: state => state.visibilityDetails,
     getDetailsWidth: state => state.detailsWidth,
-    getSelectedAnnotation: state => state.selectedAnnotation
+    getSelectedAnnotation: state => state.selectedAnnotation,
+    getVisibilityDrawer: state => state.visibilityDrawer
   },
   mutations: {
+    setVisibilityDrawer (state) {
+      state.visibilityDrawer = !state.visibilityDrawer
+    },
     setSelectedAnnotation (state, val) {
       state.selectedAnnotation = val
     },
