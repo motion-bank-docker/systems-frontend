@@ -183,8 +183,6 @@
         annotations: [],
         // store all marker for collision detection later on
         markerList: [],
-        showMarkerDetails: undefined,
-        showDetails: this.visibilityDetails,
         hideSwimlanes: false,
         dimensions: {
           details: {
@@ -211,7 +209,6 @@
               max: 80
             }
           }
-          // storeDimenions: this.$store.state.swimLaneDimensions.dimensions
         }
       }
     },
@@ -258,6 +255,9 @@
         scaleFactor: 'swimLaneSettings/getScaleFactor',
         groupAnnotationsBy: 'swimLaneSettings/getGroupAnnotationsBy'
       }),
+      showDetails () {
+        return this.$store.state.swimLaneSettings.visibilityDetails
+      },
       cursorGlobalResize () {
         return this.isDragged(['navHandleRight', 'navHandleLeft']) ? 'global-ew-resize' : ''
       },
@@ -339,12 +339,7 @@
       handlerToggle (val) {
         switch (val) {
         case 'markerDetails':
-          this.showMarkerDetails = !this.showMarkerDetails
-          if (!this.resizable) this.showDetails = this.showMarkerDetails
-          if (!this.showMarkerDetails) {
-            this.dimensions.details.width.current = this.dimensions.details.width.min
-          }
-          this.$emit('emitToggleDetails', this.showMarkerDetails)
+          this.$store.commit('swimLaneSettings/setVisibilityDetails')
           break
         case 'swimlanes':
           this.$emit('emitHandler')

@@ -40,7 +40,7 @@
         :markerDetails="false",
         :resizable="true",
         @emitHandler="handlerToggle('swimlanes')", @emitResize="onEmitResize",
-        :key="componentKey", @emitToggleDetails="onToggleDetails", :visibilityDetails="visibilityDetails",
+        :key="componentKey",
         @detailsWidth="onDetailsWidth", :propDetailsWidth="detailsWidth",
         @forceRenderer="onForceRenderer"
         )
@@ -166,7 +166,6 @@
         video: undefined,
         videoHeight: undefined,
         viewport: {height: undefined, width: undefined},
-        visibilityDetails: false,
         // detailsSize: 300,
         editAnnotationIndex: undefined,
         editAnnotationBuffer: undefined,
@@ -174,6 +173,7 @@
         mdOptions: {
           target: '_blank'
         },
+        visibilityDetails: this.$store.state.swimLaneSettings.visibilityDetails,
         detailsWidth: undefined,
         componentKey: 0
       }
@@ -182,6 +182,9 @@
       ...mapGetters({
         user: 'auth/getUserState'
       }),
+      storeVisibilityDetails () {
+        return this.$store.state.swimLaneSettings.visibilityDetails
+      },
       userHasSwimlane () {
         return userHasFeature(this.user, 'swimlane')
       },
@@ -215,6 +218,9 @@
       }
     },
     watch: {
+      storeVisibilityDetails () {
+        this.onForceRenderer()
+      },
       currentIndex (val) {
         if (typeof this.editAnnotationIndex === 'number') return
         if (this.annotations[val]) this.scrollToAnnotation(this.annotations[val].uuid)
@@ -227,10 +233,6 @@
       onDetailsWidth (val) {
         this.detailsWidth = val
       },
-      slParent () {
-        // alert('this.$refs.swimlaneWrap.clientWidth' + this.$refs.swimlaneWrap.clientWidth)
-        // return this.$refs.swimlaneWrap.clientWidth
-      },
       setHover (val) {
         this.currentHover = val
       },
@@ -238,16 +240,6 @@
         let matches = val.split(' ').map((n) => n[0]).join('')
         return matches
       },
-      onToggleDetails () {
-        this.visibilityDetails = !this.visibilityDetails
-        // this.detailsSize += 100
-        // console.log(val, this.detailsSize, this.visibilityDetails)
-        // console.log(val)
-        this.onForceRenderer()
-      },
-      // onTtoggleDetails (val) {
-      //   alert(val)
-      // },
       onEmitResize (val) {
         if (this.swimlanes) {
           this.swimlanesHeight = (this.viewport.height + this.headerHeight - val)
