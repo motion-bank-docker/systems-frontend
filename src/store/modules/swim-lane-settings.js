@@ -14,7 +14,8 @@ const swimLaneSettings = {
     timecode: 0,
     scaleFactor: 1,
     scrollPosition: {x: 0, y: 0},
-    visibilityDetails: false
+    visibilityDetails: false,
+    detailsWidth: 20
   },
   getters: {
     getOptions: state => state.options,
@@ -24,9 +25,13 @@ const swimLaneSettings = {
     getTimecode: state => state.timecode,
     getScaleFactor: state => state.scaleFactor,
     getScrollPosition: state => state.scrollPosition,
-    getVisibilityDetails: state => state.visibilityDetails
+    getVisibilityDetails: state => state.visibilityDetails,
+    getDetailsWidth: state => state.detailsWidth
   },
   mutations: {
+    setDetailsWidth (state, val) {
+      state.detailsWidth = val
+    },
     setVisibilityDetails (state) {
       state.visibilityDetails = !state.visibilityDetails
     },

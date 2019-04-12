@@ -147,7 +147,7 @@
       MarkerDetailsSelected,
       MarkerContextMenu
     },
-    props: ['timelineUuid', 'markerDetails', 'resizable', 'visibilityDetails', 'propDetailsWidth'],
+    props: ['timelineUuid', 'markerDetails', 'resizable'],
     data () {
       return {
         self: this,
@@ -255,6 +255,9 @@
         scaleFactor: 'swimLaneSettings/getScaleFactor',
         groupAnnotationsBy: 'swimLaneSettings/getGroupAnnotationsBy'
       }),
+      storeDetailsWidth () {
+        return this.$store.state.swimLaneSettings.detailsWidth
+      },
       showDetails () {
         return this.$store.state.swimLaneSettings.visibilityDetails
       },
@@ -307,11 +310,11 @@
         if (this.showDetails) this.dimensions.swimlanes.width.max = 80
         else this.dimensions.swimlanes.width.max = 100
 
-        if (this.showDetails && this.propDetailsWidth) {
-          this.dimensions.details.width.current = this.propDetailsWidth
+        if (this.showDetails && this.storeDetailsWidth) {
+          this.dimensions.details.width.current = this.storeDetailsWidth
           this.dimensions.swimlanes.width.current = 100 - this.dimensions.details.width.current
         }
-        else if (this.showDetails && !this.propDetailsWidth) {
+        else if (this.showDetails && !this.storeDetailsWidth) {
           this.dimensions.details.width.current = 30
           this.dimensions.swimlanes.width.current = 70
         }
@@ -334,7 +337,7 @@
           cursorPosLeft = obj.position.left - 16 - 15
         this.dimensions.details.width.current = cursorPosLeft / clWidth * 100
         this.dimensions.swimlanes.width.current = (clWidth - cursorPosLeft) / clWidth * 100
-        this.$emit('detailsWidth', this.dimensions.details.width.current)
+        this.$store.commit('swimLaneSettings/setDetailsWidth', this.dimensions.details.width.current)
       },
       handlerToggle (val) {
         switch (val) {

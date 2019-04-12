@@ -41,7 +41,6 @@
         :resizable="true",
         @emitHandler="handlerToggle('swimlanes')", @emitResize="onEmitResize",
         :key="componentKey",
-        @detailsWidth="onDetailsWidth", :propDetailsWidth="detailsWidth",
         @forceRenderer="onForceRenderer"
         )
 
@@ -182,6 +181,9 @@
       ...mapGetters({
         user: 'auth/getUserState'
       }),
+      storeDetailsWidth () {
+        return this.$store.state.swimLaneSettings.detailsWidth
+      },
       storeVisibilityDetails () {
         return this.$store.state.swimLaneSettings.visibilityDetails
       },
@@ -229,9 +231,6 @@
     methods: {
       onForceRenderer () {
         this.componentKey += 1
-      },
-      onDetailsWidth (val) {
-        this.detailsWidth = val
       },
       setHover (val) {
         this.currentHover = val
