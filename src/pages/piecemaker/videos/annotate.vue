@@ -156,8 +156,14 @@
       }
       this.$store.state.swimLaneSettings.selectedAnnotation = null
 
-      this.videoHeight = this.$store.state.swimLaneSettings.cursorTop - this.headerHeight
-      this.swimlanesHeight = (this.viewport.height - this.$store.state.swimLaneSettings.cursorTop)
+      if (this.$store.state.swimLaneSettings.cursorTop) {
+        this.videoHeight = this.$store.state.swimLaneSettings.cursorTop - this.headerHeight
+        this.swimlanesHeight = (this.viewport.height - this.$store.state.swimLaneSettings.cursorTop)
+      }
+      else {
+        this.videoHeight = this.viewport.height / 2 - this.headerHeight
+        this.swimlanesHeight = this.viewport.height / 2
+      }
       this.swimlanes = this.$store.state.swimLaneSettings.visibilitySwimlanes
     },
     beforeDestroy () {
