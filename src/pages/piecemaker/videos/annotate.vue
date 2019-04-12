@@ -154,17 +154,8 @@
         await this.getAnnotations()
         this.$q.loading.hide()
       }
-      this.$store.state.swimLaneSettings.selectedAnnotation = null
 
-      if (this.$store.state.swimLaneSettings.cursorTop) {
-        this.videoHeight = this.$store.state.swimLaneSettings.cursorTop - this.headerHeight
-        this.swimlanesHeight = (this.viewport.height - this.$store.state.swimLaneSettings.cursorTop)
-      }
-      else {
-        this.videoHeight = this.viewport.height / 2 - this.headerHeight
-        this.swimlanesHeight = this.viewport.height / 2
-      }
-      this.swimlanes = this.$store.state.swimLaneSettings.visibilitySwimlanes
+      this.setupScreen()
     },
     beforeDestroy () {
       AppFullscreen.exit()
@@ -196,8 +187,8 @@
         viewport: {height: undefined, width: undefined},
         swimlanes: undefined,
         swimlanesHeight: undefined,
-        videoHeight: this.$store.state.swimLaneSettings.cursorTop - this.headerHeight,
-        visibilityDetails: this.$store.state.swimLaneSettings.visibilityDetails,
+        videoHeight: undefined,
+        visibilityDetails: undefined,
         detailsWidth: undefined,
         componentKey: 0
       }
@@ -273,6 +264,18 @@
       }
     },
     methods: {
+      setupScreen () {
+        this.$store.state.swimLaneSettings.selectedAnnotation = null
+        if (this.$store.state.swimLaneSettings.cursorTop) {
+          this.videoHeight = this.$store.state.swimLaneSettings.cursorTop - this.headerHeight
+          this.swimlanesHeight = (this.viewport.height - this.$store.state.swimLaneSettings.cursorTop)
+        }
+        else {
+          this.videoHeight = this.viewport.height / 2 - this.headerHeight
+          this.swimlanesHeight = this.viewport.height / 2
+        }
+        this.swimlanes = this.$store.state.swimLaneSettings.visibilitySwimlanes
+      },
       onForceRenderer () {
         this.componentKey += 1
       },
