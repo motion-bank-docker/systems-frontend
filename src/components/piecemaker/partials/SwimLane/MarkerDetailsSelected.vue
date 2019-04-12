@@ -24,12 +24,20 @@
     props: ['root', 'resizable'],
     data () {
       return {
-        annotationData: null
+        annotationData: this.$store.state.swimLaneSettings.selectedAnnotation
       }
     },
     computed: {
       top () {
         return -75
+      },
+      selectedAnnotation () {
+        return this.$store.state.swimLaneSettings.selectedAnnotation
+      }
+    },
+    watch: {
+      selectedAnnotation (val) {
+        this.annotationData = val
       }
     },
     async mounted () {
@@ -43,7 +51,7 @@
     methods: {
       onMarkerDown (annotationData) {
         let ms = this.$parent.millisTotalToTimeline(DateTime.fromISO(annotationData.target.selector.value).toMillis())
-        this.annotationData = {
+        let aData = {
           'Created': DateTime.fromISO(annotationData.created).toFormat('yyyy LLL dd, HH:mm:ss.SSS'),
           'Start': this.root.millisToText(ms),
           'Duration': annotationData.body.duration ? this.root.millisToText(annotationData.body.duration) : '–',
@@ -52,6 +60,7 @@
           'Body Type': annotationData.body.type,
           'Body Value': annotationData.body.value
         }
+        this.$store.commit('swimLaneSettings/setSelectedAnnotation', aData)
       },
       onMarkerUnselect () {
         this.annotationData = null
