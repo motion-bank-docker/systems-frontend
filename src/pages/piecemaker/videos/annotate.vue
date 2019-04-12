@@ -41,7 +41,7 @@
         :resizable="true",
         @emitHandler="handlerToggle('swimlanes')", @emitResize="onEmitResize",
         :key="componentKey", @emitToggleDetails="onToggleDetails", :visibilityDetails="visibilityDetails",
-        @detailsWidth="onDetailsWidth", :detailsW="detailsW",
+        @detailsWidth="onDetailsWidth", :propDetailsWidth="detailsWidth",
         @forceRenderer="onForceRenderer"
         )
 
@@ -174,7 +174,7 @@
         mdOptions: {
           target: '_blank'
         },
-        detailsW: undefined,
+        detailsWidth: undefined,
         componentKey: 0
       }
     },
@@ -225,7 +225,7 @@
         this.componentKey += 1
       },
       onDetailsWidth (val) {
-        this.detailsW = val
+        this.detailsWidth = val
       },
       slParent () {
         // alert('this.$refs.swimlaneWrap.clientWidth' + this.$refs.swimlaneWrap.clientWidth)

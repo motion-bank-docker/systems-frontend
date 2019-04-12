@@ -20,12 +20,13 @@
 
             // go to prev/next annotation
 
-            q-btn.bg-grey-9.q-mr-xs(icon="navigate_before", round, size="sm", flat)
-            q-btn.bg-grey-9(icon="navigate_next", round, size="sm", flat)
+              q-btn.bg-grey-9.q-mr-xs(icon="navigate_before", round, size="sm", flat)
+              q-btn.bg-grey-9(icon="navigate_next", round, size="sm", flat)
 
             // button show/hide details
 
-            .float-right
+            //.float-right
+            .text-right
               q-btn.q-px-sm(@click="handlerToggle('markerDetails')", icon="clear",
               :class="[showDetails ? 'rotate-90' : 'rotate-270']", size="sm", round)
 
@@ -146,7 +147,7 @@
       MarkerDetailsSelected,
       MarkerContextMenu
     },
-    props: ['timelineUuid', 'markerDetails', 'resizable', 'visibilityDetails', 'detailsW'],
+    props: ['timelineUuid', 'markerDetails', 'resizable', 'visibilityDetails', 'propDetailsWidth'],
     data () {
       return {
         self: this,
@@ -183,14 +184,7 @@
         // store all marker for collision detection later on
         markerList: [],
         showMarkerDetails: undefined,
-        offset: {
-          gutter: undefined,
-          swimlanewrap: undefined
-        },
         showDetails: this.visibilityDetails,
-        cursorPos: {x: 0, y: 0},
-        swimlaneWidth: undefined,
-        detailsWidth: undefined,
         hideSwimlanes: false,
         dimensions: {
           details: {
@@ -222,23 +216,7 @@
       }
     },
     async mounted () {
-      this.showDetails = this.visibilityDetails
-
-      if (this.visibilityDetails) {
-        this.dimensions.swimlanes.width.max = 80
-      }
-      else {
-        this.dimensions.swimlanes.width.max = 100
-      }
-
-      if (this.visibilityDetails && this.detailsW) {
-        this.dimensions.details.width.current = this.detailsW
-        this.dimensions.swimlanes.width.current = 100 - this.dimensions.details.width.current
-      }
-      else if (this.visibilityDetails && !this.detailsW) {
-        this.dimensions.details.width.current = 30
-        this.dimensions.swimlanes.width.current = 70
-      }
+      this.setupWrapperDimensions()
 
       await this.loadData()
 
@@ -325,6 +303,19 @@
       }
     },
     methods: {
+      setupWrapperDimensions () {
+        if (this.showDetails) this.dimensions.swimlanes.width.max = 80
+        else this.dimensions.swimlanes.width.max = 100
+
+        if (this.showDetails && this.propDetailsWidth) {
+          this.dimensions.details.width.current = this.propDetailsWidth
+          this.dimensions.swimlanes.width.current = 100 - this.dimensions.details.width.current
+        }
+        else if (this.showDetails && !this.propDetailsWidth) {
+          this.dimensions.details.width.current = 30
+          this.dimensions.swimlanes.width.current = 70
+        }
+      },
       onWrapperResize (obj) {
         this.dimensions.details.height.current = obj.height
       },
@@ -338,8 +329,9 @@
         this.$emit('emitResize', obj.position.top + 15)
       },
       handlerResizeX (obj) {
-        let clWidth = this.$refs.wrapper.clientWidth
-        let cursorPosLeft = obj.position.left - 16 - 15
+        let
+          clWidth = this.$refs.wrapper.clientWidth,
+          cursorPosLeft = obj.position.left - 16 - 15
         this.dimensions.details.width.current = cursorPosLeft / clWidth * 100
         this.dimensions.swimlanes.width.current = (clWidth - cursorPosLeft) / clWidth * 100
         this.$emit('detailsWidth', this.dimensions.details.width.current)
@@ -426,12 +418,6 @@
 
         // TODO: make own component
         let el = this.$refs.timecodeDisplayHover
-
-        // if (this.showDetails) {
-        //   this.offset.gutter = 16
-        // }
-        // else this.offset.gutter = 0
-        // this.offset.swimlanewrap = this.$refs.swimlanewrap.offsetLeft
 
         if (el) {
           this.timecodeBar.displayHover.x = this.restrict(
@@ -629,9 +615,7 @@
       },
       // ---------------------------------------------------------------------------------------------------- Conversion
       toAbsCompX (rel) {
-        // let offset = this.offset.swimlanewrap + this.offset.gutter
         return rel * this.el.width
-        // return rel * this.$refs.swimlanewrap.clientWidth
       },
       toAbsGraphX (rel) {
         if (this.$refs.graph) return rel * this.$refs.graph.width
