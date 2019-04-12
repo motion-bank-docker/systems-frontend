@@ -158,6 +158,7 @@
 
       this.videoHeight = this.$store.state.swimLaneSettings.cursorTop - this.headerHeight
       this.swimlanesHeight = (this.viewport.height - this.$store.state.swimLaneSettings.cursorTop)
+      this.swimlanes = this.$store.state.swimLaneSettings.visibilitySwimlanes
     },
     beforeDestroy () {
       AppFullscreen.exit()
@@ -187,7 +188,7 @@
           target: '_blank'
         },
         viewport: {height: undefined, width: undefined},
-        swimlanes: true,
+        swimlanes: undefined,
         swimlanesHeight: undefined,
         videoHeight: this.$store.state.swimLaneSettings.cursorTop - this.headerHeight,
         visibilityDetails: this.$store.state.swimLaneSettings.visibilityDetails,
@@ -199,6 +200,9 @@
       ...mapGetters({
         user: 'auth/getUserState'
       }),
+      storeVisibilitySwimlanes () {
+        return this.$store.state.swimLaneSettings.visibilitySwimlanes
+      },
       storeCursorTop () {
         return this.$store.state.swimLaneSettings.cursorTop
       },
@@ -244,6 +248,9 @@
       }
     },
     watch: {
+      storeVisibilitySwimlanes (val) {
+        this.swimlanes = val
+      },
       storeCursorTop (val) {
         this.videoHeight = val - this.headerHeight
         this.swimlanesHeight = (this.viewport.height - val)
@@ -292,11 +299,7 @@
           }, 200)
           break
         case 'swimlanes':
-          this.swimlanes = !this.swimlanes
-
-          // if (this.swimlanes) this.swimlanesHeight = this.viewport.height - this.headerHeight - this.videoHeight
-          // else this.swimlanesHeight = 0
-
+          this.$store.commit('swimLaneSettings/setVisibilitySwimlanes')
           break
         }
       },

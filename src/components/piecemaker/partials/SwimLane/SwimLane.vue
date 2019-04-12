@@ -348,7 +348,8 @@
           this.$store.commit('swimLaneSettings/setVisibilityDetails')
           break
         case 'swimlanes':
-          this.$emit('emitHandler')
+          // this.$emit('emitHandler')
+          this.$store.commit('swimLaneSettings/setVisibilitySwimlanes')
           break
         }
       },
