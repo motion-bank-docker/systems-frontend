@@ -332,8 +332,7 @@
         this.$emit('forceRenderer')
       },
       handlerResizeY (obj) {
-        // this.$emit('emitResize', obj.position.top + 15)
-        this.$store.commit('swimLaneSettings/setCursorTop', obj.position.top)
+        this.$store.commit('swimLaneSettings/setCursorTop', obj.position.top - 16 - 15)
       },
       handlerResizeX (obj) {
         let
