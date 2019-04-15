@@ -48,37 +48,6 @@
       // }
     },
     methods: {
-      /*
-      sscalculateX () {
-        let sp = this.scrollPosition.x || 0
-        let m, x
-        let compWidth = this.root.el.width
-        let elWidth = compWidth / (this.numSections - 1)
-        // width + index position + scroll position
-        x = elWidth * (this.numSections - this.index) + this.root.toAbsGraphX(sp)
-        // modulo
-        x %= compWidth + elWidth + 1
-        // map to root component width
-        m = compWidth - x
-        // this.xCached = c
-        this.xMapped = m
-        return m
-      },
-      ssscalculateX () {
-        let sp = this.scrollPosition.x || 0
-        let m, x
-        let compWidth = this.root.el.width
-        let offset = (this.numSections * this.width) - compWidth
-        // x = this.width * (this.numSections - this.index) + this.root.toAbsGraphX(sp)
-        x = this.width * (this.numSections - this.index) + this.root.toAbsGraphX(sp) - offset
-        x %= compWidth + this.width + 1
-        m = compWidth - x
-        // m = x
-        this.xMapped = m
-        console.log('section x', this.index, x, m, compWidth)
-        return x
-      },
-      */
       calculateX () {
         let sp = this.scrollPosition.x || 0
         let m, x
