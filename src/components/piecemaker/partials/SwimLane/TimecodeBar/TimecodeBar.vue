@@ -7,7 +7,15 @@
     y="25"
     )
     rect.fill-medium(width="100%", height="100%")
-    timecode-bar-section(v-for="(n, index) in numSections", :index="index", :numSections="numSections", :duration="0", :root="root")
+    timecode-bar-section(
+      v-for="(n, index) in numSections",
+      :index="index",
+      :numSections="numSections",
+      :millis="sectionDuration",
+      :width="sectionWidth",
+      :parentWidth="width",
+      :root="root"
+      )
 
     // popping up rectangle
     svg.timecode-pointer.no-event(
@@ -34,7 +42,8 @@
         },
         timecodeMarkerCurrent: {
           x: 0 // %: 1 - 100
-        }
+        },
+        sectionDuration: 600000
       }
     },
     computed: {
@@ -43,11 +52,19 @@
         scaleFactor: 'swimLaneSettings/getScaleFactor'
       }),
       numSections () {
-        return 5
+        let s = Math.ceil(this.root.el.width / this.sectionWidth)
+        return s + 1
       },
       timecodeMarkerCurrentX () {
         if (this.timecodeCurrent) return this.root.millistoRelGraph(this.timecodeCurrent) * 100 + '%'
         return 0
+      },
+      sectionWidth () {
+        let w = this.root.millistoAbsGraph(this.sectionDuration)
+        return w
+      },
+      width () {
+        return this.numSections * this.sectionWidth
       }
     },
     watch: {

@@ -163,6 +163,7 @@
 
       this.cacheDimensions()
       EventHub.$emit('afterComponentMounted')
+      this.setScaleFactor(0.2)
     },
     beforeDestroy () {
       this.setScrollPosition({x: 0, y: 0})
@@ -557,6 +558,9 @@
       // },
       millistoRelGraph (ms) {
         return ms / this.timeline.duration
+      },
+      millistoAbsGraph (ms) {
+        return ms / this.timeline.duration * this.$refs.graph.width
       },
       millisTotaltoRelGraph (ms) {
         return (ms - this.timeline.start) / this.timeline.duration

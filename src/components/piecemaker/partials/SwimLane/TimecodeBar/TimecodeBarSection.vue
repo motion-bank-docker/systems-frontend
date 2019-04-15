@@ -9,7 +9,7 @@
   import { mapGetters } from 'vuex'
 
   export default {
-    props: ['index', 'numSections', 'root'],
+    props: ['index', 'numSections', 'root', 'millis', 'width', 'parentWidth'],
     data () {
       return {
         // xCached: 0,
@@ -24,9 +24,10 @@
         scaleFactor: 'swimLaneSettings/getScaleFactor'
       }),
       time () {
-        let p = this.xMapped + this.root.toAbsGraphX(this.scrollPosition.x)
-        let ms = this.root.getTimecodeFromGraphPositionAbs(p)
-        return this.root.millisToText(ms, 'HH:mm:ss')
+        // let p = this.xMapped + this.root.toAbsGraphX(this.scrollPosition.x)
+        // let ms = this.root.getTimecodeFromGraphPositionAbs(p)
+        // TODO display timecodes larger than one day => days, weeks, months, years?
+        return this.root.millisToText(this.millis, 'HH:mm:ss')
       },
       x () {
         return this.calculateX()
@@ -34,6 +35,7 @@
     },
     async mounted () {
       EventHub.$on('afterComponentMounted', this.calculateX)
+      console.log('section mounted', this.numSections, this.index)
     },
     watch: {
       // scrollPosition () {
@@ -44,19 +46,48 @@
       // }
     },
     methods: {
-      calculateX () {
+      /*
+      sscalculateX () {
         let sp = this.scrollPosition.x || 0
         let m, x
         let compWidth = this.root.el.width
-        let elWdith = compWidth / (this.numSections - 1)
+        let elWidth = compWidth / (this.numSections - 1)
         // width + index position + scroll position
-        x = elWdith * (this.numSections - this.index) + this.root.toAbsGraphX(sp)
+        x = elWidth * (this.numSections - this.index) + this.root.toAbsGraphX(sp)
         // modulo
-        x %= compWidth + elWdith + 1
+        x %= compWidth + elWidth + 1
         // map to root component width
         m = compWidth - x
         // this.xCached = c
         this.xMapped = m
+        return m
+      },
+      ssscalculateX () {
+        let sp = this.scrollPosition.x || 0
+        let m, x
+        let compWidth = this.root.el.width
+        let offset = (this.numSections * this.width) - compWidth
+        // x = this.width * (this.numSections - this.index) + this.root.toAbsGraphX(sp)
+        x = this.width * (this.numSections - this.index) + this.root.toAbsGraphX(sp) - offset
+        x %= compWidth + this.width + 1
+        m = compWidth - x
+        // m = x
+        this.xMapped = m
+        console.log('section x', this.index, x, m, compWidth)
+        return x
+      },
+      */
+      calculateX () {
+        let sp = this.scrollPosition.x || 0
+        let m, x
+        let compWidth = this.root.el.width
+        let offset = (this.numSections - 1) * this.width - compWidth
+        // width + index position + scroll position
+        x = this.width * (this.numSections - this.index) + this.root.toAbsGraphX(sp) - offset
+        // modulo
+        x %= this.parentWidth + 1
+        // map to root component width
+        m = compWidth - x
         return m
       }
     }
