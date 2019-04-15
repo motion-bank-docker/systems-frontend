@@ -8,9 +8,9 @@
         q-icon(name="keyboard_arrow_right")
   q-list.q-pa-none(color="dark", no-border)
     template(v-if="annotationData")
-      q-item.q-pa-none.items-start( v-for="(value, key) in annotationData" )
+      q-item.q-pa-none.items-start.q-pb-md( v-for="(value, key) in annotationData" )
         q-item-side.q-pa-none(:class="{'q-caption': resizable}") {{ key }}
-        q-item-main.q-pa-none(:class="{'q-caption': resizable}") {{ value }}
+        q-item-main.q-pa-none.q-pr-md.ellipsis(:class="{'q-caption': resizable}") {{ value }}
     template(v-else)
       q-item.q-pa-none.items-start
         q-item-side.q-pa-none(:class="{'q-caption': resizable}") {{ $t('labels.no_selection') }}
@@ -24,12 +24,20 @@
     props: ['root', 'resizable'],
     data () {
       return {
-        annotationData: null
+        annotationData: this.$store.state.swimLaneSettings.selectedAnnotation
       }
     },
     computed: {
       top () {
         return -75
+      },
+      selectedAnnotation () {
+        return this.$store.state.swimLaneSettings.selectedAnnotation
+      }
+    },
+    watch: {
+      selectedAnnotation (val) {
+        this.annotationData = val
       }
     },
     async mounted () {
@@ -43,7 +51,7 @@
     methods: {
       onMarkerDown (annotationData) {
         let ms = this.$parent.millisTotalToTimeline(annotationData.target.selector._valueMillis)
-        this.annotationData = {
+        let aData = {
           'Created': DateTime.fromISO(annotationData.created).toFormat('yyyy LLL dd, HH:mm:ss.SSS'),
           'Start': this.root.millisToText(ms),
           'Duration': annotationData.target.selector._valueDuration ? this.root.millisToText(annotationData.target.selector._valueDuration) : '–',
@@ -52,6 +60,7 @@
           'Body Type': annotationData.body.type,
           'Body Value': annotationData.body.value
         }
+        this.$store.commit('swimLaneSettings/setSelectedAnnotation', aData)
       },
       onMarkerUnselect () {
         this.annotationData = null
@@ -71,4 +80,7 @@
 
   .q-list-header
     min-height none!important
+
+  .q-item
+    min-height auto!important
 </style>

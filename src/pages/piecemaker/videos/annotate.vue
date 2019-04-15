@@ -31,23 +31,27 @@
 
       // swimlane content
 
-      .absolute-bottom-right.bg-dark.full-width.shadow-up-4.q-px-md.q-pb-sm.scroll(v-if="swimlanes",
-      :style="{height: swimlanesHeight + 'px', borderTop: '1px solid #333', minHeight: '52px'}")
-        swim-lane(v-if="timeline", :timelineUuid="timeline._uuid", :markerDetails="false", :resizable="true",
-        @emitHandler="handlerToggle('swimlanes')", @emitResize="onEmitResize",
-        :key="visibilityDetails", @emitToggleDetails="onToggleDetails", :visibilityDetails="visibilityDetails"
+      .absolute-bottom-right.bg-dark.full-width.shadow-up-4(v-if="swimlanes",
+      :style="{height: swimlanesHeight + 'px', borderTop: '1px solid #333', minHeight: '250px'}",
+      ref="swimlaneWrap")
+        swim-lane(
+        v-if="timeline",
+        :timelineUuid="timeline._uuid",
+        :markerDetails="false",
+        :resizable="true",
+        @emitHandler="handlerToggle('swimlanes')",
+        :key="componentKey",
+        @forceRenderer="onForceRenderer"
         )
 
+      // button toggles swimlanes visibility
+
       q-page-sticky.q-pa-md(position="bottom-right")
-
-        // button toggles swimlanes visibility
-
         q-btn(v-if="!swimlanes && userHasSwimlane", @click="handlerToggle('swimlanes')", color="dark", round,
         :class="[swimlanes ? 'rotate-270' : 'rotate-90']", icon="keyboard_backspace", size="sm")
 
       // input field for new annotations
 
-      <!--.absolute-top(style="width: 100%;")-->
       q-page-sticky(position="top")
         annotation-field(
         @annotation="onAnnotation",
@@ -63,7 +67,7 @@
 
     // annotations list
     q-layout-drawer.bg-dark(v-if="annotations", v-model="drawer", side="right", :width="400")
-      .absolute.fit.bg-dark
+      .absolute.fit.bg-dark(style="border-left: 1px solid #333;")
       q-list.no-border.bg-dark.q-py-none(dark, @mouseleave.native="currentHover === undefined")
 
         q-item.bg-dark.q-pb-lg(
@@ -150,7 +154,8 @@
         await this.getAnnotations()
         this.$q.loading.hide()
       }
-      this.videoHeight = this.viewport.height / 2 - 52
+
+      this.setupScreen()
     },
     beforeDestroy () {
       AppFullscreen.exit()
@@ -160,7 +165,7 @@
         active: false,
         annotations: [],
         currentHover: undefined,
-        drawer: true,
+        drawer: this.$store.state.swimLaneSettings.visibilityDrawer,
         fullscreen: false,
         headerHeight: 52,
         inputStyle: true,
@@ -169,27 +174,44 @@
         playerTime: 0.0,
         selector: undefined,
         staging: process.env.IS_STAGING,
-        swimlanes: false,
-        swimlanesHeight: undefined,
         timelineUuid: undefined,
         timeline: undefined,
         video: undefined,
-        videoHeight: undefined,
-        viewport: {height: undefined, width: undefined},
-        visibilityDetails: false,
-        detailsSize: 300,
+        // detailsSize: 300,
         editAnnotationIndex: undefined,
         editAnnotationBuffer: undefined,
         hashTimeout: undefined,
         mdOptions: {
           target: '_blank'
-        }
+        },
+        viewport: {height: undefined, width: undefined},
+        swimlanes: undefined,
+        swimlanesHeight: undefined,
+        videoHeight: undefined,
+        visibilityDetails: undefined,
+        detailsWidth: undefined,
+        componentKey: 0
       }
     },
     computed: {
       ...mapGetters({
         user: 'auth/getUserState'
       }),
+      storeVisibilitySwimlanes () {
+        return this.$store.state.swimLaneSettings.visibilitySwimlanes
+      },
+      storeCursorTop () {
+        return this.$store.state.swimLaneSettings.cursorTop
+      },
+      storeVisibilityDrawer () {
+        return this.$store.state.swimLaneSettings.visibilityDrawer
+      },
+      storeDetailsWidth () {
+        return this.$store.state.swimLaneSettings.detailsWidth
+      },
+      storeVisibilityDetails () {
+        return this.$store.state.swimLaneSettings.visibilityDetails
+      },
       userHasSwimlane () {
         return userHasFeature(this.user, 'swimlane')
       },
@@ -226,12 +248,40 @@
       }
     },
     watch: {
+      storeVisibilitySwimlanes (val) {
+        this.swimlanes = val
+      },
+      storeCursorTop (val) {
+        this.videoHeight = val - this.headerHeight
+        this.swimlanesHeight = (this.viewport.height - val)
+      },
+      storeVisibilityDrawer (val) {
+        this.drawer = val
+      },
+      storeVisibilityDetails () {
+        this.onForceRenderer()
+      },
       currentIndex (val) {
         if (typeof this.editAnnotationIndex === 'number') return
         if (this.annotations[val]) this.scrollToAnnotation(this.annotations[val]._uuid)
       }
     },
     methods: {
+      setupScreen () {
+        this.$store.state.swimLaneSettings.selectedAnnotation = null
+        if (this.$store.state.swimLaneSettings.cursorTop) {
+          this.videoHeight = this.$store.state.swimLaneSettings.cursorTop - this.headerHeight
+          this.swimlanesHeight = (this.viewport.height - this.$store.state.swimLaneSettings.cursorTop)
+        }
+        else {
+          this.videoHeight = this.viewport.height / 2 - this.headerHeight
+          this.swimlanesHeight = this.viewport.height / 2
+        }
+        this.swimlanes = this.$store.state.swimLaneSettings.visibilitySwimlanes
+      },
+      onForceRenderer () {
+        this.componentKey += 1
+      },
       setHover (val) {
         this.currentHover = val
       },
@@ -239,19 +289,14 @@
         let matches = val.split(' ').map((n) => n[0]).join('')
         return matches
       },
-      onToggleDetails () {
-        this.visibilityDetails = !this.visibilityDetails
-        this.detailsSize += 100
-      },
-      // onTtoggleDetails (val) {
-      //   alert(val)
-      // },
+      /*
       onEmitResize (val) {
         if (this.swimlanes) {
           this.swimlanesHeight = (this.viewport.height + this.headerHeight - val)
           this.videoHeight = this.viewport.height - 52 - this.swimlanesHeight
         }
       },
+      */
       onViewportResize (size) {
         this.viewport.height = size.height
         this.viewport.width = size.width
@@ -260,14 +305,13 @@
       handlerToggle (val) {
         switch (val) {
         case 'annotations':
-          this.drawer = !this.drawer
+          this.$store.commit('swimLaneSettings/setVisibilityDrawer')
+          setTimeout(() => {
+            this.onForceRenderer()
+          }, 200)
           break
         case 'swimlanes':
-          this.swimlanes = !this.swimlanes
-
-          if (this.swimlanes) this.swimlanesHeight = this.viewport.height - this.headerHeight - this.videoHeight
-          else this.swimlanesHeight = 0
-
+          this.$store.commit('swimLaneSettings/setVisibilitySwimlanes')
           break
         }
       },
