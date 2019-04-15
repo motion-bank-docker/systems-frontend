@@ -1,75 +1,125 @@
 <template lang="pug">
-  .swim-lane-component(:class="[cursorGlobalResize, cursorGlobalGrabbing]", style="position: relative;")
-    .row.q-my-md
-      //
-        q-btn.q-mr-sm(slot="", @click="createMarker", label="Add annotation", color="primary")
-        q-btn.q-mr-sm(slot="", @click="", label="Jump to selected annotation", color="primary")
-        q-btn.q-mr-sm(slot="", @click="", label="Jump to current timecode", color="primary")
+  .swim-lane-component.fit(ref="wrapper", :class="[cursorGlobalResize, cursorGlobalGrabbing]",
+  style="position: relative;")
+    q-resize-observable(@resize="onWrapperResize")
+
+    .row.full-height
 
       marker-context-menu(:root="self")
-      marker-details-hover(:root="self")
+      marker-details-hover(:root="self", v-if="!showDetails")
 
-      .col-8.row
-        .q-pt-xs(:class="{'col-6' : showDetails}")
+      .row.full-width
 
-          // buttons shows/hides details
+        // --------------------------------------------------------------------------------------------------- left side
 
-          q-btn.q-px-sm.q-mr-sm(@click="handlerToggle('markerDetails')", icon="expand_more",
-          :class="[showDetails ? 'rotate-90' : 'rotate-270 text-white']", size="sm", round)
+        div.shadow-10.full-height.q-pa-md(
+        v-if="showDetails",
+        :style="{width: dimensions.details.width.current + '%', minWidth: dimensions.details.width.min + '%', maxWidth: dimensions.details.width.max + '%', borderRight: '1px solid #333'}")
 
-          // TODO: use input field here to set the timecode to an exact value
-          <!--| Selected timecode: {{ timecode.currentText }}-->
-        .q-pl-xs
-          settings(ref="settings")
+          div
 
-      // resize and hide swimlanes
+            // go to prev/next annotation
 
-      .col-4.text-right(v-if="resizable")
-        q-btn.q-ml-lg(@click="", v-touch-pan="handlerResize", color="dark", round, size="sm")
-          q-icon.rotate-90(name="code")
-        q-btn.q-ml-sm(@click="handlerToggle('swimlanes')", color="dark", icon="clear", round, size="sm")
+              q-btn.bg-grey-9.q-mr-xs(icon="navigate_before", round, size="sm", flat)
+              q-btn.bg-grey-9(icon="navigate_next", round, size="sm", flat)
 
-    .row(:class="[showDetails ? 'gutter-sm' : '']")
-      div(:class="[showDetails ? 'col-4' : '']")
-        marker-details-selected(v-if="showDetails", :root="self", :resizable="resizable")
-      <!--div(ref="swimlanewrap", :class="[showMarkerDetails ? 'col-8' : 'col-12']")-->
-      div(ref="swimlanewrap", :class="[showDetails ? 'col-8' : 'col-12']")
-        .swim-lane-wrapper.wrapper
-          .timecode-display-hover.no-select.no-event.p-abs.q-caption(
-            ref="timecodeDisplayHover",
-            :class="(isFocused('timecodeBar') && !isDragged()) || isDragged('timecodeBar') ? '' : 'is-hidden'",
-            :style="{left: timecodeBar.displayHover.x + 'px'}"
-            ) {{ timecode.hoverText }}
-          // ----------------------------------------------------------------------------------------------------- Outer SVG
-          svg.swim-lane(
-            @mousedown.left.prevent,
-            width="100%", height="50vh",
-            ref="root"
-            )
-            // swimlanes
-            graph(
-              ref="graph",
-              :annotationsGrouped="annotationsGrouped",
-              :root="self",
-              :offset="offset"
+            // button show/hide details
+
+            //.float-right
+            .text-right
+              q-btn.q-px-sm(@click="handlerToggle('markerDetails')", icon="clear",
+              :class="[showDetails ? 'rotate-90' : 'rotate-270']", size="sm", round)
+
+          // details content
+
+          .q-my-md
+            marker-details-selected(v-if="showDetails", :root="self", :resizable="resizable")
+
+        // -------------------------------------------------------------------------------------------------- right side
+
+        .row.q-px-md.q-pt-md.q-mb-md(
+        :style="{width: dimensions.swimlanes.width.current + '%', minWidth: dimensions.swimlanes.width.min + '%', maxWidth: dimensions.swimlanes.width.max + '%'}"
+        )
+
+          // settings
+
+          div.row.q-mb-md
+
+            // fix: mouse up in offset from resizeX button
+
+            .fit.bg-transparent.absolute-top-left(v-if="hideSwimlanes", @mouseup="onMouseUp")
+
+            // button show/hide details
+
+            q-btn.q-px-sm.q-mr-sm(
+            v-if="!showDetails",
+            @click="handlerToggle('markerDetails')", icon="keyboard_backspace",
+            :class="[showDetails ? '' : 'rotate-180']", size="sm", round)
+
+            // button change horizontal dimensions
+
+            q-btn.q-px-sm.q-mr-sm(
+            v-if="showDetails", v-touch-pan="handlerResizeX",
+            @mousedown.native="onMouse", @mouseup.native="onMouseUp",
+            size="sm", icon="code", round)
+
+            // setting buttons
+
+            settings(ref="settings")
+
+            // resize and hide swimlanes
+
+            .absolute-top-right.text-right.q-ma-md(v-if="resizable")
+              q-btn.q-ml-lg(@click="", v-touch-pan="handlerResizeY", round, size="sm")
+                q-icon.rotate-90(name="code")
+              q-btn.q-ml-sm(@click="handlerToggle('swimlanes')", icon="clear", round, size="sm")
+
+          // swim lane
+
+          div.bg-black.full-width(
+          ref="swimlanewrap",
+          v-if="!hideSwimlanes"
+          )
+            .swim-lane-wrapper.wrapper()
+
+              // hovering timecode
+
+              .timecode-display-hover.no-select.no-event.p-abs.q-caption(
+              ref="timecodeDisplayHover",
+              :class="(isFocused('timecodeBar') && !isDragged()) || isDragged('timecodeBar') ? '' : 'is-hidden'",
+              :style="{left: timecodeBar.displayHover.x + 'px'}"
+              ) {{ timecode.hoverText }}
+
+              // --------------------------------------------------------------------------------------------- Outer SVG
+              svg.swim-lane(
+              @mousedown.left.prevent,
+              width="100%", height="50vh",
+              ref="root"
               )
-            // sections bar
-            timecode-bar(
-              ref="timecodeBar",
-              :root="self",
-              :offset="offset"
-              )
-            // TODO: own component
-            line.sl-graph-timecode-current.stroke-neutral.no-event(
-              :x1="timecodeMarkerCurrentX", y1="0",
-              :x2="timecodeMarkerCurrentX", y2="100%"
-              )
-            // scroll and zoom bar
-            navigation-bar(
-              ref="nav",
-              :root="self",
-              :offset="offset"
-              )
+                // swimlanes
+                graph(
+                ref="graph",
+                :annotationsGrouped="annotationsGrouped",
+                :root="self",
+                :offset="offset"
+                )
+                // sections bar
+                timecode-bar(
+                ref="timecodeBar",
+                :root="self",
+                :offset="offset"
+                )
+                // TODO: own component
+                line.sl-graph-timecode-current.stroke-neutral.no-event(
+                :x1="timecodeMarkerCurrentX", y1="0",
+                :x2="timecodeMarkerCurrentX", y2="100%"
+                )
+                // scroll and zoom bar
+                navigation-bar(
+                ref="nav",
+                :root="self",
+                :offset="offset"
+                )
 
 </template>
 
@@ -97,7 +147,7 @@
       MarkerDetailsSelected,
       MarkerContextMenu
     },
-    props: ['timelineUuid', 'markerDetails', 'resizable', 'visibilityDetails'],
+    props: ['timelineUuid', 'markerDetails', 'resizable'],
     data () {
       return {
         self: this,
@@ -133,15 +183,38 @@
         annotations: [],
         // store all marker for collision detection later on
         markerList: [],
-        showMarkerDetails: undefined,
-        offset: {
-          gutter: undefined,
-          swimlanewrap: undefined
-        },
-        showDetails: this.visibilityDetails
+        hideSwimlanes: false,
+        dimensions: {
+          details: {
+            height: {
+              min: undefined,
+              current: undefined,
+              max: undefined
+            },
+            width: {
+              min: 20,
+              current: undefined,
+              max: 50
+            }
+          },
+          swimlanes: {
+            height: {
+              min: undefined,
+              current: undefined,
+              max: undefined
+            },
+            width: {
+              min: 50,
+              current: 100,
+              max: 80
+            }
+          }
+        }
       }
     },
     async mounted () {
+      this.setupWrapperDimensions()
+
       await this.loadData()
 
       window.addEventListener('mousemove', this.onGlobalMove)
@@ -182,6 +255,15 @@
         scaleFactor: 'swimLaneSettings/getScaleFactor',
         groupAnnotationsBy: 'swimLaneSettings/getGroupAnnotationsBy'
       }),
+      storeCursorTop () {
+        return this.$store.state.swimLaneSettings.cursorTop
+      },
+      storeDetailsWidth () {
+        return this.$store.state.swimLaneSettings.detailsWidth
+      },
+      showDetails () {
+        return this.$store.state.swimLaneSettings.visibilityDetails
+      },
       cursorGlobalResize () {
         return this.isDragged(['navHandleRight', 'navHandleLeft']) ? 'global-ew-resize' : ''
       },
@@ -227,22 +309,47 @@
       }
     },
     methods: {
-      // toggleDetails () {
-      //   this.$emit('toggleDetails', 'bla')
-      // },
-      handlerResize (obj) {
-        // console.log(obj.position.top)
-        this.$emit('emitResize', obj.position.top)
+      setupWrapperDimensions () {
+        if (this.showDetails) this.dimensions.swimlanes.width.max = 80
+        else this.dimensions.swimlanes.width.max = 100
+
+        if (this.showDetails && this.storeDetailsWidth) {
+          this.dimensions.details.width.current = this.storeDetailsWidth
+          this.dimensions.swimlanes.width.current = 100 - this.dimensions.details.width.current
+        }
+        else if (this.showDetails && !this.storeDetailsWidth) {
+          this.dimensions.details.width.current = 30
+          this.dimensions.swimlanes.width.current = 70
+        }
+      },
+      onWrapperResize (obj) {
+        this.dimensions.details.height.current = obj.height
+      },
+      onMouse () {
+        this.hideSwimlanes = !this.hideSwimlanes
+      },
+      onMouseUp () {
+        this.$emit('forceRenderer')
+      },
+      handlerResizeY (obj) {
+        this.$store.commit('swimLaneSettings/setCursorTop', obj.position.top - 16 - 15)
+      },
+      handlerResizeX (obj) {
+        let
+          clWidth = this.$refs.wrapper.clientWidth,
+          cursorPosLeft = obj.position.left - 16 - 15
+        this.dimensions.details.width.current = cursorPosLeft / clWidth * 100
+        this.dimensions.swimlanes.width.current = (clWidth - cursorPosLeft) / clWidth * 100
+        this.$store.commit('swimLaneSettings/setDetailsWidth', this.dimensions.details.width.current)
       },
       handlerToggle (val) {
         switch (val) {
         case 'markerDetails':
-          this.showMarkerDetails = !this.showMarkerDetails
-          if (!this.resizable) this.showDetails = this.showMarkerDetails
-          this.$emit('emitToggleDetails', this.showMarkerDetails)
+          this.$store.commit('swimLaneSettings/setVisibilityDetails')
           break
         case 'swimlanes':
-          this.$emit('emitHandler')
+          // this.$emit('emitHandler')
+          this.$store.commit('swimLaneSettings/setVisibilitySwimlanes')
           break
         }
       },
@@ -313,12 +420,6 @@
 
         // TODO: make own component
         let el = this.$refs.timecodeDisplayHover
-
-        // if (this.showDetails) {
-        //   this.offset.gutter = 16
-        // }
-        // else this.offset.gutter = 0
-        // this.offset.swimlanewrap = this.$refs.swimlanewrap.offsetLeft
 
         if (el) {
           this.timecodeBar.displayHover.x = this.restrict(
@@ -516,9 +617,7 @@
       },
       // ---------------------------------------------------------------------------------------------------- Conversion
       toAbsCompX (rel) {
-        // let offset = this.offset.swimlanewrap + this.offset.gutter
         return rel * this.el.width
-        // return rel * this.$refs.swimlanewrap.clientWidth
       },
       toAbsGraphX (rel) {
         if (this.$refs.graph) return rel * this.$refs.graph.width

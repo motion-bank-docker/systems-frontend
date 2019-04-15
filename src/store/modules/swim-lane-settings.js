@@ -13,7 +13,13 @@ const swimLaneSettings = {
     ],
     timecode: 0,
     scaleFactor: 1,
-    scrollPosition: {x: 0, y: 0}
+    scrollPosition: {x: 0, y: 0},
+    visibilityDetails: false,
+    detailsWidth: 20,
+    selectedAnnotation: undefined,
+    visibilityDrawer: true,
+    cursorTop: undefined,
+    visibilitySwimlanes: undefined
   },
   getters: {
     getOptions: state => state.options,
@@ -22,9 +28,33 @@ const swimLaneSettings = {
     getLaneMode: state => state.laneMode,
     getTimecode: state => state.timecode,
     getScaleFactor: state => state.scaleFactor,
-    getScrollPosition: state => state.scrollPosition
+    getScrollPosition: state => state.scrollPosition,
+    getVisibilityDetails: state => state.visibilityDetails,
+    getDetailsWidth: state => state.detailsWidth,
+    getSelectedAnnotation: state => state.selectedAnnotation,
+    getVisibilityDrawer: state => state.visibilityDrawer,
+    getCursorTop: state => state.cursorTop,
+    getVisibilitySwimlanes: state => state.visibilitySwimlanes
   },
   mutations: {
+    setVisibilitySwimlanes (state) {
+      state.visibilitySwimlanes = !state.visibilitySwimlanes
+    },
+    setCursorTop (state, val) {
+      state.cursorTop = val
+    },
+    setVisibilityDrawer (state) {
+      state.visibilityDrawer = !state.visibilityDrawer
+    },
+    setSelectedAnnotation (state, val) {
+      state.selectedAnnotation = val
+    },
+    setDetailsWidth (state, val) {
+      state.detailsWidth = val
+    },
+    setVisibilityDetails (state) {
+      state.visibilityDetails = !state.visibilityDetails
+    },
     setType (state, type) {
       state.groupAnnotationsBy = type
     },

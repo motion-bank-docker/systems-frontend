@@ -99,6 +99,7 @@ module.exports = function (ctx) {
         'QPageContainer',
         'QPage',
         'QWindowResizeObservable',
+        'QResizeObservable',
         'QPageSticky',
         //
         // Buttons
