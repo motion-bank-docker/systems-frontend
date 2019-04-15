@@ -8,6 +8,14 @@ The format is based on
 and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.2] - 2019-04-15
+
+### Fixed
+
+- Removed CSS updates from VideoPlayer component to
+temporarily fix scaling issue on sync page
+
+
 ## [1.3.1] - 2019-04-06
 
 ### Changed
