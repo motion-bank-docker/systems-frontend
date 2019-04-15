@@ -32,12 +32,12 @@
 
           // details content
 
-          .q-my-md
+          .q-my-md.scroll
             marker-details-selected(v-if="showDetails", :root="self", :resizable="resizable")
 
         // -------------------------------------------------------------------------------------------------- right side
 
-        .row.q-px-md.q-pt-md.q-mb-md(
+        .row.q-pa-md(
         :style="{width: dimensions.swimlanes.width.current + '%', minWidth: dimensions.swimlanes.width.min + '%', maxWidth: dimensions.swimlanes.width.max + '%'}"
         )
 
@@ -76,11 +76,12 @@
 
           // swim lane
 
-          div.bg-black.full-width(
+          div.full-width(
           ref="swimlanewrap",
-          v-if="!hideSwimlanes"
+          v-if="!hideSwimlanes",
+          style="background-color: #4C494A;"
           )
-            .swim-lane-wrapper.wrapper()
+            .swim-lane-wrapper.wrapper(:style="{height: dimensions.swimlanes.height.current + 'px'}")
 
               // hovering timecode
 
@@ -91,9 +92,15 @@
               ) {{ timecode.hoverText }}
 
               // --------------------------------------------------------------------------------------------- Outer SVG
+              //
+                svg.swim-lane(
+                @mousedown.left.prevent,
+                width="100%", height="50vh",
+                ref="root"
+                )
               svg.swim-lane(
               @mousedown.left.prevent,
-              width="100%", height="50vh",
+              width="100%", height="100%",
               ref="root"
               )
                 // swimlanes
@@ -324,6 +331,7 @@
       },
       onWrapperResize (obj) {
         this.dimensions.details.height.current = obj.height
+        this.dimensions.swimlanes.height.current = obj.height - 85
       },
       onMouse () {
         this.hideSwimlanes = !this.hideSwimlanes
