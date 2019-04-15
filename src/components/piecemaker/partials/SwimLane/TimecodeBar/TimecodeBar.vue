@@ -70,12 +70,12 @@
     watch: {
       scaleFactor () {
         // TODO: calculate "good" time span for each section to display
-        let tf = this.root.getVisibleTimeFrame().millis
-        let s = Math.floor(tf / 1000)
-        let m = Math.floor(tf / 1000 / 60)
-        let mr = m % (tf / 1000 / 60) // not working why?
-        let h = Math.floor(tf / 1000 / 60 / 60)
-        console.log(h, m, s, 'mr', mr)
+        // let tf = this.root.getVisibleTimeFrame().millis
+        // let s = Math.floor(tf / 1000)
+        // let m = Math.floor(tf / 1000 / 60)
+        // let mr = m % (tf / 1000 / 60) // not working why?
+        // let h = Math.floor(tf / 1000 / 60 / 60)
+        // console.log(h, m, s, 'mr', mr)
       }
     },
     async mounted () {

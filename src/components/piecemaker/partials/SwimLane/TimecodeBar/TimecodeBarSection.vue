@@ -1,5 +1,5 @@
 <template lang="pug">
-  svg.timecode-bar-section(v-if="!root.isDragged(hideIfDragged)", :x="x", y="0")
+  svg.timecode-bar-section(:x="x", y="0")
     line.stroke-black(x1="0", y1="0", x2="0", y2="100%")
     text.no-select.fill-light.q-caption(y="18", x="10") {{ time }}
 </template>
@@ -24,10 +24,13 @@
         scaleFactor: 'swimLaneSettings/getScaleFactor'
       }),
       time () {
-        // let p = this.xMapped + this.root.toAbsGraphX(this.scrollPosition.x)
-        // let ms = this.root.getTimecodeFromGraphPositionAbs(p)
+        let p = this.xMapped + this.root.toAbsGraphX(this.scrollPosition.x)
+        let ms = this.root.getTimecodeFromGraphPositionAbs(p)
+        let r = Math.floor(ms / this.millis) * this.millis
+        // TODO implement time() so that it is not called everytime the scrollPosition changes
+        return this.root.millisToText(r, 'HH:mm:ss')
         // TODO display timecodes larger than one day => days, weeks, months, years?
-        return this.root.millisToText(this.millis, 'HH:mm:ss')
+        // return this.root.millisToText(this.millis, 'HH:mm:ss')
       },
       x () {
         return this.calculateX()
@@ -35,7 +38,6 @@
     },
     async mounted () {
       EventHub.$on('afterComponentMounted', this.calculateX)
-      console.log('section mounted', this.numSections, this.index)
     },
     watch: {
       // scrollPosition () {
@@ -88,6 +90,7 @@
         x %= this.parentWidth + 1
         // map to root component width
         m = compWidth - x
+        this.xMapped = m
         return m
       }
     }

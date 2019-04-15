@@ -163,7 +163,7 @@
 
       this.cacheDimensions()
       EventHub.$emit('afterComponentMounted')
-      this.setScaleFactor(0.2)
+      // this.setScaleFactor(0.2)
     },
     beforeDestroy () {
       this.setScrollPosition({x: 0, y: 0})
@@ -419,7 +419,7 @@
       setScaleFactor (sf) {
         // this.$forceUpdate()
         this.$store.commit('swimLaneSettings/setScaleFactor', this.restrict(sf, 0, 1))
-        console.log('time frame', this.millisToText(this.getVisibleTimeFrame().millis / 5))
+        // console.log('time frame', this.millisToText(this.getVisibleTimeFrame().millis / 5))
       },
       // ----------------------------------------------------------------------------------------------------------- Get
       getVisibleTimeFrame () {
