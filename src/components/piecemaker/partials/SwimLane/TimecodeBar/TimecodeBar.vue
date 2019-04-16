@@ -51,7 +51,7 @@
         scaleFactor: 'swimLaneSettings/getScaleFactor'
       }),
       numSections () {
-        let s = Math.ceil(this.root.el.width / this.sectionWidth)
+        let s = Math.ceil(this.root.el.width / this.sectionWidth) || 0
         return s + 1
       },
       timecodeMarkerCurrentX () {
@@ -71,9 +71,9 @@
         else if (tf < 60000) return 15000 // 1 min => 15 sec
         else if (tf < 600000) return 60000 // 10 min => 1 min
         else if (tf < 1800000) return 300000 // 30 min => 5 min
-        else if (tf < 3600000) return 900000 // 1 std => 15 min
-        else if (tf < 7200000) return 1800000 // 2 std => 30 min
-        else return 600000 // => 10 min
+        else if (tf < 7200000) return 900000 // 2 std => 15 min
+        else if (tf < 18000000) return 1800000 // 5 std => 30 min
+        else return 3600000 // => 1 std
       }
     },
     watch: {

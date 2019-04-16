@@ -125,7 +125,7 @@
           w = this.navHandle.boundRight - sp
           EventHub.$emit('scaleFactorChange', this.root.toRelCompX(w))
         }
-        EventHub.$emit('scrollPositionChange', {x: this.root.toRelCompX(sp), y: 0})
+        EventHub.$emit('scrollPositionChange', {x: this.root.toRelCompX(sp)})
       },
       onGlobalUp () {
         this.inputOffset = {x: 0, y: 0}
