@@ -7,7 +7,15 @@
     y="25"
     )
     rect.fill-medium(width="100%", height="100%")
-    timecode-bar-section(v-for="(n, index) in numSections", :index="index", :numSections="numSections", :root="root")
+    timecode-bar-section(
+      v-for="(n, index) in numSections",
+      :index="index",
+      :numSections="numSections",
+      :millis="sectionDuration",
+      :width="sectionWidth",
+      :parentWidth="width",
+      :root="root"
+      )
 
     // popping up rectangle
     svg.timecode-pointer.no-event(
@@ -39,14 +47,44 @@
     },
     computed: {
       ...mapGetters({
-        timecodeCurrent: 'swimLaneSettings/getTimecode'
+        timecodeCurrent: 'swimLaneSettings/getTimecode',
+        scaleFactor: 'swimLaneSettings/getScaleFactor'
       }),
       numSections () {
-        return 5
+        let s = Math.ceil(this.root.el.width / this.sectionWidth)
+        return s + 1
       },
       timecodeMarkerCurrentX () {
         if (this.timecodeCurrent) return this.root.millistoRelGraph(this.timecodeCurrent) * 100 + '%'
         return 0
+      },
+      sectionWidth () {
+        let w = this.root.millistoAbsGraph(this.sectionDuration)
+        return w
+      },
+      width () {
+        return this.numSections * this.sectionWidth
+      },
+      sectionDuration () {
+        let tf = this.root.getVisibleTimeFrame().millis
+        if (tf < 1000) return 200 // 1 sec => 200 ms
+        else if (tf < 60000) return 15000 // 1 min => 15 sec
+        else if (tf < 600000) return 60000 // 10 min => 1 min
+        else if (tf < 1800000) return 300000 // 30 min => 5 min
+        else if (tf < 3600000) return 900000 // 1 std => 15 min
+        else if (tf < 7200000) return 1800000 // 2 std => 30 min
+        else return 600000 // => 10 min
+      }
+    },
+    watch: {
+      scaleFactor () {
+        // TODO: calculate "good" time span for each section to display
+        // let tf = this.root.getVisibleTimeFrame().millis
+        // let s = Math.floor(tf / 1000)
+        // let m = Math.floor(tf / 1000 / 60)
+        // let mr = m % (tf / 1000 / 60) // not working why?
+        // let h = Math.floor(tf / 1000 / 60 / 60)
+        // console.log(h, m, s, 'mr', mr)
       }
     },
     async mounted () {
