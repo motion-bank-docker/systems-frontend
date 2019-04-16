@@ -6,7 +6,7 @@
     .row.full-height
 
       marker-context-menu(:root="self")
-      marker-details-hover(:root="self", v-if="!showDetails")
+      marker-details-hover(:root="self")
 
       .row.full-width
 
@@ -16,19 +16,27 @@
         v-if="showDetails",
         :style="{width: dimensions.details.width.current + '%', minWidth: dimensions.details.width.min + '%', maxWidth: dimensions.details.width.max + '%', borderRight: '1px solid #333'}")
 
-          div
+          .full-width.row.relative-position
 
-            // go to prev/next annotation
+            div
+              // go to prev/next annotation
 
-              q-btn.bg-grey-9.q-mr-xs(icon="navigate_before", round, size="sm", flat)
-              q-btn.bg-grey-9(icon="navigate_next", round, size="sm", flat)
+              q-btn.q-mr-xs(icon="navigate_before", round, size="sm", flat, :disabled="!storeSelectedAnnotation")
+              q-btn(icon="navigate_next", round, size="sm", flat, :disabled="!storeSelectedAnnotation")
 
-            // button show/hide details
+              // icon + timestamp
 
-            //.float-right
-            .text-right
-              q-btn.q-px-sm(@click="handlerToggle('markerDetails')", icon="clear",
-              :class="[showDetails ? 'rotate-90' : 'rotate-270']", size="sm", round)
+              .row.q-mt-md
+
+                .q-mt-xs.q-mr-sm(v-if="storeSelectedAnnotation")
+                  annotation-icon(:selectedAnnotation="storeSelectedAnnotation")
+
+                q-btn.q-mr-sm(v-if="storeSelectedAnnotation", size="sm", :label="selectedAnnotationTime")
+                div.q-caption.q-mt-xs(v-else) empty
+
+            // button hide details
+
+            q-btn.q-px-sm.absolute-top-right(@click="handlerToggle('markerDetails')", icon="clear", size="sm", round)
 
           // details content
 
@@ -49,7 +57,7 @@
 
             .fit.bg-transparent.absolute-top-left(v-if="hideSwimlanes", @mouseup="onMouseUp")
 
-            // button show/hide details
+            // button show details
 
             q-btn.q-px-sm.q-mr-sm(
             v-if="!showDetails",
@@ -142,9 +150,11 @@
   import MarkerDetailsHover from './MarkerDetailsHover'
   import MarkerDetailsSelected from './MarkerDetailsSelected'
   import MarkerContextMenu from './MarkerContextMenu'
+  import AnnotationIcon from '../AnnotationIcon'
 
   export default {
     components: {
+      AnnotationIcon,
       SwimLaneMarker,
       Graph,
       Settings,
@@ -216,11 +226,12 @@
               max: 80
             }
           }
-        }
+        },
+        selectedAnnotationTime: undefined
       }
     },
     async mounted () {
-      this.setupWrapperDimensions()
+      this.setupScreen()
 
       await this.loadData()
 
@@ -263,6 +274,9 @@
         scaleFactor: 'swimLaneSettings/getScaleFactor',
         groupAnnotationsBy: 'swimLaneSettings/getGroupAnnotationsBy'
       }),
+      storeSelectedAnnotation () {
+        return this.$store.state.swimLaneSettings.selectedAnnotation
+      },
       storeCursorTop () {
         return this.$store.state.swimLaneSettings.cursorTop
       },
@@ -314,10 +328,21 @@
     watch: {
       timecodeCurrent (tc) {
         this.timecode.currentText = this.millisToText(tc)
+      },
+      storeSelectedAnnotation (obj) {
+        let ms = this.millisTotalToTimeline(DateTime.fromISO(obj.target.selector.value).toMillis())
+        this.selectedAnnotationTime = this.millisToText(ms)
       }
     },
     methods: {
-      setupWrapperDimensions () {
+      setupScreen () {
+        let selectedA = this.$store.state.swimLaneSettings.selectedAnnotation
+        if (selectedA) {
+          let ms = this.millisTotalToTimeline(DateTime.fromISO(selectedA.target.selector.value).toMillis())
+          this.selectedAnnotationTime = this.millisToText(ms)
+        }
+        else this.selectedAnnotationTime = '–'
+
         if (this.showDetails) this.dimensions.swimlanes.width.max = 80
         else this.dimensions.swimlanes.width.max = 100
 

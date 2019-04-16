@@ -1,19 +1,23 @@
 <template lang="pug">
   // q-list.sl-marker-details-selected(color="dark")
-  //
-    div
-    // previous or next entry
-      .q-mb-sm
-        q-icon(name="keyboard_arrow_left")
-        q-icon(name="keyboard_arrow_right")
-  q-list.q-pa-none(color="dark", no-border)
-    template(v-if="annotationData")
-      q-item.q-pa-none.items-start.q-pb-md( v-for="(value, key) in annotationData" )
-        q-item-side.q-pa-none(:class="{'q-caption': resizable}") {{ key }}
-        q-item-main.q-pa-none.q-pr-md.ellipsis(:class="{'q-caption': resizable}") {{ value }}
-    template(v-else)
-      q-item.q-pa-none.items-start
-        q-item-side.q-pa-none(:class="{'q-caption': resizable}") {{ $t('labels.no_selection') }}
+  div
+    .q-caption(v-if="selectedAnnotation.body.type === 'Video'")
+      .ellipsis {{ annotationText }}
+      q-btn.q-mt-md(
+      @click="pushToVideo(annotationData.uuid)",
+      size="sm", icon="theaters", round,
+      :disabled="selectedAnnotation.uuid === $route.params.id")
+    .q-caption(v-else-if="selectedAnnotation.body.type === 'TextualBody'") {{ annotationText }}
+    .q-caption.ellipsis(v-else) {{ annotationText }}
+    //
+      q-list.q-pa-none(color="dark", no-border)
+        template(v-if="annotationData")
+          q-item.q-pa-none.items-start.q-pb-md( v-for="(value, key) in annotationData" )
+            q-item-side.q-pa-none(:class="{'q-caption': resizable}") {{ key }}
+            q-item-main.q-pa-none.q-pr-md.ellipsis(:class="{'q-caption': resizable}") {{ value }}
+        template(v-else)
+          q-item.q-pa-none.items-start
+            q-item-side.q-pa-none(:class="{'q-caption': resizable}") {{ $t('labels.no_selection') }}
 </template>
 
 <script>
@@ -24,7 +28,8 @@
     props: ['root', 'resizable'],
     data () {
       return {
-        annotationData: this.$store.state.swimLaneSettings.selectedAnnotation
+        annotationData: this.$store.state.swimLaneSettings.selectedAnnotation,
+        annotationText: undefined
       }
     },
     computed: {
@@ -37,30 +42,61 @@
     },
     watch: {
       selectedAnnotation (val) {
-        this.annotationData = val
+        this.getAnnotationText(val)
       }
     },
     async mounted () {
       // EventHub.$on('markerUnselect', this.onMarkerUnselect)
       EventHub.$on('markerDown', this.onMarkerDown)
+      this.getAnnotationText(this.$store.state.swimLaneSettings.selectedAnnotation)
     },
     beforeDestroy () {
       // EventHub.$off('markerUnselect', this.onMarkerUnselect)
       // EventHub.$off('markerDown', this.onMarkerDown)
     },
     methods: {
+      getAnnotationText (val) {
+        this.annotationData = val
+        let type = val.body.type
+        switch (type) {
+        case 'TextualBody':
+          this.annotationText = val.body.value
+          break
+        case 'Video':
+          this.annotationText = val.body.source.id
+          break
+        case 'VocabularyEntry':
+          this.annotationText = val.body.source.id
+          break
+        default:
+          this.annotationText = 'unknown'
+          break
+        }
+      },
+      pushToVideo (val) {
+        this.$router.push({name: 'piecemaker.videos.annotate', params: {id: val}})
+      },
       onMarkerDown (annotationData) {
         let ms = this.$parent.millisTotalToTimeline(DateTime.fromISO(annotationData.target.selector.value).toMillis())
+        console.log(ms)
+        /*
         let aData = {
-          'Created': DateTime.fromISO(annotationData.created).toFormat('yyyy LLL dd, HH:mm:ss.SSS'),
-          'Start': this.root.millisToText(ms),
-          'Duration': annotationData.body.duration ? this.root.millisToText(annotationData.body.duration) : '–',
-          'Author': annotationData.author.name,
-          'Purpose': annotationData.body.purpose,
-          'Body Type': annotationData.body.type,
-          'Body Value': annotationData.body.value
+          // 'Created': DateTime.fromISO(annotationData.created).toFormat('yyyy LLL dd, HH:mm:ss.SSS'),#
+          // 'Start': this.root.millisToText(ms),
+          // 'Duration': annotationData.body.duration ? this.root.millisToText(annotationData.body.duration) : '–',
+          // 'Author': annotationData.author.name,
+          // 'Purpose': annotationData.body.purpose,
+          // 'Body Type': annotationData.body.type,
+          // 'Body Value': annotationData.body.value
+          start: {
+            value: this.root.millisToText(ms),
+            label: 'Start111111'
+          }
         }
-        this.$store.commit('swimLaneSettings/setSelectedAnnotation', aData)
+        */
+        // this.$store.commit('swimLaneSettings/setSelectedAnnotation', aData)
+        let aDataNew = annotationData
+        this.$store.commit('swimLaneSettings/setSelectedAnnotation', aDataNew)
       },
       onMarkerUnselect () {
         this.annotationData = null
