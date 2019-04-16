@@ -46,7 +46,7 @@
           this.end = this.root.getInputPositionRelGraph().x
           this.width = Math.abs(this.end - this.start)
           EventHub.$emit('scaleFactorChange', this.width)
-          EventHub.$emit('scrollPositionChange', {x: Math.min(this.start, this.end), y: 0})
+          EventHub.$emit('scrollPositionChange', {x: Math.min(this.start, this.end)})
           this.start = null
           this.end = null
           this.width = 0
