@@ -236,6 +236,7 @@
 
       this.cacheDimensions()
       EventHub.$emit('afterComponentMounted')
+      // this.setScaleFactor(0.2)
     },
     beforeDestroy () {
       this.setScrollPosition({x: 0, y: 0})
@@ -519,8 +520,16 @@
       setScaleFactor (sf) {
         // this.$forceUpdate()
         this.$store.commit('swimLaneSettings/setScaleFactor', this.restrict(sf, 0, 1))
+        // console.log('time frame', this.millisToText(this.getVisibleTimeFrame().millis / 5))
       },
       // ----------------------------------------------------------------------------------------------------------- Get
+      getVisibleTimeFrame () {
+        let d = Math.floor(this.toRelGraphX(this.el.width) * this.timeline.duration)
+        return {
+          millis: d,
+          text: this.millisToText(d)
+        }
+      },
       // TODO: make single input or inputPosition object that holds all values?
       // TODO: rethink this
       getInputPosition (event) {
@@ -648,6 +657,9 @@
       // },
       millistoRelGraph (ms) {
         return ms / this.timeline.duration
+      },
+      millistoAbsGraph (ms) {
+        return ms / this.timeline.duration * this.$refs.graph.width
       },
       millisTotaltoRelGraph (ms) {
         return (ms - this.timeline.start) / this.timeline.duration
