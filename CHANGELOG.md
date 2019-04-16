@@ -16,8 +16,10 @@ and this project adheres to
 
 ### Changed
 
-- VideoPlayer now uses www.youtube-nocookie.com for YouTube sources
+- VideoPlayer uses www.youtube-nocookie.com for YouTube sources
 to be GDPR compliant
+- VideoPlayer uses `dnt` (do not track) option for showing Vimeo videos
+for GDPR compliance
 
 
 ## [1.3.1] - 2019-04-06
