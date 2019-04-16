@@ -9,8 +9,7 @@
       x2="100%", y2="0"
       )
     text.fill-neutral.no-event.no-select.q-caption(:x="root.toAbsGraphX(scrollPosition.x) + 10", y="18")
-      | {{ type + ': ' +  annotations.length }}
-      // | {{ $t('labels.' + getLabel(type)) + ': ' +  annotations.length }}
+      | {{ getLabel(type) }} ({{ annotations.length }})
     graph-marker(
       v-for="(a, index) in annotations",
       :annotationData="a",
@@ -71,7 +70,7 @@
       },
       getLabel (val) {
         let valNew = val.match(/[A-Z][a-z]+|[0-9]+/g).join(' ').replace(/\s+/g, '_').toLowerCase()
-        return valNew
+        return this.$t('labels.' + valNew)
       }
     }
   }

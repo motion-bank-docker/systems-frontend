@@ -110,6 +110,7 @@ export default {
     annotation_body: 'Annotation text',
     accept_terms: 'I accept the Terms and Conditions',
     author: 'Author',
+    biovision_hierarchy: 'Biovision Hierarchy',
     unknown_author: 'Unknown Author',
     created: 'Created',
     css_stylesheet: 'CSS Stylesheet',
@@ -124,6 +125,7 @@ export default {
     embedded: 'Embedded in',
     empty: 'empty',
     elements_length: 'Used Elements',
+    filmbox: 'Filmbox',
     // timeline_title: 'Timeline title',
     timeline_title: 'Timeline title',
     grid_title: 'Grid title',
@@ -150,14 +152,14 @@ export default {
     size: 'Size',
     tag: 'Tag',
     tags: 'Tags',
-    textual_body: 'Textual annotations',
+    textual_body: 'Annotations',
     title: 'Title',
     title_unknown: 'Unknown Title',
     type: 'Type',
     video_title: 'Video title',
     video_url: 'Video URL',
-    video: 'Video',
-    vocabulary_entry: 'Vocabulary entry'
+    video: 'Videos',
+    vocabulary_entry: 'Vocabularies'
   },
   links: {
     click_to_register: 'Click here to create an account.'
