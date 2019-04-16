@@ -14,6 +14,11 @@ and this project adheres to
 
 - SwimLane component in post-annotator and on standalone page
 
+### Changed
+
+- VideoPlayer now uses www.youtube-nocookie.com for YouTube sources
+to be GDPR compliant
+
 
 ## [1.3.1] - 2019-04-06
 
