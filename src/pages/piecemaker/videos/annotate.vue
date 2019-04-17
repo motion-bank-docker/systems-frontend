@@ -442,6 +442,7 @@
       },
       onPlayerTime (seconds) {
         this.playerTime = seconds
+        this.$store.commit('swimLaneSettings/setTimecode', seconds * 1000)
       },
       setEditIndex (i) {
         this.editAnnotationIndex = i
