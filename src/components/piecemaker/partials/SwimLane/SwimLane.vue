@@ -161,7 +161,7 @@
       MarkerDetailsSelected,
       MarkerContextMenu
     },
-    props: ['timelineUuid', 'markerDetails', 'resizable'],
+    props: ['timelineUuid', 'markerDetails', 'resizable', 'start', 'duration'],
     data () {
       return {
         self: this,
@@ -252,6 +252,7 @@
       this.cacheDimensions()
       EventHub.$emit('afterComponentMounted')
       // this.setScaleFactor(0.2)
+      console.log('video start', this.start, this.duration)
     },
     beforeDestroy () {
       this.setScrollPosition({x: 0, y: 0})
@@ -403,11 +404,14 @@
         //   return this.isoToMillis(obj1.target.selector.value) - this.isoToMillis(obj2.target.selector.value)
         // })
 
-        const duration = annotations[0].getDurationTo(annotations[annotations.length - 1])
-        // TODO: find better way to set a padding so that annotations don't sit on the edges of the graph
-        const padding = 120000 // 2 seconds
-        this.timeline.duration = duration.as('milliseconds') + padding * 2
-        this.timeline.start = DateTime.fromISO(annotations[0].target.selector.value).toMillis() - padding
+        // const duration = annotations[0].getDurationTo(annotations[annotations.length - 1])
+        // // TODO: find better way to set a padding so that annotations don't sit on the edges of the graph
+        // const padding = 120000 // 2 seconds
+        // this.timeline.duration = duration.as('milliseconds') + padding * 2
+        // this.timeline.start = DateTime.fromISO(annotations[0].target.selector.value).toMillis() - padding
+
+        this.timeline.duration = this.duration
+        this.timeline.start = this.start
 
         this.annotations = annotations
 
@@ -545,6 +549,7 @@
       },
       setTimecode (tc) { // int ms
         this.$store.commit('swimLaneSettings/setTimecode', tc)
+        this.$emit('timecodeChange', tc)
       },
       setScaleFactor (sf) {
         // this.$forceUpdate()

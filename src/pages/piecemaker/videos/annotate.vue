@@ -39,9 +39,12 @@
         :timelineUuid="timeline.uuid",
         :markerDetails="false",
         :resizable="true",
-        @emitHandler="handlerToggle('swimlanes')",
+        :start="getVideoDate().toMillis()",
+        :duration="getVideoDuration()",
         :key="componentKey",
-        @forceRenderer="onForceRenderer"
+        @emitHandler="handlerToggle('swimlanes')",
+        @forceRenderer="onForceRenderer",
+        @timecodeChange=""
         )
 
       // button toggles swimlanes visibility
@@ -317,6 +320,7 @@
         if (this.video) {
           this.metadata = await this.$store.dispatch('metadata/get', this.video)
         }
+        console.log('video', this.video)
       },
       async getAnnotations () {
         const
@@ -439,6 +443,12 @@
       },
       getVideoDate () {
         return DateTime.fromISO(this.video.target.selector.value, { setZone: true })
+      },
+      getVideoDuration () {
+        if (this.metadata.duration) {
+          return this.metadata.duration * 1000
+        }
+        return 0
       }
     }
   }
