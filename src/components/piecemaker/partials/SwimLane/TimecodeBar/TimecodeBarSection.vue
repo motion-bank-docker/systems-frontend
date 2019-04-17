@@ -60,7 +60,7 @@
         // map to root component width
         m = compWidth - x
         this.xMapped = m
-        return m
+        return m || 0
       }
     }
   }

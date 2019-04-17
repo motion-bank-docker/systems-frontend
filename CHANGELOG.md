@@ -29,6 +29,13 @@ and this project adheres to
 - [mbjs-quasar](https://gitlab.rlp.net/motionbank/mbjs/quasar)
   to version 2.2.0
 
+### Changed
+
+- VideoPlayer uses [privacy-enhanced mode](https://support.google.com/youtube/answer/171780)
+for YouTube sources to be GDPR compliant
+- VideoPlayer uses [dnt](https://github.com/vimeo/player.js/#embed-options)
+(do not track) option for showing Vimeo videos for GDPR compliance
+
 
 ## [1.3.1] - 2019-04-06
 
