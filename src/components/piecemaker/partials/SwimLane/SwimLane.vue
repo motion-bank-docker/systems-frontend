@@ -161,7 +161,7 @@
       MarkerDetailsSelected,
       MarkerContextMenu
     },
-    props: ['timelineUuid', 'markerDetails', 'resizable', 'start', 'duration'],
+    props: ['timelineUuid', 'markerDetails', 'resizable', 'start', 'duration', 'annotations'],
     data () {
       return {
         self: this,
@@ -194,7 +194,7 @@
           }
         },
         currentKeyDown: null,
-        annotations: [],
+        // annotations: [],
         // store all marker for collision detection later on
         markerList: [],
         hideSwimlanes: false,
@@ -227,10 +227,15 @@
         selectedAnnotationTime: undefined
       }
     },
-    async mounted () {
+    mounted () {
       this.setupScreen()
 
-      await this.loadData()
+      // await this.loadData()
+
+      this.timeline.duration = this.duration
+      this.timeline.start = this.start
+
+      // this.annotations = this.annotationsTemp
 
       window.addEventListener('mousemove', this.onGlobalMove)
       window.addEventListener('mouseup', this.onGlobalUp)
@@ -249,8 +254,11 @@
       this.timecode.hoverText = this.millisToText(0)
       EventHub.$emit('timecodeChange', 0)
 
-      this.cacheDimensions()
+      // this.cacheDimensions()
+      // FIXME ugly fix because the call above seems to be fired to early
+      setTimeout(() => { this.cacheDimensions() }, 500)
       EventHub.$emit('afterComponentMounted')
+      this.cacheDimensions()
       // this.setScaleFactor(0.2)
       console.log('video start', this.start, this.duration)
     },
@@ -294,22 +302,24 @@
         let groups
         let filtered = {}
 
-        if (this.groupAnnotationsBy === 'type') {
-          groups = this.annotations.reduce((sum, annotation) => {
-            if (sum.indexOf(annotation.body.type) === -1) sum.push(annotation.body.type)
-            return sum
-          }, [])
-          for (let group of groups) {
-            filtered[group] = this.annotations.filter(annotation => annotation.body.type === group)
+        if (this.annotations) {
+          if (this.groupAnnotationsBy === 'type') {
+            groups = this.annotations.reduce((sum, annotation) => {
+              if (sum.indexOf(annotation.body.type) === -1) sum.push(annotation.body.type)
+              return sum
+            }, [])
+            for (let group of groups) {
+              filtered[group] = this.annotations.filter(annotation => annotation.body.type === group)
+            }
           }
-        }
-        else if (this.groupAnnotationsBy === 'author') {
-          groups = this.annotations.reduce((sum, annotation) => {
-            if (sum.indexOf(annotation.author.name) === -1) sum.push(annotation.author.name)
-            return sum
-          }, [])
-          for (let group of groups) {
-            filtered[group] = this.annotations.filter(annotation => annotation.author.name === group)
+          else if (this.groupAnnotationsBy === 'author') {
+            groups = this.annotations.reduce((sum, annotation) => {
+              if (sum.indexOf(annotation.author.name) === -1) sum.push(annotation.author.name)
+              return sum
+            }, [])
+            for (let group of groups) {
+              filtered[group] = this.annotations.filter(annotation => annotation.author.name === group)
+            }
           }
         }
         return filtered
@@ -404,6 +414,8 @@
         //   return this.isoToMillis(obj1.target.selector.value) - this.isoToMillis(obj2.target.selector.value)
         // })
 
+        // scale swim lane to first and last annotation loaded
+
         // const duration = annotations[0].getDurationTo(annotations[annotations.length - 1])
         // // TODO: find better way to set a padding so that annotations don't sit on the edges of the graph
         // const padding = 120000 // 2 seconds
@@ -426,11 +438,11 @@
 
         // TODO: add latest end point of annotation to timeline.duration so it will not lie beyond the visible graph
 
-        for (let a in this.annotations) {
-          let ann = this.annotations[a]
-          console.debug('a:', ann, ann.body.duration)
-        }
-        console.log('annotations', this.annotations.length, DateTime.fromMillis(this.timeline.duration).toFormat('HH:mm:ss.SSS'), this.timelineUuid)
+        // for (let a in this.annotations) {
+        //   let ann = this.annotations[a]
+        //   console.debug('a:', ann, ann.body.duration)
+        // }
+        // console.log('annotations', this.annotations.length, DateTime.fromMillis(this.timeline.duration).toFormat('HH:mm:ss.SSS'), this.timelineUuid)
       },
       // -------------------------------------------------------------------------------------------------- E Input Move
       onGlobalMove: function (event) {
@@ -549,7 +561,7 @@
       },
       setTimecode (tc) { // int ms
         this.$store.commit('swimLaneSettings/setTimecode', tc)
-        this.$emit('timecodeChange', tc)
+        this.$emit('timecodeChange', this.millisToIso(tc + this.timeline.start))
       },
       setScaleFactor (sf) {
         // this.$forceUpdate()
@@ -736,6 +748,9 @@
       },
       isoToMillis (iso) {
         return DateTime.fromISO(iso).toMillis()
+      },
+      millisToIso (ms) {
+        return DateTime.fromMillis(ms).toISO()
       },
       // doubleDigit (v) {
       //   return (v < 10) ? '0' + v : v.toString()

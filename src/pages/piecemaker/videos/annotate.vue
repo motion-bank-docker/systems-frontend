@@ -41,10 +41,11 @@
         :resizable="true",
         :start="getVideoDate().toMillis()",
         :duration="getVideoDuration()",
+        :annotations="annotations",
         :key="componentKey",
         @emitHandler="handlerToggle('swimlanes')",
         @forceRenderer="onForceRenderer",
-        @timecodeChange=""
+        @timecodeChange="gotoSelector"
         )
 
       // button toggles swimlanes visibility
@@ -412,7 +413,12 @@
         const millis = DateTime.fromISO(selector, { setZone: true }).toMillis() -
           DateTime.fromISO(this.video.target.selector.value, { setZone: true }).toMillis()
         const targetMillis = millis * 0.001
-        if (this.playerTime !== targetMillis) this.player.currentTime(targetMillis)
+        if (this.playerTime !== targetMillis) {
+          this.player.currentTime(targetMillis)
+          // SwimLane
+          // FIXME this is the second call when timecode change is triggered from inside SwimLane
+          this.$store.commit('swimLaneSettings/setTimecode', millis)
+        }
       },
       gotoHashvalue () {
         if (this.hashValue && uuid.isUUID(this.hashValue)) {
