@@ -13,7 +13,7 @@
 
       // video player
 
-      div.relative(:style="{height: videoHeight + 'px', maxHeight: viewport.height - 52 - 52 + 'px'}",
+      div.relative(:style="{height: videoHeight + 'px', maxHeight: viewport.height - 52 - 250 + 'px'}",
       :class="[!swimlanes ? 'fit' : '']")
         video-player.full-height.relative-position(v-if="video", :annotation="video", :fine-controls="true",
         @ready="playerReady($event)", @time="onPlayerTime($event)")
