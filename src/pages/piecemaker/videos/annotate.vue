@@ -85,8 +85,8 @@
               .annotation-list-item-header
                 annotation-icon(:selectedAnnotation="annotation")
                 timecode-label(
-                  @click.native="gotoSelector(annotation.target.selector.value)",
-                  :timecode="annotation.target.selector.value",
+                  @click.native="gotoSelector(annotation.target.selector)",
+                  :millis="annotation.target.selector._valueMillis",
                   :videoDate="getVideoDate()"
                   )
 
@@ -441,7 +441,7 @@
         this.editAnnotationBuffer = this.annotations[i].body.value
       },
       getVideoDate () {
-        return DateTime.fromISO(this.video.target.selector.value, { setZone: true })
+        return DateTime.fromMillis(this.video.target.selector._valueMillis)
       }
     }
   }
