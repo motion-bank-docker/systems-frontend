@@ -1,6 +1,5 @@
 <template lang="pug">
-  .swim-lane-component.fit(ref="wrapper", :class="[cursorGlobalResize, cursorGlobalGrabbing]",
-  style="position: relative;")
+  .swim-lane-component.fit.relative-position(ref="wrapper", :class="[cursorGlobalResize, cursorGlobalGrabbing]")
     q-resize-observable(@resize="onWrapperResize")
 
     .row.full-height
@@ -8,133 +7,131 @@
       marker-context-menu(:root="self")
       marker-details-hover(:root="self")
 
-      .row.full-width
+      // ----------------------------------------------------------------------------------------------------- left side
 
-        // --------------------------------------------------------------------------------------------------- left side
+      div.shadow-10.q-pa-md.scroll(
+      v-if="showDetails",
+      :style="{width: dimensions.details.width.current + '%', minWidth: dimensions.details.width.min + '%', maxWidth: dimensions.details.width.max + '%', borderRight: '1px solid #333', maxHeight: '100%'}")
 
-        div.shadow-10.full-height.q-pa-md(
-        v-if="showDetails",
-        :style="{width: dimensions.details.width.current + '%', minWidth: dimensions.details.width.min + '%', maxWidth: dimensions.details.width.max + '%', borderRight: '1px solid #333'}")
+        .full-width.row.relative-position
 
-          .full-width.row.relative-position
+          div
+            // go to prev/next annotation
 
-            div
-              // go to prev/next annotation
+            q-btn.q-mr-xs(icon="navigate_before", round, size="sm", flat, :disabled="!storeSelectedAnnotation")
+            q-btn(icon="navigate_next", round, size="sm", flat, :disabled="!storeSelectedAnnotation")
 
-              q-btn.q-mr-xs(icon="navigate_before", round, size="sm", flat, :disabled="!storeSelectedAnnotation")
-              q-btn(icon="navigate_next", round, size="sm", flat, :disabled="!storeSelectedAnnotation")
+            // icon + timestamp
 
-              // icon + timestamp
+            .row.q-mt-md
 
-              .row.q-mt-md
+              .q-mt-xs.q-mr-sm(v-if="storeSelectedAnnotation")
+                annotation-icon(:selectedAnnotation="storeSelectedAnnotation")
 
-                .q-mt-xs.q-mr-sm(v-if="storeSelectedAnnotation")
-                  annotation-icon(:selectedAnnotation="storeSelectedAnnotation")
+              q-btn.q-mr-sm(v-if="storeSelectedAnnotation", size="sm", :label="selectedAnnotationTime")
+              div.q-caption.q-mt-xs(v-else) empty
 
-                q-btn.q-mr-sm(v-if="storeSelectedAnnotation", size="sm", :label="selectedAnnotationTime")
-                div.q-caption.q-mt-xs(v-else) empty
+          // button hide details
 
-            // button hide details
+          q-btn.q-px-sm.absolute-top-right(@click="handlerToggle('markerDetails')", icon="clear", size="sm", round)
 
-            q-btn.q-px-sm.absolute-top-right(@click="handlerToggle('markerDetails')", icon="clear", size="sm", round)
+        // details content
 
-          // details content
+        .q-mt-md
+          marker-details-selected(v-if="showDetails", :root="self", :resizable="resizable")
 
-          .q-my-md.scroll
-            marker-details-selected(v-if="showDetails", :root="self", :resizable="resizable")
+      // ---------------------------------------------------------------------------------------------------- right side
 
-        // -------------------------------------------------------------------------------------------------- right side
+      div.q-pa-md(
+      :style="{width: dimensions.swimlanes.width.current + '%', minWidth: dimensions.swimlanes.width.min + '%', maxWidth: dimensions.swimlanes.width.max + '%'}"
+      )
 
-        .row.q-pa-md(
-        :style="{width: dimensions.swimlanes.width.current + '%', minWidth: dimensions.swimlanes.width.min + '%', maxWidth: dimensions.swimlanes.width.max + '%'}"
+        // settings
+
+        div.row.q-mb-md
+
+          // fix: mouse up in offset from resizeX button
+
+          .fit.bg-transparent.absolute-top-left(v-if="hideSwimlanes", @mouseup="onMouseUp")
+
+          // button show details
+
+          q-btn.q-px-sm.q-mr-sm(
+          v-if="!showDetails",
+          @click="handlerToggle('markerDetails')", icon="keyboard_backspace",
+          :class="[showDetails ? '' : 'rotate-180']", size="sm", round)
+
+          // button change horizontal dimensions from details (affects swimlane width, too)
+
+          q-btn.q-px-sm.q-mr-sm(
+          v-if="showDetails", v-touch-pan="handlerResizeX",
+          @mousedown.native="onMouse", @mouseup.native="onMouseUp",
+          size="sm", icon="code", round)
+
+          // setting buttons
+
+          settings(ref="settings")
+
+          // resize (y) and hide swimlanes
+
+          .absolute-top-right.text-right.q-ma-md(v-if="resizable")
+            q-btn.q-ml-lg(@mousedown.native="onMouse", @mouseup.native="onMouseUp", v-touch-pan="handlerResizeY", round, size="sm")
+              q-icon.rotate-90(name="code")
+            q-btn.q-ml-sm(@click="handlerToggle('swimlanes')", icon="clear", round, size="sm")
+
+        // swim lane
+
+        div.full-width(
+        ref="swimlanewrap",
+        v-if="!hideSwimlanes",
+        style="background-color: #4C494A;"
         )
+          .swim-lane-wrapper.wrapper(:style="{height: dimensions.swimlanes.height.current + 'px'}")
 
-          // settings
+            // hovering timecode
 
-          div.row.q-mb-md
+            .timecode-display-hover.no-select.no-event.p-abs.q-caption(
+            ref="timecodeDisplayHover",
+            :class="(isFocused('timecodeBar') && !isDragged()) || isDragged('timecodeBar') ? '' : 'is-hidden'",
+            :style="{left: timecodeBar.displayHover.x + 'px'}"
+            ) {{ timecode.hoverText }}
 
-            // fix: mouse up in offset from resizeX button
-
-            .fit.bg-transparent.absolute-top-left(v-if="hideSwimlanes", @mouseup="onMouseUp")
-
-            // button show details
-
-            q-btn.q-px-sm.q-mr-sm(
-            v-if="!showDetails",
-            @click="handlerToggle('markerDetails')", icon="keyboard_backspace",
-            :class="[showDetails ? '' : 'rotate-180']", size="sm", round)
-
-            // button change horizontal dimensions
-
-            q-btn.q-px-sm.q-mr-sm(
-            v-if="showDetails", v-touch-pan="handlerResizeX",
-            @mousedown.native="onMouse", @mouseup.native="onMouseUp",
-            size="sm", icon="code", round)
-
-            // setting buttons
-
-            settings(ref="settings")
-
-            // resize and hide swimlanes
-
-            .absolute-top-right.text-right.q-ma-md(v-if="resizable")
-              q-btn.q-ml-lg(@click="", v-touch-pan="handlerResizeY", round, size="sm")
-                q-icon.rotate-90(name="code")
-              q-btn.q-ml-sm(@click="handlerToggle('swimlanes')", icon="clear", round, size="sm")
-
-          // swim lane
-
-          div.full-width(
-          ref="swimlanewrap",
-          v-if="!hideSwimlanes",
-          style="background-color: #4C494A;"
-          )
-            .swim-lane-wrapper.wrapper(:style="{height: dimensions.swimlanes.height.current + 'px'}")
-
-              // hovering timecode
-
-              .timecode-display-hover.no-select.no-event.p-abs.q-caption(
-              ref="timecodeDisplayHover",
-              :class="(isFocused('timecodeBar') && !isDragged()) || isDragged('timecodeBar') ? '' : 'is-hidden'",
-              :style="{left: timecodeBar.displayHover.x + 'px'}"
-              ) {{ timecode.hoverText }}
-
-              // --------------------------------------------------------------------------------------------- Outer SVG
-              //
-                svg.swim-lane(
-                @mousedown.left.prevent,
-                width="100%", height="50vh",
-                ref="root"
-                )
+            // --------------------------------------------------------------------------------------------- Outer SVG
+            //
               svg.swim-lane(
               @mousedown.left.prevent,
-              width="100%", height="100%",
+              width="100%", height="50vh",
               ref="root"
               )
-                // swimlanes
-                graph(
-                ref="graph",
-                :annotationsGrouped="annotationsGrouped",
-                :root="self",
-                :offset="offset"
-                )
-                // sections bar
-                timecode-bar(
-                ref="timecodeBar",
-                :root="self",
-                :offset="offset"
-                )
-                // TODO: own component
-                line.sl-graph-timecode-current.stroke-neutral.no-event(
-                :x1="timecodeMarkerCurrentX", y1="0",
-                :x2="timecodeMarkerCurrentX", y2="100%"
-                )
-                // scroll and zoom bar
-                navigation-bar(
-                ref="nav",
-                :root="self",
-                :offset="offset"
-                )
+            svg.swim-lane(
+            @mousedown.left.prevent,
+            width="100%", height="100%",
+            ref="root"
+            )
+              // swimlanes
+              graph(
+              ref="graph",
+              :annotationsGrouped="annotationsGrouped",
+              :root="self",
+              :offset="offset"
+              )
+              // sections bar
+              timecode-bar(
+              ref="timecodeBar",
+              :root="self",
+              :offset="offset"
+              )
+              // TODO: own component
+              line.sl-graph-timecode-current.stroke-neutral.no-event(
+              :x1="timecodeMarkerCurrentX", y1="0",
+              :x2="timecodeMarkerCurrentX", y2="100%"
+              )
+              // scroll and zoom bar
+              navigation-bar(
+              ref="nav",
+              :root="self",
+              :offset="offset"
+              )
 
 </template>
 
