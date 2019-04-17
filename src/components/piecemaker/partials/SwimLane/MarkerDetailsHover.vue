@@ -16,7 +16,6 @@
 
 <script>
   import { EventHub } from './EventHub'
-  import { DateTime } from 'luxon'
 
   export default {
     props: ['root'],
