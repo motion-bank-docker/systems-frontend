@@ -39,9 +39,13 @@
         :timelineUuid="timeline.uuid",
         :markerDetails="false",
         :resizable="true",
-        @emitHandler="handlerToggle('swimlanes')",
+        :start="getVideoDate().toMillis()",
+        :duration="getVideoDuration()",
+        :annotations="annotations",
         :key="componentKey",
-        @forceRenderer="onForceRenderer"
+        @emitHandler="handlerToggle('swimlanes')",
+        @forceRenderer="onForceRenderer",
+        @timecodeChange="gotoSelector"
         )
 
       // button toggles swimlanes visibility
@@ -317,6 +321,7 @@
         if (this.video) {
           this.metadata = await this.$store.dispatch('metadata/get', this.video)
         }
+        console.log('video', this.video)
       },
       async getAnnotations () {
         const
@@ -408,7 +413,12 @@
         const millis = DateTime.fromISO(selector, { setZone: true }).toMillis() -
           DateTime.fromISO(this.video.target.selector.value, { setZone: true }).toMillis()
         const targetMillis = millis * 0.001
-        if (this.playerTime !== targetMillis) this.player.currentTime(targetMillis)
+        if (this.playerTime !== targetMillis) {
+          this.player.currentTime(targetMillis)
+          // SwimLane
+          // FIXME this is the second call when timecode change is triggered from inside SwimLane
+          this.$store.commit('swimLaneSettings/setTimecode', millis)
+        }
       },
       gotoHashvalue () {
         if (this.hashValue && uuid.isUUID(this.hashValue)) {
@@ -439,6 +449,12 @@
       },
       getVideoDate () {
         return DateTime.fromISO(this.video.target.selector.value, { setZone: true })
+      },
+      getVideoDuration () {
+        if (this.metadata.duration) {
+          return this.metadata.duration * 1000
+        }
+        return 0
       }
     }
   }
