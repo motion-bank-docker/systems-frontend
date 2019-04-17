@@ -70,39 +70,30 @@
       .absolute.fit.bg-dark(style="border-left: 1px solid #333;")
       q-list.no-border.bg-dark.q-py-none(dark, @mouseleave.native="currentHover === undefined")
 
-        q-item.bg-dark.q-pb-lg(
-          dark,
-          v-for="(annotation, i) in annotations",
-          :key="annotation.uuid",
-          :ref="annotation.uuid",
-          :class="[currentIndex === i ? 'bg-grey-9' : '']",
-          style="border-left: 1px solid #444; border-top: 1px solid #444;",
-          @mouseover.native="setHover(annotation.uuid)"
-          )
+        q-item.annotation-list-item.q-pb-lg(
+        dark,
+        v-for="(annotation, i) in annotations",
+        :key="annotation.uuid",
+        :ref="annotation.uuid",
+        :class="{'is-selected' : currentIndex === i || editAnnotationIndex === i, 'is-being-edited': editAnnotationIndex === i}",
+        style="border-left: 1px solid #444; border-top: 1px solid #444;",
+        @mouseover.native="setHover(annotation.uuid)"
+        )
           q-item-main
-            q-item-tile
+            q-item-tile.relative-position
 
-              // annotation "icon"
-              div.annotation-graphic
-
-              // timestamp
-
-              q-btn.float-left(
-                v-if="annotation.target.selector",
-                :color="currentIndex === i ? 'primary' : 'dark'",
-                @click="gotoSelector(annotation.target.selector.value)",
-                size="sm"
-                ) {{ formatSelectorForList(annotation.target.selector.value) }}
-
-              // author
-
-              <!--q-btn.q-caption.float-left.text-grey-7(size="sm", flat) {{ getInitials(annotation.author.name) }}-->
-                <!--q-tooltip.bg-grey-10.shadow-6(:offset="[0, 5]") {{ annotation.author.name }}-->
+              .annotation-list-item-header
+                annotation-icon(:selectedAnnotation="annotation")
+                timecode-label(
+                  @click.native="gotoSelector(annotation.target.selector.value)",
+                  :timecode="annotation.target.selector.value",
+                  :videoDate="getVideoDate()"
+                  )
 
               // buttons
 
               <!--div.float-right(v-if="currentHover === annotation.uuid")-->
-              div.float-right(:class="[currentHover === annotation.uuid ? '' : 'invisible']")
+              .absolute-top-right.annotation-list-item-buttons
                 q-btn.float-right(@click="$refs.confirmModal.show('messages.confirm_delete', annotation, 'buttons.delete')",
                 size="sm", icon="delete", round)
 
@@ -114,15 +105,13 @@
                 @click="updateAnnotation(annotation)", size="sm", :color="isAnnotationDirty ? 'primary' : undefined",
                 icon="save", round)
 
-            br
-
             // text content
 
             q-item-tile
               markdown-display.markdown-display.q-mt-sm(v-if="!isEditingAnnotations || editAnnotationIndex !== i",
-                :content="annotation.body.value", :options="mdOptions")
+              :content="annotation.body.value", :options="mdOptions")
               q-input.q-mt-sm.q-mb-sm(v-if="annotation.body.type === 'TextualBody' && editAnnotationIndex === i", color="white",
-                type="textarea", v-model="annotation.body.value", dark)
+              type="textarea", v-model="annotation.body.value", dark)
 
 </template>
 
@@ -139,13 +128,17 @@
 
   import AnnotationField from '../../../components/piecemaker/partials/AnnotationField'
   import SwimLane from '../../../components/piecemaker/partials/SwimLane/SwimLane'
+  import TimecodeLabel from '../../../components/piecemaker/partials/TimecodeLabel'
+  import AnnotationIcon from '../../../components/piecemaker/partials/AnnotationIcon'
 
   const { getScrollTarget, setScrollPosition } = scroll
 
   export default {
     components: {
+      AnnotationIcon,
       AnnotationField,
-      SwimLane
+      SwimLane,
+      TimecodeLabel
     },
     async mounted () {
       if (this.$route.params.id) {
@@ -223,8 +216,8 @@
 
         let idx = -1, annotation = this.annotations[0]
         while (annotation && idx < this.annotations.length &&
-          DateTime.fromISO(this.baseSelector, { setZone: true }) >=
-            DateTime.fromISO(annotation.target.selector.value, { setZone: true })) {
+        DateTime.fromISO(this.baseSelector, { setZone: true }) >=
+        DateTime.fromISO(annotation.target.selector.value, { setZone: true })) {
           idx++
           annotation = this.annotations[idx + 1]
         }
@@ -307,8 +300,7 @@
             this.onForceRenderer()
           }, 200)
           break
-        case 'swimlanes':
-          this.$store.commit('swimLaneSettings/setVisibilitySwimlanes')
+        case 'swimlanes':this.$store.commit('swimLaneSettings/setVisibilitySwimlanes')
           break
         }
       },
@@ -444,12 +436,17 @@
       setEditIndex (i) {
         this.editAnnotationIndex = i
         this.editAnnotationBuffer = this.annotations[i].body.value
+      },
+      getVideoDate () {
+        return DateTime.fromISO(this.video.target.selector.value, { setZone: true })
       }
     }
   }
 </script>
 
 <style scoped lang="stylus">
+  @import '~variables'
+
   .moba-vocabs div:last-of-type
     display none
   .moba-vocabs:hover div:first-of-type
@@ -466,14 +463,19 @@
   .fit
     max-height 100%!important
 
-  .annotation-graphic
-    width: 16px
-    height: 16px
-    background: #57AEFF
-    border-radius: 8px
-    margin-right 8px
-    margin-top: 5px
-    float left
-    opacity: 0.3
-
+  .annotation-list-item
+    .annotation-list-item-buttons
+      display: none
+    &:hover, &.is-being-edited
+      .annotation-list-item-buttons
+        display: block
+    &.is-selected
+      background-color $darker
+    .annotation-list-item-header
+      margin-top 5px
+      > *
+        display inline-block
+        vertical-align middle
+      .annotation-icon
+        margin 1px 8px 0 0
 </style>
