@@ -39,9 +39,13 @@
         :timelineUuid="timeline._uuid",
         :markerDetails="false",
         :resizable="true",
-        @emitHandler="handlerToggle('swimlanes')",
+        :start="getVideoDate().toMillis()",
+        :duration="getVideoDuration()",
+        :annotations="annotations",
         :key="componentKey",
-        @forceRenderer="onForceRenderer"
+        @emitHandler="handlerToggle('swimlanes')",
+        @forceRenderer="onForceRenderer",
+        @timecodeChange="gotoSelector"
         )
 
       // button toggles swimlanes visibility
@@ -320,6 +324,7 @@
         if (this.video) {
           this.metadata = await this.$store.dispatch('metadata/getLocal', this.video)
         }
+        console.log('video', this.video)
       },
       async getAnnotations () {
         const
@@ -411,7 +416,12 @@
         this.$router.push({ query: { datetime: start } })
         const millis = selector._valueMillis - this.video.target.selector._valueMillis
         const targetMillis = millis * 0.001
-        if (this.playerTime !== targetMillis) this.player.currentTime(targetMillis)
+        if (this.playerTime !== targetMillis) {
+          this.player.currentTime(targetMillis)
+          // SwimLane
+          // FIXME this is the second call when timecode change is triggered from inside SwimLane
+          this.$store.commit('swimLaneSettings/setTimecode', millis)
+        }
       },
       gotoHashvalue () {
         if (this.hashValue && uuid.isUUID(this.hashValue)) {
@@ -435,6 +445,7 @@
       },
       onPlayerTime (seconds) {
         this.playerTime = seconds
+        this.$store.commit('swimLaneSettings/setTimecode', seconds * 1000)
       },
       setEditIndex (i) {
         this.editAnnotationIndex = i
@@ -442,6 +453,13 @@
       },
       getVideoDate () {
         return DateTime.fromMillis(this.video.target.selector._valueMillis)
+      },
+      getVideoDuration () {
+        const duration = this.video.target.selector.getDuration()
+        if (duration) {
+          return duration.as('milliseconds')
+        }
+        return 0
       }
     }
   }

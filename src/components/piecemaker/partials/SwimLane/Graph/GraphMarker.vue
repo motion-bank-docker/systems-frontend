@@ -99,20 +99,20 @@
         return this.isHovered || this.isSelected ? 1 : 0.5
       },
       xAbs () {
-        return this.root.millisTotaltoAbsGraph(this.millis)
+        return this.root.millisTotaltoAbsGraph(this.millis) || 0
       },
       xRel () {
-        return this.root.millisTotaltoRelGraph(this.millis)
+        return this.root.millisTotaltoRelGraph(this.millis) || 0
       },
       xRelCircle () {
-        return this.root.millisTotaltoRelGraph(this.millis) - this.root.toRelGraphX(this.circleR)
+        return this.root.millisTotaltoRelGraph(this.millis) - this.root.toRelGraphX(this.circleR) || 0
       },
       widthRel () {
         // return this.root.millistoRelGraph(this.annotationData.body.duration)
-        return this.root.millistoRelGraph(this.duration)
+        return this.root.millistoRelGraph(this.duration) || 0
       },
       x () {
-        return this.xRel * 100 + '%'
+        return this.xRel * 100 + '%' || 0
       },
       isVisible () {
         // return this.root.isVisible({left: this.xAbs, right: this.xAbs, offset: 10})
