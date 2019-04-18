@@ -21,6 +21,11 @@ and this project adheres to
 - Videos always have title annotations
 - Metadata uses video duration from annotation
 - Annotation's target.selector.value conforms to standard
+- VideoPlayer uses [privacy-enhanced mode](https://support.google.com/youtube/answer/171780)
+for YouTube sources to be GDPR compliant
+- VideoPlayer uses [dnt](https://github.com/vimeo/player.js/#embed-options)
+(do not track) option for showing Vimeo videos for GDPR compliance
+
 
 ### Updated
 
@@ -28,13 +33,6 @@ and this project adheres to
   to version 1.2.4
 - [mbjs-quasar](https://gitlab.rlp.net/motionbank/mbjs/quasar)
   to version 2.2.0
-
-### Changed
-
-- VideoPlayer uses [privacy-enhanced mode](https://support.google.com/youtube/answer/171780)
-for YouTube sources to be GDPR compliant
-- VideoPlayer uses [dnt](https://github.com/vimeo/player.js/#embed-options)
-(do not track) option for showing Vimeo videos for GDPR compliance
 
 
 ## [1.3.1] - 2019-04-06
