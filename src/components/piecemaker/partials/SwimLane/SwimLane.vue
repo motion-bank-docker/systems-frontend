@@ -9,7 +9,7 @@
 
       // ----------------------------------------------------------------------------------------------------- left side
 
-      div.shadow-10.q-pa-md.scroll(
+      div.shadow-10.q-pa-md.scroll.details(
       v-if="showDetails",
       :style="{width: dimensions.details.width.current + '%', minWidth: dimensions.details.width.min + '%', maxWidth: dimensions.details.width.max + '%', borderRight: '1px solid #333', maxHeight: '100%'}")
 
@@ -18,22 +18,28 @@
           div
             // go to prev/next annotation
 
-            q-btn.q-mr-xs(icon="navigate_before", round, size="sm", flat, :disabled="!storeSelectedAnnotation")
-            q-btn(icon="navigate_next", round, size="sm", flat, :disabled="!storeSelectedAnnotation")
+              q-btn.q-mr-xs(icon="navigate_before", round, size="sm", flat, :disabled="!storeSelectedAnnotation")
+              q-btn(icon="navigate_next", round, size="sm", flat, :disabled="!storeSelectedAnnotation")
 
             // icon + timestamp
 
-            .row.q-mt-md
-
+            .row.q-mt-xs
               .q-mt-xs.q-mr-sm(v-if="storeSelectedAnnotation")
                 annotation-icon(:selectedAnnotation="storeSelectedAnnotation")
 
-              q-btn.q-mr-sm(v-if="storeSelectedAnnotation", size="sm", :label="selectedAnnotationTime")
-              div.q-caption.q-mt-xs(v-else) empty
+              timecode-label(
+              v-if="selectedAnnotation",
+              @click.native="onTimecodeLabel(selectedAnnotation.target.selector)",
+              :millis="selectedAnnotation.target.selector._valueMillis",
+              :videoDate="getVideoDate()"
+              )
+
+              .q-caption.q-mt-xs(v-else) empty
 
           // button hide details
 
-          q-btn.q-px-sm.absolute-top-right(@click="handlerToggle('markerDetails')", icon="clear", size="sm", round)
+          q-btn.q-px-sm.absolute-top-right.details-buttons(@click="handlerToggle('markerDetails')",
+          icon="clear", size="sm", round)
 
         // details content
 
@@ -148,6 +154,7 @@
   import MarkerDetailsSelected from './MarkerDetailsSelected'
   import MarkerContextMenu from './MarkerContextMenu'
   import AnnotationIcon from '../AnnotationIcon'
+  import TimecodeLabel from '../TimecodeLabel'
 
   export default {
     components: {
@@ -159,9 +166,10 @@
       TimecodeBar,
       MarkerDetailsHover,
       MarkerDetailsSelected,
-      MarkerContextMenu
+      MarkerContextMenu,
+      TimecodeLabel
     },
-    props: ['timelineUuid', 'markerDetails', 'resizable', 'start', 'duration', 'annotations'],
+    props: ['timelineUuid', 'markerDetails', 'resizable', 'start', 'duration', 'annotations', 'video'],
     data () {
       return {
         self: this,
@@ -278,7 +286,8 @@
         timecodeCurrent: 'swimLaneSettings/getTimecode',
         scrollPosition: 'swimLaneSettings/getScrollPosition',
         scaleFactor: 'swimLaneSettings/getScaleFactor',
-        groupAnnotationsBy: 'swimLaneSettings/getGroupAnnotationsBy'
+        groupAnnotationsBy: 'swimLaneSettings/getGroupAnnotationsBy',
+        selectedAnnotation: 'swimLaneSettings/getSelectedAnnotation'
       }),
       storeSelectedAnnotation () {
         return this.$store.state.swimLaneSettings.selectedAnnotation
@@ -343,6 +352,15 @@
       }
     },
     methods: {
+      onTimecodeLabel (val) {
+        // EventHub.$emit('test', val)
+        this.$root.$emit('emitSelector', val)
+        // console.log(val)
+        // alert(val + ' (NOT EMITTED)')
+      },
+      getVideoDate () {
+        return DateTime.fromMillis(this.video.target.selector._valueMillis)
+      },
       setupScreen () {
         let selectedA = this.$store.state.swimLaneSettings.selectedAnnotation
         if (selectedA) {
@@ -814,4 +832,9 @@
     top: 0px
     z-index: 99
 
+  .details
+    .details-buttons
+      opacity 0
+    &:hover .details-buttons
+      opacity 1
 </style>
