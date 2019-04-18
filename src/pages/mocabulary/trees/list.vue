@@ -105,7 +105,7 @@
         }
         // children.unshift({label: '', body: 'test'})
         children.push({label: '', header: 'add'})
-        this.trees.push([{newChild: '', uuid: this.vocabularies[i].uuid, label: this.vocabularies[i].title, children: children}])
+        this.trees.push([{newChild: '', _uuid: this.vocabularies[i]._uuid, label: this.vocabularies[i].title, children: children}])
       }
       // console.log(this.trees)
     },

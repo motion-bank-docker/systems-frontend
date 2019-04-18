@@ -66,7 +66,7 @@
             created: 800
           }
         ], */
-        query: { type: constants.MAP_TYPE_TIMELINE },
+        query: { type: constants.mapTypes.MAP_TYPE_TIMELINE },
         requestTransform: async rows => {
           for (let i in rows) {
             const transformed = {}
@@ -74,7 +74,7 @@
             transformed.title = row.title
             transformed.last_updated = row.updated ? row.updated : row.created
             transformed.author = row.author ? row.author.name : _this.$t('labels.unknown_author')
-            transformed.uuid = row.uuid
+            transformed._uuid = row._uuid
             transformed.id = row.id
             rows[i] = transformed
           }
@@ -111,25 +111,25 @@
               type: 'live-annotate',
               title: 'buttons.live_annotate',
               color: 'primary',
-              click: (item) => _this.$router.push({ name: 'piecemaker.timelines.annotate', params: { id: item.uuid } })
+              click: (item) => _this.$router.push({ name: 'piecemaker.timelines.annotate', params: { uuid: item._uuid } })
             },
             {
               type: 'videos',
               title: 'buttons.videos',
               color: 'primary',
-              click: (item) => _this.$router.push({ name: 'piecemaker.videos.list', params: { timelineId: item.uuid } })
+              click: (item) => _this.$router.push({ name: 'piecemaker.videos.list', params: { timelineUuid: item._uuid } })
             },
             {
               type: 'search',
               title: 'buttons.search',
               color: 'primary',
               feature: 'search',
-              click: (item) => _this.$router.push({ name: 'piecemaker.timelines.search', params: { id: item.uuid } })
+              click: (item) => _this.$router.push({ name: 'piecemaker.timelines.search', params: { uuid: item._uuid } })
             },
             {
               type: 'edit',
               title: 'buttons.edit',
-              click: (item) => _this.$router.push({ name: 'piecemaker.timelines.edit', params: { id: item.uuid } })
+              click: (item) => _this.$router.push({ name: 'piecemaker.timelines.edit', params: { uuid: item._uuid } })
             },
             {
               type: 'delete',

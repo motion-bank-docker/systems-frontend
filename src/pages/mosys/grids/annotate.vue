@@ -3,7 +3,7 @@
     div.backbutton
       q-btn(slot="backButton", @click="$router.push('/mosys/grids')", icon="keyboard_backspace", round, small, color="black")
     div.grid-editor-shadow-right(v-if="$store.state.mosys.showSources")
-    grid-editor.grid-editor(:gridUuid="$route.params.id")
+    grid-editor.grid-editor(:gridUuid="$route.params.uuid")
     grid-editor-sources.grid-editor-sources(v-if="$store.state.mosys.showSources")
 </template>
 

@@ -94,7 +94,7 @@
         this.session.annotations.forEach(aobj => {
           if (aobj.duration >= _this.sessionTime && !found) {
             aobj.active = found = true
-            const el = this.$refs[`annotation-${aobj.annotation.uuid}-${aobj.duration}`]
+            const el = this.$refs[`annotation-${aobj.annotation._uuid}-${aobj.duration}`]
             if (Array.isArray(el)) _this.scrollToElement(el[0], 250)
           }
           else aobj.active = false
@@ -120,7 +120,7 @@
       onClickVideo (vid) {
         this.showVideo = true
         this.video = vid
-        this.currentVideo = vid.annotation.uuid
+        this.currentVideo = vid.annotation._uuid
       },
       onCloseVideo () {
         this.showVideo = false
@@ -160,7 +160,7 @@
         const _this = this
         switch (type) {
         case 'annotate':
-          return _this.$router.push(`/piecemaker/videos/${data.row.uuid}/annotate`)
+          return _this.$router.push(`/piecemaker/videos/${data.row._uuid}/annotate`)
         }
       }
     }

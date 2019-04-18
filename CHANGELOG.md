@@ -12,7 +12,22 @@ and this project adheres to
 
 ### Added
 
+- Cell datatype available as vuex store module
 - SwimLane component in post-annotator and on standalone page
+- Annotations can have durations through target.selector.value
+
+### Changed
+
+- Videos always have title annotations
+- Metadata uses video duration from annotation
+- Annotation's target.selector.value conforms to standard
+
+### Updated
+
+- [mbjs-data-models](https://gitlab.rlp.net/motionbank/mbjs/data-models)
+  to version 1.2.4
+- [mbjs-quasar](https://gitlab.rlp.net/motionbank/mbjs/quasar)
+  to version 2.2.0
 
 ### Changed
 

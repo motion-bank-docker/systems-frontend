@@ -26,7 +26,7 @@
         .checkSession(this.$store)
         .then(res => {
           if (res) {
-            _this.$router.replace(_this.redirect || { name: 'users.edit', params: { id: 'me' } })
+            _this.$router.replace(_this.redirect || { name: 'users.edit', params: { uuid: 'me' } })
           }
           else {
             _this.showLogin = true

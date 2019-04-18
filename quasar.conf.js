@@ -61,7 +61,7 @@ module.exports = function (ctx) {
         //
         VOCABULARY_BASE_URI: JSON.stringify(process.env.VOCABULARY_BASE_URI || 'http://id.motionbank.org/vocabularies/'),
         AUTH0_APP_METADATA_PREFIX: JSON.stringify(process.env.AUTH0_APP_METADATA_PREFIX || 'https://app.motionbank.org/app_metadata/'),
-        ID_FIELD: JSON.stringify(process.env.ID_FIELD || 'uuid'),
+        ID_FIELD: JSON.stringify(process.env.ID_FIELD || '_uuid'),
         //
         // Auth0
         //

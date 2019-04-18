@@ -19,6 +19,7 @@
   import { DateTime } from 'luxon'
   import { required } from 'vuelidate/lib/validators'
   import guessType from 'mbjs-media/src/util/guess-type'
+  import titleHelper from 'mbjs-quasar/src/lib/title-helper'
 
   export default {
     components: {
@@ -52,8 +53,20 @@
           },
           submit: {
             async handler () {
-              const target = _this.timeline.getTimelineTarget(DateTime.local().toString())
-              if (_this.selectorTime) target.selector.value = _this.selectorTime
+              const metadata = await _this.$store.dispatch('metadata/get', {
+                body: {
+                  source: {
+                    id: _this.payload.url
+                  }
+                }
+              })
+              let
+                start = _this.selectorTime || DateTime.local().toString(),
+                end
+              if (metadata && metadata.duration) {
+                end = DateTime.fromISO(start, {setZone: true}).plus(metadata.duration * 1000).toISO()
+              }
+              const target = _this.timeline.getInterval(start, end)
               _this.apiPayload = {
                 body: {
                   source: {
@@ -66,14 +79,17 @@
                 target
               }
               const annotation = await _this.$store.dispatch('annotations/post', _this.apiPayload)
-              _this.$router.push(`/piecemaker/videos/${annotation.uuid}/edit`)
+              if (metadata) {
+                await titleHelper.create(_this.$store, annotation.id, metadata.title)
+              }
+              _this.$router.push(`/piecemaker/videos/${annotation._uuid}/edit`)
             }
           }
         }
       }
     },
     async mounted () {
-      this.timeline = await this.$store.dispatch('maps/get', this.$route.params.timelineId)
+      this.timeline = await this.$store.dispatch('maps/get', this.$route.params.timelineUuid)
     }
   }
 </script>

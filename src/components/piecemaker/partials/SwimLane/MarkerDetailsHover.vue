@@ -16,7 +16,6 @@
 
 <script>
   import { EventHub } from './EventHub'
-  import { DateTime } from 'luxon'
 
   export default {
     props: ['root'],
@@ -67,11 +66,11 @@
         this.viewportHeight = obj.height
       },
       onMarkerEnter (annotationData) {
-        let ms = this.$parent.millisTotalToTimeline(DateTime.fromISO(annotationData.target.selector.value).toMillis())
+        let ms = this.$parent.millisTotalToTimeline(annotationData.target.selector._valueMillis)
         this.annotationData = {
           // 'Created': DateTime.fromISO(annotationData.created).toFormat('yyyy LLL dd, HH:mm:ss.SSS'),
           'Start': this.root.millisToText(ms),
-          'Duration': annotationData.body.duration ? this.root.millisToText(annotationData.body.duration) : '-',
+          'Duration': annotationData.target.selector._valueDuration ? this.root.millisToText(annotationData.target.selector._valueDuration) : '-',
           'Author': annotationData.author.name,
           // 'Purpose': annotationData.body.purpose,
           // 'Body Type': annotationData.body.type,

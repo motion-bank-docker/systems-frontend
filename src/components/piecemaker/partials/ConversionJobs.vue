@@ -78,7 +78,7 @@
             console.debug('created annotation', annotation)
             if (detail.isPublic) {
               console.debug('make annotation public')
-              await this.$store.dispatch('acl/set', {uuid: annotation.uuid, role: 'public', permissions: ['get']})
+              await this.$store.dispatch('acl/set', {uuid: annotation._uuid, role: 'public', permissions: ['get']})
             }
             this.$store.commit('conversions/removeJobDetail', jobId)
             this.$root.$emit('updateVideos')

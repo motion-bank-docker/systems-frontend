@@ -440,7 +440,7 @@
 
         // for (let a in this.annotations) {
         //   let ann = this.annotations[a]
-        //   console.debug('a:', ann, ann.body.duration)
+        //   console.debug('a:', ann)
         // }
         // console.log('annotations', this.annotations.length, DateTime.fromMillis(this.timeline.duration).toFormat('HH:mm:ss.SSS'), this.timelineUuid)
       },

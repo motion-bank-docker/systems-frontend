@@ -8,6 +8,7 @@
       .row
         .col-md-12
           calendar-time-main(:datetime="selectorValue", @update="onCalendarUpdate")
+          p {{ $t('labels.video_duration') }}: {{ duration }}
           p.q-mb-lg(v-if="selectorOverride !== selectorValue") {{ $t('messages.caution_video_time_override') }}
           form-main(v-model.lazy="payload", :schema="schema", ref="videoForm")
 
@@ -23,8 +24,11 @@
 
   import { required } from 'vuelidate/lib/validators'
   import guessType from 'mbjs-media/src/util/guess-type'
+  import titleHelper from 'mbjs-quasar/src/lib/title-helper'
 
+  import constants from 'mbjs-data-models/src/constants'
   import { parseURI } from 'mbjs-data-models/src/lib'
+  import { DateTime } from 'luxon'
 
   export default {
     components: {
@@ -35,34 +39,22 @@
     methods: {
       onCalendarUpdate (val) {
         this.selectorOverride = val
-      },
-      async createTitle (id, value) {
-        const titlePayload = {
-          body: {
-            value,
-            type: 'TextualBody',
-            purpose: 'describing'
-          },
-          target: {
-            type: 'Annotation',
-            id
-          }
-        }
-        const title = await this.$store.dispatch('annotations/post', titlePayload)
-        return title
-      },
-      async updateTitle (uuid, value) {
-        const titlePayload = { body: { value } }
-        const title = await this.$store.dispatch('annotations/patch', [uuid, titlePayload])
-        return title
-      },
-      async removeTitle (uuid) {
-        await this.$store.dispatch('annotations/delete', uuid)
       }
     },
     computed: {
       url () {
         if (this.payload) return this.payload.url
+      },
+      selectorValue () {
+        if (this.annotation) {
+          const parsed = this.annotation.target.selector.parse()
+          return Array.isArray(parsed['date-time:t']) ? parsed['date-time:t'][0].toISO() : parsed['date-time:t'].toISO()
+        }
+      },
+      duration () {
+        if (this.annotation && this.annotation.target.selector) {
+          return this.annotation.target.selector.getDuration().toFormat(constants.config.TIMECODE_FORMAT)
+        }
       }
     },
     watch: {
@@ -90,25 +82,24 @@
     data () {
       const context = this
       return {
-        // FIXME: i know this is bullshit!!! (but i hope it works for now)
         apiPayload: undefined,
         selectorOverride: undefined,
-        selectorValue: undefined,
         titlePayload: undefined,
         meta: undefined,
         map: undefined,
-        payload: context.$store.dispatch('annotations/get', context.$route.params.id)
+        annotation: undefined,
+        payload: this.$store.dispatch('annotations/get', this.$route.params.uuid)
           .then(async result => {
+            this.annotation = result
             this.map = await this.$store.dispatch('maps/get', parseURI(result.target.id).uuid)
             this.meta = await this.$store.dispatch('metadata/get', result)
             this.titlePayload = this.meta.titleAnnotation
-            this.selectorValue = result.target.selector.value
 
-            const tags = await context.$store.dispatch('tags/get', result)
+            const tags = await this.$store.dispatch('tags/get', result)
 
             return {
               gid: result.target.id,
-              uuid: result.uuid,
+              _uuid: parseURI(result.target.id).uuid,
               url: result.body.source.id,
               id: result.id,
               title: this.meta.title,
@@ -149,20 +140,28 @@
           submit: {
             async handler () {
               if (!context.titlePayload && context.payload.title !== context.meta.title) {
-                await context.createTitle(context.payload.id, context.payload.title)
+                await titleHelper.create(context.$store, context.payload.id, context.payload.title)
               }
-              else if (context.titlePayload && context.payload.title === context.meta.originalTitle) {
-                await context.removeTitle(context.titlePayload.uuid)
-              }
+              // else if (context.titlePayload && context.payload.title === context.meta.originalTitle) {
+              //   await titleHelper.remove(context.$store, context.titlePayload.id)
+              // }
               else if (context.titlePayload && context.payload.title !== context.titlePayload.body.value) {
-                await context.updateTitle(context.titlePayload.uuid, context.payload.title)
+                await titleHelper.update(context.$store, context.titlePayload.id, context.payload.title)
               }
+              let selector
+              if (context.selectorOverride) {
+                const
+                  durationMs = context.annotation.target.selector._valueDuration,
+                  end = durationMs ? DateTime.fromISO(context.selectorOverride, {setZone: true})
+                    .plus(durationMs).toISO() : undefined
+                const target = context.map.getInterval(context.selectorOverride, end)
+                selector = target.selector.toObject()
+              }
+              else selector = context.annotation.target.selector.toObject()
               context.apiPayload = {
                 target: {
                   id: context.payload.timeline,
-                  selector: {
-                    value: context.selectorOverride || context.selectorValue
-                  }
+                  selector
                 },
                 body: {
                   source: {
@@ -171,12 +170,12 @@
                   }
                 }
               }
-              await context.$store.dispatch('annotations/patch', [context.payload.uuid, context.apiPayload])
+              await context.$store.dispatch('annotations/patch', [context.annotation._uuid, context.apiPayload])
               await context.$store.dispatch('tags/set', [context.payload, context.payload.tags])
 
               context.$router.push({
                 name: 'piecemaker.videos.list',
-                params: { timelineId: parseURI(context.payload.gid).uuid }
+                params: { timelineUuid: parseURI(context.payload.gid).uuid }
               })
             }
           }
