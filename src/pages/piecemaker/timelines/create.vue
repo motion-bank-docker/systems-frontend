@@ -45,7 +45,7 @@
         headers: {
           Authorization: `Bearer ${localStorage.getItem('access_token')}`
         },
-        type: constants.MAP_TYPE_TIMELINE,
+        type: constants.mapTypes.MAP_TYPE_TIMELINE,
         payload: undefined,
         schema: {
           fields: {
@@ -61,7 +61,7 @@
           },
           submit: {
             handler () {
-              _this.payload.type = [constants.MAP_TYPE_TIMELINE]
+              _this.payload.type = [constants.mapTypes.MAP_TYPE_TIMELINE]
               return _this.$store.dispatch('maps/post', _this.payload)
                 .then(() => _this.$router.push({ name: 'piecemaker.timelines.list' }))
             }

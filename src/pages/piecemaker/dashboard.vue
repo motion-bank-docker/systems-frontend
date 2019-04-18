@@ -13,7 +13,7 @@
               div
                 q-btn(@click="$router.push('/piecemaker/timelines')", flat, color="primary") All Timelines
                 q-btn(@click="$router.push('/piecemaker/timelines/create')", flat, color="primary") New Timeline
-          q-item(v-for="item in timelines", :key="item.uuid", link, exact, :to="'/piecemaker/timelines/' + item.uuid")
+          q-item(v-for="item in timelines", :key="item._uuid", link, exact, :to="'/piecemaker/timelines/' + item._uuid")
             q-item-main
               q-item-tile(label) {{ item.title }}
               q-item-tile(sublabel) {{ item.description }}
@@ -22,7 +22,7 @@
           q-list-header
             .row.justify-between.items-between
               h4 Videos
-          q-item(v-for="item in videos", :key="item.uuid", link, exact, :to="'/piecemaker/videos/' + item.uuid")
+          q-item(v-for="item in videos", :key="item._uuid", link, exact, :to="'/piecemaker/videos/' + item._uuid")
             q-item-main
               q-item-tile(label) {{ item.title }}
               q-item-tile(sublabel) {{ item.description }}
@@ -45,7 +45,7 @@
     },
     mounted () {
       const _this = this
-      this.$store.dispatch('maps/find', { type: constants.MAP_TYPE_TIMELINE })
+      this.$store.dispatch('maps/find', { type: constants.mapTypes.MAP_TYPE_TIMELINE })
         .then(results => {
           _this.timelines = results
         })

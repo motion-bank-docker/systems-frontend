@@ -63,7 +63,7 @@ const tags = {
       }
       for (let tag of originalTags) {
         if (tags.indexOf(tag.body.value) === -1) {
-          await context.dispatch('annotations/delete', tag.uuid, {root: true})
+          await context.dispatch('annotations/delete', tag._uuid, {root: true})
           console.debug('removed tag', tag.body.value)
         }
       }

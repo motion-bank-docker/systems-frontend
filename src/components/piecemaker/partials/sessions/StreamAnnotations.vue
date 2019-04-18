@@ -1,12 +1,12 @@
 <template lang="pug">
   div
     .q-pl-sm(v-for="annotation in annotations",
-      :ref="annotation.uuid",
+      :ref="annotation._uuid",
       @mouseenter="onAnnotationEnter(annotation)",
       @mouseleave="onAnnotationLeave",
       @click="setSessionTime(annotation)")
 
-      .row.moba-list-entry(:ref="`annotation-${annotation.uuid}`")
+      .row.moba-list-entry(:ref="`annotation-${annotation._uuid}`")
         .row.col-12(style="line-height: 1.35rem;")
           .col-12.row.q-px-md.q-py-sm.moba-round-borders(
             :class="[annotation.type !== 'system' ? 'moba-hover' : '', annotation.type === 'separator' ? 'bg-grey-9 text-black text-center' : '']")

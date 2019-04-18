@@ -2,7 +2,7 @@
   .grid-display-container
     div.backbutton
       q-btn(slot="backButton", @click="$router.push('/mosys/grids')", icon="keyboard_backspace", round, small, color="black")
-    grid-display.grid-display(:gridUuid="$route.params.id")
+    grid-display.grid-display(:gridUuid="$route.params.uuid")
 </template>
 
 <script>

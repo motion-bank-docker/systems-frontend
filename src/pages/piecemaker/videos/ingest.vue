@@ -31,7 +31,7 @@
         _this.checkResults()
       })
       let result = await this.$store.dispatch('maps/find', {type: 'Timeline'})
-      this.timelines = result.items.map(timeline => { return { label: timeline.title, value: timeline.uuid } })
+      this.timelines = result.items.map(timeline => { return { label: timeline.title, value: timeline._uuid } })
     },
     watch: {
       async selectedTimeline (val) {
@@ -79,7 +79,7 @@
       async checkResults () {
         if (this.extractResults.length === this.extractJobs.length) {
           console.log('extraction complete', this.extractResults)
-          const rootTime = DateTime.fromISO(this.timecodeAnnotations[0].target.selector.value)
+          const rootTime = DateTime.fromMillis(this.timecodeAnnotations[0].target.selector._valueMillis)
           for (let message of this.extractResults) {
             const frameTime = this.timecodeToMillis(message.result[0][2])
             const refDate = rootTime.plus(frameTime).minus(message.result[0][0] * 1000)

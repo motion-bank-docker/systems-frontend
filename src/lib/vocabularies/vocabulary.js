@@ -4,13 +4,13 @@ import sift from 'sift'
 class Vocabulary {
   constructor (data = {}) {
     this._namespace = data.namespace || ObjectUtil.uuidNamespaces.NULL
-    this._uuid = data.uuid || ObjectUtil.uuid5(ObjectUtil.uuid4(), this._namespace)
+    this._uuid = data._uuid || ObjectUtil.uuid5(ObjectUtil.uuid4(), this._namespace)
     this._title = data.title
     this._entries = data.entries ? [].concat(data.entries) : []
 
     for (let entry of this._entries) {
-      if (!entry.uuid) entry.uuid = ObjectUtil.uuid5(entry.value, this._uuid)
-      if (!entry.id) entry.id = `${this.id}/${entry.uuid}`
+      if (!entry._uuid) entry._uuid = ObjectUtil.uuid5(entry.value, this._uuid)
+      if (!entry.id) entry.id = `${this.id}/${entry._uuid}`
       entry.key = entry.key || []
     }
   }

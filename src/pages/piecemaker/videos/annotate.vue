@@ -36,7 +36,7 @@
       ref="swimlaneWrap")
         swim-lane(
         v-if="timeline",
-        :timelineUuid="timeline.uuid",
+        :timelineUuid="timeline._uuid",
         :markerDetails="false",
         :resizable="true",
         :start="getVideoDate().toMillis()",
@@ -77,11 +77,11 @@
         q-item.annotation-list-item.q-pb-lg(
         dark,
         v-for="(annotation, i) in annotations",
-        :key="annotation.uuid",
-        :ref="annotation.uuid",
+        :key="annotation._uuid",
+        :ref="annotation._uuid",
         :class="{'is-selected' : currentIndex === i || editAnnotationIndex === i, 'is-being-edited': editAnnotationIndex === i}",
         style="border-left: 1px solid #444; border-top: 1px solid #444;",
-        @mouseover.native="setHover(annotation.uuid)"
+        @mouseover.native="setHover(annotation._uuid)"
         )
           q-item-main
             q-item-tile.relative-position
@@ -89,8 +89,8 @@
               .annotation-list-item-header
                 annotation-icon(:selectedAnnotation="annotation")
                 timecode-label(
-                  @click.native="gotoSelector(annotation.target.selector.value)",
-                  :timecode="annotation.target.selector.value",
+                  @click.native="gotoSelector(annotation.target.selector)",
+                  :millis="annotation.target.selector._valueMillis",
                   :videoDate="getVideoDate()"
                   )
 
@@ -145,7 +145,7 @@
       TimecodeLabel
     },
     async mounted () {
-      if (this.$route.params.id) {
+      if (this.$route.params.uuid) {
         this.$q.loading.show()
         await this.getVideo()
         await this.getAnnotations()
@@ -171,7 +171,7 @@
         playerTime: 0.0,
         selector: undefined,
         staging: process.env.IS_STAGING,
-        timelineId: undefined,
+        timelineUuid: undefined,
         timeline: undefined,
         video: undefined,
         // detailsSize: 300,
@@ -219,9 +219,7 @@
         if (!this.annotations || !this.annotations.length) return
 
         let idx = -1, annotation = this.annotations[0]
-        while (annotation && idx < this.annotations.length &&
-        DateTime.fromISO(this.baseSelector, { setZone: true }) >=
-        DateTime.fromISO(annotation.target.selector.value, { setZone: true })) {
+        while (annotation && idx < this.annotations.length && this.baseMillis >= annotation.target.selector._valueMillis) {
           idx++
           annotation = this.annotations[idx + 1]
         }
@@ -229,9 +227,14 @@
       },
       baseSelector () {
         if (!this.video) return DateTime.local().toISO()
-        return DateTime.fromISO(this.video.target.selector.value, { setZone: true })
-          .plus(this.playerTime * 1000)
-          .toISO()
+        const
+          parsed = this.video.target.selector.parse(),
+          start = Array.isArray(parsed['date-time:t']) ? parsed['date-time:t'][0] : parsed['date-time:t']
+        return start.plus(this.playerTime * 1000).toISO()
+      },
+      baseMillis () {
+        if (!this.video) return DateTime.local().toMillis()
+        return this.video.target.selector._valueMillis + this.playerTime * 1000
       },
       isEditingAnnotations () {
         return typeof this.editAnnotationIndex === 'number'
@@ -257,7 +260,7 @@
       },
       currentIndex (val) {
         if (typeof this.editAnnotationIndex === 'number') return
-        if (this.annotations[val]) this.scrollToAnnotation(this.annotations[val].uuid)
+        if (this.annotations[val]) this.scrollToAnnotation(this.annotations[val]._uuid)
       }
     },
     methods: {
@@ -309,17 +312,17 @@
         }
       },
       async handleConfirmModal (annotation) {
-        await this.deleteAnnotation(annotation.uuid)
+        await this.deleteAnnotation(annotation._uuid)
       },
       toggleFullscreen () {
         AppFullscreen.toggle()
         this.fullscreen = !this.fullscreen
       },
       async getVideo () {
-        this.video = await this.$store.dispatch('annotations/get', this.$route.params.id)
+        this.video = await this.$store.dispatch('annotations/get', this.$route.params.uuid)
         this.timeline = await this.$store.dispatch('maps/get', parseURI(this.video.target.id).uuid)
         if (this.video) {
-          this.metadata = await this.$store.dispatch('metadata/get', this.video)
+          this.metadata = await this.$store.dispatch('metadata/getLocal', this.video)
         }
         console.log('video', this.video)
       },
@@ -328,13 +331,13 @@
           _this = this,
           query = {
             'target.id': this.timeline.id,
-            'target.type': constants.MAP_TYPE_TIMELINE,
-            'target.selector.value': { $gte: this.video.target.selector.value },
+            'target.type': constants.mapTypes.MAP_TYPE_TIMELINE,
+            'target.selector._valueMillis': { $gte: this.video.target.selector._valueMillis },
             'body.type': { $in: ['TextualBody', 'VocabularyEntry'] }
           }
-        if (this.metadata.duration) {
-          const start = DateTime.fromISO(this.video.target.selector.value, { setZone: true })
-          query['target.selector.value']['$lte'] = start.plus(this.metadata.duration * 1000).toISO()
+        if (this.video.target.selector._valueDuration) {
+          query['target.selector._valueMillis']['$lte'] = this.video.target.selector._valueMillis +
+            this.video.target.selector._valueDuration
         }
         const results = await this.$store.dispatch('annotations/find', query)
         for (let item of results.items) {
@@ -353,10 +356,8 @@
       },
       async createAnnotation (annotation = {}) {
         try {
-          const target = this.timeline.getTimelineTarget(annotation.target.selector.value)
-          const payload = ObjectUtil.merge(annotation, {
-            target: ObjectUtil.merge({}, annotation.target, target)
-          })
+          const target = this.timeline.getInterval(annotation.target.selector.value['date-time:t'])
+          const payload = ObjectUtil.merge(annotation, { target })
           console.debug('create annotation', target, payload)
           const result = await this.$store.dispatch('annotations/post', payload)
           if (result.body.type === 'VocabularyEntry') {
@@ -365,7 +366,7 @@
           }
           this.annotations.push(result)
           this.annotations = this.annotations.sort(this.$sort.onRef)
-          setTimeout(() => this.scrollToAnnotation(result.uuid), 500)
+          setTimeout(() => this.scrollToAnnotation(result._uuid), 500)
         }
         catch (err) {
           this.$handleError(this, err, 'errors.create_annotation_failed')
@@ -381,9 +382,9 @@
         if (annotation.body.value !== this.editAnnotationBuffer) {
           try {
             Assert.isType(annotation, 'object')
-            Assert.ok(uuidValidate(annotation.uuid))
+            Assert.ok(uuidValidate(annotation._uuid))
             Assert.isType(annotation.body.value, 'string')
-            await this.$store.dispatch('annotations/patch', [annotation.uuid, annotation])
+            await this.$store.dispatch('annotations/patch', [annotation.id, annotation])
             await this.getAnnotations()
             this.$store.commit('notifications/addMessage', {
               body: 'messages.updated_annotation',
@@ -409,9 +410,11 @@
         }
       },
       gotoSelector (selector) {
-        this.$router.push({ query: { datetime: selector } })
-        const millis = DateTime.fromISO(selector, { setZone: true }).toMillis() -
-          DateTime.fromISO(this.video.target.selector.value, { setZone: true }).toMillis()
+        const
+          parsed = selector.parse(),
+          start = Array.isArray(parsed['date-time:t']) ? parsed['date-time:t'][0] : parsed['date-time:t']
+        this.$router.push({ query: { datetime: start } })
+        const millis = selector._valueMillis - this.video.target.selector._valueMillis
         const targetMillis = millis * 0.001
         if (this.playerTime !== targetMillis) {
           this.player.currentTime(targetMillis)
@@ -422,10 +425,10 @@
       },
       gotoHashvalue () {
         if (this.hashValue && uuid.isUUID(this.hashValue)) {
-          const result = this.annotations.filter(annotation => annotation.uuid === this.hashValue)
+          const result = this.annotations.filter(annotation => annotation._uuid === this.hashValue)
           if (result.length) {
             this.scrollToAnnotation(this.hashValue)
-            this.gotoSelector(result[0].target.selector.value)
+            this.gotoSelector(result[0].target.selector)
             if (this.hashTimeout) this.hashTimeout = false
           }
         }
@@ -434,11 +437,11 @@
         this.player = player
       },
       formatSelectorForList (val) {
-        const annotationDate = DateTime.fromISO(val, { setZone: true })
-        const videoDate = DateTime.fromISO(this.video.target.selector.value, { setZone: true })
+        const annotationDate = DateTime.fromMillis(val._valueMillis)
+        const videoDate = DateTime.fromMillis(this.video.target.selector._valueMillis)
         return Interval.fromDateTimes(videoDate, annotationDate)
           .toDuration()
-          .toFormat(constants.TIMECODE_FORMAT)
+          .toFormat(constants.config.TIMECODE_FORMAT)
       },
       onPlayerTime (seconds) {
         this.playerTime = seconds
@@ -449,11 +452,12 @@
         this.editAnnotationBuffer = this.annotations[i].body.value
       },
       getVideoDate () {
-        return DateTime.fromISO(this.video.target.selector.value, { setZone: true })
+        return DateTime.fromMillis(this.video.target.selector._valueMillis)
       },
       getVideoDuration () {
-        if (this.metadata.duration) {
-          return this.metadata.duration * 1000
+        const duration = this.video.target.selector.getDuration()
+        if (duration) {
+          return duration.as('milliseconds')
         }
         return 0
       }

@@ -1,5 +1,5 @@
 <template lang="pug">
-  .timecode-label.cursor-pointer {{ formatSelectorForList() }}
+  .timecode-label.cursor-pointer {{ formatted }}
 </template>
 
 <script>
@@ -10,20 +10,22 @@
     name: 'TimecodeLabel',
     // TODO video should be accessed differently?
     // TODO define global video object?
-    props: ['timecode', 'videoDate'],
-    data () {
-      return {
-      }
-    },
+    props: ['timecode', 'videoDate', 'millis'],
     computed: {
-    },
-    mounted () {
-    },
-    methods: {
-      formatSelectorForList () {
-        const annotationDate = DateTime.fromISO(this.timecode, { setZone: true })
-        if (this.videoDate) return Interval.fromDateTimes(this.videoDate, annotationDate).toDuration().toFormat(constants.TIMECODE_FORMAT)
-        return annotationDate.toFormat(constants.TIMECODE_FORMAT)
+      formatted () {
+        let annotationDate
+        if (this.millis) {
+          annotationDate = DateTime.fromMillis(this.millis)
+        }
+        else if (this.timecode) {
+          annotationDate = DateTime.fromISO(this.timecode, { setZone: true })
+        }
+        if (annotationDate && this.videoDate) {
+          return Interval.fromDateTimes(this.videoDate, annotationDate)
+            .toDuration()
+            .toFormat(constants.config.TIMECODE_FORMAT)
+        }
+        return annotationDate ? annotationDate.toFormat(constants.config.TIMECODE_FORMAT) : ''
       }
     }
   }

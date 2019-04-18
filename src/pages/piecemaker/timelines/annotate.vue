@@ -26,9 +26,9 @@
     .row.q-pb-xl
       .col-xs-12.offset-xs-none.col-md-10.offset-md-1.col-lg-8.offset-lg-2
         q-list(v-if="inputStyle", no-border, style="margin-top: 8rem;")
-          q-item(v-for="(annotation, i) in annotations", :key="annotation.uuid", :id="annotation.uuid")
+          q-item(v-for="(annotation, i) in annotations", :key="annotation._uuid", :id="annotation._uuid")
             q-item-side(v-if="annotation.target.selector")
-              | {{ formatSelectorForList(annotation.target.selector.value) }}
+              | {{ formatSelectorForList(annotation.target.selector) }}
             q-item-main
               q-input(v-if="annotation.body.type === 'TextualBody'", type="textarea",
               v-model="annotation.body.value", dark)
@@ -40,7 +40,7 @@
               :disabled="annotation.body.type !== 'TextualBody'",
               @click="$refs.annotationField.addToVocabulary(annotation)")
                 // q-tooltip.q-caption.bg-dark(:offset="[0,5]") alt + e
-              q-btn(@click="deleteAnnotation(annotation.uuid, i)", icon="clear", round, small)
+              q-btn(@click="deleteAnnotation(annotation.id, i)", icon="clear", round, small)
 
 </template>
 
@@ -48,7 +48,6 @@
   import AnnotationField from '../../../components/piecemaker/partials/AnnotationField'
   import { ObjectUtil, Assert } from 'mbjs-utils'
   import { DateTime } from 'luxon'
-  import uuidValidate from 'uuid-validate'
   import constants from 'mbjs-data-models/src/constants'
 
   export default {
@@ -65,7 +64,7 @@
       }
     },
     async mounted () {
-      this.timeline = await this.$store.dispatch('maps/get', this.$route.params.id)
+      this.timeline = await this.$store.dispatch('maps/get', this.$route.params.uuid)
     },
     methods: {
       async cloneEntry (annotation) {
@@ -73,7 +72,7 @@
           body: ObjectUtil.merge({}, annotation.body),
           target: ObjectUtil.merge({}, annotation.target)
         }
-        payload.target.selector.value = DateTime.local().toISO()
+        payload.target.selector.value = { 'date-time:t': DateTime.local().toISO() }
         await this.createAnnotation(payload)
       },
       async onAnnotation (annotation) {
@@ -82,7 +81,7 @@
       },
       async createAnnotation (annotation = {}) {
         try {
-          const target = this.timeline.getTimelineTarget(annotation.target.selector.value)
+          const target = this.timeline.getInterval(annotation.target.selector.value['date-time:t'])
           const payload = ObjectUtil.merge(annotation, {target})
           const result = await this.$store.dispatch('annotations/post', payload)
           if (result.body.type === 'VocabularyEntry') {
@@ -97,11 +96,11 @@
           this.$handleError(this, err, 'errors.create_annotation_failed')
         }
       },
-      async deleteAnnotation (uuid, index) {
+      async deleteAnnotation (id, index) {
         try {
-          Assert.ok(uuidValidate(uuid))
+          Assert.isType(id, 'string')
           Assert.isType(index, 'number')
-          await this.$store.dispatch('annotations/delete', uuid)
+          await this.$store.dispatch('annotations/delete', id)
           this.annotations.splice(index, 1)
         }
         catch (err) {
@@ -119,8 +118,8 @@
         }, delay)
       },
       formatSelectorForList (val) {
-        const selector = DateTime.fromISO(val)
-        return selector.toFormat(constants.TIMECODE_FORMAT)
+        return DateTime.fromMillis(val._valueMillis)
+          .toFormat(constants.config.TIMECODE_FORMAT)
       }
     }
   }

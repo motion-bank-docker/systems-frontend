@@ -11,9 +11,9 @@
         markdown-display.markdown-display(:content="result.body.value", :options="mdOptions")
         small {{ getVideo(result).metadata.title }}
       .col-md-6
-        p {{ formatDate(result.target.selector.value) }}
+        p {{ formatDate(result.target.selector._valueMillis) }}
         p
-          a(:href="`/piecemaker/videos/${getVideo(result).annotation.uuid}/annotate#${result.uuid}`") Goto Video
+          a(:href="`/piecemaker/videos/${getVideo(result).annotation._uuid}/annotate#${result._uuid}`") Goto Video
 </template>
 
 <script>
@@ -33,7 +33,7 @@
     },
     async mounted () {
       this.$q.loading.show()
-      this.map = await this.$store.dispatch('maps/get', this.$route.params.id)
+      this.map = await this.$store.dispatch('maps/get', this.$route.params.uuid)
       const videos = await this.$store.dispatch('annotations/find', {
         'target.id': this.map.id,
         'body.type': 'Video'
@@ -59,14 +59,14 @@
         this.results = result && Array.isArray(result.items) ? result.items.sort(this.$sort.onRef) : []
         this.$q.loading.hide()
       },
-      formatDate (iso) {
-        return DateTime.fromISO(iso).toLocaleString(DateTime.DATETIME_FULL_WITH_SECONDS)
+      formatDate (millis) {
+        return DateTime.fromMillis(millis).toLocaleString(DateTime.DATETIME_FULL_WITH_SECONDS)
       },
       getVideo (annotation) {
         for (let video of this.videos) {
           const
-            annoTime = DateTime.fromISO(annotation.target.selector.value, { setZone: true }),
-            videoStart = DateTime.fromISO(video.annotation.target.selector.value, { setZone: true }),
+            annoTime = DateTime.fromMillis(annotation.target.selector._valueMillis),
+            videoStart = DateTime.fromMillis(video.annotation.target.selector._valueMillis),
             videoEnd = videoStart.plus(video.metadata.duration * 1000)
           if (annoTime >= videoStart && annoTime < videoEnd) return video
         }
