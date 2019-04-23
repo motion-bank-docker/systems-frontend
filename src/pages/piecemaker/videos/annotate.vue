@@ -409,12 +409,7 @@
           this.$handleError(this, err, 'errors.delete_annotation_failed')
         }
       },
-      gotoSelector (selector) {
-        const
-          parsed = selector.parse(),
-          start = Array.isArray(parsed['date-time:t']) ? parsed['date-time:t'][0] : parsed['date-time:t']
-        this.$router.push({ query: { datetime: start } })
-        const millis = selector._valueMillis - this.video.target.selector._valueMillis
+      gotoMillis (millis) {
         const targetMillis = millis * 0.001
         if (this.playerTime !== targetMillis) {
           this.player.currentTime(targetMillis)
@@ -422,6 +417,14 @@
           // FIXME this is the second call when timecode change is triggered from inside SwimLane
           this.$store.commit('swimLaneSettings/setTimecode', millis)
         }
+      },
+      gotoSelector (selector) {
+        const
+          parsed = selector.parse(),
+          start = Array.isArray(parsed['date-time:t']) ? parsed['date-time:t'][0] : parsed['date-time:t']
+        this.$router.push({ query: { datetime: start } })
+        const millis = selector._valueMillis - this.video.target.selector._valueMillis
+        this.gotoMillis(millis)
       },
       gotoHashvalue () {
         if (this.hashValue && uuid.isUUID(this.hashValue)) {
