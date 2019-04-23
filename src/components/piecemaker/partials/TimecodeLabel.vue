@@ -1,5 +1,7 @@
 <template lang="pug">
-  .timecode-label.cursor-pointer {{ formatted }}
+  .timecode-label.cursor-pointer
+    span {{ formatted() }}
+    span.timecode-opacity :{{ formatted('milliseconds') }}
 </template>
 
 <script>
@@ -11,8 +13,9 @@
     // TODO video should be accessed differently?
     // TODO define global video object?
     props: ['timecode', 'videoDate', 'millis'],
-    computed: {
-      formatted () {
+    // computed: {
+    methods: {
+      formatted (val) {
         let annotationDate
         if (this.millis) {
           annotationDate = DateTime.fromMillis(this.millis)
@@ -21,9 +24,19 @@
           annotationDate = DateTime.fromISO(this.timecode, { setZone: true })
         }
         if (annotationDate && this.videoDate) {
-          return Interval.fromDateTimes(this.videoDate, annotationDate)
-            .toDuration()
-            .toFormat(constants.config.TIMECODE_FORMAT)
+          // FIXME: the predefined format in constants.js isn't used with this solution
+          // return Interval.fromDateTimes(this.videoDate, annotationDate)
+          //   .toDuration().toObject()
+          //   .toFormat(constants.config.TIMECODE_FORMAT)
+          let dur = Interval.fromDateTimes(this.videoDate, annotationDate)
+            .toDuration(['hours', 'minutes', 'seconds', 'milliseconds']).toObject()
+          switch (val) {
+          case 'milliseconds':
+            return dur.milliseconds
+          default:
+            let time = DateTime.fromObject({hour: dur.hours, minutes: dur.minutes, seconds: dur.seconds})
+            return time.toFormat('HH:mm:ss')
+          }
         }
         return annotationDate ? annotationDate.toFormat(constants.config.TIMECODE_FORMAT) : ''
       }
@@ -42,4 +55,6 @@
     border-radius 2px
     &:hover
       background-color $faded
+  .timecode-opacity
+    opacity .4
 </style>
