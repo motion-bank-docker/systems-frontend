@@ -1,6 +1,6 @@
 <template lang="pug">
   // q-list.sl-marker-details-selected(color="dark")
-  div
+  div(style="line-height: 1rem;")
     .q-caption(v-if="selectedAnnotation.body.type === 'Video'")
       .ellipsis {{ annotationText }}
       q-btn.q-mt-md(

@@ -42,6 +42,7 @@
         :start="getVideoDate().toMillis()",
         :duration="getVideoDuration()",
         :annotations="annotations",
+        :video="video",
         :key="componentKey",
         @emitHandler="handlerToggle('swimlanes')",
         @forceRenderer="onForceRenderer",
@@ -135,6 +136,8 @@
   import TimecodeLabel from '../../../components/piecemaker/partials/TimecodeLabel'
   import AnnotationIcon from '../../../components/piecemaker/partials/AnnotationIcon'
 
+  // import { EventHub } from '../../../components/piecemaker/partials/SwimLane/EventHub'
+
   const { getScrollTarget, setScrollPosition } = scroll
 
   export default {
@@ -151,6 +154,8 @@
         await this.getAnnotations()
         this.$q.loading.hide()
       }
+
+      // EventHub.$on('test', this.onTest)
 
       this.setupScreen()
     },
@@ -262,6 +267,9 @@
         if (typeof this.editAnnotationIndex === 'number') return
         if (this.annotations[val]) this.scrollToAnnotation(this.annotations[val]._uuid)
       }
+    },
+    created () {
+      this.$root.$on('emitSelector', this.gotoSelector)
     },
     methods: {
       setupScreen () {
