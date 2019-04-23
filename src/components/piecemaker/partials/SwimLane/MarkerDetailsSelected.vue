@@ -21,7 +21,7 @@
 </template>
 
 <script>
-  import { EventHub } from './EventHub'
+  // import { EventHub } from './EventHub'
 
   export default {
     props: ['root', 'resizable'],
@@ -46,7 +46,7 @@
     },
     async mounted () {
       // EventHub.$on('markerUnselect', this.onMarkerUnselect)
-      EventHub.$on('markerDown', this.onMarkerDown)
+      // EventHub.$on('markerDown', this.onMarkerDown)
       this.getAnnotationText(this.$store.state.swimLaneSettings.selectedAnnotation)
     },
     beforeDestroy () {
@@ -74,28 +74,6 @@
       },
       pushToVideo (val) {
         this.$router.push({name: 'piecemaker.videos.annotate', params: {id: val}})
-      },
-      onMarkerDown (annotationData) {
-        let ms = this.$parent.millisTotalToTimeline(annotationData.target.selector._valueMillis)
-        console.log(ms)
-        /*
-        let aData = {
-          // 'Created': DateTime.fromISO(annotationData.created).toFormat('yyyy LLL dd, HH:mm:ss.SSS'),#
-          // 'Start': this.root.millisToText(ms),
-          // 'Duration': annotationData.target.selector._valueDuration ? this.root.millisToText(annotationData.target.selector._valueDuration) : '–',
-          // 'Author': annotationData.author.name,
-          // 'Purpose': annotationData.body.purpose,
-          // 'Body Type': annotationData.body.type,
-          // 'Body Value': annotationData.body.value
-          start: {
-            value: this.root.millisToText(ms),
-            label: 'Start111111'
-          }
-        }
-        */
-        // this.$store.commit('swimLaneSettings/setSelectedAnnotation', aData)
-        let aDataNew = annotationData
-        this.$store.commit('swimLaneSettings/setSelectedAnnotation', aDataNew)
       },
       onMarkerUnselect () {
         this.annotationData = null

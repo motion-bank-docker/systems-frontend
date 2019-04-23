@@ -18,14 +18,14 @@
           div
             // go to prev/next annotation
 
-              q-btn.q-mr-xs(icon="navigate_before", round, size="sm", flat, :disabled="!storeSelectedAnnotation")
-              q-btn(icon="navigate_next", round, size="sm", flat, :disabled="!storeSelectedAnnotation")
+              q-btn.q-mr-xs(icon="navigate_before", round, size="sm", flat, :disabled="!selectedAnnotation")
+              q-btn(icon="navigate_next", round, size="sm", flat, :disabled="!selectedAnnotation")
 
             // icon + timestamp
 
             .row.q-mt-xs
-              .q-mt-xs.q-mr-sm(v-if="storeSelectedAnnotation")
-                annotation-icon(:selectedAnnotation="storeSelectedAnnotation")
+              .q-mt-xs.q-mr-sm(v-if="selectedAnnotation")
+                annotation-icon(:selectedAnnotation="selectedAnnotation")
 
               timecode-label(
               v-if="selectedAnnotation",
@@ -169,7 +169,7 @@
       MarkerContextMenu,
       TimecodeLabel
     },
-    props: ['timelineUuid', 'markerDetails', 'resizable', 'start', 'duration', 'annotations', 'video'],
+    props: ['timelineUuid', 'markerDetails', 'resizable', 'start', 'duration', 'annotations', 'video', 'map'],
     data () {
       return {
         self: this,
@@ -232,7 +232,8 @@
             }
           }
         },
-        selectedAnnotationTime: undefined
+        selectedAnnotationTime: undefined,
+        dirtyAnnotation: undefined
       }
     },
     mounted () {
@@ -255,9 +256,12 @@
       EventHub.$on('UIEnter', this.onUIEnter)
       EventHub.$on('UILeave', this.onUILeave)
 
+      // EventHub.$on('markerDown', this.onMarkerDown)
+
       EventHub.$on('timecodeChange', this.setTimecode)
       EventHub.$on('scrollPositionChange', this.setScrollPosition)
       EventHub.$on('scaleFactorChange', this.setScaleFactor)
+      EventHub.$on('annotationChange', this.onAnnotationChange)
 
       this.timecode.hoverText = this.millisToText(0)
       EventHub.$emit('timecodeChange', 0)
@@ -289,9 +293,6 @@
         groupAnnotationsBy: 'swimLaneSettings/getGroupAnnotationsBy',
         selectedAnnotation: 'swimLaneSettings/getSelectedAnnotation'
       }),
-      storeSelectedAnnotation () {
-        return this.$store.state.swimLaneSettings.selectedAnnotation
-      },
       storeCursorTop () {
         return this.$store.state.swimLaneSettings.cursorTop
       },
@@ -346,7 +347,7 @@
       timecodeCurrent (tc) {
         this.timecode.currentText = this.millisToText(tc)
       },
-      storeSelectedAnnotation (obj) {
+      selectedAnnotation (obj) {
         let ms = this.millisTotalToTimeline(DateTime.fromISO(obj.target.selector.value).toMillis())
         this.selectedAnnotationTime = this.millisToText(ms)
       }
@@ -362,7 +363,7 @@
         return DateTime.fromMillis(this.video.target.selector._valueMillis)
       },
       setupScreen () {
-        let selectedA = this.$store.state.swimLaneSettings.selectedAnnotation
+        let selectedA = this.selectedAnnotation
         if (selectedA) {
           let ms = this.millisTotalToTimeline(DateTime.fromISO(selectedA.target.selector.value).toMillis())
           this.selectedAnnotationTime = this.millisToText(ms)
@@ -497,8 +498,13 @@
       onGlobalUp () {
         this.activeEl = null
         this.inputOffset.x = 0
+
+        // has dirty annotation => trigger updateAnnotation in parent
+        if (this.dirtyAnnotation) {
+          this.$emit('updateAnnotation', this.dirtyAnnotation)
+          this.dirtyAnnotation = undefined
+        }
         EventHub.$emit('globalUp')
-        // console.log(this.$refs.root.clientHeight)
       },
       // ---------------------------------------------------------------------------------------------------------- E UI
       onUIDown (el) {
@@ -578,13 +584,16 @@
         this.$store.commit('swimLaneSettings/setScrollPosition', {x: x, y: y})
       },
       setTimecode (tc) { // int ms
-        this.$store.commit('swimLaneSettings/setTimecode', tc)
+        // this.$store.commit('swimLaneSettings/setTimecode', tc)
         this.$emit('timecodeChange', tc)
       },
       setScaleFactor (sf) {
         // this.$forceUpdate()
         this.$store.commit('swimLaneSettings/setScaleFactor', this.restrict(sf, 0, 1))
         // console.log('time frame', this.millisToText(this.getVisibleTimeFrame().millis / 5))
+      },
+      onAnnotationChange (annotation) {
+        this.dirtyAnnotation = annotation
       },
       // ----------------------------------------------------------------------------------------------------------- Get
       getVisibleTimeFrame () {
