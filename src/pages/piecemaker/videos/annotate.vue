@@ -46,7 +46,7 @@
         :key="componentKey",
         @emitHandler="handlerToggle('swimlanes')",
         @forceRenderer="onForceRenderer",
-        @timecodeChange="gotoSelector"
+        @timecodeChange="gotoMillis"
         )
 
       // button toggles swimlanes visibility
