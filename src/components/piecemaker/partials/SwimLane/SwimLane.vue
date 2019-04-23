@@ -579,7 +579,7 @@
       },
       setTimecode (tc) { // int ms
         this.$store.commit('swimLaneSettings/setTimecode', tc)
-        this.$emit('timecodeChange', this.millisToIso(tc + this.timeline.start))
+        this.$emit('timecodeChange', tc)
       },
       setScaleFactor (sf) {
         // this.$forceUpdate()
