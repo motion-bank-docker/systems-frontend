@@ -54,6 +54,7 @@
 <script>
   import { EventHub } from '../EventHub'
   import { mapGetters } from 'vuex'
+  import { DateTime } from 'luxon'
 
   export default {
     props: ['annotationData', 'index', 'root'],
@@ -170,12 +171,16 @@
           this.millis = this.root.getTimecodeCurrentTotal()
         }
         // set timecode to maker position
-        else if (!EventHub.keyIsPressed('Shift')) {
-          let tc = this.root.millisTotalToTimeline(this.millis)
-          EventHub.$emit('timecodeChange', tc)
-        }
+        // else if (!EventHub.keyIsPressed('Shift')) {
+        //   let tc = this.root.millisTotalToTimeline(this.millis)
+        //   EventHub.$emit('timecodeChange', tc)
+        // }
+        let tc = this.root.millisTotalToTimeline(this.millis)
+        EventHub.$emit('timecodeChange', tc)
+
         EventHub.$emit('markerDown', this.annotationData)
         EventHub.$emit('UIDown', this.activeElName)
+        this.$store.commit('swimLaneSettings/setSelectedAnnotation', this.annotationData)
       },
       onDownHandleLeft () {
         this.checkUnselect()
@@ -229,6 +234,7 @@
         else {
           this.duration = 0
         }
+        this.save()
       },
       onUnselect () {
         if (!this.isDragged && this.isSelected) {
@@ -259,6 +265,7 @@
             this.duration = this.root.restrict(tct - this.millis, 0, max)
             if (this.isDragged) EventHub.$emit('timecodeChange', tc)
           }
+          this.save()
         }
       },
       onMarkerContextAction (action) {
@@ -279,6 +286,7 @@
           this.endCached = this.getEnd()
           this.millis = this.root.getTimecodeCurrentTotal()
           this.duration = Math.max(this.endCached - this.millis, 0)
+          this.save()
         }
       },
       setEndToTimecode () {
@@ -289,13 +297,24 @@
             this.millis = tc
           }
           this.duration = Math.max(e, 0)
+          this.save()
         }
       },
       getEnd () { // returns total
         return this.millis + this.duration
       },
       checkUnselect () {
-        if (!EventHub.keyIsPressed('Shift')) EventHub.$emit('markerUnselect')
+        // if (!EventHub.keyIsPressed('Shift')) EventHub.$emit('markerUnselect')
+        EventHub.$emit('markerUnselect')
+      },
+      save () {
+        if (this.annotationData.target.selector) {
+          const target = this.root.map.getInterval(
+            DateTime.fromMillis(this.millis),
+            this.duration ? DateTime.fromMillis(this.millis + this.duration) : undefined)
+          this.annotationData.target.selector = target.selector
+          EventHub.$emit('annotationChange', this.annotationData)
+        }
       }
     }
   }

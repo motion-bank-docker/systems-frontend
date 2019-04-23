@@ -36,6 +36,7 @@
       ref="swimlaneWrap")
         swim-lane(
         v-if="timeline",
+        :map="timeline",
         :timelineUuid="timeline._uuid",
         :markerDetails="false",
         :resizable="true",
@@ -46,7 +47,8 @@
         :key="componentKey",
         @emitHandler="handlerToggle('swimlanes')",
         @forceRenderer="onForceRenderer",
-        @timecodeChange="gotoMillis"
+        @timecodeChange="gotoMillis",
+        @updateAnnotation="updateAnnotation"
         )
 
       // button toggles swimlanes visibility
@@ -94,6 +96,13 @@
                   :millis="annotation.target.selector._valueMillis",
                   :videoDate="getVideoDate()"
                   )
+                template(v-if="annotation.target.selector._valueDuration")
+                  .timecode-label-duration-spacer
+                  timecode-label(
+                    @click.native="gotoSelector(annotation.target.selector, true)",
+                    :millis="getAnnotationEndMillis(annotation)",
+                    :videoDate="getVideoDate()"
+                    )
 
               // buttons
 
@@ -426,12 +435,13 @@
           this.$store.commit('swimLaneSettings/setTimecode', millis)
         }
       },
-      gotoSelector (selector) {
+      gotoSelector (selector, useDuration) {
         const
           parsed = selector.parse(),
           start = Array.isArray(parsed['date-time:t']) ? parsed['date-time:t'][0] : parsed['date-time:t']
         this.$router.push({ query: { datetime: start } })
-        const millis = selector._valueMillis - this.video.target.selector._valueMillis
+        let millis = selector._valueMillis - this.video.target.selector._valueMillis
+        if (useDuration) millis += selector._valueDuration
         this.gotoMillis(millis)
       },
       gotoHashvalue () {
@@ -471,6 +481,11 @@
           return duration.as('milliseconds')
         }
         return 0
+      },
+
+      // Annotation list items specific
+      getAnnotationEndMillis (annotation) {
+        return annotation.target.selector._valueMillis + annotation.target.selector._valueDuration
       }
     }
   }
@@ -493,7 +508,11 @@
     font-size: 1rem
     line-height: 24px
   .fit
-    max-height 100%!important
+    max-height 100% !important
+
+  .timecode-label-duration-spacer
+    border-bottom: 1px solid $faded
+    width: 8px
 
   .annotation-list-item
     .annotation-list-item-buttons
