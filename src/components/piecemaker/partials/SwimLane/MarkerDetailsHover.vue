@@ -1,10 +1,11 @@
 <template lang="pug">
   q-list.sl-marker-details-hover.popup-shadow.bg-grey.no-select.no-event.q-px-md.q-pt-md.q-pb-none(
     :class="render",
-    :style="{bottom: px(bottom), left: px(left), width: px(width)}",
+    :style="{bottom: px(bottom), left: px(left), maxWidth: px(maxWidth)}",
     dark
     )
     q-window-resize-observable(@resize="viewportResize")
+    q-resize-observable(@resize="elementResize")
     q-item.q-pa-none.items-start.q-caption.q-pb-md(v-if="showDetails && annotationData")
       .ellipsis {{ teaserText }}
     template(v-else)
@@ -22,9 +23,10 @@
     data () {
       return {
         annotationData: null,
-        width: 350,
+        maxWidth: 350,
         teaserText: undefined,
-        viewportHeight: undefined
+        viewportHeight: undefined,
+        hoverboxWidth: undefined
       }
     },
     computed: {
@@ -45,7 +47,8 @@
         return (this.annotationData) ? this.viewportHeight - this.$parent.inputPosition.clientY + 20 : -99999
       },
       left () {
-        return (this.annotationData) ? this.$parent.restrict(this.$parent.inputPosition.clientX, 0, this.$parent.el.bounds.right - this.width) : -99999
+        return (this.annotationData) ? this.$parent.restrict(this.$parent.inputPosition.clientX, 0, this.$parent.el.bounds.right - this.hoverboxWidth) : -99999
+        // return (this.annotationData) ? this.$parent.restrict(this.$parent.inputPosition.clientX, 0, this.$parent.el.bounds.right - this.width) : -99999
       },
       render () {
         // console.log()
@@ -62,6 +65,9 @@
       // EventHub.$off('markerLeave', this.onMarkerLeave)
     },
     methods: {
+      elementResize (obj) {
+        this.hoverboxWidth = obj.width
+      },
       viewportResize (obj) {
         this.viewportHeight = obj.height
       },
