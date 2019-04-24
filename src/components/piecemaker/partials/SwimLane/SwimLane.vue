@@ -272,7 +272,7 @@
       EventHub.$emit('afterComponentMounted')
       this.cacheDimensions()
       // this.setScaleFactor(0.2)
-      console.log('video start', this.start, this.duration)
+      // console.log('video start', this.start, this.duration)
     },
     beforeDestroy () {
       this.setScrollPosition({x: 0, y: 0})
@@ -335,10 +335,12 @@
         return filtered
       },
       timecodeMarkerCurrentX () {
-        if (this.timecodeCurrent) {
+        if (this.timecodeCurrent && this.scrollPosition) {
           let r = this.millistoRelGraph(this.timecodeCurrent) - this.scrollPosition.x
           let p = this.toAbsGraphX(r)
-          return p
+          if (isFinite(p)) return p
+          else return 0
+          // return p
         }
         return 0
       }
@@ -575,10 +577,10 @@
         let x = null
         let y = null
 
-        if (!isNaN(sp.x)) {
+        if (!isNaN(sp.x) && this.$refs.nav) {
           x = this.restrict(sp.x, 0, this.toRelCompX(this.el.width - this.$refs.nav.navHandleWidth))
         }
-        if (!isNaN(sp.y)) {
+        if (!isNaN(sp.y) && this.$refs.graph && this.el) {
           y = this.restrict(sp.y, 0, this.toRelGraphY(this.$refs.graph.height - this.el.height))
         }
         this.$store.commit('swimLaneSettings/setScrollPosition', {x: x, y: y})
@@ -626,8 +628,10 @@
         return {x: this.toRelGraphX(this.getInputPositionAbsGraph().x), y: this.toRelGraphY(this.getInputPositionAbsGraph().y)}
       },
       getTimecodeFromInputPosition () {
-        let tc = Math.round(this.toRelGraphX(this.inputPosition.x - this.$refs.graph.x) * this.timeline.duration)
-        return this.restrict(tc, 0, this.timeline.duration)
+        if (this.inputPosition && this.$refs.graph) {
+          let tc = Math.round(this.toRelGraphX(this.inputPosition.x - this.$refs.graph.x) * this.timeline.duration)
+          return this.restrict(tc, 0, this.timeline.duration)
+        }
       },
       getTimecodeFromInputPositionTotal () {
         return this.getTimecodeFromInputPosition() + this.timeline.start
@@ -729,7 +733,9 @@
       //   return rel + this.scroll
       // },
       millistoRelGraph (ms) {
-        return ms / this.timeline.duration
+        let res = ms / this.timeline.duration
+        if (isFinite(res)) return ms / this.timeline.duration
+        else return 0
       },
       millistoAbsGraph (ms) {
         return ms / this.timeline.duration * this.$refs.graph.width
@@ -770,8 +776,10 @@
       //   }
       // },
       millisToText (ms, format) {
-        format = format || 'HH:mm:ss.SSS'
-        return DateTime.fromMillis(ms, { zone: 'utc' }).toFormat(format)
+        if (!isNaN(ms)) {
+          format = format || 'HH:mm:ss.SSS'
+          return DateTime.fromMillis(ms, { zone: 'utc' }).toFormat(format)
+        }
       },
       isoToMillis (iso) {
         return DateTime.fromISO(iso).toMillis()

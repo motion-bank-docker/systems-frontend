@@ -1,13 +1,13 @@
 <template lang="pug">
   // q-list.sl-marker-details-selected(color="dark")
   div(style="line-height: 1rem;")
-    .q-caption(v-if="selectedAnnotation.body.type === 'Video'")
+    .q-caption(v-if="checkAnnotationType() === 'Video'")
       .ellipsis {{ annotationText }}
       q-btn.q-mt-md(
       @click="pushToVideo(annotationData.uuid)",
       size="sm", icon="theaters", round,
       :disabled="selectedAnnotation.uuid === $route.params.id")
-    .q-caption(v-else-if="selectedAnnotation.body.type === 'TextualBody'") {{ annotationText }}
+    .q-caption(v-else-if="checkAnnotationType() === 'TextualBody'") {{ annotationText }}
     .q-caption.ellipsis(v-else) {{ annotationText }}
     //
       q-list.q-pa-none(color="dark", no-border)
@@ -54,22 +54,27 @@
       // EventHub.$off('markerDown', this.onMarkerDown)
     },
     methods: {
+      checkAnnotationType () {
+        if (this.selectedAnnotation !== null) return this.selectedAnnotation.body.type
+      },
       getAnnotationText (val) {
         this.annotationData = val
-        let type = val.body.type
-        switch (type) {
-        case 'TextualBody':
-          this.annotationText = val.body.value
-          break
-        case 'Video':
-          this.annotationText = val.body.source.id
-          break
-        case 'VocabularyEntry':
-          this.annotationText = val.body.source.id
-          break
-        default:
-          this.annotationText = 'unknown'
-          break
+        if (val !== null) {
+          let type = val.body.type
+          switch (type) {
+          case 'TextualBody':
+            this.annotationText = val.body.value
+            break
+          case 'Video':
+            this.annotationText = val.body.source.id
+            break
+          case 'VocabularyEntry':
+            this.annotationText = val.body.source.id
+            break
+          default:
+            this.annotationText = 'unknown'
+            break
+          }
         }
       },
       pushToVideo (val) {
