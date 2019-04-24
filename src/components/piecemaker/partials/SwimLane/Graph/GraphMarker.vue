@@ -71,6 +71,7 @@
         endCached: 0,
         handleFill: 'rgba(255,255,255,0.5)',
         circleR: 8,
+        height: 20,
         colors: {
           'Video': 'tomato',
           'TextualBody': '#57aeff'
@@ -135,8 +136,8 @@
       y () {
         // return (this.index % 7) * 50 + 25 + ((Math.floor(this.index / 7) % 2) * 25)
         // return (this.index % 2) * 25 + 25 + ((Math.floor(this.index / 2) % 2) * 25)
-        if (this.laneMode === 'expand') return (this.index + 1) * 25
-        if (this.laneMode === 'collapse') return 25
+        if (this.laneMode === 'expand') return (this.index + 1) * this.height
+        if (this.laneMode === 'collapse') return this.height
         return 0
       }
     },
