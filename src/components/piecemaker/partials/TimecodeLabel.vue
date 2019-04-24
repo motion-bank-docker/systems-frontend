@@ -35,7 +35,8 @@
             .toDuration(['hours', 'minutes', 'seconds', 'milliseconds']).toObject()
           switch (val) {
           case 'milliseconds':
-            return dur.milliseconds
+            let ms = DateTime.fromObject({milliseconds: dur.milliseconds})
+            return ms.toFormat('SSS')
           default:
             let time = DateTime.fromObject({hour: dur.hours, minutes: dur.minutes, seconds: dur.seconds})
             return time.toFormat('HH:mm:ss')
