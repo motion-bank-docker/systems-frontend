@@ -341,7 +341,7 @@
         if (this.video) {
           this.metadata = await this.$store.dispatch('metadata/getLocal', this.video)
         }
-        console.log('video', this.video)
+        // console.log('video', this.video)
       },
       async getAnnotations () {
         const
