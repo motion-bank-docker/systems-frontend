@@ -25,7 +25,7 @@
 
             .row.q-mt-xs
               .q-mt-xs.q-mr-sm(v-if="selectedAnnotation")
-                annotation-icon(:selectedAnnotation="selectedAnnotation")
+                annotation-icon(:annotation="selectedAnnotation")
 
               timecode-label(
               v-if="selectedAnnotation",
