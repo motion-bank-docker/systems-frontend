@@ -54,13 +54,14 @@
   .timecode-label
     display: inline-block
     font-size: 13px
-    padding: 2px 8px
+    padding: 1px 8px
     border: 1px solid $faded
     border-radius 2px
     /*opacity .6*/
     color #fff8
     &:hover
       background-color $faded
-  .timecode-opacity
-    opacity .5
+      color #fff
+    .timecode-opacity
+      opacity .5
 </style>
