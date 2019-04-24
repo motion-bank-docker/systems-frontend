@@ -90,7 +90,11 @@
             q-item-tile.relative-position
 
               .annotation-list-item-header
-                annotation-icon(:selectedAnnotation="annotation")
+                annotation-icon.cursor-pointer(
+                  :annotation="annotation",
+                  :isSelected="selectedAnnotation ? selectedAnnotation._uuid === annotation._uuid : false",
+                  @click.native="selectAnnotation(annotation)"
+                  )
                 timecode-label(
                   @click.native="gotoSelector(annotation.target.selector)",
                   :millis="annotation.target.selector._valueMillis",
@@ -214,7 +218,8 @@
     },
     computed: {
       ...mapGetters({
-        user: 'auth/getUserState'
+        user: 'auth/getUserState',
+        selectedAnnotation: 'swimLaneSettings/getSelectedAnnotation'
       }),
       storeVisibilitySwimlanes () {
         return this.$store.state.swimLaneSettings.visibilitySwimlanes
@@ -290,7 +295,7 @@
     },
     methods: {
       setupScreen () {
-        this.$store.state.swimLaneSettings.selectedAnnotation = null
+        this.$store.commit('swimLaneSettings/setSelectedAnnotation', null)
         if (this.$store.state.swimLaneSettings.cursorTop) {
           this.videoHeight = this.$store.state.swimLaneSettings.cursorTop - this.headerHeight
           this.swimlanesHeight = (this.viewport.height - this.$store.state.swimLaneSettings.cursorTop)
@@ -512,6 +517,9 @@
             this.updateAnnotation(annotation)
           }
         }
+      },
+      selectAnnotation (annotation) {
+        this.$store.commit('swimLaneSettings/setSelectedAnnotation', annotation)
       }
     }
   }

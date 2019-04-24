@@ -1,24 +1,25 @@
 <template lang="pug">
   .annotation-icon(
-  :style="{backgroundColor: bgColor}",
-  :class="{'bright-shadow': bgColor === 'black'}")
+    :style="{backgroundColor: bgColor}",
+    :class="{'bright-shadow': bgColor === 'black', 'is-selected': isSelected, 'has-duration': annotation.target.selector._valueDuration}"
+    )
 </template>
 
 <script>
   export default {
     name: 'annotation-icon',
-    props: ['selectedAnnotation'],
+    props: ['annotation', 'isSelected'],
     data () {
       return {
         bgColor: undefined
       }
     },
     mounted () {
-      this.setType(this.selectedAnnotation.body.type)
+      this.setType(this.annotation.body.type)
     },
     watch: {
       selectedAnnotation () {
-        this.setType(this.selectedAnnotation.body.type)
+        this.setType(this.annotation.body.type)
       }
     },
     methods: {
@@ -48,6 +49,10 @@
     height 16px
     opacity: 0.3
     border-radius 100%
+    &.is-selected
+      opacity: 1
+    &.has-duration
+      border-radius: 0
   .bright-shadow
     // box-shadow 0 0 5px 0 rgba(255, 255, 255, .4)
     border 1px solid rgba(255, 255, 255, .4)

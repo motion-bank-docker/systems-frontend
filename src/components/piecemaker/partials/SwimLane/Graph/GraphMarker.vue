@@ -79,7 +79,8 @@
     },
     computed: {
       ...mapGetters({
-        laneMode: 'swimLaneSettings/getLaneMode'
+        laneMode: 'swimLaneSettings/getLaneMode',
+        selectedAnnotation: 'swimLaneSettings/getSelectedAnnotation'
       }),
       fill () {
         // if (this.isSelected) return 'black'
@@ -106,8 +107,8 @@
       },
       duration () {
         if (this.durationCached !== undefined) return this.durationCached
-        else if (this.annotationData.target.selector) return this.annotationData.target.selector._valueDuration
-        else return 0
+        else return this.annotationData.target.selector._valueDuration || 0
+        // else return 0
       },
       xRel () {
         const v = this.root.millisTotaltoRelGraph(this.millis)
@@ -140,9 +141,8 @@
       }
     },
     async mounted () {
-      // this.millis = this.annotationData.target.selector ? this.annotationData.target.selector._valueMillis : 0
       // TODO: TEMP: save duration to test resizing per drag and shift + click
-      // this.duration = this.annotationData.target.selector ? this.annotationData.target.selector._valueDuration : 0
+      if (this.selectedAnnotation) this.isSelected = this.selectedAnnotation._uuid === this.annotationData._uuid
       EventHub.$on('globalUp', this.onGlobalUp)
       EventHub.$on('componentMove', this.onComponentMove)
       EventHub.$on('markerUnselect', this.onUnselect)
@@ -155,6 +155,11 @@
       this.$parent.addRow()
     },
     beforeDestroy () {
+    },
+    watch: {
+      selectedAnnotation () {
+        if (this.selectedAnnotation) this.isSelected = this.selectedAnnotation._uuid === this.annotationData._uuid
+      }
     },
     methods: {
       trigger (event, msg) {
@@ -170,10 +175,10 @@
       },
       onDownBackground (event) {
         this.checkUnselect()
+        this.select()
         if (this.duration > 0) this.inputOffsetX = event.clientX - this.$el.getBoundingClientRect().left
         this.draggedEl = 'background'
         this.isDragged = true
-        this.isSelected = true
         // move marker to current timecode
         if (EventHub.keyIsPressed('Alt') && this.duration === 0) {
           this.millis = this.root.getTimecodeCurrentTotal()
@@ -192,9 +197,9 @@
       },
       onDownHandleLeft () {
         this.checkUnselect()
+        this.select()
         this.draggedEl = 'handleLeft'
         this.isDragged = true
-        this.isSelected = true
         this.endCached = this.getEnd()
         // move marker to current timecode
         if (EventHub.keyIsPressed('Alt')) {
@@ -210,9 +215,9 @@
       },
       onDownHandleRight () {
         this.checkUnselect()
+        this.select()
         this.draggedEl = 'handleRight'
         this.isDragged = true
-        this.isSelected = true
         // move marker to current timecode
         if (EventHub.keyIsPressed('Alt')) {
           this.setEndToTimecode()
@@ -231,7 +236,7 @@
       // TODO: move this to onContext ???
       onDownRight () {
         this.checkUnselect()
-        this.isSelected = true
+        this.select()
         EventHub.$emit('markerDown', this.annotationData)
         EventHub.$emit('markerDownRight', this.annotationData)
       },
@@ -243,6 +248,10 @@
           this.durationCached = 0
         }
         this.save()
+      },
+      select () {
+        this.isSelected = true
+        this.$store.commit('swimLaneSettings/setSelectedAnnotation', this.annotationData)
       },
       onUnselect () {
         if (!this.isDragged && this.isSelected) {
