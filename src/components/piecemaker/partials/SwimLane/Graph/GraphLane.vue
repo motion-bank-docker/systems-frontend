@@ -8,7 +8,7 @@
       x1="0", y1="0",
       x2="100%", y2="0"
       )
-    text.fill-neutral.no-event.no-select.q-caption(:x="root.toAbsGraphX(scrollPosition.x) + 10", y="18")
+    text.fill-neutral.no-event.no-select.q-caption(:x="root.toAbsGraphX(scrollPosition.x) + 10", y="15")
       | {{ getLabel(type) }} ({{ annotations.length }})
     graph-marker(
       v-for="(a, index) in annotations",
@@ -35,7 +35,7 @@
     data () {
       return {
         rows: 0,
-        rowHeight: 25,
+        rowHeight: 20,
         yCached: 0
       }
     },
