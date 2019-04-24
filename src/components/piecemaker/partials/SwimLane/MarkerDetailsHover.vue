@@ -6,19 +6,38 @@
     )
     q-window-resize-observable(@resize="viewportResize")
     q-resize-observable(@resize="elementResize")
-    q-item.q-pa-none.items-start.q-caption.q-pb-md(v-if="showDetails && annotationData")
-      .ellipsis {{ teaserText }}
-    template(v-else)
-      q-item.q-pa-none.items-start.q-caption.q-pb-md(v-for="(value, key) in annotationData")
-        q-item-side.q-pa-none {{ key }}
-        q-item-main.q-pa-none {{ value }}
+
+    .row.q-mt-xs
+      .q-mt-xs.q-mr-sm(v-if="hoveredAnnotation")
+        annotation-icon(:selectedAnnotation="hoveredAnnotation")
+      timecode-label(
+      v-if="hoveredAnnotation",
+      :millis="hoveredAnnotation.target.selector._valueMillis",
+      :videoDate="videoDate"
+      )
+    .q-my-md.md-content
+      | {{ hoveredAnnotation.body.value }}
+
+    //
+      q-item.q-pa-none.items-start.q-caption.q-pb-md(v-if="showDetails && annotationData")
+        .ellipsis {{ teaserText }}
+      template(v-else)
+        q-item.q-pa-none.items-start.q-caption.q-pb-md(v-for="(value, key) in annotationData")
+          q-item-side.q-pa-none {{ key }}
+          q-item-main.q-pa-none {{ value }}
 
 </template>
 
 <script>
   import { EventHub } from './EventHub'
+  import AnnotationIcon from '../AnnotationIcon'
+  import TimecodeLabel from '../TimecodeLabel'
 
   export default {
+    components: {
+      AnnotationIcon,
+      TimecodeLabel
+    },
     props: ['root'],
     data () {
       return {
@@ -26,7 +45,8 @@
         maxWidth: 350,
         teaserText: undefined,
         viewportHeight: undefined,
-        hoverboxWidth: undefined
+        hoverboxWidth: undefined,
+        hoveredAnnotation: undefined
       }
     },
     computed: {
@@ -53,6 +73,9 @@
       render () {
         // console.log()
         return this.annotationData && !this.$parent.isDragged() ? '' : 'is-transparent'
+      },
+      videoDate () {
+        return this.root.getVideoDate()
       }
     },
     async mounted () {
@@ -72,6 +95,7 @@
         this.viewportHeight = obj.height
       },
       onMarkerEnter (annotationData) {
+        this.hoveredAnnotation = annotationData
         let ms = this.$parent.millisTotalToTimeline(annotationData.target.selector._valueMillis)
         this.annotationData = {
           // 'Created': DateTime.fromISO(annotationData.created).toFormat('yyyy LLL dd, HH:mm:ss.SSS'),
@@ -82,6 +106,7 @@
           // 'Body Type': annotationData.body.type,
           'Body Value': annotationData.body.value
         }
+        /*
         switch (annotationData.body.type) {
         case 'TextualBody':
           this.teaserText = annotationData.body.value
@@ -96,6 +121,7 @@
           this.teaserText = 'unknown'
           break
         }
+        */
       },
       onMarkerLeave () {
         this.annotationData = null
@@ -146,4 +172,8 @@
 
   .q-item
     min-height auto!important
+
+  .md-content
+    font-size: 1rem
+    line-height: 24px
 </style>
