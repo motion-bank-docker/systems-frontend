@@ -9,7 +9,7 @@
 
     .row.q-mt-xs
       .q-mt-xs.q-mr-sm(v-if="hoveredAnnotation")
-        annotation-icon(:selectedAnnotation="hoveredAnnotation")
+        annotation-icon(:annotation="hoveredAnnotation")
       timecode-label(
       v-if="hoveredAnnotation",
       :millis="hoveredAnnotation.target.selector._valueMillis",
