@@ -15,7 +15,7 @@
       :millis="hoveredAnnotation.target.selector._valueMillis",
       :videoDate="videoDate"
       )
-    .q-my-md.md-content
+    .q-my-md.ellipsis-3-lines.md-content
       | {{ hoveredAnnotation.body.value }}
 
     //
