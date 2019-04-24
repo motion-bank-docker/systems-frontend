@@ -499,7 +499,6 @@
         if (annotation.target.selector) {
           const currentStart = annotation.target.selector._valueMillis
           const newTimecode = Math.round(this.playerTime * 1000) + this.video.target.selector._valueMillis
-          console.log('add duration', currentStart, newTimecode)
 
           if (newTimecode !== currentStart) {
             const d0 = DateTime.fromMillis(currentStart)
