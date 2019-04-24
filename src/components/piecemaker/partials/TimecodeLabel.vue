@@ -1,7 +1,10 @@
 <template lang="pug">
   .timecode-label.cursor-pointer
-    span {{ formatted() }}
-    span.timecode-opacity :{{ formatted('milliseconds') }}
+    template(v-if="text")
+      span {{text}}
+    template(v-else)
+      span {{ formatted() }}
+      span.timecode-opacity .{{ formatted('milliseconds') }}
 </template>
 
 <script>
@@ -12,7 +15,7 @@
     name: 'TimecodeLabel',
     // TODO video should be accessed differently?
     // TODO define global video object?
-    props: ['timecode', 'videoDate', 'millis'],
+    props: ['timecode', 'videoDate', 'millis', 'text'],
     // computed: {
     methods: {
       formatted (val) {
@@ -53,8 +56,10 @@
     padding: 2px 8px
     border: 1px solid $faded
     border-radius 2px
+    /*opacity .6*/
+    color #fff8
     &:hover
       background-color $faded
   .timecode-opacity
-    opacity .4
+    opacity .5
 </style>

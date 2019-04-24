@@ -9,7 +9,7 @@
     @contextmenu="onContext ($event)",
     @dblclick="onDoubleClick ($event)",
     :class="'sl-marker-' + annotationData.body.type",
-    :x="xRel * 100 + '%'", :y="yTemp",
+    :x="xRel * 100 + '%'", :y="y",
     height="16", :width="widthRel * 100 + '%'",
     )
     rect.sl-marker-background(
@@ -41,7 +41,7 @@
     @mousedown.right="onDownRight ($event)",
     @contextmenu="onContext ($event)",
     @dblclick="onDoubleClick ($event)",
-    :x="xRelCircle * 100 + '%'", :y="yTemp",
+    :x="xRelCircle * 100 + '%'", :y="y",
     )
     circle.sl-marker.pointer(
       :cx="circleR", :cy="circleR" :r="circleR",
@@ -65,8 +65,8 @@
         isSelected: false,
         isHovered: false,
         activeElName: 'marker',
-        millis: 0,
-        duration: 0,
+        millisCached: undefined,
+        durationCached: undefined,
         inputOffsetX: 0,
         endCached: 0,
         handleFill: 'rgba(255,255,255,0.5)',
@@ -99,18 +99,30 @@
       opacity () {
         return this.isHovered || this.isSelected ? 1 : 0.5
       },
-      xAbs () {
-        return this.root.millisTotaltoAbsGraph(this.millis) || 0
+      millis () {
+        if (this.millisCached !== undefined) return this.millisCached
+        else if (this.annotationData.target.selector) return this.annotationData.target.selector._valueMillis
+        else return 0
+      },
+      duration () {
+        if (this.durationCached !== undefined) return this.durationCached
+        else if (this.annotationData.target.selector) return this.annotationData.target.selector._valueDuration
+        else return 0
       },
       xRel () {
-        return this.root.millisTotaltoRelGraph(this.millis) || 0
+        const v = this.root.millisTotaltoRelGraph(this.millis)
+        if (isFinite(v)) return v
+        else return 0
       },
       xRelCircle () {
-        return this.root.millisTotaltoRelGraph(this.millis) - this.root.toRelGraphX(this.circleR) || 0
+        const v = this.root.millisTotaltoRelGraph(this.millis) - this.root.toRelGraphX(this.circleR)
+        if (isFinite(v)) return v
+        else return 0
       },
       widthRel () {
-        // return this.root.millistoRelGraph(this.annotationData.body.duration)
-        return this.root.millistoRelGraph(this.duration) || 0
+        const v = this.root.millistoRelGraph(this.duration)
+        if (isFinite(v)) return v
+        else return 0
       },
       x () {
         return this.xRel * 100 + '%' || 0
@@ -119,7 +131,7 @@
         // return this.root.isVisible({left: this.xAbs, right: this.xAbs, offset: 10})
         return true
       },
-      yTemp () {
+      y () {
         // return (this.index % 7) * 50 + 25 + ((Math.floor(this.index / 7) % 2) * 25)
         // return (this.index % 2) * 25 + 25 + ((Math.floor(this.index / 2) % 2) * 25)
         if (this.laneMode === 'expand') return (this.index + 1) * 25
@@ -128,9 +140,9 @@
       }
     },
     async mounted () {
-      this.millis = this.annotationData.target.selector ? this.annotationData.target.selector._valueMillis : 0
+      // this.millis = this.annotationData.target.selector ? this.annotationData.target.selector._valueMillis : 0
       // TODO: TEMP: save duration to test resizing per drag and shift + click
-      this.duration = this.annotationData.target.selector ? this.annotationData.target.selector._valueDuration : 0
+      // this.duration = this.annotationData.target.selector ? this.annotationData.target.selector._valueDuration : 0
       EventHub.$on('globalUp', this.onGlobalUp)
       EventHub.$on('componentMove', this.onComponentMove)
       EventHub.$on('markerUnselect', this.onUnselect)
@@ -143,10 +155,6 @@
       this.$parent.addRow()
     },
     beforeDestroy () {
-      // EventHub.$off('globalUp', this.onGlobalUp)
-      // EventHub.$off('componentMove', this.onComponentMove)
-      // EventHub.$off('markerUnselect', this.onUnselect)
-      // EventHub.$off('markerUpdate', this.onUpdate)
     },
     methods: {
       trigger (event, msg) {
@@ -229,10 +237,10 @@
       },
       onDoubleClick () {
         if (this.duration <= 0) {
-          this.duration = this.root.absToMillis(100)
+          this.durationCached = this.root.absToMillis(100)
         }
         else {
-          this.duration = 0
+          this.durationCached = 0
         }
         this.save()
       },
@@ -248,21 +256,21 @@
           if (this.draggedEl === 'background') {
             let pos = this.root.getInputPositionAbsGraph().x - this.inputOffsetX
             tc = this.root.getTimecodeFromGraphPositionAbs(pos)
-            this.millis = this.root.millisTimelineToTotal(tc)
+            this.millisCached = this.root.millisTimelineToTotal(tc)
             if (this.isDragged) EventHub.$emit('timecodeChange', tc)
           }
           else if (this.draggedEl === 'handleLeft') {
             let pos = this.root.getInputPositionAbsGraph().x - this.inputOffsetX
             tc = this.root.getTimecodeFromGraphPositionAbs(pos)
-            this.millis = Math.min(this.root.millisTimelineToTotal(tc), this.endCached)
-            this.duration = Math.max(this.endCached - this.millis, 0)
+            this.millisCached = Math.min(this.root.millisTimelineToTotal(tc), this.endCached)
+            this.durationCached = Math.max(this.endCached - this.millisCached, 0)
             if (this.isDragged) EventHub.$emit('timecodeChange', tc)
           }
           else if (this.draggedEl === 'handleRight') {
             tc = this.root.getTimecodeFromInputPosition()
             let tct = this.root.getTimecodeFromInputPositionTotal()
             let max = this.root.timeline.duration - this.root.millisTotalToTimeline(this.millis)
-            this.duration = this.root.restrict(tct - this.millis, 0, max)
+            this.durationCached = this.root.restrict(tct - this.millis, 0, max)
             if (this.isDragged) EventHub.$emit('timecodeChange', tc)
           }
           this.save()
@@ -279,13 +287,18 @@
         // TODO: only call this function for markers in SwimLane.activeMarkers (to be implemented)
         this.isDragged = false
         this.inputOffsetX = 0
+        this.clearCache()
+      },
+      clearCache () {
         this.endCached = 0
+        this.millisCached = undefined
+        this.durationCached = undefined
       },
       setStartToTimecode () {
         if (this.isSelected) {
           this.endCached = this.getEnd()
-          this.millis = this.root.getTimecodeCurrentTotal()
-          this.duration = Math.max(this.endCached - this.millis, 0)
+          this.millisCached = this.root.getTimecodeCurrentTotal()
+          this.durationCached = Math.max(this.endCached - this.millisCached, 0)
           this.save()
         }
       },
@@ -294,9 +307,10 @@
           let tc = this.root.getTimecodeCurrentTotal()
           let e = tc - this.millis
           if (e < 0) {
-            this.millis = tc
+            this.millisCached = tc
           }
-          this.duration = Math.max(e, 0)
+          this.durationCached = Math.max(e, 0)
+          console.log(this.durationCached)
           this.save()
         }
       },
