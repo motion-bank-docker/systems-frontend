@@ -96,6 +96,7 @@
                   :millis="annotation.target.selector._valueMillis",
                   :videoDate="getVideoDate()"
                   )
+                // annotation has duration
                 template(v-if="annotation.target.selector._valueDuration")
                   .timecode-label-duration-spacer
                   timecode-label(
@@ -103,11 +104,18 @@
                     :millis="getAnnotationEndMillis(annotation)",
                     :videoDate="getVideoDate()"
                     )
+                // add timecode button
+                template(v-else)
+                  .timecode-label-duration-spacer.show-on-hover
+                  timecode-label.show-on-hover(
+                    @click.native="addDurationToAnnotation(annotation)",
+                    :text="'Add current timecode'"
+                    )
 
               // buttons
 
               <!--div.float-right(v-if="currentHover === annotation.uuid")-->
-              .absolute-top-right.annotation-list-item-buttons
+              .absolute-top-right.annotation-list-item-buttons.show-on-hover.show-on-edit
                 q-btn.float-right(@click="$refs.confirmModal.show('messages.confirm_delete', annotation, 'buttons.delete')",
                 size="sm", icon="delete", round)
 
@@ -486,6 +494,24 @@
       // Annotation list items specific
       getAnnotationEndMillis (annotation) {
         return annotation.target.selector._valueMillis + annotation.target.selector._valueDuration
+      },
+      addDurationToAnnotation (annotation) {
+        if (annotation.target.selector) {
+          const currentStart = annotation.target.selector._valueMillis
+          const newTimecode = Math.round(this.playerTime * 1000) + this.video.target.selector._valueMillis
+
+          if (newTimecode !== currentStart) {
+            const d0 = DateTime.fromMillis(currentStart)
+            const d1 = DateTime.fromMillis(newTimecode)
+            if (newTimecode > currentStart) {
+              annotation.target.selector = this.timeline.getInterval(d0, d1).selector
+            }
+            else {
+              annotation.target.selector = this.timeline.getInterval(d1, d0).selector
+            }
+            this.updateAnnotation(annotation)
+          }
+        }
       }
     }
   }
@@ -515,9 +541,9 @@
     width: 8px
 
   .annotation-list-item
-    .annotation-list-item-buttons
+    &:not(:hover) .show-on-hover
       display: none
-    &:hover, &.is-being-edited
+    &.is-being-edited
       .annotation-list-item-buttons
         display: block
     &.is-selected
