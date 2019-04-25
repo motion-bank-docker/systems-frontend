@@ -1,5 +1,6 @@
 <template lang="pug">
-  q-list.sl-marker-details-hover.popup-shadow.bg-grey.no-select.no-event.q-px-md.q-pt-md.q-pb-none(
+  q-list.sl-marker-details-hover.popup-shadow.bg-dark.no-select.no-event.q-px-md.q-pt-md.q-pb-none(
+    v-if="hoveredAnnotation",
     :class="render",
     :style="{bottom: px(bottom), left: px(left), maxWidth: px(maxWidth)}",
     dark
@@ -8,13 +9,22 @@
     q-resize-observable(@resize="elementResize")
 
     .row.q-mt-xs
-      .q-mt-xs.q-mr-sm(v-if="hoveredAnnotation")
-        annotation-icon(:annotation="hoveredAnnotation")
+      .q-mt-xs.q-mr-sm
+        annotation-icon(
+        :annotation="hoveredAnnotation"
+        )
       timecode-label(
-      v-if="hoveredAnnotation",
       :millis="hoveredAnnotation.target.selector._valueMillis",
       :videoDate="videoDate"
       )
+      // annotation has duration
+      template(v-if="hoveredAnnotation.target.selector._valueDuration")
+        .timecode-label-duration-spacer
+        timecode-label(
+        :millis="annotationEnd",
+        :videoDate="videoDate"
+        )
+
     .q-my-md.ellipsis-3-lines.md-content
       | {{ hoveredAnnotation.body.value }}
 
@@ -46,13 +56,17 @@
         teaserText: undefined,
         viewportHeight: undefined,
         hoverboxWidth: undefined,
-        hoveredAnnotation: undefined
+        hoveredAnnotation: undefined,
+        rightAlignment: false
       }
     },
     computed: {
+      /*
       showDetails () {
         return this.$store.state.swimLaneSettings.visibilityDetails
       },
+      */
+      /*
       top () {
         // TODO: should be bound to this.$el.clientHeight:
         // ISSUE: Sometimes data is filled in one tick too late, so value jumps from 0 to X when already visible
@@ -63,19 +77,32 @@
         return (this.annotationData) ? this.$parent.inputPosition.clientY - offsetY - 15 : -99999
         // return 100
       },
+      */
       bottom () {
         return (this.annotationData) ? this.viewportHeight - this.$parent.inputPosition.clientY + 20 : -99999
       },
       left () {
-        return (this.annotationData) ? this.$parent.restrict(this.$parent.inputPosition.clientX, 0, this.$parent.el.bounds.right - this.hoverboxWidth) : -99999
+        return (this.annotationData && this.hoverboxWidth) ? this.$parent.restrict(this.$parent.inputPosition.clientX, 0, this.$parent.el.bounds.right - this.hoverboxWidth) : -99999
         // return (this.annotationData) ? this.$parent.restrict(this.$parent.inputPosition.clientX, 0, this.$parent.el.bounds.right - this.width) : -99999
       },
       render () {
-        // console.log()
-        return this.annotationData && !this.$parent.isDragged() ? '' : 'is-transparent'
+        if (this.rightAlignment) return this.annotationData && !this.$parent.isDragged() ? 'far-right' : 'far-right is-transparent'
+        else return this.annotationData && !this.$parent.isDragged() ? 'not-far-right' : 'not-far-right is-transparent'
       },
       videoDate () {
         return this.root.getVideoDate()
+      },
+      annotationEnd () {
+        // return this.root.getAnnotationEndMillis(this.hoveredAnnotation)
+        return this.hoveredAnnotation.target.selector._valueMillis + this.hoveredAnnotation.target.selector._valueDuration
+      }
+    },
+    watch: {
+      left () {
+        let currentBoxPosition = this.$parent.restrict(this.$parent.inputPosition.clientX, 0, this.$parent.el.bounds.right - this.hoverboxWidth)
+        let cursorX = this.$parent.inputPosition.clientX
+        if (currentBoxPosition < cursorX) this.rightAlignment = true
+        else this.rightAlignment = false
       }
     },
     async mounted () {
@@ -134,9 +161,25 @@
 </script>
 
 <style scoped lang="stylus">
+  @import '~variables'
   @import 'swimLane'
 
   $delay = 200ms
+  $delay-long = 300ms
+
+  .far-right
+    -webkit-transition: opacity 200ms $delay-long, left 200ms
+    -moz-transition: opacity 200ms $delay-long, left 200ms
+    -ms-transition: opacity 200ms $delay-long, left 200ms
+    -o-transition: opacity 200ms $delay-long, left 200ms
+    transition: opacity 200ms $delay-long, left 200ms
+
+  .not-far-right
+    -webkit-transition: opacity 200ms $delay
+    -moz-transition: opacity 200ms $delay
+    -ms-transition: opacity 200ms $delay
+    -o-transition: opacity 200ms $delay
+    transition: opacity 200ms $delay
 
   .sl-marker-details-hover
     position: fixed
@@ -144,16 +187,20 @@
     /*background: orangered*/
     /*color: black*/
     /*padding: 5px*/
-    -webkit-transition: opacity 200ms
-    -moz-transition: opacity 200ms
-    -ms-transition: opacity 200ms
-    -o-transition: opacity 200ms
-    transition: opacity 200ms
+    /*
+    -webkit-transition: opacity 200ms $delay
+    -moz-transition: opacity 200ms $delay
+    -ms-transition: opacity 200ms $delay
+    -o-transition: opacity 200ms $delay
+    transition: opacity 200ms $delay
+    */
+    /*
     -webkit-transition-delay: $delay
     -moz-transition-delay: $delay
     -ms-transition-delay: $delay
     -o-transition-delay: $delay
     transition-delay: $delay
+    */
 
   .sl-marker-details-hover.is-transparent
     -webkit-transition-delay: 0ms
@@ -176,4 +223,10 @@
   .md-content
     font-size: 1rem
     line-height: 24px
+
+  .timecode-label-duration-spacer
+    border-bottom: 1px solid $faded
+    width: 8px
+    height 10px
+
 </style>
