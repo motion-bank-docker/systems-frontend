@@ -69,8 +69,14 @@
         this.rows++
       },
       getLabel (val) {
-        let valNew = val.match(/[A-Z][a-z]+|[0-9]+/g).join(' ').replace(/\s+/g, '_').toLowerCase()
-        return this.$t('labels.' + valNew)
+        let valMatch = val.match(/[A-Z][a-z]+|[0-9]+/g)
+        if (valMatch !== null) {
+          let valNew = valMatch.join(' ').replace(/\s+/g, '_').toLowerCase()
+          return this.$t('labels.' + valNew)
+        }
+        else {
+          return val
+        }
       }
     }
   }
