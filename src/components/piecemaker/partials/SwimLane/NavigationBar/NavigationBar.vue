@@ -31,7 +31,7 @@
 </template>
 
 <script>
-  import { EventHub } from '../EventHub'
+  // import { EventHub } from '../EventHub'
   import { mapGetters } from 'vuex'
 
   export default {
@@ -73,7 +73,7 @@
       }
     },
     async mounted () {
-      EventHub.$on('globalUp', this.onGlobalUp)
+      this.$root.$on('globalUp', this.onGlobalUp)
     },
     beforeDestroy () {
     },
@@ -81,23 +81,23 @@
       onNavBackgroundDown () {
         this.inputOffset.x = this.navHandleWidth / 2
         let p = this.root.toRelCompX(this.root.inputPosition.x - this.inputOffset.x)
-        EventHub.$emit('UIDown', 'navBackground')
-        EventHub.$emit('scrollPositionChange', {x: p})
+        this.$root.$emit('UIDown', 'navBackground')
+        this.$root.$emit('scrollPositionChange', {x: p})
       },
       onNavHandleBackgroundDown () {
         this.inputOffset.x = this.root.inputPosition.x - this.navHandleX
-        EventHub.$emit('UIDown', 'navHandleBackground')
+        this.$root.$emit('UIDown', 'navHandleBackground')
       },
       onNavHandleLeftDown () {
         this.navHandle.boundRight = this.navHandleX + this.navHandleWidth
-        EventHub.$emit('UIDown', 'navHandleLeft')
+        this.$root.$emit('UIDown', 'navHandleLeft')
       },
       onNavHandleRightDown () {
-        EventHub.$emit('UIDown', 'navHandleRight')
+        this.$root.$emit('UIDown', 'navHandleRight')
       },
       onDoubleClick () {
-        EventHub.$emit('scaleFactorChange', 1)
-        EventHub.$emit('scrollPositionChange', {x: 0, y: 0})
+        this.$root.$emit('scaleFactorChange', 1)
+        this.$root.$emit('scrollPositionChange', {x: 0, y: 0})
       },
       update () {
         let sp, w, min, max, raw
@@ -115,7 +115,7 @@
           max = this.root.el.width - this.navHandleX
           raw = this.root.inputPosition.x - this.navHandleX
           w = this.root.restrict(raw, min, max)
-          EventHub.$emit('scaleFactorChange', this.root.toRelCompX(w))
+          this.$root.$emit('scaleFactorChange', this.root.toRelCompX(w))
         }
         else if (this.root.isDragged('navHandleLeft')) {
           // scrollPosition
@@ -123,9 +123,9 @@
           sp = this.root.restrict(this.root.inputPosition.x, 0, max)
           // scaleFactor
           w = this.navHandle.boundRight - sp
-          EventHub.$emit('scaleFactorChange', this.root.toRelCompX(w))
+          this.$root.$emit('scaleFactorChange', this.root.toRelCompX(w))
         }
-        EventHub.$emit('scrollPositionChange', {x: this.root.toRelCompX(sp)})
+        this.$root.$emit('scrollPositionChange', {x: this.root.toRelCompX(sp)})
       },
       onGlobalUp () {
         this.inputOffset = {x: 0, y: 0}

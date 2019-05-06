@@ -252,24 +252,24 @@
       window.addEventListener('keydown', this.onKeyDown)
       window.addEventListener('keyup', this.onKeyUp)
 
-      EventHub.$on('UIDown', this.onUIDown)
-      EventHub.$on('UIEnter', this.onUIEnter)
-      EventHub.$on('UILeave', this.onUILeave)
+      this.$root.$on('UIDown', this.onUIDown)
+      this.$root.$on('UIEnter', this.onUIEnter)
+      this.$root.$on('UILeave', this.onUILeave)
 
-      // EventHub.$on('markerDown', this.onMarkerDown)
+      // this.$root.$on('markerDown', this.onMarkerDown)
 
-      EventHub.$on('timecodeChange', this.setTimecode)
-      EventHub.$on('scrollPositionChange', this.setScrollPosition)
-      EventHub.$on('scaleFactorChange', this.setScaleFactor)
-      EventHub.$on('annotationChange', this.onAnnotationChange)
+      this.$root.$on('timecodeChange', this.setTimecode)
+      this.$root.$on('scrollPositionChange', this.setScrollPosition)
+      this.$root.$on('scaleFactorChange', this.setScaleFactor)
+      this.$root.$on('annotationChange', this.onAnnotationChange)
 
       this.timecode.hoverText = this.millisToText(0)
-      EventHub.$emit('timecodeChange', 0)
+      this.$root.$emit('timecodeChange', 0)
 
       // this.cacheDimensions()
       // FIXME ugly fix because the call above seems to be fired to early
       setTimeout(() => { this.cacheDimensions() }, 500)
-      EventHub.$emit('afterComponentMounted')
+      this.$root.$emit('afterComponentMounted')
       this.cacheDimensions()
       // this.setScaleFactor(0.2)
       // console.log('video start', this.start, this.duration)
@@ -356,7 +356,7 @@
     },
     methods: {
       onTimecodeLabel (val) {
-        // EventHub.$emit('test', val)
+        // this.$root.$emit('test', val)
         this.$root.$emit('emitSelector', val)
         // console.log(val)
         // alert(val + ' (NOT EMITTED)')
@@ -469,7 +469,7 @@
       onGlobalMove: function (event) {
         this.inputPosition = this.getInputPosition(event)
         let tc = this.getTimecodeFromInputPosition()
-        EventHub.$emit('inputPositionChange', this.inputPosition)
+        this.$root.$emit('inputPositionChange', this.inputPosition)
 
         if (this.isDragged('graphBackground')) {
           this.$refs.graph.update()
@@ -478,10 +478,10 @@
           this.$refs.nav.update()
         }
         else if (this.isDragged(['timecodeBar'])) {
-          EventHub.$emit('timecodeChange', tc)
+          this.$root.$emit('timecodeChange', tc)
         }
         else if (this.isDragged('marker')) {
-          EventHub.$emit('markerUpdate')
+          this.$root.$emit('markerUpdate')
         }
         this.timecode.hoverText = this.millisToText(tc)
         this.timecode.hover = tc
@@ -506,7 +506,7 @@
           this.$emit('updateAnnotation', this.dirtyAnnotation)
           this.dirtyAnnotation = undefined
         }
-        EventHub.$emit('globalUp')
+        this.$root.$emit('globalUp')
       },
       // ---------------------------------------------------------------------------------------------------------- E UI
       onUIDown (el) {

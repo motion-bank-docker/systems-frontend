@@ -81,8 +81,8 @@
       }
     },
     async mounted () {
-      EventHub.$on('globalUp', this.onGlobalUp)
-      EventHub.$on('laneModeChanged', this.onLaneModeChange)
+      this.$root.$on('globalUp', this.onGlobalUp)
+      this.$root.$on('laneModeChanged', this.onLaneModeChange)
     },
     beforeDestroy () {
     },
@@ -93,13 +93,13 @@
     },
     methods: {
       onGraphDown () {
-        EventHub.$emit('graphDown')
+        this.$root.$emit('graphDown')
       },
       onGraphBackgroundDown () {
         if (!EventHub.keyIsPressed(' ')) {
           this.inputOffset = this.root.getInputPositionAbsGraph()
-          EventHub.$emit('UIDown', 'graphBackground')
-          EventHub.$emit('markerUnselect')
+          this.$root.$emit('UIDown', 'graphBackground')
+          this.$root.$emit('markerUnselect')
         }
       },
       onGraphMouseWheel (event) {
@@ -107,31 +107,31 @@
         if (EventHub.keyIsPressed('Control')) {
           let d = (Math.abs(event.deltaX) > Math.abs(event.deltaY)) ? event.deltaX : event.deltaY
           d = this.root.toRelGraphX(d) * -1
-          EventHub.$emit('scrollPositionChange', {x: this.scrollPosition.x + d})
+          this.$root.$emit('scrollPositionChange', {x: this.scrollPosition.x + d})
         }
         // Zoom
         if (EventHub.keyIsPressed('Alt')) {
           // TODO seems more complicated than initially thought D=
           // let d = event.deltaY
           // let f = this.root.toRelGraphX(d) / 10
-          // EventHub.$emit('scaleFactorChange', this.scaleFactor + (f * -1))
-          // EventHub.$emit('scrollPositionChange', this.scrollPosition.x + (f * -1))
+          // this.$root.$emit('scaleFactorChange', this.scaleFactor + (f * -1))
+          // this.$root.$emit('scrollPositionChange', this.scrollPosition.x + (f * -1))
         }
         // standard scroll
         else {
           let x = this.root.toRelGraphX(event.deltaX) * -1
           let y = this.root.toRelGraphY(event.deltaY) * -1
-          EventHub.$emit('scrollPositionChange', {x: this.scrollPosition.x + x, y: this.scrollPosition.y + y})
+          this.$root.$emit('scrollPositionChange', {x: this.scrollPosition.x + x, y: this.scrollPosition.y + y})
         }
       },
       trigger (event, args) {
-        EventHub.$emit(event, args)
+        this.$root.$emit(event, args)
       },
       // TODO implement also y movement on dragging
       update () {
         let x = Math.min(this.root.inputPosition.x - this.inputOffset.x, this.width - this.root.el.width)
         let y = Math.min(this.root.inputPosition.y - this.inputOffset.y, this.height - this.root.el.height)
-        EventHub.$emit('scrollPositionChange', {x: this.root.toRelGraphX(x) * -1, y: this.root.toRelGraphY(y) * -1})
+        this.$root.$emit('scrollPositionChange', {x: this.root.toRelGraphX(x) * -1, y: this.root.toRelGraphY(y) * -1})
       },
       onGlobalUp () {
         this.inputOffset = {x: 0, y: 0}

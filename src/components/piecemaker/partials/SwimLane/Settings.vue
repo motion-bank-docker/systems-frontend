@@ -27,7 +27,7 @@
 
 <script>
   import { mapGetters } from 'vuex'
-  import { EventHub } from './EventHub'
+  // import { EventHub } from './EventHub'
 
   export default {
     data () {
@@ -44,7 +44,7 @@
       },
       laneMode (val) {
         this.$store.commit('swimLaneSettings/setLaneMode', val)
-        EventHub.$emit('laneModeChanged', val)
+        this.$root.$emit('laneModeChanged', val)
       }
     },
     computed: {
