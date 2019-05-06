@@ -9,7 +9,7 @@
 
       // ----------------------------------------------------------------------------------------------------- left side
 
-      div.shadow-10.q-pa-md.scroll.details(
+      div.shadow-10.q-pa-md.scroll(
       v-if="showDetails",
       :style="{width: dimensions.details.width.current + '%', minWidth: dimensions.details.width.min + '%', maxWidth: dimensions.details.width.max + '%', borderRight: '1px solid #333', maxHeight: '100%'}")
 
@@ -38,12 +38,12 @@
 
           // button hide details
 
-          q-btn.q-px-sm.absolute-top-right.details-buttons(@click="handlerToggle('markerDetails')",
-          icon="clear", size="sm", round)
+          q-btn.absolute-top-right(@click="handlerToggle('markerDetails')",
+          icon="clear", size="sm", round, flat, color="white", style="margin: 0 -6px 0 0;")
 
         // details content
 
-        .q-mt-md
+        .q-mt-md.text-white
           marker-details-selected(v-if="showDetails", :root="self", :resizable="resizable")
 
       // ---------------------------------------------------------------------------------------------------- right side
@@ -62,28 +62,30 @@
 
           // button show details
 
-          q-btn.q-px-sm.q-mr-sm(
+          q-btn.q-px-sm.q-mr-xs(
           v-if="!showDetails",
           @click="handlerToggle('markerDetails')", icon="keyboard_backspace",
-          :class="[showDetails ? '' : 'rotate-180']", size="sm", round)
+          :class="[showDetails ? '' : 'rotate-180']", size="sm", round, flat)
 
           // button change horizontal dimensions from details (affects swimlane width, too)
 
-          q-btn.q-px-sm.q-mr-sm(
+          q-btn.q-px-sm.q-mr-xs(
           v-if="showDetails", v-touch-pan="handlerResizeX",
           @mousedown.native="onMouse", @mouseup.native="onMouseUp",
-          size="sm", icon="code", round)
+          size="sm", icon="code", round, flat)
 
           // setting buttons
 
-          settings(ref="settings")
+          .settings
+            settings(ref="settings")
 
           // resize (y) and hide swimlanes
 
           .absolute-top-right.text-right.q-ma-md(v-if="resizable")
-            q-btn.q-ml-lg(@mousedown.native="onMouse", @mouseup.native="onMouseUp", v-touch-pan="handlerResizeY", round, size="sm")
+            q-btn.q-ml-lg(@mousedown.native="onMouse", @mouseup.native="onMouseUp", v-touch-pan="handlerResizeY",
+            round, size="sm", flat)
               q-icon.rotate-90(name="code")
-            q-btn.q-ml-sm(@click="handlerToggle('swimlanes')", icon="clear", round, size="sm")
+            q-btn.q-ml-sm(@click="handlerToggle('swimlanes')", icon="clear", round, size="sm", flat)
 
         // swim lane
 
@@ -849,9 +851,14 @@
     top: 0px
     z-index: 99
 
+  /*
   .details
     .details-buttons
       opacity 0
     &:hover .details-buttons
       opacity 1
+  */
+
+  .settings
+    margin-top -2px
 </style>

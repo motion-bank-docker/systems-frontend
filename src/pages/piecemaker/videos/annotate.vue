@@ -121,15 +121,15 @@
               <!--div.float-right(v-if="currentHover === annotation.uuid")-->
               .absolute-top-right.annotation-list-item-buttons.show-on-hover.show-on-edit
                 q-btn.float-right(@click="$refs.confirmModal.show('messages.confirm_delete', annotation, 'buttons.delete')",
-                size="sm", icon="delete", round)
+                size="xs", flat, icon="delete", round)
 
                 q-btn.q-mr-sm(
                 v-if="(!isEditingAnnotations && annotation.body.type === 'TextualBody' || editAnnotationIndex !== i && annotation.body.type !== 'VocabularyEntry')",
-                @click="setEditIndex(i)", size="sm", icon="edit", round)
+                @click="setEditIndex(i)", size="xs", icon="edit", round, flat)
 
                 q-btn.float-right.q-mr-sm(v-if="annotation.body.type === 'TextualBody' && editAnnotationIndex === i",
-                @click="updateAnnotation(annotation)", size="sm", :color="isAnnotationDirty ? 'primary' : undefined",
-                icon="save", round)
+                @click="updateAnnotation(annotation)", size="xs", :color="isAnnotationDirty ? 'primary' : undefined",
+                icon="save", round, flat)
 
             // text content
 
