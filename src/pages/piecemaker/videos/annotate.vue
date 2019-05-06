@@ -176,7 +176,7 @@
         this.$q.loading.hide()
       }
 
-      // EventHub.$on('test', this.onTest)
+      // this.$root.$on('test', this.onTest)
 
       this.setupScreen()
     },

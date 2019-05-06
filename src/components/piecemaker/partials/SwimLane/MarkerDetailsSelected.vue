@@ -45,8 +45,8 @@
       }
     },
     async mounted () {
-      // EventHub.$on('markerUnselect', this.onMarkerUnselect)
-      // EventHub.$on('markerDown', this.onMarkerDown)
+      // this.$root.$on('markerUnselect', this.onMarkerUnselect)
+      // this.$root.$on('markerDown', this.onMarkerDown)
       this.getAnnotationText(this.$store.state.swimLaneSettings.selectedAnnotation)
     },
     beforeDestroy () {

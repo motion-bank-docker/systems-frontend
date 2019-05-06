@@ -27,7 +27,7 @@
 
 <script>
   import TimecodeBarSection from './TimecodeBarSection'
-  import { EventHub } from '../EventHub'
+  // import { EventHub } from '../EventHub'
   import { mapGetters } from 'vuex'
 
   export default {
@@ -88,18 +88,18 @@
       }
     },
     async mounted () {
-      EventHub.$on('inputPositionChange', this.onInputPositionChange)
+      this.$root.$on('inputPositionChange', this.onInputPositionChange)
       // console.log(this.root.getVisibleTimecodeRange())
     },
     methods: {
       onTimecodeBarDown () {
         let tc = this.root.getTimecodeFromInputPosition()
-        EventHub.$emit('timecodeChange', tc)
-        EventHub.$emit('UIDown', 'timecodeBar')
+        this.$root.$emit('timecodeChange', tc)
+        this.$root.$emit('UIDown', 'timecodeBar')
         // console.log(Math.round(this.root.getVisibleTimecodeRange().length / 5))
       },
       trigger (event, args) {
-        EventHub.$emit(event, args)
+        this.$root.$emit(event, args)
       },
       onInputPositionChange (p) {
         this.timecodeMarkerHover.x = p.x

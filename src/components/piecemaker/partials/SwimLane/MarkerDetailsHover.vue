@@ -39,7 +39,7 @@
 </template>
 
 <script>
-  import { EventHub } from './EventHub'
+  // import { EventHub } from './EventHub'
   import AnnotationIcon from '../AnnotationIcon'
   import TimecodeLabel from '../TimecodeLabel'
 
@@ -106,9 +106,9 @@
       }
     },
     async mounted () {
-      EventHub.$on('markerEnter', this.onMarkerEnter)
-      EventHub.$on('markerLeave', this.onMarkerLeave)
-      EventHub.$on('globalUp', this.onMarkerLeave)
+      this.$root.$on('markerEnter', this.onMarkerEnter)
+      this.$root.$on('markerLeave', this.onMarkerLeave)
+      this.$root.$on('globalUp', this.onMarkerLeave)
     },
     beforeDestroy () {
       // EventHub.$off('markerEnter', this.onMarkerEnter)

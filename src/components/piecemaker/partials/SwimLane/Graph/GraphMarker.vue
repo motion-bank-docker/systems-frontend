@@ -147,13 +147,13 @@
     async mounted () {
       // TODO: TEMP: save duration to test resizing per drag and shift + click
       if (this.selectedAnnotation) this.isSelected = this.selectedAnnotation._uuid === this.annotationData._uuid
-      EventHub.$on('globalUp', this.onGlobalUp)
-      EventHub.$on('componentMove', this.onComponentMove)
-      EventHub.$on('markerUnselect', this.onUnselect)
-      EventHub.$on('markerUpdate', this.onUpdate)
-      // EventHub.$on('markerContextAction', this.onMarkerContextAction)
-      EventHub.$on('MarkerAction_StartToTimecode', this.setStartToTimecode)
-      EventHub.$on('MarkerAction_EndToTimecode', this.setEndToTimecode)
+      this.$root.$on('globalUp', this.onGlobalUp)
+      this.$root.$on('componentMove', this.onComponentMove)
+      this.$root.$on('markerUnselect', this.onUnselect)
+      this.$root.$on('markerUpdate', this.onUpdate)
+      // this.$root.$on('markerContextAction', this.onMarkerContextAction)
+      this.$root.$on('MarkerAction_StartToTimecode', this.setStartToTimecode)
+      this.$root.$on('MarkerAction_EndToTimecode', this.setEndToTimecode)
       // for collision detection
       this.root.registerMarker(this)
       this.$parent.addRow()
@@ -167,15 +167,15 @@
     },
     methods: {
       trigger (event, msg) {
-        EventHub.$emit(event, msg)
+        this.$root.$emit(event, msg)
       },
       onEnter () {
         this.isHovered = true
-        EventHub.$emit('markerEnter', this.annotationData)
+        this.$root.$emit('markerEnter', this.annotationData)
       },
       onLeave () {
         this.isHovered = false
-        EventHub.$emit('markerLeave', this.annotationData)
+        this.$root.$emit('markerLeave', this.annotationData)
       },
       onDownBackground (event) {
         this.checkUnselect()
@@ -190,13 +190,13 @@
         // set timecode to maker position
         // else if (!EventHub.keyIsPressed('Shift')) {
         //   let tc = this.root.millisTotalToTimeline(this.millis)
-        //   EventHub.$emit('timecodeChange', tc)
+        //   this.$root.$emit('timecodeChange', tc)
         // }
         let tc = this.root.millisTotalToTimeline(this.millis)
-        EventHub.$emit('timecodeChange', tc)
+        this.$root.$emit('timecodeChange', tc)
 
-        EventHub.$emit('markerDown', this.annotationData)
-        EventHub.$emit('UIDown', this.activeElName)
+        this.$root.$emit('markerDown', this.annotationData)
+        this.$root.$emit('UIDown', this.activeElName)
         this.$store.commit('swimLaneSettings/setSelectedAnnotation', this.annotationData)
       },
       onDownHandleLeft () {
@@ -212,10 +212,10 @@
         // set timecode to maker position
         else {
           let tc = this.root.millisTotalToTimeline(this.millis)
-          EventHub.$emit('timecodeChange', tc)
+          this.$root.$emit('timecodeChange', tc)
         }
-        EventHub.$emit('markerDown', this.annotationData)
-        EventHub.$emit('UIDown', this.activeElName)
+        this.$root.$emit('markerDown', this.annotationData)
+        this.$root.$emit('UIDown', this.activeElName)
       },
       onDownHandleRight () {
         this.checkUnselect()
@@ -229,10 +229,10 @@
         // set timecode to maker position
         else {
           let tc = this.root.millisTotalToTimeline(this.millis + this.duration)
-          EventHub.$emit('timecodeChange', tc)
+          this.$root.$emit('timecodeChange', tc)
         }
-        EventHub.$emit('markerDown', this.annotationData)
-        EventHub.$emit('UIDown', this.activeElName)
+        this.$root.$emit('markerDown', this.annotationData)
+        this.$root.$emit('UIDown', this.activeElName)
       },
       onDownLeftMain () {
         return false
@@ -241,8 +241,8 @@
       onDownRight () {
         this.checkUnselect()
         this.select()
-        EventHub.$emit('markerDown', this.annotationData)
-        EventHub.$emit('markerDownRight', this.annotationData)
+        this.$root.$emit('markerDown', this.annotationData)
+        this.$root.$emit('markerDownRight', this.annotationData)
       },
       onDoubleClick () {
         if (this.duration <= 0) {
@@ -270,21 +270,21 @@
             let pos = this.root.getInputPositionAbsGraph().x - this.inputOffsetX
             tc = this.root.getTimecodeFromGraphPositionAbs(pos)
             this.millisCached = this.root.millisTimelineToTotal(tc)
-            if (this.isDragged) EventHub.$emit('timecodeChange', tc)
+            if (this.isDragged) this.$root.$emit('timecodeChange', tc)
           }
           else if (this.draggedEl === 'handleLeft') {
             let pos = this.root.getInputPositionAbsGraph().x - this.inputOffsetX
             tc = this.root.getTimecodeFromGraphPositionAbs(pos)
             this.millisCached = Math.min(this.root.millisTimelineToTotal(tc), this.endCached)
             this.durationCached = Math.max(this.endCached - this.millisCached, 0)
-            if (this.isDragged) EventHub.$emit('timecodeChange', tc)
+            if (this.isDragged) this.$root.$emit('timecodeChange', tc)
           }
           else if (this.draggedEl === 'handleRight') {
             tc = this.root.getTimecodeFromInputPosition()
             let tct = this.root.getTimecodeFromInputPositionTotal()
             let max = this.root.timeline.duration - this.root.millisTotalToTimeline(this.millis)
             this.durationCached = this.root.restrict(tct - this.millis, 0, max)
-            if (this.isDragged) EventHub.$emit('timecodeChange', tc)
+            if (this.isDragged) this.$root.$emit('timecodeChange', tc)
           }
           this.save()
         }
@@ -331,8 +331,8 @@
         return this.millis + this.duration
       },
       checkUnselect () {
-        // if (!EventHub.keyIsPressed('Shift')) EventHub.$emit('markerUnselect')
-        EventHub.$emit('markerUnselect')
+        // if (!EventHub.keyIsPressed('Shift')) this.$root.$emit('markerUnselect')
+        this.$root.$emit('markerUnselect')
       },
       save () {
         if (this.annotationData.target.selector) {
@@ -340,7 +340,7 @@
             DateTime.fromMillis(this.millis),
             this.duration ? DateTime.fromMillis(this.millis + this.duration) : undefined)
           this.annotationData.target.selector = target.selector
-          EventHub.$emit('annotationChange', this.annotationData)
+          this.$root.$emit('annotationChange', this.annotationData)
         }
       }
     }

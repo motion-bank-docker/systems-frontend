@@ -11,7 +11,7 @@
 </template>
 
 <script>
-  import { EventHub } from './EventHub'
+  // import { EventHub } from './EventHub'
   // import { DateTime } from 'luxon'
 
   export default {
@@ -42,7 +42,7 @@
       }
     },
     async mounted () {
-      EventHub.$on('markerDownRight', this.onOpen)
+      this.$root.$on('markerDownRight', this.onOpen)
       // this.calculatePosition()
     },
     beforeDestroy () {
@@ -57,7 +57,7 @@
         this.annotationData = null
       },
       onButtonDown (event) {
-        EventHub.$emit(event)
+        this.$root.$emit(event)
       },
       calculatePosition () {
         if (this.annotationData) {

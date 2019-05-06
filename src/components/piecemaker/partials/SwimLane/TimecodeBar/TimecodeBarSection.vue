@@ -5,7 +5,7 @@
 </template>
 
 <script>
-  import { EventHub } from '../EventHub'
+  // import { EventHub } from '../EventHub'
   import { mapGetters } from 'vuex'
 
   export default {
@@ -37,7 +37,7 @@
       }
     },
     async mounted () {
-      EventHub.$on('afterComponentMounted', this.calculateX)
+      this.$root.$on('afterComponentMounted', this.calculateX)
     },
     watch: {
       // scrollPosition () {

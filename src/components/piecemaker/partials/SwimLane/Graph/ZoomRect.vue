@@ -21,9 +21,9 @@
       }
     },
     async mounted () {
-      EventHub.$on('globalUp', this.onGlobalUp)
-      EventHub.$on('graphDown', this.onGraphDown)
-      EventHub.$on('inputPositionChange', this.onInputPositionChange)
+      this.$root.$on('globalUp', this.onGlobalUp)
+      this.$root.$on('graphDown', this.onGraphDown)
+      this.$root.$on('inputPositionChange', this.onInputPositionChange)
     },
     computed: {
       x () {
@@ -45,8 +45,8 @@
         if (this.start !== null) {
           this.end = this.root.getInputPositionRelGraph().x
           this.width = Math.abs(this.end - this.start)
-          EventHub.$emit('scaleFactorChange', this.width)
-          EventHub.$emit('scrollPositionChange', {x: Math.min(this.start, this.end)})
+          this.$root.$emit('scaleFactorChange', this.width)
+          this.$root.$emit('scrollPositionChange', {x: Math.min(this.start, this.end)})
           this.start = null
           this.end = null
           this.width = 0
