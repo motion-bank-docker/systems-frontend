@@ -14,7 +14,7 @@
       // video player
 
       div.relative(:style="{height: videoHeight + 'px', maxHeight: viewport.height - 52 - 250 + 'px'}",
-      :class="[!swimlanes ? 'fit' : '']")
+      :class="[!visibilitySwimlanes ? 'fit' : '']")
         video-player.full-height.relative-position(v-if="video", :annotation="video", :fine-controls="true",
         @ready="playerReady($event)", @time="onPlayerTime($event)")
 
@@ -31,7 +31,7 @@
 
       // swimlane content
 
-      .absolute-bottom-right.bg-dark.full-width.shadow-up-4(v-if="swimlanes",
+      .absolute-bottom-right.bg-dark.full-width.shadow-up-4(v-if="visibilitySwimlanes",
       :style="{height: swimlanesHeight + 'px', borderTop: '1px solid #333', minHeight: '250px'}",
       ref="swimlaneWrap")
         swim-lane(
@@ -54,8 +54,8 @@
       // button toggles swimlanes visibility
 
       q-page-sticky.q-pa-md(position="bottom-right")
-        q-btn(v-if="!swimlanes && userHasSwimlane", @click="handlerToggle('swimlanes')", color="dark", round,
-        :class="[swimlanes ? 'rotate-270' : 'rotate-90']", icon="keyboard_backspace", size="sm")
+        q-btn(v-if="!visibilitySwimlanes && userHasSwimlane", @click="handlerToggle('swimlanes')", color="dark", round,
+        :class="[visibilitySwimlanes ? 'rotate-270' : 'rotate-90']", icon="keyboard_backspace", size="sm")
 
       // input field for new annotations
 
@@ -188,7 +188,6 @@
         active: false,
         annotations: [],
         currentHover: undefined,
-        drawer: this.$store.state.swimLaneSettings.visibilityDrawer,
         fullscreen: false,
         headerHeight: 52,
         inputStyle: true,
@@ -208,10 +207,8 @@
           target: '_blank'
         },
         viewport: {height: undefined, width: undefined},
-        swimlanes: undefined,
         swimlanesHeight: undefined,
         videoHeight: undefined,
-        visibilityDetails: undefined,
         detailsWidth: undefined,
         componentKey: 0
       }
@@ -219,22 +216,13 @@
     computed: {
       ...mapGetters({
         user: 'auth/getUserState',
-        selectedAnnotation: 'swimLaneSettings/getSelectedAnnotation'
+        selectedAnnotation: 'swimLaneSettings/getSelectedAnnotation',
+        drawer: 'swimLaneSettings/getVisibilityDrawer',
+        visibilitySwimlanes: 'swimLaneSettings/getVisibilitySwimlanes',
+        visibilityDetails: 'swimLaneSettings/getVisibilityDetails'
       }),
-      storeVisibilitySwimlanes () {
-        return this.$store.state.swimLaneSettings.visibilitySwimlanes
-      },
       storeCursorTop () {
         return this.$store.state.swimLaneSettings.cursorTop
-      },
-      storeVisibilityDrawer () {
-        return this.$store.state.swimLaneSettings.visibilityDrawer
-      },
-      storeDetailsWidth () {
-        return this.$store.state.swimLaneSettings.detailsWidth
-      },
-      storeVisibilityDetails () {
-        return this.$store.state.swimLaneSettings.visibilityDetails
       },
       userHasSwimlane () {
         return userHasFeature(this.user, 'swimlane')
@@ -272,17 +260,11 @@
       }
     },
     watch: {
-      storeVisibilitySwimlanes (val) {
-        this.swimlanes = val
-      },
       storeCursorTop (val) {
         this.videoHeight = val - this.headerHeight
         this.swimlanesHeight = (this.viewport.height - val)
       },
-      storeVisibilityDrawer (val) {
-        this.drawer = val
-      },
-      storeVisibilityDetails () {
+      visibilityDetails () {
         this.onForceRenderer()
       },
       currentIndex (val) {
@@ -304,7 +286,6 @@
           this.videoHeight = this.viewport.height / 2 - this.headerHeight
           this.swimlanesHeight = this.viewport.height / 2
         }
-        this.swimlanes = this.$store.state.swimLaneSettings.visibilitySwimlanes
       },
       onForceRenderer () {
         this.componentKey += 1
