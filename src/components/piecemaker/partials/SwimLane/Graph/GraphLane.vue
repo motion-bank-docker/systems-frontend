@@ -36,7 +36,8 @@
       return {
         rows: 0,
         rowHeight: 20,
-        yCached: 0
+        yCached: 0,
+        height: 0
       }
     },
     computed: {
@@ -45,13 +46,13 @@
         laneMode: 'swimLaneSettings/getLaneMode',
         expandedMode: 'swimLaneSettings/getExpandedMode'
       }),
-      height () {
-        if (this.expandedMode) return this.rowHeight * this.rows + this.rowHeight
-        if (!this.expandedMode) return this.rowHeight * 2
-        // if (this.laneMode === 'expand') return this.rowHeight * this.rows + this.rowHeight
-        // if (this.laneMode === 'collapse') return this.rowHeight * 2
-        return 0
-      },
+      // height () {
+      //   if (this.expandedMode) return this.rowHeight * this.rows + this.rowHeight
+      //   if (!this.expandedMode) return this.rowHeight * 2
+      //   // if (this.laneMode === 'expand') return this.rowHeight * this.rows + this.rowHeight
+      //   // if (this.laneMode === 'collapse') return this.rowHeight * 2
+      //   return 0
+      // },
       y () {
         // return (this.index + 1) * 50
         // if (this.laneMode === 'expand') return this.$parent.getPreviousLane(this.index).height + 50
@@ -64,12 +65,28 @@
     },
     async mounted () {
       this.$parent.registerLane(this)
+      this.height = this.calcHeight()
     },
     beforeDestroy () {
+    },
+    watch: {
+      rows () {
+        this.height = this.calcHeight()
+      },
+      expandedMode () {
+        this.height = this.calcHeight()
+      }
     },
     methods: {
       addRow () {
         this.rows++
+      },
+      calcHeight () {
+        if (this.expandedMode) return this.rowHeight * this.rows + this.rowHeight
+        if (!this.expandedMode) return this.rowHeight * 2
+        // if (this.laneMode === 'expand') return this.rowHeight * this.rows + this.rowHeight
+        // if (this.laneMode === 'collapse') return this.rowHeight * 2
+        return 0
       },
       getLabel (val) {
         let valMatch = val.match(/[A-Z][a-z]+|[0-9]+/g)

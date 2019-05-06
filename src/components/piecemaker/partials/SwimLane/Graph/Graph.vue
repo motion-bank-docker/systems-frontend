@@ -61,7 +61,8 @@
       ...mapGetters({
         timecodeCurrent: 'swimLaneSettings/getTimecode',
         scaleFactor: 'swimLaneSettings/getScaleFactor',
-        scrollPosition: 'swimLaneSettings/getScrollPosition'
+        scrollPosition: 'swimLaneSettings/getScrollPosition',
+        expandedMode: 'swimLaneSettings/getExpandedMode'
       }),
       x () {
         return this.width * this.scrollPosition.x * -1
@@ -72,12 +73,27 @@
       width () {
         return this.root.el.width / this.scaleFactor
       },
+      heightCollapsed () {
+        return (this.numLanes * 20) + 20
+      },
+      heightExpanded () {
+        return (this.numLanes * 20) + this.numAnnotations * 20
+      },
       height () {
-        let h = 0
-        for (let lane of this.laneList) {
-          h += lane.height
+        let base = this.expandedMode ? this.heightExpanded : this.heightCollapsed
+        return Math.max(this.root.el.height, base + 50)
+      },
+      numLanes () {
+        return Object.keys(this.annotationsGrouped).length
+      },
+      numAnnotations () {
+        let n = 0
+        for (let key in this.annotationsGrouped) {
+          if (this.annotationsGrouped.hasOwnProperty(key)) {
+            n += this.annotationsGrouped[key].length
+          }
         }
-        return Math.max(this.root.el.height, h + 50)
+        return n
       }
     },
     async mounted () {
@@ -143,6 +159,7 @@
       // TODO: rethink lane logic:
       // Anton's suggestion: different types of lanes (title lane, marker lane, marker group lane, etc.)
       // all lanes have the same height but different purposes. just the index is need to determine the y coordinate
+      // TODO: laneList is not used currently. maybe remove alltogether.
       registerLane (lane) {
         this.laneList.push(lane)
       },
