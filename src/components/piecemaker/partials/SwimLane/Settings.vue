@@ -1,28 +1,32 @@
 <template lang="pug">
-  .row
-    div
-      //
-        q-tooltip.bg-grey-9 Group annotations by
-      q-btn-dropdown.q-mt-xs.bg-grey-9(:label="groupAnnotationsBy", size="sm", flat)
-        q-list.q-py-none
-          q-item.cursor-pointer.q-caption(v-for="o in options", :key="o.value",
-          @click.native="groupAnnotationsBy = o.value", v-close-overlay,
-          :class="[groupAnnotationsBy === o.value ? 'bg-primary text-white' : '']") {{ o.label }}
+  .row.q-px-md
 
-    div.q-pl-sm
-      //
-        q-tooltip.bg-grey-9 Lane mode
-      q-btn-dropdown.q-mt-xs.bg-grey-9(:label="laneMode", size="sm", flat)
+    // sort by author/type
+    q-btn-dropdown.q-mt-xs.bg-grey-9(:label="groupAnnotationsBy", size="sm", flat)
+      q-list.q-py-none
+        q-item.cursor-pointer.q-caption(v-for="o in options", :key="o.value",
+        @click.native="groupAnnotationsBy = o.value", v-close-overlay,
+        :class="[groupAnnotationsBy === o.value ? 'bg-primary text-white' : '']") {{ o.label }}
+
+    // expand/collapse
+    //
+      q-btn-dropdown.q-mt-xs.bg-grey-9.q-ml-sm(:label="laneMode", size="sm", flat)
         q-list.q-py-none
           q-item.cursor-pointer.q-caption(v-for="o in optionsLaneMode", :key="o.value",
           @click.native="laneMode = o.value", v-close-overlay,
-          :class="[laneMode === o.value ? 'bg-primary text-white' : '']") {{ o.label }}
+          // :class="[laneMode === o.value ? 'bg-primary text-white' : '']") {{ o.label }}
+
+    // expand button
+    q-btn.flip-vertical.q-mt-xs.q-ml-sm(@click="expand()", size="sm", flat, round, icon="clear_all",
+    :class="[expandedMode ? 'bg-primary text-white' : '']")
+
     // undo
     div.q-pl-sm
-      q-btn.q-mt-xs.bg-grey-9(icon="undo", size="sm", flat)
+      q-btn.q-mt-xs(icon="undo", size="sm", flat, round)
+
     // redo
     div.q-pl-sm
-      q-btn.q-mt-xs.bg-grey-9(icon="redo", size="sm", flat)
+      q-btn.q-mt-xs(icon="redo", size="sm", flat, round)
 </template>
 
 <script>
@@ -38,6 +42,11 @@
     },
     mounted () {
     },
+    methods: {
+      expand () {
+        this.$store.commit('swimLaneSettings/setExpandedMode')
+      }
+    },
     watch: {
       groupAnnotationsBy (val) {
         this.$store.commit('swimLaneSettings/setType', val)
@@ -50,7 +59,8 @@
     computed: {
       ...mapGetters({
         options: 'swimLaneSettings/getOptions',
-        optionsLaneMode: 'swimLaneSettings/getOptionsLaneMode'
+        optionsLaneMode: 'swimLaneSettings/getOptionsLaneMode',
+        expandedMode: 'swimLaneSettings/getExpandedMode'
       })
     }
   }

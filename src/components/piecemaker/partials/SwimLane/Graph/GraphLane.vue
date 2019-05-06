@@ -42,11 +42,14 @@
     computed: {
       ...mapGetters({
         scrollPosition: 'swimLaneSettings/getScrollPosition',
-        laneMode: 'swimLaneSettings/getLaneMode'
+        laneMode: 'swimLaneSettings/getLaneMode',
+        expandedMode: 'swimLaneSettings/getExpandedMode'
       }),
       height () {
-        if (this.laneMode === 'expand') return this.rowHeight * this.rows + this.rowHeight
-        if (this.laneMode === 'collapse') return this.rowHeight * 2
+        if (this.expandedMode) return this.rowHeight * this.rows + this.rowHeight
+        if (!this.expandedMode) return this.rowHeight * 2
+        // if (this.laneMode === 'expand') return this.rowHeight * this.rows + this.rowHeight
+        // if (this.laneMode === 'collapse') return this.rowHeight * 2
         return 0
       },
       y () {

@@ -81,6 +81,7 @@
     computed: {
       ...mapGetters({
         laneMode: 'swimLaneSettings/getLaneMode',
+        expandedMode: 'swimLaneSettings/getExpandedMode',
         selectedAnnotation: 'swimLaneSettings/getSelectedAnnotation'
       }),
       fill () {
@@ -136,8 +137,10 @@
       y () {
         // return (this.index % 7) * 50 + 25 + ((Math.floor(this.index / 7) % 2) * 25)
         // return (this.index % 2) * 25 + 25 + ((Math.floor(this.index / 2) % 2) * 25)
-        if (this.laneMode === 'expand') return (this.index + 1) * this.height
-        if (this.laneMode === 'collapse') return this.height
+        // if (this.laneMode === 'expand') return (this.index + 1) * this.height
+        // if (this.laneMode === 'collapse') return this.height
+        if (this.expandedMode) return (this.index + 1) * this.height
+        if (!this.expandedMode) return this.height
         return 0
       }
     },
