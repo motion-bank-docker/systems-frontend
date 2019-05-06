@@ -266,7 +266,6 @@
       this.$root.$on('annotationChange', this.onAnnotationChange)
 
       this.timecode.hoverText = this.millisToText(0)
-      this.$root.$emit('timecodeChange', 0)
 
       // this.cacheDimensions()
       // FIXME ugly fix because the call above seems to be fired to early
