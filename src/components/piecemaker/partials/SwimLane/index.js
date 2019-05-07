@@ -1,6 +1,7 @@
 import MarkerDetailsHover from './MarkerDetailsHover'
 import MarkerDetailsSelected from './MarkerDetailsSelected'
 import MarkerContextMenu from './MarkerContextMenu'
+import MarkerMap from './MarkerMap/MarkerMap'
 import NavigationBar from './NavigationBar/NavigationBar'
 import SwimLaneMarker from './Graph/GraphMarker'
 import GraphLane from './Graph/GraphLane'
@@ -19,5 +20,6 @@ export default {
   ZoomRect,
   Graph,
   SwimLane,
-  Settings
+  Settings,
+  MarkerMap
 }

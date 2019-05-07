@@ -123,7 +123,7 @@
         else return 0
       },
       widthRel () {
-        const v = this.root.millistoRelGraph(this.duration)
+        const v = this.root.millisToRelGraph(this.duration)
         if (isFinite(v)) return v
         else return 0
       },

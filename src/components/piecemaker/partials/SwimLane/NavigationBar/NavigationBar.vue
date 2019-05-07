@@ -26,7 +26,7 @@
       :x1="timecodeCurrentX", y1="0",
       :x2="timecodeCurrentX", y2="100%",
       )
-    rect.no-event.fill-black(x="0", y="24", width="100%", height="1")
+    rect.no-event.fill-black(x="0", y="19", width="100%", height="1")
     <!--line.no-event.stroke-light(x1="0", x2="100%", y1="25", y2="25")-->
 </template>
 
@@ -44,7 +44,7 @@
           // TODO: implement differently? Used to determine handle width when left is dragged
           boundRight: 0
         },
-        height: 25,
+        height: 20,
         timecodeMarkerHover: {
           x: 0
         },
@@ -68,7 +68,7 @@
         return this.root.toAbsCompX(this.scaleFactor)
       },
       timecodeCurrentX () {
-        if (this.timecodeCurrent) return this.root.millistoRelGraph(this.timecodeCurrent) * 100 + '%'
+        if (this.timecodeCurrent) return Math.floor(this.root.millisToAbsComp(this.timecodeCurrent)) + 0.5
         return 0
       }
     },
