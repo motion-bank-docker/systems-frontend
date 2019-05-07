@@ -45,6 +45,7 @@
         :annotations="annotations",
         :video="video",
         :key="componentKey",
+        :currentAnnotation="testVal",
         @emitHandler="handlerToggle('swimlanes')",
         @forceRenderer="onForceRenderer",
         @timecodeChange="gotoMillis",
@@ -90,6 +91,7 @@
             q-item-tile.relative-position
 
               .annotation-list-item-header
+                q-btn(@click="test(annotation.target.selector._valueMillis)") {{ annotation.target.selector._valueMillis }}
                 annotation-icon.cursor-pointer(
                   :annotation="annotation",
                   :isSelected="selectedAnnotation ? selectedAnnotation._uuid === annotation._uuid : false",
@@ -176,8 +178,6 @@
         this.$q.loading.hide()
       }
 
-      // this.$root.$on('test', this.onTest)
-
       this.setupScreen()
     },
     beforeDestroy () {
@@ -210,7 +210,8 @@
         swimlanesHeight: undefined,
         videoHeight: undefined,
         detailsWidth: undefined,
-        componentKey: 0
+        componentKey: 0,
+        testVal: undefined
       }
     },
     computed: {
@@ -276,6 +277,9 @@
       this.$root.$on('emitSelector', this.gotoSelector)
     },
     methods: {
+      test (val) {
+        this.testVal = val
+      },
       setupScreen () {
         this.$store.commit('swimLaneSettings/setSelectedAnnotation', null)
         if (this.$store.state.swimLaneSettings.cursorTop) {

@@ -171,7 +171,7 @@
       MarkerContextMenu,
       TimecodeLabel
     },
-    props: ['timelineUuid', 'markerDetails', 'resizable', 'start', 'duration', 'annotations', 'video', 'map'],
+    props: ['timelineUuid', 'markerDetails', 'resizable', 'start', 'duration', 'annotations', 'video', 'map', 'currentAnnotation'],
     data () {
       return {
         self: this,
@@ -347,6 +347,11 @@
       }
     },
     watch: {
+      currentAnnotation (val) {
+        // console.log(val)
+        // console.log(this.millisTotaltoRelGraph(val))
+        this.setScrollPosition({x: this.millisTotaltoRelGraph(val), y: 0})
+      },
       timecodeCurrent (tc) {
         this.timecode.currentText = this.millisToText(tc)
       },
@@ -575,6 +580,7 @@
       },
       // ----------------------------------------------------------------------------------------------------------- Set
       setScrollPosition (sp) { // 0 - 1
+        console.log('setScrollPosition', sp)
         let x = null
         let y = null
 
@@ -584,6 +590,7 @@
         if (!isNaN(sp.y) && this.$refs.graph && this.el) {
           y = this.restrict(sp.y, 0, this.toRelGraphY(this.$refs.graph.height - this.el.height))
         }
+        console.log('****', x, '++++', y)
         this.$store.commit('swimLaneSettings/setScrollPosition', {x: x, y: y})
       },
       setTimecode (tc) { // int ms
