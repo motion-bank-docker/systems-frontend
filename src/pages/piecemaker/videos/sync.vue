@@ -33,7 +33,7 @@
       // video to be sync'd
       .target-video.col-6.row
         .video.col-12(v-if="video")
-          video-player(:src="video.body.source.id", :fine-controls="true",
+          video-player.relative-position(:src="video.body.source.id", :fine-controls="true",
                        @ready="onVidPlayerReady($event)")
 
       // video used as reference
