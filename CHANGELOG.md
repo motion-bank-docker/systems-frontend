@@ -8,6 +8,20 @@ The format is based on
 and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.4] - 2019-05-07
+
+### Changed
+
+- CellVideo shows volume panel for videos
+
+
+## [1.3.3] - 2019-05-04
+
+### Fixed
+
+- Scaling issues in YouTube player in MoSys grids
+
+
 ## [1.3.2] - 2019-04-15
 
 ### Fixed
@@ -243,7 +257,10 @@ of a video cannot be retrieved
 - Start proper versioning at 1.0.0
 
 
-[Unreleased]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.1...master
+[Unreleased]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.4...master
+[1.3.4]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.3...v1.3.4
+[1.3.3]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.2...v1.3.3
+[1.3.2]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.1...v1.3.2
 [1.3.1]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.0...v1.3.1
 [1.3.0]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.2.1...v1.3.0
 [1.2.1]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.2.0...v1.2.1
