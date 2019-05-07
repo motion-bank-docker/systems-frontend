@@ -99,10 +99,10 @@
             // hovering timecode
 
             .timecode-display-hover.no-select.no-event.p-abs.q-caption(
-            ref="timecodeDisplayHover",
-            :class="(isFocused('timecodeBar') && !isDragged()) || isDragged('timecodeBar') ? '' : 'is-hidden'",
-            :style="{left: timecodeBar.displayHover.x + 'px'}"
-            ) {{ timecode.hoverText }}
+              ref="timecodeDisplayHover",
+              :class="(isFocused('timecodeBar') && !isDragged()) || isDragged('timecodeBar') ? '' : 'is-hidden'",
+              :style="{left: timecodeBar.displayHover.x + 'px'}"
+              ) {{ timecode.hoverText }}
 
             // --------------------------------------------------------------------------------------------- Outer SVG
             //
@@ -112,35 +112,38 @@
               ref="root"
               )
             svg.swim-lane(
-            @mousedown.left.prevent,
-            width="100%", height="100%",
-            ref="root"
-            )
+              @mousedown.left.prevent,
+              width="100%", height="100%",
+              ref="root"
+              )
               // swimlanes
               graph(
-              ref="graph",
-              :annotationsGrouped="annotationsGrouped",
-              :root="self",
-              :offset="offset"
-              )
+                ref="graph",
+                :annotationsGrouped="annotationsGrouped",
+                :root="self",
+                :offset="offset"
+                )
               // sections bar
               timecode-bar(
-              ref="timecodeBar",
-              :root="self",
-              :offset="offset"
-              )
+                ref="timecodeBar",
+                :root="self",
+                :offset="offset"
+                )
+              marker-map(
+                :root="self",
+                :annotations="annotations"
+                )
               // TODO: own component
               line.sl-graph-timecode-current.stroke-neutral.no-event(
-              :x1="timecodeMarkerCurrentX", y1="0",
-              :x2="timecodeMarkerCurrentX", y2="100%"
-              )
+                :x1="timecodeMarkerCurrentX", y1="0",
+                :x2="timecodeMarkerCurrentX", y2="100%"
+                )
               // scroll and zoom bar
               navigation-bar(
-              ref="nav",
-              :root="self",
-              :offset="offset"
-              )
-
+                ref="nav",
+                :root="self",
+                :offset="offset"
+                )
 </template>
 
 <script>
@@ -157,9 +160,11 @@
   import MarkerContextMenu from './MarkerContextMenu'
   import AnnotationIcon from '../AnnotationIcon'
   import TimecodeLabel from '../TimecodeLabel'
+  import MarkerMap from './MarkerMap/MarkerMap'
 
   export default {
     components: {
+      MarkerMap,
       AnnotationIcon,
       SwimLaneMarker,
       Graph,
@@ -337,9 +342,9 @@
       },
       timecodeMarkerCurrentX () {
         if (this.timecodeCurrent && this.scrollPosition) {
-          let r = this.millistoRelGraph(this.timecodeCurrent) - this.scrollPosition.x
+          let r = this.millisToRelGraph(this.timecodeCurrent) - this.scrollPosition.x
           let p = this.toAbsGraphX(r)
-          if (isFinite(p)) return p
+          if (isFinite(p)) return Math.floor(p) + 0.5
           else return 0
           // return p
         }
@@ -733,19 +738,26 @@
       // relComptoRelGraphX (rel) {
       //   return rel + this.scroll
       // },
-      millistoRelGraph (ms) {
+      millisToRelGraph (ms) {
         let res = ms / this.timeline.duration
-        if (isFinite(res)) return ms / this.timeline.duration
+        if (isFinite(res)) return res
         else return 0
       },
-      millistoAbsGraph (ms) {
+      millisToAbsGraph (ms) {
         return ms / this.timeline.duration * this.$refs.graph.width
+      },
+      millisToAbsComp (ms) {
+        return ms / this.timeline.duration * this.el.width || 0
       },
       millisTotaltoRelGraph (ms) {
         return (ms - this.timeline.start) / this.timeline.duration
       },
       millisTotaltoAbsGraph (ms) {
         if (this.$refs.graph) return (ms - this.timeline.start) / this.timeline.duration * this.$refs.graph.width
+        else return 0
+      },
+      millisTotaltoAbsComp (ms) {
+        if (this.$refs.graph) return (ms - this.timeline.start) / this.timeline.duration * this.el.width
         else return 0
       },
       millisTotalToTimeline (ms) {
@@ -842,11 +854,11 @@
   */
 
   .timecode-display-hover
-    height: 25px
-    line-height: 25px
+    height: 20px
+    line-height: 20px
     background: $neutral
     color: $dark
-    padding: 0 8px
+    padding: 0 6px
     top: 0px
     z-index: 99
 
