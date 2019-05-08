@@ -171,7 +171,8 @@
       MarkerContextMenu,
       TimecodeLabel
     },
-    props: ['timelineUuid', 'markerDetails', 'resizable', 'start', 'duration', 'annotations', 'video', 'map', 'currentAnnotation'],
+    props: ['timelineUuid', 'markerDetails', 'resizable', 'start', 'duration', 'annotations', 'video', 'map',
+      'currentAnnotation', 'forceRendererMarker'],
     data () {
       return {
         self: this,
@@ -347,10 +348,17 @@
       }
     },
     watch: {
+      forceRendererMarker () {
+        // alert('bla')
+        // this.setScrollPosition({x: this.millisTotaltoRelGraph(val) - this.scaleFactor / 2, y: 0})
+        this.jumpToMarker()
+      },
+      /*
       currentAnnotation (val) {
         // this.setScrollPosition({x: this.millisTotaltoRelGraph(val), y: 0})
         this.setScrollPosition({x: this.millisTotaltoRelGraph(val) - this.scaleFactor / 2, y: 0})
       },
+      */
       timecodeCurrent (tc) {
         this.timecode.currentText = this.millisToText(tc)
       },
@@ -360,6 +368,9 @@
       }
     },
     methods: {
+      jumpToMarker () {
+        this.setScrollPosition({x: this.millisTotaltoRelGraph(this.currentAnnotation) - this.scaleFactor / 2, y: 0})
+      },
       onTimecodeLabel (val) {
         // this.$root.$emit('test', val)
         this.$root.$emit('emitSelector', val)

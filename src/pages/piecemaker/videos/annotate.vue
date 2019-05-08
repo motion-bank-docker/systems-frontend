@@ -46,6 +46,7 @@
         :video="video",
         :key="componentKey",
         :currentAnnotation="selectorMillis",
+        :forceRendererMarker="fRendererMarker",
         @emitHandler="handlerToggle('swimlanes')",
         @forceRenderer="onForceRenderer",
         @timecodeChange="gotoMillis",
@@ -210,7 +211,8 @@
         videoHeight: undefined,
         detailsWidth: undefined,
         componentKey: 0,
-        selectorMillis: undefined
+        selectorMillis: undefined,
+        fRendererMarker: false
       }
     },
     computed: {
@@ -444,6 +446,7 @@
         }
         this.gotoMillis(millis)
         this.$store.commit('swimLaneSettings/setSelectedAnnotation', annotation)
+        this.fRendererMarker = !this.fRendererMarker
       },
       gotoHashvalue () {
         if (this.hashValue && uuid.isUUID(this.hashValue)) {
