@@ -579,7 +579,6 @@
       },
       // ----------------------------------------------------------------------------------------------------------- Set
       setScrollPosition (sp) { // 0 - 1
-        console.log('setScrollPosition', sp)
         let x = null
         let y = null
 
@@ -589,7 +588,6 @@
         if (!isNaN(sp.y) && this.$refs.graph && this.el) {
           y = this.restrict(sp.y, 0, this.toRelGraphY(this.$refs.graph.height - this.el.height))
         }
-        console.log('****', x, '++++', y)
         this.$store.commit('swimLaneSettings/setScrollPosition', {x: x, y: y})
       },
       setTimecode (tc) { // int ms
