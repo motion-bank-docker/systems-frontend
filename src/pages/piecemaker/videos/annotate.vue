@@ -506,6 +506,8 @@
         }
       },
       selectAnnotation (annotation) {
+        // this.selectorMillis = annotation.target.selector._valueMillis
+        this.gotoSelector(annotation.target.selector)
         this.$store.commit('swimLaneSettings/setSelectedAnnotation', annotation)
       }
     }
