@@ -437,7 +437,7 @@
         let millis = selector._valueMillis - this.video.target.selector._valueMillis
         if (useDuration) {
           millis += selector._valueDuration
-          this.selectorMillis = selector._valueMillis += selector._valueDuration
+          this.selectorMillis = selector._valueMillis + selector._valueDuration
         }
         else {
           this.selectorMillis = selector._valueMillis
