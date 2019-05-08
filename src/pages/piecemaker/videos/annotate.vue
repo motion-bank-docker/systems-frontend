@@ -97,7 +97,7 @@
                   @click.native="selectAnnotation(annotation)"
                   )
                 timecode-label(
-                  @click.native="gotoSelector(annotation.target.selector)",
+                  @click.native="gotoSelector(annotation.target.selector, false, annotation)",
                   :millis="annotation.target.selector._valueMillis",
                   :videoDate="getVideoDate()"
                   )
@@ -105,7 +105,7 @@
                 template(v-if="annotation.target.selector._valueDuration")
                   .timecode-label-duration-spacer
                   timecode-label(
-                    @click.native="gotoSelector(annotation.target.selector, true)",
+                    @click.native="gotoSelector(annotation.target.selector, true, annotation)",
                     :millis="getAnnotationEndMillis(annotation)",
                     :videoDate="getVideoDate()"
                     )
@@ -429,7 +429,7 @@
           this.$store.commit('swimLaneSettings/setTimecode', millis)
         }
       },
-      gotoSelector (selector, useDuration) {
+      gotoSelector (selector, useDuration, annotation) {
         const
           parsed = selector.parse(),
           start = Array.isArray(parsed['date-time:t']) ? parsed['date-time:t'][0] : parsed['date-time:t']
@@ -443,6 +443,7 @@
           this.selectorMillis = selector._valueMillis
         }
         this.gotoMillis(millis)
+        this.$store.commit('swimLaneSettings/setSelectedAnnotation', annotation)
       },
       gotoHashvalue () {
         if (this.hashValue && uuid.isUUID(this.hashValue)) {
