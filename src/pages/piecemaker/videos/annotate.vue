@@ -15,8 +15,9 @@
 
       div.relative(:style="{height: videoHeight + 'px', maxHeight: viewport.height - 52 - 250 + 'px'}",
       :class="[!visibilitySwimlanes ? 'fit' : '']")
-        video-player.full-height.relative-position(v-if="video", :annotation="video", :fine-controls="true",
-        @ready="playerReady($event)", @time="onPlayerTime($event)")
+        // FIXME: commented out for development (internet is down, saving traffic)
+        // video-player.full-height.relative-position(v-if="video", :annotation="video", :fine-controls="true",
+          @ready="playerReady($event)", @time="onPlayerTime($event)")
 
       // back button
 
@@ -45,7 +46,7 @@
         :annotations="annotations",
         :video="video",
         :key="componentKey",
-        :currentAnnotation="testVal",
+        :currentAnnotation="selectorMillis",
         @emitHandler="handlerToggle('swimlanes')",
         @forceRenderer="onForceRenderer",
         @timecodeChange="gotoMillis",
@@ -91,7 +92,6 @@
             q-item-tile.relative-position
 
               .annotation-list-item-header
-                q-btn(@click="test(annotation.target.selector._valueMillis)") {{ annotation.target.selector._valueMillis }}
                 annotation-icon.cursor-pointer(
                   :annotation="annotation",
                   :isSelected="selectedAnnotation ? selectedAnnotation._uuid === annotation._uuid : false",
@@ -211,7 +211,7 @@
         videoHeight: undefined,
         detailsWidth: undefined,
         componentKey: 0,
-        testVal: undefined
+        selectorMillis: undefined
       }
     },
     computed: {
@@ -277,9 +277,6 @@
       this.$root.$on('emitSelector', this.gotoSelector)
     },
     methods: {
-      test (val) {
-        this.testVal = val
-      },
       setupScreen () {
         this.$store.commit('swimLaneSettings/setSelectedAnnotation', null)
         if (this.$store.state.swimLaneSettings.cursorTop) {
@@ -439,7 +436,13 @@
           start = Array.isArray(parsed['date-time:t']) ? parsed['date-time:t'][0] : parsed['date-time:t']
         this.$router.push({ query: { datetime: start } })
         let millis = selector._valueMillis - this.video.target.selector._valueMillis
-        if (useDuration) millis += selector._valueDuration
+        if (useDuration) {
+          millis += selector._valueDuration
+          this.selectorMillis = selector._valueMillis += selector._valueDuration
+        }
+        else {
+          this.selectorMillis = selector._valueMillis
+        }
         this.gotoMillis(millis)
       },
       gotoHashvalue () {
