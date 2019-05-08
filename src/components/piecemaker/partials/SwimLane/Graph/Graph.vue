@@ -11,7 +11,7 @@
       ref="graph",
       :width="width",
       :height="height",
-      :x="x", :y="44"
+      :x="x", :y="43"
       )
       // Graph Background
       rect.sl-graph-background.fill-faded(
