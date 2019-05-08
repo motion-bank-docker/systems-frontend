@@ -348,9 +348,8 @@
     },
     watch: {
       currentAnnotation (val) {
-        // console.log(val)
-        // console.log(this.millisTotaltoRelGraph(val))
-        this.setScrollPosition({x: this.millisTotaltoRelGraph(val), y: 0})
+        // this.setScrollPosition({x: this.millisTotaltoRelGraph(val), y: 0})
+        this.setScrollPosition({x: this.millisTotaltoRelGraph(val) - this.scaleFactor / 2, y: 0})
       },
       timecodeCurrent (tc) {
         this.timecode.currentText = this.millisToText(tc)
