@@ -859,7 +859,7 @@
     background: $neutral
     color: $dark
     padding: 0 6px
-    top: 0px
+    top: 4px
     z-index: 99
 
   /*

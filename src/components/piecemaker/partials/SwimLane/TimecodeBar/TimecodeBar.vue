@@ -4,7 +4,7 @@
     @mouseover="trigger('UIEnter', 'timecodeBar')",
     @mouseleave="trigger('UILeave', 'timecodeBar')",
     height="20", width="100%",
-    y="20"
+    y="24"
     )
     rect.fill-medium(width="100%", height="100%")
     timecode-bar-section(
