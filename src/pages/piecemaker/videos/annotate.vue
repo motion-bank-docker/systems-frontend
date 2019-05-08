@@ -15,9 +15,8 @@
 
       div.relative(:style="{height: videoHeight + 'px', maxHeight: viewport.height - 52 - 250 + 'px'}",
       :class="[!visibilitySwimlanes ? 'fit' : '']")
-        // FIXME: commented out for development (internet is down, saving traffic)
-        // video-player.full-height.relative-position(v-if="video", :annotation="video", :fine-controls="true",
-          @ready="playerReady($event)", @time="onPlayerTime($event)")
+        video-player.full-height.relative-position(v-if="video", :annotation="video", :fine-controls="true",
+        @ready="playerReady($event)", @time="onPlayerTime($event)")
 
       // back button
 
