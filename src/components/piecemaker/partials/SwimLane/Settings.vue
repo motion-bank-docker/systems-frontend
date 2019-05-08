@@ -20,13 +20,14 @@
     q-btn.flip-vertical.q-mt-xs.q-ml-sm(@click="expand()", size="sm", flat, round, icon="clear_all",
     :class="[expandedMode ? 'bg-primary text-white' : '']")
 
-    // undo
-    div.q-pl-sm
-      q-btn.q-mt-xs(icon="undo", size="sm", flat, round)
+    // FIXME: add buttons later
+      // undo
+      div.q-pl-sm
+        q-btn.q-mt-xs(icon="undo", size="sm", flat, round)
 
-    // redo
-    div.q-pl-sm
-      q-btn.q-mt-xs(icon="redo", size="sm", flat, round)
+      // redo
+      div.q-pl-sm
+        q-btn.q-mt-xs(icon="redo", size="sm", flat, round)
 </template>
 
 <script>
