@@ -429,7 +429,7 @@
       },
       onDetailsResize (obj) {
         this.dimensions.details.height.currentPx = obj.width
-        console.log(this.dimensions.details.height.currentPx)
+        // console.log(this.dimensions.details.height.currentPx)
 
         if (this.dimensions.details.height.currentPx < 280) this.timecodeLabelBreakpoint = true
         else this.timecodeLabelBreakpoint = false
