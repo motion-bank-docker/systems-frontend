@@ -367,12 +367,10 @@
         // this.setScrollPosition({x: this.millisTotaltoRelGraph(val) - this.scaleFactor / 2, y: 0})
         this.jumpToMarker()
       },
-      /*
       currentAnnotation (val) {
         // this.setScrollPosition({x: this.millisTotaltoRelGraph(val), y: 0})
         this.setScrollPosition({x: this.millisTotaltoRelGraph(val) - this.scaleFactor / 2, y: 0})
       },
-      */
       timecodeCurrent (tc) {
         this.timecode.currentText = this.millisToText(tc)
       },
@@ -394,7 +392,7 @@
         let jumpingPoint
         if (!val) jumpingPoint = this.currentAnnotation
         else jumpingPoint = val
-        this.setScrollPosition({x: jumpingPoint, y: 0})
+        this.setScrollPosition({x: this.millisTotaltoRelGraph(jumpingPoint), y: 0})
       },
       onTimecodeLabel (annotation, useDuration) {
         this.$root.$emit('emitSelector', annotation.target.selector, useDuration)
