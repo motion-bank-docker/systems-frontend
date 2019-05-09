@@ -26,12 +26,12 @@
             .row.q-mt-xs
               .q-mt-xs.q-mr-sm(v-if="selectedAnnotation")
                 annotation-icon.cursor-pointer(:annotation="selectedAnnotation",
-                @click.native="onTimecodeLabel(selectedAnnotation.target.selector)")
+                @click.native="onTimecodeLabel(selectedAnnotation)")
 
               div(v-if="selectedAnnotation", :class="{'row': !timecodeLabelBreakpoint}")
                 timecode-label(
                 v-if="selectedAnnotation",
-                @click.native="onTimecodeLabel(selectedAnnotation.target.selector)",
+                @click.native="onTimecodeLabel(selectedAnnotation)",
                 :millis="selectedAnnotation.target.selector._valueMillis",
                 :videoDate="getVideoDate()"
                 )
@@ -41,7 +41,7 @@
                   .timecode-label-duration-spacer(v-if="!timecodeLabelBreakpoint")
                   .timecode-label-duration-spacer-vertical(v-else)
                   timecode-label(
-                  @click.native="onTimecodeLabel(selectedAnnotation.target.selector, true)",
+                  @click.native="onTimecodeLabel(selectedAnnotation, true)",
                   :millis="getEndMillisFromDuration(selectedAnnotation)",
                   :videoDate="getVideoDate()"
                   )
@@ -396,9 +396,10 @@
         else jumpingPoint = val
         this.setScrollPosition({x: jumpingPoint, y: 0})
       },
-      onTimecodeLabel (val, useDuration) {
-        this.$root.$emit('emitSelector', val, useDuration)
-        this.jumpToMarker(val)
+      onTimecodeLabel (annotation, useDuration) {
+        this.$root.$emit('emitSelector', annotation.target.selector, useDuration)
+        this.$store.commit('swimLaneSettings/setSelectedAnnotation', annotation)
+        this.jumpToMarker(annotation.target.selector)
       },
       getVideoDate () {
         return DateTime.fromMillis(this.video.target.selector._valueMillis)
