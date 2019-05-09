@@ -231,8 +231,7 @@
             width: {
               min: 20,
               current: undefined,
-              max: 50,
-              currentPx: undefined
+              max: 50
             }
           },
           swimlanes: {
@@ -249,8 +248,7 @@
           }
         },
         selectedAnnotationTime: undefined,
-        dirtyAnnotation: undefined,
-        timecodeLabelBreakpoint: false
+        dirtyAnnotation: undefined
       }
     },
     mounted () {
@@ -307,13 +305,12 @@
         scrollPosition: 'swimLaneSettings/getScrollPosition',
         scaleFactor: 'swimLaneSettings/getScaleFactor',
         groupAnnotationsBy: 'swimLaneSettings/getGroupAnnotationsBy',
-        selectedAnnotation: 'swimLaneSettings/getSelectedAnnotation'
+        selectedAnnotation: 'swimLaneSettings/getSelectedAnnotation',
+        detailsWidth: 'swimLaneSettings/getDetailsWidth',
+        timecodeLabelBreakpoint: 'swimLaneSettings/getTimecodeLabelBreakpoint'
       }),
       storeCursorTop () {
         return this.$store.state.swimLaneSettings.cursorTop
-      },
-      storeDetailsWidth () {
-        return this.$store.state.swimLaneSettings.detailsWidth
       },
       showDetails () {
         return this.$store.state.swimLaneSettings.visibilityDetails
@@ -413,11 +410,11 @@
         if (this.showDetails) this.dimensions.swimlanes.width.max = 80
         else this.dimensions.swimlanes.width.max = 100
 
-        if (this.showDetails && this.storeDetailsWidth) {
-          this.dimensions.details.width.current = this.storeDetailsWidth
+        if (this.showDetails && this.detailsWidth) {
+          this.dimensions.details.width.current = this.detailsWidth
           this.dimensions.swimlanes.width.current = 100 - this.dimensions.details.width.current
         }
-        else if (this.showDetails && !this.storeDetailsWidth) {
+        else if (this.showDetails && !this.detailsWidth) {
           this.dimensions.details.width.current = 30
           this.dimensions.swimlanes.width.current = 70
         }
@@ -430,8 +427,12 @@
         this.dimensions.details.height.currentPx = obj.width
         // console.log(this.dimensions.details.height.currentPx)
 
-        if (this.dimensions.details.height.currentPx < 280) this.timecodeLabelBreakpoint = true
-        else this.timecodeLabelBreakpoint = false
+        // if (this.dimensions.details.height.currentPx < 280) this.timecodeLabelBreakpoint = true
+        // else this.timecodeLabelBreakpoint = false
+        if (this.dimensions.details.height.currentPx < 280) {
+          this.$store.commit('swimLaneSettings/setTimecodeLabelBreakpoint', true)
+        }
+        else this.$store.commit('swimLaneSettings/setTimecodeLabelBreakpoint', false)
       },
       onMouse () {
         this.hideSwimlanes = !this.hideSwimlanes
