@@ -377,8 +377,10 @@
         this.timecode.currentText = this.millisToText(tc)
       },
       selectedAnnotation (obj) {
-        let ms = this.millisTotalToTimeline(DateTime.fromISO(obj.target.selector.value).toMillis())
-        this.selectedAnnotationTime = this.millisToText(ms)
+        if (obj) {
+          let ms = this.millisTotalToTimeline(DateTime.fromISO(obj.target.selector.value).toMillis())
+          this.selectedAnnotationTime = this.millisToText(ms)
+        }
       }
     },
     methods: {
