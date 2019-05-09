@@ -1,7 +1,7 @@
 <template lang="pug">
   svg.timecode-bar-section(:x="x", y="0")
-    line.stroke-black(x1="0", y1="0", x2="0", y2="100%")
-    text.no-select.fill-light.q-caption(y="18", x="10") {{ time }}
+    line.stroke-black(x1="0.5", y1="0", x2="0.5", y2="100%")
+    text.no-select.fill-light.q-caption(y="14", x="8") {{ time }}
 </template>
 
 <script>
@@ -60,7 +60,7 @@
         // map to root component width
         m = compWidth - x
         this.xMapped = m
-        return m || 0
+        return Math.floor(m) || 0
       }
     }
   }

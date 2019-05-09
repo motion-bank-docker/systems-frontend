@@ -11,7 +11,7 @@
       ref="graph",
       :width="width",
       :height="height",
-      :x="x", :y="49"
+      :x="x", :y="43"
       )
       // Graph Background
       rect.sl-graph-background.fill-faded(
@@ -81,7 +81,7 @@
       },
       height () {
         let base = this.expandedMode ? this.heightExpanded : this.heightCollapsed
-        return Math.max(this.root.el.height, base + 50)
+        return Math.max(this.root.el.height, base + 44)
       },
       numLanes () {
         return Object.keys(this.annotationsGrouped).length

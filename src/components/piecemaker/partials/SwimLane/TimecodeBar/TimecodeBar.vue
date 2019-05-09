@@ -3,8 +3,8 @@
     @mousedown="onTimecodeBarDown ($event)",
     @mouseover="trigger('UIEnter', 'timecodeBar')",
     @mouseleave="trigger('UILeave', 'timecodeBar')",
-    height="25", width="100%",
-    y="25"
+    height="20", width="100%",
+    y="24"
     )
     rect.fill-medium(width="100%", height="100%")
     timecode-bar-section(
@@ -55,11 +55,11 @@
         return s + 1
       },
       timecodeMarkerCurrentX () {
-        if (this.timecodeCurrent) return this.root.millistoRelGraph(this.timecodeCurrent) * 100 + '%'
+        if (this.timecodeCurrent) return this.root.millisToRelGraph(this.timecodeCurrent) * 100 + '%'
         return 0
       },
       sectionWidth () {
-        let w = this.root.millistoAbsGraph(this.sectionDuration)
+        let w = this.root.millisToAbsGraph(this.sectionDuration)
         return w
       },
       width () {
