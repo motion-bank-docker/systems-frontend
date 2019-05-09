@@ -28,12 +28,20 @@
                 annotation-icon.cursor-pointer(:annotation="selectedAnnotation",
                 @click.native="onTimecodeLabel(selectedAnnotation.target.selector)")
 
-              timecode-label(
-              v-if="selectedAnnotation",
-              @click.native="onTimecodeLabel(selectedAnnotation.target.selector)",
-              :millis="selectedAnnotation.target.selector._valueMillis",
-              :videoDate="getVideoDate()"
-              )
+              template(v-if="selectedAnnotation")
+                timecode-label(
+                v-if="selectedAnnotation",
+                @click.native="onTimecodeLabel(selectedAnnotation.target.selector)",
+                :millis="selectedAnnotation.target.selector._valueMillis",
+                :videoDate="getVideoDate()"
+                )
+
+                timecode-label(
+                v-if="selectedAnnotation.target.selector._valueDuration",
+                @click.native="onTimecodeLabel(selectedAnnotation.target.selector)",
+                :millis="getEndMillisFromDuration(selectedAnnotation)",
+                :videoDate="getVideoDate()"
+                )
 
               .q-caption.q-mt-xs(v-else) empty
 
@@ -369,6 +377,11 @@
       }
     },
     methods: {
+      getEndMillisFromDuration (annotation) {
+        // FIXME: use the function in annotate.vue via $root
+        // this.$root.$emit('annotationEndMillis', annotation)
+        return annotation.target.selector._valueMillis + annotation.target.selector._valueDuration
+      },
       jumpToMarker (val) {
         if (!val) this.setScrollPosition({x: this.millisTotaltoRelGraph(this.currentAnnotation) - this.scaleFactor / 2, y: 0})
         else this.setScrollPosition({x: this.millisTotaltoRelGraph(val) - this.scaleFactor / 2, y: 0})
