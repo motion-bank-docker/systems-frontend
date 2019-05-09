@@ -911,8 +911,9 @@
     height: 10px
 
   .timecode-label-duration-spacer-vertical
-    border-right: 1px solid $faded
-    width: 45px
-    height: 10px
+    border-right 1px solid $faded
+    width 47px
+    height 10px
+    margin-bottom -1px
 
 </style>
