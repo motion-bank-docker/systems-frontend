@@ -25,7 +25,8 @@
 
             .row.q-mt-xs
               .q-mt-xs.q-mr-sm(v-if="selectedAnnotation")
-                annotation-icon(:annotation="selectedAnnotation")
+                annotation-icon.cursor-pointer(:annotation="selectedAnnotation",
+                @click.native="onTimecodeLabel(selectedAnnotation.target.selector)")
 
               timecode-label(
               v-if="selectedAnnotation",
@@ -368,12 +369,14 @@
       }
     },
     methods: {
-      jumpToMarker () {
-        this.setScrollPosition({x: this.millisTotaltoRelGraph(this.currentAnnotation) - this.scaleFactor / 2, y: 0})
+      jumpToMarker (val) {
+        if (!val) this.setScrollPosition({x: this.millisTotaltoRelGraph(this.currentAnnotation) - this.scaleFactor / 2, y: 0})
+        else this.setScrollPosition({x: this.millisTotaltoRelGraph(val) - this.scaleFactor / 2, y: 0})
       },
       onTimecodeLabel (val) {
         // this.$root.$emit('test', val)
         this.$root.$emit('emitSelector', val)
+        this.jumpToMarker(val)
         // console.log(val)
         // alert(val + ' (NOT EMITTED)')
       },
