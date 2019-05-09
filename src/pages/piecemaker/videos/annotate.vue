@@ -180,6 +180,7 @@
       this.setupScreen()
     },
     beforeDestroy () {
+      this.$store.commit('swimLaneSettings/setSelectedAnnotation')
       AppFullscreen.exit()
     },
     data () {
