@@ -362,7 +362,7 @@
       forceRendererMarker () {
         // alert('bla')
         // this.setScrollPosition({x: this.millisTotaltoRelGraph(val) - this.scaleFactor / 2, y: 0})
-        this.jumpToMarker()
+        // this.jumpToMarker()
       },
       currentAnnotation (val) {
         // this.setScrollPosition({x: this.millisTotaltoRelGraph(val), y: 0})
@@ -385,16 +385,22 @@
         // this.$root.$emit('emitSelector', annotation.target.selector)
         return annotation.target.selector._valueMillis + annotation.target.selector._valueDuration
       },
-      jumpToMarker (val) {
+      jumpToMarker (val, useDuration) {
         let jumpingPoint
-        if (!val) jumpingPoint = this.currentAnnotation
-        else jumpingPoint = val
+        if (!useDuration) {
+          // if (!val) jumpingPoint = this.currentAnnotation
+          if (!val) jumpingPoint = this.selectedAnnotation
+          else jumpingPoint = val
+        }
+        else {
+          jumpingPoint = val
+        }
         this.setScrollPosition({x: this.millisTotaltoRelGraph(jumpingPoint), y: 0})
       },
       onTimecodeLabel (annotation, useDuration) {
         this.$root.$emit('emitSelector', annotation.target.selector, useDuration)
         this.$store.commit('swimLaneSettings/setSelectedAnnotation', annotation)
-        this.jumpToMarker(annotation.target.selector)
+        this.jumpToMarker(annotation.target.selector, useDuration)
       },
       getVideoDate () {
         return DateTime.fromMillis(this.video.target.selector._valueMillis)
