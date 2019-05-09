@@ -36,12 +36,14 @@
                 :videoDate="getVideoDate()"
                 )
 
-                timecode-label(
-                v-if="selectedAnnotation.target.selector._valueDuration",
-                @click.native="onTimecodeLabel(selectedAnnotation.target.selector)",
-                :millis="getEndMillisFromDuration(selectedAnnotation)",
-                :videoDate="getVideoDate()"
-                )
+                // duration
+                template(v-if="selectedAnnotation.target.selector._valueDuration")
+                  .timecode-label-duration-spacer.show-on-hover
+                  timecode-label(
+                  @click.native="onTimecodeLabel(selectedAnnotation.target.selector)",
+                  :millis="getEndMillisFromDuration(selectedAnnotation)",
+                  :videoDate="getVideoDate()"
+                  )
 
               .q-caption.q-mt-xs(v-else) empty
 
@@ -858,6 +860,7 @@
 </script>
 
 <style scoped lang="stylus">
+  @import '~variables'
   @import 'swimLane'
 
   svg.swim-lane
@@ -891,4 +894,10 @@
 
   .settings
     margin-top -2px
+
+  .timecode-label-duration-spacer
+    border-bottom: 1px solid $faded
+    width: 8px
+    height: 10px
+
 </style>
