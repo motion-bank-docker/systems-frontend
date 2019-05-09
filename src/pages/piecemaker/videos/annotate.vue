@@ -177,7 +177,6 @@
         await this.getAnnotations()
         this.$q.loading.hide()
       }
-      this.$root.$on('annotationEndMillis', this.getAnnotationEndMillis)
       this.setupScreen()
     },
     beforeDestroy () {
@@ -276,6 +275,7 @@
     },
     created () {
       this.$root.$on('emitSelector', this.gotoSelector)
+      this.$root.$on('annotationEndMillis', this.getAnnotationEndMillis)
     },
     methods: {
       setupScreen () {

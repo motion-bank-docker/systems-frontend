@@ -41,7 +41,7 @@
                   .timecode-label-duration-spacer(v-if="!timecodeLabelBreakpoint")
                   .timecode-label-duration-spacer-vertical(v-else)
                   timecode-label(
-                  @click.native="onTimecodeLabel(selectedAnnotation.target.selector)",
+                  @click.native="onTimecodeLabel(selectedAnnotation.target.selector, true)",
                   :millis="getEndMillisFromDuration(selectedAnnotation)",
                   :videoDate="getVideoDate()"
                   )
@@ -385,18 +385,18 @@
       getEndMillisFromDuration (annotation) {
         // FIXME: use the function in annotate.vue via $root
         // this.$root.$emit('annotationEndMillis', annotation)
+        // this.$root.$emit('emitSelector', annotation.target.selector)
         return annotation.target.selector._valueMillis + annotation.target.selector._valueDuration
       },
       jumpToMarker (val) {
-        if (!val) this.setScrollPosition({x: this.millisTotaltoRelGraph(this.currentAnnotation) - this.scaleFactor / 2, y: 0})
-        else this.setScrollPosition({x: this.millisTotaltoRelGraph(val) - this.scaleFactor / 2, y: 0})
+        let jumpingPoint
+        if (!val) jumpingPoint = this.currentAnnotation
+        else jumpingPoint = val
+        this.setScrollPosition({x: jumpingPoint, y: 0})
       },
-      onTimecodeLabel (val) {
-        // this.$root.$emit('test', val)
-        this.$root.$emit('emitSelector', val)
+      onTimecodeLabel (val, useDuration) {
+        this.$root.$emit('emitSelector', val, useDuration)
         this.jumpToMarker(val)
-        // console.log(val)
-        // alert(val + ' (NOT EMITTED)')
       },
       getVideoDate () {
         return DateTime.fromMillis(this.video.target.selector._valueMillis)
