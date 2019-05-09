@@ -12,7 +12,7 @@
       div.shadow-10.q-pa-md.scroll(
       v-if="showDetails",
       :style="{width: dimensions.details.width.current + '%', minWidth: dimensions.details.width.min + '%', maxWidth: dimensions.details.width.max + '%', borderRight: '1px solid #333', maxHeight: '100%'}")
-
+        q-resize-observable(@resize="onDetailsResize")
         .full-width.row.relative-position
 
           div
@@ -28,7 +28,7 @@
                 annotation-icon.cursor-pointer(:annotation="selectedAnnotation",
                 @click.native="onTimecodeLabel(selectedAnnotation.target.selector)")
 
-              template(v-if="selectedAnnotation")
+              div(v-if="selectedAnnotation", :class="{'row': !timecodeLabelBreakpoint}")
                 timecode-label(
                 v-if="selectedAnnotation",
                 @click.native="onTimecodeLabel(selectedAnnotation.target.selector)",
@@ -38,7 +38,8 @@
 
                 // duration
                 template(v-if="selectedAnnotation.target.selector._valueDuration")
-                  .timecode-label-duration-spacer.show-on-hover
+                  .timecode-label-duration-spacer(v-if="!timecodeLabelBreakpoint")
+                  .timecode-label-duration-spacer-vertical(v-else)
                   timecode-label(
                   @click.native="onTimecodeLabel(selectedAnnotation.target.selector)",
                   :millis="getEndMillisFromDuration(selectedAnnotation)",
@@ -230,7 +231,8 @@
             width: {
               min: 20,
               current: undefined,
-              max: 50
+              max: 50,
+              currentPx: undefined
             }
           },
           swimlanes: {
@@ -247,7 +249,8 @@
           }
         },
         selectedAnnotationTime: undefined,
-        dirtyAnnotation: undefined
+        dirtyAnnotation: undefined,
+        timecodeLabelBreakpoint: false
       }
     },
     mounted () {
@@ -421,6 +424,13 @@
       onWrapperResize (obj) {
         this.dimensions.details.height.current = obj.height
         this.dimensions.swimlanes.height.current = obj.height - 85
+      },
+      onDetailsResize (obj) {
+        this.dimensions.details.height.currentPx = obj.width
+        console.log(this.dimensions.details.height.currentPx)
+
+        if (this.dimensions.details.height.currentPx < 280) this.timecodeLabelBreakpoint = true
+        else this.timecodeLabelBreakpoint = false
       },
       onMouse () {
         this.hideSwimlanes = !this.hideSwimlanes
@@ -898,6 +908,11 @@
   .timecode-label-duration-spacer
     border-bottom: 1px solid $faded
     width: 8px
+    height: 10px
+
+  .timecode-label-duration-spacer-vertical
+    border-right: 1px solid $faded
+    width: 45px
     height: 10px
 
 </style>
