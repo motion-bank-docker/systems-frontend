@@ -146,7 +146,10 @@
         this.$refs.vocabulary.addEntry(annotation.body.value)
       },
       reset () {
-        if (this.selectedEntry && this.$refs.vocabulary) this.toggleVocabulary()
+        if (this.selectedEntry && this.$refs.vocabulary) {
+          this.$refs.vocabulary.updateFilter()
+          this.toggleVocabulary()
+        }
         this.enterDown = 0
         this.selectedEntry = undefined
         this.annotationText = undefined

@@ -196,9 +196,10 @@
         }
       },
       updateFilter (value) {
-        value = value.trim()
-        if (value && !value.length) this.filterValue = undefined
-        else this.filterValue = value.toLocaleLowerCase()
+        if (value && !value.length) {
+          this.filterValue = undefined
+        }
+        else this.filterValue = value ? value.trim().toLocaleLowerCase() : undefined
       }
     }
   }
