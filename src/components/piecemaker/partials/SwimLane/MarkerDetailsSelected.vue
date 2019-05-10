@@ -55,11 +55,13 @@
     },
     methods: {
       checkAnnotationType () {
-        if (this.selectedAnnotation !== null) return this.selectedAnnotation.body.type
+        if (this.selectedAnnotation !== null && this.selectedAnnotation !== undefined) {
+          return this.selectedAnnotation.body.type
+        }
       },
       getAnnotationText (val) {
         this.annotationData = val
-        if (val !== null) {
+        if (val !== null && val !== undefined) {
           let type = val.body.type
           switch (type) {
           case 'TextualBody':

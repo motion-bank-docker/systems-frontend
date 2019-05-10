@@ -16,6 +16,7 @@ const swimLaneSettings = {
     scrollPosition: {x: 0, y: 0},
     visibilityDetails: false,
     detailsWidth: 20,
+    timecodeLabelBreakpoint: false,
     selectedAnnotation: undefined,
     visibilityDrawer: true,
     cursorTop: undefined,
@@ -32,6 +33,7 @@ const swimLaneSettings = {
     getScrollPosition: state => state.scrollPosition,
     getVisibilityDetails: state => state.visibilityDetails,
     getDetailsWidth: state => state.detailsWidth,
+    getTimecodeLabelBreakpoint: state => state.timecodeLabelBreakpoint,
     getSelectedAnnotation: state => state.selectedAnnotation,
     getVisibilityDrawer: state => state.visibilityDrawer,
     getCursorTop: state => state.cursorTop,
@@ -56,6 +58,9 @@ const swimLaneSettings = {
     },
     setDetailsWidth (state, val) {
       state.detailsWidth = val
+    },
+    setTimecodeLabelBreakpoint (state, val) {
+      state.timecodeLabelBreakpoint = val
     },
     setVisibilityDetails (state) {
       state.visibilityDetails = !state.visibilityDetails

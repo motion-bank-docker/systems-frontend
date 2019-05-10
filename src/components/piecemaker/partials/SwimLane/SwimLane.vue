@@ -12,7 +12,7 @@
       div.shadow-10.q-pa-md.scroll(
       v-if="showDetails",
       :style="{width: dimensions.details.width.current + '%', minWidth: dimensions.details.width.min + '%', maxWidth: dimensions.details.width.max + '%', borderRight: '1px solid #333', maxHeight: '100%'}")
-
+        q-resize-observable(@resize="onDetailsResize")
         .full-width.row.relative-position
 
           div
@@ -25,14 +25,26 @@
 
             .row.q-mt-xs
               .q-mt-xs.q-mr-sm(v-if="selectedAnnotation")
-                annotation-icon(:annotation="selectedAnnotation")
+                annotation-icon.cursor-pointer(:annotation="selectedAnnotation",
+                @click.native="onTimecodeLabel(selectedAnnotation)")
 
-              timecode-label(
-              v-if="selectedAnnotation",
-              @click.native="onTimecodeLabel(selectedAnnotation.target.selector)",
-              :millis="selectedAnnotation.target.selector._valueMillis",
-              :videoDate="getVideoDate()"
-              )
+              div(v-if="selectedAnnotation", :class="{'row': !timecodeLabelBreakpoint}")
+                timecode-label(
+                v-if="selectedAnnotation",
+                @click.native="onTimecodeLabel(selectedAnnotation)",
+                :millis="selectedAnnotation.target.selector._valueMillis",
+                :videoDate="getVideoDate()"
+                )
+
+                // duration
+                template(v-if="selectedAnnotation.target.selector._valueDuration")
+                  .timecode-label-duration-spacer(v-if="!timecodeLabelBreakpoint")
+                  .timecode-label-duration-spacer-vertical(v-else)
+                  timecode-label(
+                  @click.native="onTimecodeLabel(selectedAnnotation, true)",
+                  :millis="getEndMillisFromDuration(selectedAnnotation)",
+                  :videoDate="getVideoDate()"
+                  )
 
               .q-caption.q-mt-xs(v-else) empty
 
@@ -176,7 +188,8 @@
       MarkerContextMenu,
       TimecodeLabel
     },
-    props: ['timelineUuid', 'markerDetails', 'resizable', 'start', 'duration', 'annotations', 'video', 'map'],
+    props: ['timelineUuid', 'markerDetails', 'resizable', 'start', 'duration', 'annotations', 'video', 'map',
+      'currentAnnotation', 'forceRendererMarker'],
     data () {
       return {
         self: this,
@@ -297,13 +310,12 @@
         scrollPosition: 'swimLaneSettings/getScrollPosition',
         scaleFactor: 'swimLaneSettings/getScaleFactor',
         groupAnnotationsBy: 'swimLaneSettings/getGroupAnnotationsBy',
-        selectedAnnotation: 'swimLaneSettings/getSelectedAnnotation'
+        selectedAnnotation: 'swimLaneSettings/getSelectedAnnotation',
+        detailsWidth: 'swimLaneSettings/getDetailsWidth',
+        timecodeLabelBreakpoint: 'swimLaneSettings/getTimecodeLabelBreakpoint'
       }),
       storeCursorTop () {
         return this.$store.state.swimLaneSettings.cursorTop
-      },
-      storeDetailsWidth () {
-        return this.$store.state.swimLaneSettings.detailsWidth
       },
       showDetails () {
         return this.$store.state.swimLaneSettings.visibilityDetails
@@ -352,20 +364,48 @@
       }
     },
     watch: {
+      forceRendererMarker () {
+        // alert('bla')
+        // this.setScrollPosition({x: this.millisTotaltoRelGraph(val) - this.scaleFactor / 2, y: 0})
+        // this.jumpToMarker()
+      },
+      currentAnnotation (val) {
+        // this.setScrollPosition({x: this.millisTotaltoRelGraph(val), y: 0})
+        this.setScrollPosition({x: this.millisTotaltoRelGraph(val) - this.scaleFactor / 2, y: 0})
+      },
       timecodeCurrent (tc) {
         this.timecode.currentText = this.millisToText(tc)
       },
       selectedAnnotation (obj) {
-        let ms = this.millisTotalToTimeline(DateTime.fromISO(obj.target.selector.value).toMillis())
-        this.selectedAnnotationTime = this.millisToText(ms)
+        if (obj) {
+          let ms = this.millisTotalToTimeline(DateTime.fromISO(obj.target.selector.value).toMillis())
+          this.selectedAnnotationTime = this.millisToText(ms)
+        }
       }
     },
     methods: {
-      onTimecodeLabel (val) {
-        // this.$root.$emit('test', val)
-        this.$root.$emit('emitSelector', val)
-        // console.log(val)
-        // alert(val + ' (NOT EMITTED)')
+      getEndMillisFromDuration (annotation) {
+        // FIXME: use the function in annotate.vue via $root
+        // this.$root.$emit('annotationEndMillis', annotation)
+        // this.$root.$emit('emitSelector', annotation.target.selector)
+        return annotation.target.selector._valueMillis + annotation.target.selector._valueDuration
+      },
+      jumpToMarker (val, useDuration) {
+        let jumpingPoint
+        if (!useDuration) {
+          // if (!val) jumpingPoint = this.currentAnnotation
+          if (!val) jumpingPoint = this.selectedAnnotation
+          else jumpingPoint = val
+        }
+        else {
+          jumpingPoint = val
+        }
+        this.setScrollPosition({x: this.millisTotaltoRelGraph(jumpingPoint), y: 0})
+      },
+      onTimecodeLabel (annotation, useDuration) {
+        this.$root.$emit('emitSelector', annotation.target.selector, useDuration)
+        this.$store.commit('swimLaneSettings/setSelectedAnnotation', annotation)
+        this.jumpToMarker(annotation.target.selector, useDuration)
       },
       getVideoDate () {
         return DateTime.fromMillis(this.video.target.selector._valueMillis)
@@ -381,11 +421,11 @@
         if (this.showDetails) this.dimensions.swimlanes.width.max = 80
         else this.dimensions.swimlanes.width.max = 100
 
-        if (this.showDetails && this.storeDetailsWidth) {
-          this.dimensions.details.width.current = this.storeDetailsWidth
+        if (this.showDetails && this.detailsWidth) {
+          this.dimensions.details.width.current = this.detailsWidth
           this.dimensions.swimlanes.width.current = 100 - this.dimensions.details.width.current
         }
-        else if (this.showDetails && !this.storeDetailsWidth) {
+        else if (this.showDetails && !this.detailsWidth) {
           this.dimensions.details.width.current = 30
           this.dimensions.swimlanes.width.current = 70
         }
@@ -393,6 +433,17 @@
       onWrapperResize (obj) {
         this.dimensions.details.height.current = obj.height
         this.dimensions.swimlanes.height.current = obj.height - 85
+      },
+      onDetailsResize (obj) {
+        this.dimensions.details.height.currentPx = obj.width
+        // console.log(this.dimensions.details.height.currentPx)
+
+        // if (this.dimensions.details.height.currentPx < 280) this.timecodeLabelBreakpoint = true
+        // else this.timecodeLabelBreakpoint = false
+        if (this.dimensions.details.height.currentPx < 280) {
+          this.$store.commit('swimLaneSettings/setTimecodeLabelBreakpoint', true)
+        }
+        else this.$store.commit('swimLaneSettings/setTimecodeLabelBreakpoint', false)
       },
       onMouse () {
         this.hideSwimlanes = !this.hideSwimlanes
@@ -839,6 +890,7 @@
 </script>
 
 <style scoped lang="stylus">
+  @import '~variables'
   @import 'swimLane'
 
   svg.swim-lane
@@ -872,4 +924,16 @@
 
   .settings
     margin-top -2px
+
+  .timecode-label-duration-spacer
+    border-bottom: 1px solid $faded
+    width: 8px
+    height: 10px
+
+  .timecode-label-duration-spacer-vertical
+    border-right 1px solid $faded
+    width 47px
+    height 10px
+    margin-bottom -1px
+
 </style>
