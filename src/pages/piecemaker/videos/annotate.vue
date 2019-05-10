@@ -45,6 +45,8 @@
         :annotations="annotations",
         :video="video",
         :key="componentKey",
+        :currentAnnotation="selectorMillis",
+        :forceRendererMarker="fRendererMarker",
         @emitHandler="handlerToggle('swimlanes')",
         @forceRenderer="onForceRenderer",
         @timecodeChange="gotoMillis",
@@ -96,7 +98,7 @@
                   @click.native="selectAnnotation(annotation)"
                   )
                 timecode-label(
-                  @click.native="gotoSelector(annotation.target.selector)",
+                  @click.native="gotoSelector(annotation.target.selector, false, annotation)",
                   :millis="annotation.target.selector._valueMillis",
                   :videoDate="getVideoDate()"
                   )
@@ -104,7 +106,7 @@
                 template(v-if="annotation.target.selector._valueDuration")
                   .timecode-label-duration-spacer
                   timecode-label(
-                    @click.native="gotoSelector(annotation.target.selector, true)",
+                    @click.native="gotoSelector(annotation.target.selector, true, annotation)",
                     :millis="getAnnotationEndMillis(annotation)",
                     :videoDate="getVideoDate()"
                     )
@@ -175,12 +177,10 @@
         await this.getAnnotations()
         this.$q.loading.hide()
       }
-
-      // this.$root.$on('test', this.onTest)
-
       this.setupScreen()
     },
     beforeDestroy () {
+      this.$store.commit('swimLaneSettings/setSelectedAnnotation')
       AppFullscreen.exit()
     },
     data () {
@@ -210,7 +210,9 @@
         swimlanesHeight: undefined,
         videoHeight: undefined,
         detailsWidth: undefined,
-        componentKey: 0
+        componentKey: 0,
+        selectorMillis: undefined,
+        fRendererMarker: false
       }
     },
     computed: {
@@ -274,6 +276,7 @@
     },
     created () {
       this.$root.$on('emitSelector', this.gotoSelector)
+      this.$root.$on('annotationEndMillis', this.getAnnotationEndMillis)
     },
     methods: {
       setupScreen () {
@@ -335,7 +338,6 @@
         if (this.video) {
           this.metadata = await this.$store.dispatch('metadata/getLocal', this.video)
         }
-        // console.log('video', this.video)
       },
       async getAnnotations () {
         const
@@ -352,7 +354,7 @@
         }
         const results = await this.$store.dispatch('annotations/find', query)
         for (let item of results.items) {
-          if (item.body.type === 'VocabularyEntry') {
+          if (item.body.type === 'VocabularyEntry' && !item.body.value) {
             const entry = await this.$vocabularies.getEntry(item.body.source.id)
             item.body.value = entry.value
           }
@@ -371,7 +373,7 @@
           const payload = ObjectUtil.merge(annotation, { target })
           console.debug('create annotation', target, payload)
           const result = await this.$store.dispatch('annotations/post', payload)
-          if (result.body.type === 'VocabularyEntry') {
+          if (result.body.type === 'VocabularyEntry' && !result.body.value) {
             const entry = await this.$vocabularies.getEntry(result.body.source.id)
             result.body.value = entry.value
           }
@@ -429,14 +431,22 @@
           this.$store.commit('swimLaneSettings/setTimecode', millis)
         }
       },
-      gotoSelector (selector, useDuration) {
+      gotoSelector (selector, useDuration, annotation) {
         const
           parsed = selector.parse(),
           start = Array.isArray(parsed['date-time:t']) ? parsed['date-time:t'][0] : parsed['date-time:t']
         this.$router.push({ query: { datetime: start } })
         let millis = selector._valueMillis - this.video.target.selector._valueMillis
-        if (useDuration) millis += selector._valueDuration
+        if (useDuration) {
+          millis += selector._valueDuration
+          this.selectorMillis = selector._valueMillis + selector._valueDuration
+        }
+        else {
+          this.selectorMillis = selector._valueMillis
+        }
         this.gotoMillis(millis)
+        this.$store.commit('swimLaneSettings/setSelectedAnnotation', annotation)
+        this.fRendererMarker = !this.fRendererMarker
       },
       gotoHashvalue () {
         if (this.hashValue && uuid.isUUID(this.hashValue)) {
@@ -500,6 +510,8 @@
         }
       },
       selectAnnotation (annotation) {
+        // this.selectorMillis = annotation.target.selector._valueMillis
+        this.gotoSelector(annotation.target.selector)
         this.$store.commit('swimLaneSettings/setSelectedAnnotation', annotation)
       }
     }

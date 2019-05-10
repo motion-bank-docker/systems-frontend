@@ -9,6 +9,7 @@ import metadata from './metadata'
 import tags from './tags'
 import files from './files'
 import swimLaneSettings from './swim-lane-settings'
+import vocabularies from './vocabularies'
 
 export {
   auth,
@@ -21,5 +22,6 @@ export {
   metadata,
   mosys,
   notifications,
-  swimLaneSettings
+  swimLaneSettings,
+  vocabularies
 }

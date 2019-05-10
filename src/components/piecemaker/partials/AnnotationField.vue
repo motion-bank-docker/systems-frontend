@@ -104,8 +104,9 @@
       },
       annotationText (text) {
         if (!text) this.currentSelectorValue = undefined
-        else if (!this.selectedEntry) {
-          this.currentSelectorValue = this.getSelectorValue()
+        else if (!this.selectedEntry) this.currentSelectorValue = this.getSelectorValue()
+        if (this.$refs.vocabulary && this.$refs.vocabulary.visible) {
+          this.$refs.vocabulary.updateFilter(text)
         }
       },
       selectedEntry (entry) {
@@ -132,7 +133,7 @@
       selectEntry (entry, andCreate = false) {
         this.selectedEntry = entry
         this.currentBody = ObjectUtil.merge({}, this.defaultBodyVocabulary, {
-          source: { id: entry.id }
+          source: { id: entry.id, type: entry.type }
         })
         if (andCreate) {
           this.createAnnotation()
@@ -169,7 +170,10 @@
         }
         else {
           this.enterDown = 0
-          if (event.target.tagName.toLowerCase() !== 'textarea') this.setFocusOnInput() // only set focus if not already in a textfield
+          if (event.target.tagName.toLowerCase() !== 'textarea') {
+            // only set focus if not already in a textfield
+            this.setFocusOnInput()
+          }
         }
       },
       onInputFocus () {
@@ -193,9 +197,15 @@
               }
             }
           }
-          if (!this.selectedEntry && this.annotationText) annotation.body.value = this.annotationText.trim()
+          if (!this.selectedEntry && this.annotationText) {
+            annotation.body.value = this.annotationText.trim()
+          }
+          else if (this.selectedEntry) {
+            annotation.body.value = this.selectedEntry.value
+          }
           this.reset()
           this.$emit('annotation', annotation)
+          console.debug('emit annotation', annotation)
         }
       }
     }

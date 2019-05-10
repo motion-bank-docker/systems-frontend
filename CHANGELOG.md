@@ -15,6 +15,7 @@ and this project adheres to
 - Cell datatype available as vuex store module
 - SwimLane component in post-annotator and on standalone page
 - Annotations can have durations through target.selector.value
+- PBA vocabularies (titles for pieces)
 
 ### Changed
 
