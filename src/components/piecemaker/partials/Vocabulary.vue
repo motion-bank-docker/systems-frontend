@@ -21,8 +21,9 @@
           div into your vocabularies?
 
     .q-pa-md(v-if="visible && !loading")
-      q-btn.q-px-lg.q-mr-sm(v-for="vocabulary in vocabularyLabels",
-        @click="selectVocabulary(vocabulary.id)", size="sm") {{ vocabulary.label }}
+      q-btn.q-px-lg.q-mr-sm.q-mb-sm(v-for="vocabulary in vocabularyLabels",
+        @click="selectVocabulary(vocabulary.id)", size="sm",
+        :color="vocabulary.id === selectedVocabularyId ? 'light' : 'grey'") {{ shortenLabel(vocabulary.label, 16) }}
 
     div(ref="tagList", v-if="visible", style="max-height: 66vh; overflow-y: scroll;")
 
@@ -87,6 +88,7 @@
         loading: false,
 
         vocabularies: [],
+        selectedVocabularyId: undefined,
         selectedVocabulary: undefined,
         filterValue: undefined,
 
@@ -134,6 +136,7 @@
         this.visible = !this.visible
       },
       async selectVocabulary (id) {
+        this.selectedVocabularyId = id
         this.selectedVocabulary = await this.$store.dispatch('vocabularies/get', id)
       },
       async addEntry () {
@@ -166,6 +169,10 @@
           .map((n) => n[0])
           .join('')
           .toUpperCase()
+      },
+      shortenLabel (value, length = 10) {
+        if (value && value.length > length) return value.substr(0, length) + '…'
+        return value
       },
       getShortcutKey (val) {
         if (val.shortcut) {
