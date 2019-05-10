@@ -335,7 +335,6 @@
         if (this.video) {
           this.metadata = await this.$store.dispatch('metadata/getLocal', this.video)
         }
-        // console.log('video', this.video)
       },
       async getAnnotations () {
         const
@@ -352,7 +351,7 @@
         }
         const results = await this.$store.dispatch('annotations/find', query)
         for (let item of results.items) {
-          if (item.body.type === 'VocabularyEntry') {
+          if (item.body.type === 'VocabularyEntry' && !item.body.value) {
             const entry = await this.$vocabularies.getEntry(item.body.source.id)
             item.body.value = entry.value
           }
@@ -371,7 +370,7 @@
           const payload = ObjectUtil.merge(annotation, { target })
           console.debug('create annotation', target, payload)
           const result = await this.$store.dispatch('annotations/post', payload)
-          if (result.body.type === 'VocabularyEntry') {
+          if (result.body.type === 'VocabularyEntry' && !result.body.value) {
             const entry = await this.$vocabularies.getEntry(result.body.source.id)
             result.body.value = entry.value
           }

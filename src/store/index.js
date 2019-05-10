@@ -26,7 +26,8 @@ import {
   metadata,
   mosys,
   notifications,
-  swimLaneSettings
+  swimLaneSettings,
+  vocabularies
 } from './modules'
 
 /** Instantiate Motion Bank API Client */
@@ -66,7 +67,8 @@ const store = new Vuex.Store({
     metadata,
     mosys,
     notifications,
-    swimLaneSettings
+    swimLaneSettings,
+    vocabularies
   }
 })
 
