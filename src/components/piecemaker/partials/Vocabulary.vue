@@ -21,7 +21,7 @@
           div into your vocabularies?
 
     .q-pa-md(v-if="visible && !loading")
-      q-btn.q-px-lg.q-mr-sm(v-for="vocabulary in vocabularyLabels.slice(0, 3)",
+      q-btn.q-px-lg.q-mr-sm(v-for="vocabulary in vocabularyLabels",
         @click="selectVocabulary(vocabulary.id)", size="sm") {{ vocabulary.label }}
 
     div(ref="tagList", v-if="visible", style="max-height: 66vh; overflow-y: scroll;")
