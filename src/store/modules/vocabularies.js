@@ -21,13 +21,13 @@ const vocabularies = {
   },
   actions: {
     async loadPBATitles (context, limit = 0) {
-      console.log(limit)
-      // let count = 0
       const headers = {
         Authorization: `Bearer ${localStorage.getItem('access_token')}`
       }
       const result = await axios.get(`${process.env.API_HOST}/pba/pieces`, { headers })
-      const pieces = result.data.sort((a, b) => a.label.localeCompare(b.label))
+      let pieces = result.data.sort((a, b) =>
+        a.label.replace(/\W/g, '').localeCompare(b.label.replace(/\W/g, '')))
+      if (limit) pieces = pieces.splice(0, limit)
       for (let piece of pieces) {
         const result = await axios.get(`${process.env.API_HOST}/pba/pieces/${piece.piece_id}/titles`, {headers})
         context.commit('addTermsForScope', [piece.piece_id, result.data.map(title => {

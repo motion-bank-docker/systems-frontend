@@ -117,7 +117,7 @@
 
       this.loading = true
 
-      if (userHasFeature(this.user, 'pba')) await this.$store.dispatch('vocabularies/loadPBATitles', 4)
+      if (userHasFeature(this.user, 'pba')) await this.$store.dispatch('vocabularies/loadPBATitles')
       if (this.vocabularyLabels.length) this.selectVocabulary(this.vocabularyLabels[0].id)
 
       for (let key of Object.keys(this.shortcuts)) {
@@ -196,9 +196,10 @@
         }
       },
       updateFilter (value) {
-        value = value.trim()
-        if (value && !value.length) this.filterValue = undefined
-        else this.filterValue = value.toLocaleLowerCase()
+        if (value && !value.length) {
+          this.filterValue = undefined
+        }
+        else this.filterValue = value ? value.trim().toLocaleLowerCase() : undefined
       }
     }
   }
