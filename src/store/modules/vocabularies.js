@@ -39,7 +39,6 @@ const vocabularies = {
         }).sort((a, b) => a.value.localeCompare(b.value))])
         context.commit('setScopeLabel', [piece.piece_id, piece.label])
       }
-      console.log('voc', context.state)
     },
     get (context, id) {
       return context.state.scopedTerms[id]
