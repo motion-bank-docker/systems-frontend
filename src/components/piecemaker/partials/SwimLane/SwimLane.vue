@@ -141,20 +141,21 @@
                 :root="self",
                 :offset="offset"
                 )
-              marker-map(
-                :root="self",
-                :annotations="annotations"
-                )
               // TODO: own component
               line.sl-graph-timecode-current.stroke-neutral.no-event(
                 :x1="timecodeMarkerCurrentX", y1="0",
                 :x2="timecodeMarkerCurrentX", y2="100%"
                 )
+              marker-map(
+                :root="self",
+                :annotations="annotations"
+                )
               // scroll and zoom bar
               navigation-bar(
                 ref="nav",
                 :root="self",
-                :offset="offset"
+                :offset="offset",
+                :annotations="annotations"
                 )
 </template>
 
