@@ -75,7 +75,7 @@
       q-input(float-label="Filter", value="")
 
     // annotations list
-    q-layout-drawer.bg-dark(v-if="annotations", v-model="drawer", side="right", :width="400")
+    q-layout-drawer.bg-dark(v-if="annotations", v-model="drawerVisibility", side="right", :width="400")
       .absolute.fit.bg-dark(style="border-left: 1px solid #333;")
       q-list.no-border.bg-dark.q-py-none(dark, @mouseleave.native="currentHover === undefined")
 
@@ -212,7 +212,8 @@
         detailsWidth: undefined,
         componentKey: 0,
         selectorMillis: undefined,
-        fRendererMarker: false
+        fRendererMarker: false,
+        drawerVisibility: undefined
       }
     },
     computed: {
@@ -262,6 +263,9 @@
       }
     },
     watch: {
+      drawer (val) {
+        this.drawerVisibility = val
+      },
       storeCursorTop (val) {
         this.videoHeight = val - this.headerHeight
         this.swimlanesHeight = (this.viewport.height - val)
