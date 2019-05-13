@@ -27,10 +27,12 @@
         graph-lane(
           v-for="(annotations, type, index) in annotationsGrouped",
           :annotations="annotations",
+          :annotationsBefore="getAnnotationsBefore(index)",
           :type="type",
           :key="type",
           :index="index",
-          :root="root"
+          :root="root",
+          :ref="'lane-' + index",
           )
 </template>
 
@@ -96,9 +98,8 @@
         return n
       }
     },
-    async mounted () {
+    mounted () {
       this.$root.$on('globalUp', this.onGlobalUp)
-      this.$root.$on('laneModeChanged', this.onLaneModeChange)
     },
     beforeDestroy () {
     },
@@ -152,20 +153,18 @@
       onGlobalUp () {
         this.inputOffset = {x: 0, y: 0}
       },
-      onLaneModeChange () {
-        this.scrollY = 0
-      },
-      // interim solution
-      // TODO: rethink lane logic:
-      // Anton's suggestion: different types of lanes (title lane, marker lane, marker group lane, etc.)
-      // all lanes have the same height but different purposes. just the index is need to determine the y coordinate
-      // TODO: laneList is not used currently. maybe remove alltogether.
-      registerLane (lane) {
-        this.laneList.push(lane)
-      },
-      getPreviousLane (idx) {
-        if (idx > 0 && this.laneList.length) return this.laneList[idx - 1]
-        return {height: 0, y: 0}
+      getAnnotationsBefore (idx) {
+        let n = 0
+        let _idx = 0
+        for (let key in this.annotationsGrouped) {
+          if (this.annotationsGrouped.hasOwnProperty(key) && _idx < idx) {
+            n += this.annotationsGrouped[key].length
+            _idx++
+          }
+          else break
+        }
+        // console.log('n:', n, 'for:', idx)
+        return n
       }
     }
   }
