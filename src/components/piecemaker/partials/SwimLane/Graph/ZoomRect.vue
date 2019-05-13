@@ -1,10 +1,14 @@
 <template lang="pug">
   // zoomRect
-  rect.zoom-rect.fill-black.no-event.no-select(
-    v-if="start !== null",
-    :x="x * 100 + '%'", y="0",
-    :width="width  * 100 + '%'", height="100%"
-    )
+  svg(y="1", :class="{'show': start}")
+    rect.zoom-rect.fill-medium.no-event.no-select(
+      x="0", y="0",
+      :width="left", height="100%"
+      )
+    rect.zoom-rect.fill-medium.no-event.no-select(
+      :x="right", y="0",
+      :width="'100%'", height="100%"
+      )
 </template>
 
 <script>
@@ -29,6 +33,12 @@
       x () {
         if (this.start !== null) return Math.min(this.start, this.end)
         return 0
+      },
+      left () {
+        return Math.min(this.start, this.end) * 100 + '%'
+      },
+      right () {
+        return Math.max(this.start, this.end) * 100 + '%'
       }
     },
     methods: {
@@ -58,4 +68,13 @@
 
 <style scoped lang="stylus">
   @import '../swimLane'
+  svg
+    opacity: 0
+    &.show
+      -webkit-transition: opacity 200ms
+      -moz-transition: opacity 200ms
+      -ms-transition: opacity 200ms
+      -o-transition: opacity 200ms
+      transition: opacity 200ms
+      opacity: 1
 </style>

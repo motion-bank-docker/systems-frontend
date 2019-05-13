@@ -4,9 +4,9 @@
     :y ="y",
     :height="height"
     )
-    line.stroke-dark.no-event.no-select(
-      x1="0", y1="0",
-      x2="100%", y2="0"
+    rect.fill-medium.no-event(
+      :x="0", :y="height - 1",
+      height="1", width="100%"
       )
     text.fill-neutral.no-event.no-select.q-caption(:x="root.toAbsGraphX(scrollPosition.x) + 10", y="14")
       | {{ getLabel(type) }} ({{ annotations.length }})

@@ -69,7 +69,6 @@
         durationCached: undefined,
         inputOffsetX: 0,
         endCached: 0,
-        handleFill: 'rgba(255,255,255,0.5)',
         circleR: 8,
         height: 20,
         colors: {
@@ -84,6 +83,9 @@
         expandedMode: 'swimLaneSettings/getExpandedMode',
         selectedAnnotation: 'swimLaneSettings/getSelectedAnnotation'
       }),
+      handleFill () {
+        return this.isHovered || this.isDragged ? 'rgba(255,255,255,0.5)' : 'transparent'
+      },
       fill () {
         // if (this.isSelected) return 'black'
         // // else if (this.isHovered) return 'black'
