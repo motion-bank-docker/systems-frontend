@@ -156,7 +156,6 @@
       this.$root.$on('MarkerAction_EndToTimecode', this.setEndToTimecode)
       // for collision detection
       this.root.registerMarker(this)
-      this.$parent.addRow()
     },
     beforeDestroy () {
     },

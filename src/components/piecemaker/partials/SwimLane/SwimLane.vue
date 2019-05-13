@@ -312,7 +312,8 @@
         groupAnnotationsBy: 'swimLaneSettings/getGroupAnnotationsBy',
         selectedAnnotation: 'swimLaneSettings/getSelectedAnnotation',
         detailsWidth: 'swimLaneSettings/getDetailsWidth',
-        timecodeLabelBreakpoint: 'swimLaneSettings/getTimecodeLabelBreakpoint'
+        timecodeLabelBreakpoint: 'swimLaneSettings/getTimecodeLabelBreakpoint',
+        expandedMode: 'swimLaneSettings/getExpandedMode'
       }),
       storeCursorTop () {
         return this.$store.state.swimLaneSettings.cursorTop
@@ -364,6 +365,9 @@
       }
     },
     watch: {
+      expandedMode () {
+        this.setScrollPosition({y: 0})
+      },
       forceRendererMarker () {
         // alert('bla')
         // this.setScrollPosition({x: this.millisTotaltoRelGraph(val) - this.scaleFactor / 2, y: 0})
