@@ -116,7 +116,7 @@
         if (!EventHub.keyIsPressed(' ')) {
           this.inputOffset = this.root.getInputPositionAbsGraph()
           this.$root.$emit('UIDown', 'graphBackground')
-          this.$root.$emit('markerUnselect')
+          // this.$root.$emit('markerUnselect')
         }
       },
       onGraphMouseWheel (event) {
@@ -165,6 +165,9 @@
         }
         // console.log('n:', n, 'for:', idx)
         return n
+      },
+      getMarkerByUUID (uuid) {
+        return uuid
       }
     }
   }

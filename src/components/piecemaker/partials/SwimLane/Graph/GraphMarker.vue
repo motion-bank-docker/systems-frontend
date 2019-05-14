@@ -81,7 +81,8 @@
       ...mapGetters({
         laneMode: 'swimLaneSettings/getLaneMode',
         expandedMode: 'swimLaneSettings/getExpandedMode',
-        selectedAnnotation: 'swimLaneSettings/getSelectedAnnotation'
+        selectedAnnotation: 'swimLaneSettings/getSelectedAnnotation',
+        scaleFactor: 'swimLaneSettings/getScaleFactor'
       }),
       handleFill () {
         return this.isHovered || this.isDragged ? 'rgba(255,255,255,0.5)' : 'transparent'
@@ -163,7 +164,23 @@
     },
     watch: {
       selectedAnnotation () {
-        if (this.selectedAnnotation) this.isSelected = this.selectedAnnotation._uuid === this.annotationData._uuid
+        if (this.selectedAnnotation) {
+          this.isSelected = this.selectedAnnotation._uuid === this.annotationData._uuid
+          if (this.isSelected) {
+            const bounds = {
+              top: this.y + this.$parent.y,
+              bottom: this.y + this.$parent.y,
+              right: this.root.toAbsGraphX(this.xRel),
+              left: this.root.toAbsGraphX(this.xRel)
+            }
+            const v = this.root.isVisible(bounds)
+            const s = {
+              // x: !v.x ? this.xRel - (this.scaleFactor / 2) : null,
+              y: !v.y ? this.root.toRelGraphY(this.y + this.$parent.y - 2) : null
+            }
+            this.$root.$emit('scrollPositionChange', s)
+          }
+        }
       }
     },
     methods: {

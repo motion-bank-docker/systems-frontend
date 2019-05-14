@@ -31,27 +31,30 @@
 
       // swimlane content
 
-      .absolute-bottom-right.bg-dark.full-width.shadow-up-4(v-if="visibilitySwimlanes",
-      :style="{height: swimlanesHeight + 'px', borderTop: '1px solid #333', minHeight: '250px'}",
-      ref="swimlaneWrap")
-        swim-lane(
-        v-if="timeline",
-        :map="timeline",
-        :timelineUuid="timeline._uuid",
-        :markerDetails="false",
-        :resizable="true",
-        :start="getVideoDate().toMillis()",
-        :duration="getVideoDuration()",
-        :annotations="annotations",
-        :video="video",
-        :key="componentKey",
-        :currentAnnotation="selectorMillis",
-        :forceRendererMarker="fRendererMarker",
-        @emitHandler="handlerToggle('swimlanes')",
-        @forceRenderer="onForceRenderer",
-        @timecodeChange="gotoMillis",
-        @updateAnnotation="updateAnnotation"
+      .absolute-bottom-right.bg-dark.full-width.shadow-up-4(
+        v-if="visibilitySwimlanes",
+        :style="{height: swimlanesHeight + 'px', borderTop: '1px solid #333', minHeight: '250px'}",
+        ref="swimlaneWrap"
         )
+        swim-lane(
+          v-if="timeline",
+          :map="timeline",
+          :timelineUuid="timeline._uuid",
+          :markerDetails="false",
+          :resizable="true",
+          :start="getVideoDate().toMillis()",
+          :duration="getVideoDuration()",
+          :annotations="annotations",
+          :video="video",
+          :key="componentKey",
+          :selectedMillis="selectedMillis",
+          :focusedAnnotation="focusedAnnotation",
+          :forceRendererMarker="fRendererMarker",
+          @emitHandler="handlerToggle('swimlanes')",
+          @forceRenderer="onForceRenderer",
+          @timecodeChange="gotoMillis",
+          @updateAnnotation="updateAnnotation"
+          )
 
       // button toggles swimlanes visibility
 
@@ -95,7 +98,7 @@
                 annotation-icon.cursor-pointer(
                   :annotation="annotation",
                   :isSelected="selectedAnnotation ? selectedAnnotation._uuid === annotation._uuid : false",
-                  @click.native="selectAnnotation(annotation)"
+                  @click.native="gotoSelector(annotation.target.selector, false, annotation)"
                   )
                 timecode-label(
                   @click.native="gotoSelector(annotation.target.selector, false, annotation)",
@@ -211,7 +214,7 @@
         videoHeight: undefined,
         detailsWidth: undefined,
         componentKey: 0,
-        selectorMillis: undefined,
+        selectedMillis: undefined,
         fRendererMarker: false,
         drawerVisibility: undefined
       }
@@ -443,13 +446,16 @@
         let millis = selector._valueMillis - this.video.target.selector._valueMillis
         if (useDuration) {
           millis += selector._valueDuration
-          this.selectorMillis = selector._valueMillis + selector._valueDuration
+          this.selectedMillis = selector._valueMillis + selector._valueDuration
         }
         else {
-          this.selectorMillis = selector._valueMillis
+          this.selectedMillis = selector._valueMillis
         }
         this.gotoMillis(millis)
-        this.$store.commit('swimLaneSettings/setSelectedAnnotation', annotation)
+
+        if (annotation) {
+          this.$store.commit('swimLaneSettings/setSelectedAnnotation', annotation)
+        }
         this.fRendererMarker = !this.fRendererMarker
       },
       gotoHashvalue () {
@@ -514,8 +520,9 @@
         }
       },
       selectAnnotation (annotation) {
-        // this.selectorMillis = annotation.target.selector._valueMillis
+        // this.selectedMillis = annotation.target.selector._valueMillis
         this.gotoSelector(annotation.target.selector)
+        // this.gotoMillis(annotation.target.selector._valueMillis - this.video.target.selector._valueMillis)
         this.$store.commit('swimLaneSettings/setSelectedAnnotation', annotation)
       }
     }
