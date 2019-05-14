@@ -190,7 +190,7 @@
       TimecodeLabel
     },
     props: ['timelineUuid', 'markerDetails', 'resizable', 'start', 'duration', 'annotations', 'video', 'map',
-      'currentAnnotation', 'forceRendererMarker'],
+      'selectedMillis', 'forceRendererMarker'],
     data () {
       return {
         self: this,
@@ -374,9 +374,9 @@
         // this.setScrollPosition({x: this.millisTotaltoRelGraph(val) - this.scaleFactor / 2, y: 0})
         // this.jumpToMarker()
       },
-      currentAnnotation (val) {
-        // this.setScrollPosition({x: this.millisTotaltoRelGraph(val), y: 0})
-        this.setScrollPosition({x: this.millisTotaltoRelGraph(val) - this.scaleFactor / 2, y: 0})
+      selectedMillis (ms) {
+        let v = this.isVisible({left: this.millisTotaltoAbsGraph(ms), top: 0})
+        if (!v.x) this.setScrollPosition({x: this.millisTotaltoRelGraph(ms) - this.scaleFactor / 2})
       },
       timecodeCurrent (tc) {
         this.timecode.currentText = this.millisToText(tc)
@@ -398,7 +398,7 @@
       jumpToMarker (val, useDuration) {
         let jumpingPoint
         if (!useDuration) {
-          // if (!val) jumpingPoint = this.currentAnnotation
+          // if (!val) jumpingPoint = this.selectedMillis
           if (!val) jumpingPoint = this.selectedAnnotation
           else jumpingPoint = val
         }
@@ -629,6 +629,12 @@
         }
         this.annotations.push(m)
       },
+      scrollToMillis (ms) {
+        return ms
+      },
+      scrollToAnnotation (a) {
+        return a
+      },
       // ------------------------------------------------------------------------------------------------------- E Other
       onResize () {
         // TODO: throttle this: emit custom event here and use event.throttle with inline declaration ?
@@ -639,10 +645,10 @@
         let x = null
         let y = null
 
-        if (!isNaN(sp.x) && this.$refs.nav) {
+        if (!isNaN(sp.x) && sp.x !== null && this.$refs.nav) {
           x = this.restrict(sp.x, 0, this.toRelCompX(this.el.width - this.$refs.nav.navHandleWidth))
         }
-        if (!isNaN(sp.y) && this.$refs.graph && this.el) {
+        if (!isNaN(sp.y) && sp.y !== null && this.$refs.graph && this.el) {
           y = this.restrict(sp.y, 0, this.toRelGraphY(this.$refs.graph.height - this.el.height))
         }
         this.$store.commit('swimLaneSettings/setScrollPosition', {x: x, y: y})
@@ -685,7 +691,6 @@
       getInputPositionAbsGraph () {
         return {x: this.inputPosition.x - this.$refs.graph.x, y: this.inputPosition.y - this.$refs.graph.y}
       },
-      // TODO add y value
       getInputPositionRelGraph () {
         return {x: this.toRelGraphX(this.getInputPositionAbsGraph().x), y: this.toRelGraphY(this.getInputPositionAbsGraph().y)}
       },
@@ -716,6 +721,9 @@
         let t0 = this.relToMillis(this.scrollPosition.x)
         let t1 = this.relToMillis(this.toRelGraphX(this.el.width))
         return {start: t0, length: t1}
+      },
+      getMarkerByUUID (uuid) {
+        this.$refs.graph.getMarkerByUUID(uuid)
       },
       // ---------------------------------------------------------------------------------------------------------- Misc
       registerMarker (m) {
@@ -758,18 +766,32 @@
         }
       },
       // checking for visibility seems to be slower than just rendering everything D=
+      // top and left needs to be set
       isVisible (bounds) {
-        let spa = this.toAbsGraphX(this.scrollPosition.x)
-        let offset = bounds.offset || 0
-        return bounds.left - spa >= -offset && bounds.right - spa <= this.el.width + offset
+        let sx = this.toAbsGraphX(this.scrollPosition.x)
+        let sy = this.toAbsGraphY(this.scrollPosition.y)
+        let ox = bounds.offsetX || 0
+        let oy = bounds.offsetY || 0
+        let b = {
+          left: bounds.left,
+          right: bounds.right || bounds.left,
+          top: bounds.top,
+          bottom: bounds.bottom || bounds.top
+        }
+        return {
+          x: b.left - sx >= -ox && b.right - sx <= this.el.width + ox,
+          y: b.top - sy >= -oy && b.bottom - sy <= this.el.height + oy
+        }
       },
       // ---------------------------------------------------------------------------------------------------- Conversion
       toAbsCompX (rel) {
         return rel * this.el.width
       },
       toAbsGraphX (rel) {
-        if (this.$refs.graph) return rel * this.$refs.graph.width
-        else return rel * 1
+        return (this.$refs.graph) ? rel * this.$refs.graph.width : rel * 1
+      },
+      toAbsGraphY (rel) {
+        return (this.$refs.graph) ? rel * this.$refs.graph.height : rel * 1
       },
       toRelCompX (abs) { // return 0 - 1
         return abs / this.el.width
@@ -791,9 +813,6 @@
         }
         else return 0
       },
-      // relComptoRelGraphX (rel) {
-      //   return rel + this.scroll
-      // },
       millisToRelGraph (ms) {
         let res = ms / this.timeline.duration
         if (isFinite(res)) return res

@@ -14,6 +14,7 @@
       v-for="(a, index) in annotations",
       :annotationData="a",
       :key="a._uuid",
+      :ref="a._uuid",
       :index="index",
       :root="root"
       )
