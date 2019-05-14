@@ -77,6 +77,9 @@
         return `user-${this.user.uuid}`
       }
     },
+    mounted () {
+      this.$root.$emit('setBackButton')
+    },
     methods: {
       getAssetURL (asset, download = false) {
         const url = `${process.env.STORAGE_HOST}/files/user-${this.user.uuid}/${asset}`
