@@ -9,9 +9,9 @@
 
       // ----------------------------------------------------------------------------------------------------- left side
 
-      div.shadow-10.q-pa-md.scroll(
+      div.ui-border-right.q-pa-md.scroll(
       v-if="showDetails",
-      :style="{width: dimensions.details.width.current + '%', minWidth: dimensions.details.width.min + '%', maxWidth: dimensions.details.width.max + '%', borderRight: '1px solid #333', maxHeight: '100%'}")
+      :style="{width: dimensions.details.width.current + '%', minWidth: dimensions.details.width.min + '%', maxWidth: dimensions.details.width.max + '%', maxHeight: '100%'}")
         q-resize-observable(@resize="onDetailsResize")
         .full-width.row.relative-position
 
@@ -23,9 +23,9 @@
 
             // icon + timestamp
 
-            .row.q-mt-xs
-              .q-mt-xs.q-mr-sm(v-if="selectedAnnotation")
-                annotation-icon.cursor-pointer(:annotation="selectedAnnotation",
+            .row.items-center
+              .q-mr-sm(v-if="selectedAnnotation")
+                annotation-icon.cursor-pointer(:annotation="selectedAnnotation", :isSelected="true",
                 @click.native="onTimecodeLabel(selectedAnnotation)")
 
               div(v-if="selectedAnnotation", :class="{'row': !timecodeLabelBreakpoint}")
@@ -51,7 +51,7 @@
           // button hide details
 
           q-btn.absolute-top-right(@click="handlerToggle('markerDetails')",
-          icon="clear", size="sm", round, flat, color="white", style="margin: 0 -6px 0 0;")
+          icon="clear", size="xs", round, flat, style="margin: -12px -6px 0 0;")
 
         // details content
 
@@ -60,13 +60,13 @@
 
       // ---------------------------------------------------------------------------------------------------- right side
 
-      div.q-pa-md(
+      div.q-pl-md.q-pr-md.q-pt-xs(
       :style="{width: dimensions.swimlanes.width.current + '%', minWidth: dimensions.swimlanes.width.min + '%', maxWidth: dimensions.swimlanes.width.max + '%'}"
       )
 
         // settings
 
-        div.row.q-mb-md
+        div.row.q-mb-xs
 
           // fix: mouse up in offset from resizeX button
 
@@ -75,16 +75,16 @@
           // button show details
 
           q-btn.q-px-sm.q-mr-xs(
-          v-if="!showDetails",
-          @click="handlerToggle('markerDetails')", icon="keyboard_backspace",
-          :class="[showDetails ? '' : 'rotate-180']", size="sm", round, flat)
+            v-if="!showDetails",
+            @click="handlerToggle('markerDetails')", icon="keyboard_backspace",
+            :class="[showDetails ? '' : 'rotate-180']", size="xs", round, flat)
 
           // button change horizontal dimensions from details (affects swimlane width, too)
 
           q-btn.q-px-sm.q-mr-xs(
-          v-if="showDetails", v-touch-pan="handlerResizeX",
-          @mousedown.native="onMouse", @mouseup.native="onMouseUp",
-          size="sm", icon="code", round, flat)
+            v-if="showDetails", v-touch-pan="handlerResizeX",
+            @mousedown.native="onMouse", @mouseup.native="onMouseUp",
+            size="xs", icon="code", round, flat)
 
           // setting buttons
 
@@ -93,19 +93,19 @@
 
           // resize (y) and hide swimlanes
 
-          .absolute-top-right.text-right.q-ma-md(v-if="resizable")
+          .absolute-top-right.text-right.q-mt-xs.q-mr-md(v-if="resizable")
             q-btn.q-ml-lg(@mousedown.native="onMouse", @mouseup.native="onMouseUp", v-touch-pan="handlerResizeY",
-            round, size="sm", flat)
+            round, size="xs", flat)
               q-icon.rotate-90(name="code")
-            q-btn.q-ml-sm(@click="handlerToggle('swimlanes')", icon="clear", round, size="sm", flat)
+            q-btn.q-ml-xs(@click="handlerToggle('swimlanes')", icon="clear", round, size="xs", flat)
 
         // swim lane
 
         div.full-width(
-        ref="swimlanewrap",
-        v-if="!hideSwimlanes",
-        style="background-color: #4C494A;"
-        )
+          ref="swimlanewrap",
+          v-if="!hideSwimlanes",
+          style="background-color: #4C494A;"
+          )
           .swim-lane-wrapper.wrapper(:style="{height: dimensions.swimlanes.height.current + 'px'}")
 
             // hovering timecode
@@ -437,7 +437,7 @@
       },
       onWrapperResize (obj) {
         this.dimensions.details.height.current = obj.height
-        this.dimensions.swimlanes.height.current = obj.height - 85
+        this.dimensions.swimlanes.height.current = obj.height - 32
       },
       onDetailsResize (obj) {
         this.dimensions.details.height.currentPx = obj.width
@@ -946,9 +946,6 @@
       opacity 1
   */
 
-  .settings
-    margin-top -2px
-
   .timecode-label-duration-spacer
     border-bottom: 1px solid $faded
     width: 8px
@@ -956,7 +953,7 @@
 
   .timecode-label-duration-spacer-vertical
     border-right 1px solid $faded
-    width 47px
+    width 44px
     height 10px
     margin-bottom -1px
 
