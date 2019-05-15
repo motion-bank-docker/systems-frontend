@@ -76,10 +76,10 @@
         return this.root.el.width / this.scaleFactor
       },
       heightCollapsed () {
-        return (this.numLanes * 20) + 20
+        return (this.numLanes * 20) + 20 + 20
       },
       heightExpanded () {
-        return (this.numLanes * 20) + this.numAnnotations * 20
+        return (this.numLanes * 20) + this.numAnnotations * 20 + 20
       },
       height () {
         let base = this.expandedMode ? this.heightExpanded : this.heightCollapsed

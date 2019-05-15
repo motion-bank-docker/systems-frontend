@@ -27,13 +27,13 @@
 
       q-page-sticky(position="top-right", style="z-index: 2100;")
         q-btn.q-ma-md(@click="handlerToggle('annotations')", color="dark", round,
-        :class="[drawer ? 'rotate-180' : '']", icon="keyboard_backspace", size="sm")
+        :class="[drawer ? 'rotate-180' : '']", icon="keyboard_backspace", size="xs")
 
       // swimlane content
 
-      .absolute-bottom-right.bg-dark.full-width.shadow-up-4(
+      .absolute-bottom-right.bg-dark.full-width.ui-border-top(
         v-if="visibilitySwimlanes",
-        :style="{height: swimlanesHeight + 'px', borderTop: '1px solid #333', minHeight: '250px'}",
+        :style="{height: swimlanesHeight + 'px', minHeight: '250px'}",
         ref="swimlaneWrap"
         )
         swim-lane(
@@ -60,7 +60,7 @@
 
       q-page-sticky.q-pa-md(position="bottom-right")
         q-btn(v-if="!visibilitySwimlanes && userHasSwimlane", @click="handlerToggle('swimlanes')", color="dark", round,
-        :class="[visibilitySwimlanes ? 'rotate-270' : 'rotate-90']", icon="keyboard_backspace", size="sm")
+        :class="[visibilitySwimlanes ? 'rotate-270' : 'rotate-90']", icon="keyboard_backspace", size="xs")
 
       // input field for new annotations
 
@@ -79,23 +79,22 @@
 
     // annotations list
     q-layout-drawer.bg-dark(v-if="annotations", v-model="drawerVisibility", side="right", :width="400")
-      .absolute.fit.bg-dark(style="border-left: 1px solid #333;")
+      .absolute.fit.bg-dark(style="")
       q-list.no-border.bg-dark.q-py-none(dark, @mouseleave.native="currentHover === undefined")
 
         q-item.annotation-list-item.q-pb-lg(
-        dark,
-        v-for="(annotation, i) in annotations",
-        :key="annotation._uuid",
-        :ref="annotation._uuid",
-        :class="{'is-selected' : currentIndex === i || editAnnotationIndex === i, 'is-being-edited': editAnnotationIndex === i}",
-        style="border-left: 1px solid #444; border-top: 1px solid #444;",
-        @mouseover.native="setHover(annotation._uuid)"
-        )
+          dark,
+          v-for="(annotation, i) in annotations",
+          :key="annotation._uuid",
+          :ref="annotation._uuid",
+          :class="{'is-selected' : currentIndex === i || editAnnotationIndex === i, 'is-being-edited': editAnnotationIndex === i}",
+          @mouseover.native="setHover(annotation._uuid)"
+          )
           q-item-main
             q-item-tile.relative-position
 
-              .annotation-list-item-header
-                annotation-icon.cursor-pointer(
+              .row.items-center.q-mt-sm
+                annotation-icon.q-mr-sm.cursor-pointer(
                   :annotation="annotation",
                   :isSelected="selectedAnnotation ? selectedAnnotation._uuid === annotation._uuid : false",
                   @click.native="gotoSelector(annotation.target.selector, false, annotation)"
@@ -552,7 +551,20 @@
     border-bottom: 1px solid $faded
     width: 8px
 
+  .ui-border-left
+    border-left: 1px solid $darker
+
   .annotation-list-item
+    position: relative
+    margin-top: -1px
+    &::before
+      content: ''
+      position: absolute
+      top: 0
+      left: 16px
+      width: calc(100% - 32px)
+      height: 1px
+      background: $darker
     &:not(:hover) .show-on-hover
       display: none
     &.is-being-edited
@@ -560,11 +572,4 @@
         display: block
     &.is-selected
       background-color $darker
-    .annotation-list-item-header
-      margin-top 5px
-      > *
-        display inline-block
-        vertical-align middle
-      .annotation-icon
-        margin 1px 8px 0 0
 </style>

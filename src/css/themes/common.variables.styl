@@ -24,9 +24,9 @@ $negative  = #a73e1f
 $info      = #156558
 $warning   = #ab5921
 
-$darker = #151314
+$darker = #131212
 //$dark = #252324
-$dark = #272526
+$dark = #292728
 $grey = #3A3739
 $faded = #4C494A
 $light = #8F898C
@@ -39,6 +39,42 @@ $body-background = #1f1d1e
 // $body-background = #ffffff
 $body-color = $white
 
+$sl-highlight = #1bb258
+//$sl-medium = #322f31
+$sl-medium = #393638
+
+
+.popup-shadow
+  background: $sl-medium
+  -webkit-box-shadow: 0 10px 30px rgba(0,0,0,0.5)
+  -moz-box-shadow: 0 10px 30px rgba(0,0,0,0.5)
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5)
+  border: 1px solid $darker
+
 a
   color $primary
   text-decoration none
+
+.q-layout-drawer
+  -webkit-box-shadow: none
+  -moz-box-shadow: none
+  box-shadow: none
+  border: 1px solid $darker
+
+.q-list
+  border: 1px solid $darker
+
+.ui-border
+  border: 1px solid $darker
+
+.ui-border-left
+  border-left: 1px solid $darker
+
+.ui-border-right
+  border-right: 1px solid $darker
+
+.ui-border-bottom
+  border-bottom: 1px solid $darker
+
+.ui-border-top
+  border-top: 1px solid $darker

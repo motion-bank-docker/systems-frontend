@@ -8,8 +8,8 @@
     q-window-resize-observable(@resize="viewportResize")
     q-resize-observable(@resize="elementResize")
 
-    .row.q-mt-xs
-      .q-mt-xs.q-mr-sm
+    .row.items-center
+      .q-mr-sm
         annotation-icon(
         :annotation="hoveredAnnotation"
         )
@@ -227,6 +227,5 @@
   .timecode-label-duration-spacer
     border-bottom: 1px solid $faded
     width: 8px
-    height 10px
 
 </style>
