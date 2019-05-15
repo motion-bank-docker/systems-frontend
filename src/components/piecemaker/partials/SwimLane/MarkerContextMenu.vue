@@ -29,10 +29,10 @@
         // TODO: TEMP
         buttons: {
           'Move start to timecode': 'MarkerAction_StartToTimecode',
-          'Move end to timecode': 'MarkerAction_EndToTimecode',
-          'Focus on this annotation': 'focus on marker action',
-          'Delete': 'focus on marker action',
-          'Edit': 'focus on marker action'
+          'Move end to timecode': 'MarkerAction_EndToTimecode'
+          // 'Focus on this annotation': 'focus on marker action',
+          // 'Delete': 'focus on marker action',
+          // 'Edit': 'focus on marker action'
         }
       }
     },
@@ -92,7 +92,7 @@
       color: white
       cursor: pointer
       &:hover
-        background: $sl-highlight
+        background: $primary
 
   .q-item-side
     width: 100px

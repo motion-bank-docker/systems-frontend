@@ -123,7 +123,7 @@
               // buttons
 
               <!--div.float-right(v-if="currentHover === annotation.uuid")-->
-              .absolute-top-right.annotation-list-item-buttons.show-on-hover.show-on-edit
+              .absolute-top-right.annotation-list-item-buttons.show-on-hover.show-on-edit(style="margin-top: -4px;")
                 q-btn.float-right(@click="$refs.confirmModal.show('messages.confirm_delete', annotation, 'buttons.delete')",
                 size="xs", flat, icon="delete", round)
 
