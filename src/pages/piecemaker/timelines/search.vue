@@ -32,6 +32,7 @@
       }
     },
     async mounted () {
+      this.$root.$emit('setBackButton', '/piecemaker/timelines')
       this.$q.loading.show()
       this.map = await this.$store.dispatch('maps/get', this.$route.params.uuid)
       const videos = await this.$store.dispatch('annotations/find', {

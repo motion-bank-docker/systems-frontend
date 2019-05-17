@@ -85,6 +85,7 @@
       }
     },
     async mounted () {
+      this.$root.$emit('setBackButton', '/piecemaker/timelines')
       this.$q.loading.show()
       this.timeline = await this.$store.dispatch('maps/get', this.$route.params.uuid)
       if (process.env.IS_STAGING) {
