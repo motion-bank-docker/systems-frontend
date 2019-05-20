@@ -161,6 +161,12 @@
       this.root.registerMarker(this)
     },
     beforeDestroy () {
+      this.$root.$off('globalUp', this.onGlobalUp)
+      this.$root.$off('componentMove', this.onComponentMove)
+      this.$root.$off('markerUnselect', this.onUnselect)
+      this.$root.$off('markerUpdate', this.onUpdate)
+      this.$root.$off('MarkerAction_StartToTimecode', this.setStartToTimecode)
+      this.$root.$off('MarkerAction_EndToTimecode', this.setEndToTimecode)
     },
     watch: {
       selectedAnnotation () {

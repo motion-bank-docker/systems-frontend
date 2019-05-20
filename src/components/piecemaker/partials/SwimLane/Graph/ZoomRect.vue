@@ -29,6 +29,11 @@
       this.$root.$on('graphDown', this.onGraphDown)
       this.$root.$on('inputPositionChange', this.onInputPositionChange)
     },
+    beforeDestroy () {
+      this.$root.$off('globalUp', this.onGlobalUp)
+      this.$root.$off('graphDown', this.onGraphDown)
+      this.$root.$off('inputPositionChange', this.onInputPositionChange)
+    },
     computed: {
       x () {
         if (this.start !== null) return Math.min(this.start, this.end)

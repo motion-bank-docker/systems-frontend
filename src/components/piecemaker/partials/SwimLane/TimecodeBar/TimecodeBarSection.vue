@@ -37,7 +37,7 @@
       }
     },
     async mounted () {
-      this.$root.$on('afterComponentMounted', this.calculateX)
+      this.$root.$once('afterComponentMounted', this.calculateX)
     },
     watch: {
       // scrollPosition () {

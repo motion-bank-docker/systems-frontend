@@ -111,8 +111,9 @@
       this.$root.$on('globalUp', this.onMarkerLeave)
     },
     beforeDestroy () {
-      // EventHub.$off('markerEnter', this.onMarkerEnter)
-      // EventHub.$off('markerLeave', this.onMarkerLeave)
+      this.$root.$off('markerEnter', this.onMarkerEnter)
+      this.$root.$off('markerLeave', this.onMarkerLeave)
+      this.$root.$off('globalUp', this.onMarkerLeave)
     },
     methods: {
       elementResize (obj) {
