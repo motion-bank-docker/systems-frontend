@@ -74,13 +74,13 @@
 
     // anntoation list filters, settings, etc.
 
-    div.fixed-right-top.bg-light.q-pr-md.q-pl-md(style="width: 400px; top: 50px; z-index: 1010; border-bottom: 1px solid #444")
+    div.fixed-right-top.bg-light.q-pr-md.q-pl-md(style="width: 400px; top: 50px; z-index: 1010;")
       q-input(float-label="Filter", value="")
 
     // annotations list
     q-layout-drawer.bg-dark(v-if="annotations", v-model="drawerVisibility", side="right", :width="400")
       .absolute.fit.bg-dark(style="")
-      q-list.no-border.bg-dark.q-py-none(dark, @mouseleave.native="currentHover === undefined")
+      q-list.bg-dark.q-py-none(dark, @mouseleave.native="currentHover === undefined")
 
         q-item.annotation-list-item.q-pb-lg(
           dark,

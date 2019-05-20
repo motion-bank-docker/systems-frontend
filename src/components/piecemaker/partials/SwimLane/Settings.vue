@@ -2,7 +2,7 @@
   .row.q-pr-xs
 
     // sort by author/type
-    q-btn-dropdown.bg-grey-9(:label="groupAnnotationsBy", size="xs", flat)
+    q-btn-dropdown(:label="groupAnnotationsBy", size="xs", flat)
       q-list.q-py-none
         q-item.cursor-pointer.q-caption(v-for="o in options", :key="o.value",
         @click.native="groupAnnotationsBy = o.value", v-close-overlay,
