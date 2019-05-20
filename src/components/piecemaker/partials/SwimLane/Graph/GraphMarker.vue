@@ -208,8 +208,8 @@
         this.draggedEl = 'background'
         this.isDragged = true
         // move marker to current timecode
-        if (EventHub.keyIsPressed('Alt') && this.duration === 0) {
-          this.millis = this.root.getTimecodeCurrentTotal()
+        if (EventHub.keyIsPressed('Alt')) {
+          this.moveToTimecode()
         }
         // set timecode to maker position
         // else if (!EventHub.keyIsPressed('Shift')) {
@@ -348,6 +348,12 @@
           }
           this.durationCached = Math.max(e, 0)
           console.log(this.durationCached)
+          this.save()
+        }
+      },
+      moveToTimecode () {
+        if (this.isSelected) {
+          this.millisCached = this.root.getTimecodeCurrentTotal()
           this.save()
         }
       },

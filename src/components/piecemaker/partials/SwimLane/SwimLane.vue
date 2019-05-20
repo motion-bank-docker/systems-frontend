@@ -602,7 +602,6 @@
         }
       },
       onKeyDown (event) {
-        console.log(event.key)
         this.currentKeyDown = event.key
         EventHub.currentKeyPressed = event.key
         if (event.key === ' ' && !this.resizable) event.preventDefault()
@@ -656,7 +655,7 @@
         let y = null
 
         if (!isNaN(sp.x) && sp.x !== null && this.$refs.nav) {
-          x = this.restrict(sp.x, 0, this.toRelCompX(this.el.width - this.$refs.nav.navHandleWidth))
+          x = this.restrict(sp.x, 0, this.toRelCompX(this.el.width - (this.el.width * this.scaleFactor)))
         }
         if (!isNaN(sp.y) && sp.y !== null && this.$refs.graph && this.el) {
           y = this.restrict(sp.y, 0, this.toRelGraphY(this.$refs.graph.height - this.el.height))
@@ -699,7 +698,7 @@
         else return this.inputPosition
       },
       getInputPositionAbsGraph () {
-        return {x: this.inputPosition.x - this.$refs.graph.x, y: this.inputPosition.y - this.$refs.graph.y}
+        return this.$refs.graph ? {x: this.inputPosition.x - this.$refs.graph.x, y: this.inputPosition.y - this.$refs.graph.y} : {x: 0, y: 0}
       },
       getInputPositionRelGraph () {
         return {x: this.toRelGraphX(this.getInputPositionAbsGraph().x), y: this.toRelGraphY(this.getInputPositionAbsGraph().y)}
