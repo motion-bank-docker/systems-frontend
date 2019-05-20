@@ -102,6 +102,7 @@
       this.$root.$on('globalUp', this.onGlobalUp)
     },
     beforeDestroy () {
+      this.$root.$off('globalUp', this.onGlobalUp)
     },
     watch: {
       annotationsGrouped () {

@@ -297,11 +297,21 @@
     beforeDestroy () {
       this.setScrollPosition({x: 0, y: 0})
       this.setScaleFactor(1)
+
       window.removeEventListener('mousemove', this.onGlobalMove)
       window.removeEventListener('mouseup', this.onGlobalUp)
       window.removeEventListener('resize', this.onResize)
       window.removeEventListener('keydown', this.onKeyDown)
       window.removeEventListener('keyup', this.onKeyUp)
+
+      this.$root.$off('UIDown', this.onUIDown)
+      this.$root.$off('UIEnter', this.onUIEnter)
+      this.$root.$off('UILeave', this.onUILeave)
+
+      this.$root.$off('timecodeChange', this.setTimecode)
+      this.$root.$off('scrollPositionChange', this.setScrollPosition)
+      this.$root.$off('scaleFactorChange', this.setScaleFactor)
+      this.$root.$off('annotationChange', this.onAnnotationChange)
 
       EventHub.$off()
     },

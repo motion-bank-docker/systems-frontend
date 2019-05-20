@@ -46,7 +46,7 @@
       // this.calculatePosition()
     },
     beforeDestroy () {
-      // EventHub.$off('markerDownRight', this.onOpen)
+      this.$root.$off('markerDownRight', this.onOpen)
     },
     methods: {
       onOpen (annotationData) {

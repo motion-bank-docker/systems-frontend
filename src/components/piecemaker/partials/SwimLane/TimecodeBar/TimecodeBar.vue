@@ -91,6 +91,9 @@
       this.$root.$on('inputPositionChange', this.onInputPositionChange)
       // console.log(this.root.getVisibleTimecodeRange())
     },
+    beforeDestroy () {
+      this.$root.$off('inputPositionChange', this.onInputPositionChange)
+    },
     methods: {
       onTimecodeBarDown () {
         let tc = this.root.getTimecodeFromInputPosition()
