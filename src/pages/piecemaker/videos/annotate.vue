@@ -171,7 +171,6 @@
       TimecodeLabel
     },
     async mounted () {
-      this.$root.$emit('setBackButton', '/piecemaker/timelines')
       if (this.$route.params.uuid) {
         this.$q.loading.show()
         await this.getVideo()
@@ -341,6 +340,7 @@
       async getVideo () {
         this.video = await this.$store.dispatch('annotations/get', this.$route.params.uuid)
         this.timeline = await this.$store.dispatch('maps/get', parseURI(this.video.target.id).uuid)
+        this.$root.$emit('setBackButton', '/piecemaker/timelines/' + parseURI(this.video.target.id).uuid + '/videos')
         if (this.video) {
           this.metadata = await this.$store.dispatch('metadata/getLocal', this.video)
         }

@@ -1,7 +1,6 @@
 <template lang="pug">
   full-screen
-    // q-btn(slot="backButton", @click="$router.push({ name: 'piecemaker.videos.list' })", icon="keyboard_backspace", round, small)
-    back-button(slot="backButton")
+    back-button(v-if="!isMobile", slot="backButton")
     .q-px-xl(style="min-width: 50vw;")
       h5.caption(dark) {{ $t('routes.piecemaker.videos.edit.title') }}
 
@@ -18,6 +17,8 @@
 </template>
 
 <script>
+  import { mapGetters } from 'vuex'
+
   import AccessControl from '../../../components/shared/forms/AccessControl'
   import CalendarTimeMain from '../../../components/shared/forms/CalendarTimeMain'
   import FormMain from '../../../components/shared/forms/FormMain'
@@ -39,9 +40,17 @@
     methods: {
       onCalendarUpdate (val) {
         this.selectorOverride = val
+      },
+      async getVideo () {
+        this.video = await this.$store.dispatch('annotations/get', this.$route.params.uuid)
+        this.timeline = await this.$store.dispatch('maps/get', parseURI(this.video.target.id).uuid)
+        this.$root.$emit('setBackButton', '/piecemaker/timelines/' + parseURI(this.video.target.id).uuid + '/videos')
       }
     },
     computed: {
+      ...mapGetters({
+        isMobile: 'globalSettings/getIsMobile'
+      }),
       url () {
         if (this.payload) return this.payload.url
       },
@@ -78,6 +87,7 @@
         }
       }).sort((a, b) => (a.label || '').localeCompare(b.label || ''))
       this.$q.loading.hide()
+      this.getVideo()
     },
     data () {
       const context = this
