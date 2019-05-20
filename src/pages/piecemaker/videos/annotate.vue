@@ -20,7 +20,7 @@
 
       // back button
 
-      q-page-sticky(position="top-left", style="z-index: 2100;")
+      q-page-sticky(v-if="!isMobile", position="top-left", style="z-index: 2100;")
         back-button.q-ma-md
 
       // button toggles annotations
@@ -171,6 +171,7 @@
       TimecodeLabel
     },
     async mounted () {
+      this.$root.$emit('setBackButton', '/piecemaker/timelines')
       if (this.$route.params.uuid) {
         this.$q.loading.show()
         await this.getVideo()
@@ -222,7 +223,8 @@
         selectedAnnotation: 'swimLaneSettings/getSelectedAnnotation',
         drawer: 'swimLaneSettings/getVisibilityDrawer',
         visibilitySwimlanes: 'swimLaneSettings/getVisibilitySwimlanes',
-        visibilityDetails: 'swimLaneSettings/getVisibilityDetails'
+        visibilityDetails: 'swimLaneSettings/getVisibilityDetails',
+        isMobile: 'globalSettings/getIsMobile'
       }),
       storeCursorTop () {
         return this.$store.state.swimLaneSettings.cursorTop

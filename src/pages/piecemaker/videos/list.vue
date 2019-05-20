@@ -2,7 +2,7 @@
   full-screen
     confirm-modal(ref="confirmModal", @confirm="handleConfirmModal")
 
-    back-button(slot="backButton")
+    back-button(v-if="!isMobile", slot="backButton")
     span(slot="form-logo")
     span(slot="form-title" v-if="timeline") {{ timeline.title }}: {{ $t('routes.piecemaker.videos.list.title') }}
     data-table(v-if="query", ref="listTable", :config="config", :title="'routes.piecemaker.videos.list.title'",
@@ -14,6 +14,7 @@
 
 <script>
   import { DateTime } from 'luxon'
+  import { mapGetters } from 'vuex'
 
   export default {
     data () {
@@ -147,6 +148,11 @@
         }
         this.$refs.listTable.request()
       }
+    },
+    computed: {
+      ...mapGetters({
+        isMobile: 'globalSettings/getIsMobile'
+      })
     }
   }
 </script>
