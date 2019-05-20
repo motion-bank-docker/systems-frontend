@@ -8,6 +8,7 @@
 </template>
 
 <script>
+  import { mapGetters } from 'vuex'
   import GridEditor from '../../../components/mosys/partials/GridEditor'
   import GridEditorSources from '../../../components/mosys/partials/GridEditorSources'
 
@@ -17,9 +18,9 @@
       GridEditorSources
     },
     computed: {
-      isMobile () {
-        return this.$q.platform.is.mobile
-      }
+      ...mapGetters({
+        isMobile: 'globalSettings/getIsMobile'
+      })
     }
   }
 </script>
