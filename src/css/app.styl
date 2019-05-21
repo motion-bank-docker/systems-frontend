@@ -1,1 +1,182 @@
 // app global css
+@import '~variables'
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * base styling
+ */
+
+a
+  color $primary
+  text-decoration none
+
+body
+  background: $dark
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * annotation colors
+ */
+
+.annotation-type-TextualBody
+  fill: $annotation-text
+  background: $annotation-text
+
+.annotation-type-Video
+  fill: $annotation-video
+  background: $annotation-video
+
+.annotation-type-VocabularyEntry
+  fill: $annotation-vocabulary
+  background: $annotation-vocabulary
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * quasar overrides
+ */
+
+.q-layout-drawer
+  -webkit-box-shadow: none
+  -moz-box-shadow: none
+  box-shadow: none
+  border: 1px solid $darker
+
+.q-popover
+  background: $dark
+  border: 1px solid $darker
+
+.q-list
+  border: 0
+
+.q-btn
+  &.q-btn-flat
+    &:hover
+      background: $medium
+
+// TODO: do we need to use -dark quasar modifiers or just style the default option?
+.q-table-container
+.q-card
+  -webkit-box-shadow: none
+  -moz-box-shadow: none
+  box-shadow: none
+
+.q-table-container.q-table-dark
+  .q-table-top
+    border-top: 1px solid $darker
+  td
+  table
+  thead
+    border-color: $darker
+  tbody
+    tr
+      &:hover
+        background: $darker
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * custom ui classes
+ */
+
+.flex-fit-column
+  flex-grow: 1
+
+.ui-border
+  border: 1px solid $darker
+
+.ui-border-left
+  border-left: 1px solid $darker
+
+.ui-border-right
+  border-right: 1px solid $darker
+
+.ui-border-bottom
+  border-bottom: 1px solid $darker
+
+.ui-border-top
+  border-top: 1px solid $darker
+
+.popup-shadow
+  background: $medium
+  -webkit-box-shadow: 0 10px 30px rgba(0,0,0,0.5)
+  -moz-box-shadow: 0 10px 30px rgba(0,0,0,0.5)
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5)
+  border: 1px solid $darker
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* svg color classes
+*/
+
+.fill-black
+  fill: $darker
+
+.fill-dark
+  fill: $dark
+
+.fill-grey
+  fill: $grey
+
+.fill-faded
+  fill: $faded
+
+.fill-medium
+  fill: $medium
+
+.fill-fadedlight
+  fill: #757173
+
+.fill-light
+  fill: $light
+
+.fill-neutral
+  fill: $neutral
+
+.fill-white
+  fill: white
+
+.fill-primary
+  fill: $primary
+
+
+.stroke-highlight
+  stroke-width: 1px
+  stroke: $sl-highlight
+
+.stroke-primary
+  stroke-width: 1px
+  stroke: $primary
+
+.stroke-secondary
+  stroke-width: 1px
+  stroke: $secondary
+
+.stroke-neutral
+  stroke-width: 1px
+  stroke: $neutral
+
+.stroke-black
+  stroke-width: 1px
+  stroke: $darker
+
+.stroke-dark
+  stroke-width: 1px
+  stroke: $dark
+
+.stroke-medium
+  stroke-width: 1px
+  stroke: $medium
+
+.stroke-grey
+  stroke-width: 1px
+  stroke: $grey
+
+.stroke-faded
+  stroke-width: 1px
+  stroke: $faded
+
+.stroke-light
+  stroke-width: 1px
+  stroke: $light
+
+.stroke-white
+  stroke-width: 1px
+  stroke: white

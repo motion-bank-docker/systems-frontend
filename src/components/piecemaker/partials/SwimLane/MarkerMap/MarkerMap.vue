@@ -5,7 +5,7 @@
       v-for="a in annotations",
       :width="width(a)", height="3",
       :x="x(a)", y="0",
-      :fill="fill[a.body.type]",
+      :class="getTypeClass(a)",
       opacity="0.35"
       )
     rect.no-event.fill-medium(x="0", y="3", width="100%", height="1")
@@ -24,7 +24,12 @@
         }
       }
     },
+    computed: {
+    },
     methods: {
+      getTypeClass (a) {
+        return 'annotation-type-' + a.body.type
+      },
       width (annotation) {
         return Math.max(this.root.millisToAbsComp(annotation.target.selector._valueDuration), 1) || 0
       },

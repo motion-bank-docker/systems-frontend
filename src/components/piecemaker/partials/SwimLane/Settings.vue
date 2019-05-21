@@ -1,5 +1,5 @@
 <template lang="pug">
-  .row.q-pr-xs
+  .settings.row.q-pr-xs
 
     // sort by author/type
     q-btn-dropdown(:label="groupAnnotationsBy", size="xs", flat)

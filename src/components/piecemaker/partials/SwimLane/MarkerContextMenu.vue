@@ -79,11 +79,12 @@
 
 <style scoped lang="stylus">
   @import 'swimLane'
+  @import '~variables'
 
   .sl-marker-context-menu
     position: fixed
     z-index: 101
-    background: black
+    background: $dark
     visibility: hidden
     padding: 10px 0
     .list-button
