@@ -43,86 +43,10 @@ $body-background = #1f1d1e
 $body-color = $white
 
 $sl-highlight = #1bb258
-//$sl-medium = #322f31
-$sl-medium = #393638
+//$medium = #322f31
+$medium = #393638
 
-
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * base styling
- */
-
-a
-  color $primary
-  text-decoration none
-
-body
-  background: $dark
-
-
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * quasar overrides
- */
-
-.q-layout-drawer
-  -webkit-box-shadow: none
-  -moz-box-shadow: none
-  box-shadow: none
-  border: 1px solid $darker
-
-.q-popover
-  background: $dark
-  border: 1px solid $darker
-
-.q-list
-  border: 0
-
-.q-btn
-  &.q-btn-flat
-    &:hover
-      background: $sl-medium
-
-// TODO: do we need to use -dark quasar modifiers or just style the default option?
-.q-table-container
-.q-card
-  -webkit-box-shadow: none
-  -moz-box-shadow: none
-  box-shadow: none
-
-.q-table-container.q-table-dark
-  .q-table-top
-    border-top: 1px solid $darker
-  td
-  table
-  thead
-    border-color: $darker
-  tbody
-    tr
-      &:hover
-        background: $darker
-
-
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * custom classes
- */
-
-.ui-border
-  border: 1px solid $darker
-
-.ui-border-left
-  border-left: 1px solid $darker
-
-.ui-border-right
-  border-right: 1px solid $darker
-
-.ui-border-bottom
-  border-bottom: 1px solid $darker
-
-.ui-border-top
-  border-top: 1px solid $darker
-
-.popup-shadow
-  background: $sl-medium
-  -webkit-box-shadow: 0 10px 30px rgba(0,0,0,0.5)
-  -moz-box-shadow: 0 10px 30px rgba(0,0,0,0.5)
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5)
-  border: 1px solid $darker
+// annotation colors
+$annotation-text = #FF5B4A
+$annotation-video = #2EAFFF
+$annotation-vocabulary = #4FE083

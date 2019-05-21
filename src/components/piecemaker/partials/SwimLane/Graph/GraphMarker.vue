@@ -15,8 +15,8 @@
     rect.sl-marker-background(
       @mousedown.left="onDownBackground ($event)",
       width="100%", height="100%",
-      :fill="fill",
-      :opacity="opacity"
+      :opacity="opacity",
+      :class="typeClass"
       )
     <!--rect.no-event.no-select(v-if="isHovered", fill="rgba(0,0,0,0.3)", width="100%", height="100%")-->
     rect.sl-marker-handle-left.ew-resize(
@@ -45,8 +45,8 @@
     )
     circle.sl-marker.pointer(
       :cx="circleR", :cy="circleR" :r="circleR",
-      :fill="fill"
-      :opacity="opacity"
+      :opacity="opacity",
+      :class="typeClass"
       )
     <!--circle.no-event.no-select(v-if="isHovered", :cx="8", :cy="8", fill="rgba(0,0,0,0.3)", r="8")-->
 </template>
@@ -70,11 +70,7 @@
         inputOffsetX: 0,
         endCached: 0,
         circleR: 8,
-        height: 20,
-        colors: {
-          'Video': 'tomato',
-          'TextualBody': '#57aeff'
-        }
+        height: 20
       }
     },
     computed: {
@@ -87,23 +83,11 @@
       handleFill () {
         return this.isHovered || this.isDragged ? 'rgba(255,255,255,0.5)' : 'transparent'
       },
-      fill () {
-        // if (this.isSelected) return 'black'
-        // // else if (this.isHovered) return 'black'
-        // else {
-        //   let t = this.annotationData.body.type
-        //   if (t === 'Video') return 'tomato'
-        //   else if (t === 'TextualBody') return 'yellow'
-        // }
-        // if (this.isDragged) return 'blue'
-        // else {
-        let t = this.annotationData.body.type
-        if (this.colors.hasOwnProperty(t)) return this.colors[t]
-        else return 'black'
-        // }
+      typeClass () {
+        return 'annotation-type-' + this.annotationData.body.type
       },
       opacity () {
-        return this.isHovered || this.isSelected ? 1 : 0.5
+        return this.isHovered || this.isSelected ? 1 : 0.4
       },
       millis () {
         if (this.millisCached !== undefined) return this.millisCached
