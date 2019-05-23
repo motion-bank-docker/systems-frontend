@@ -1,9 +1,11 @@
 <template lang="pug">
   full-screen
-    q-btn(v-if="!isMobile", slot="backButton", @click="$router.push({ name: 'piecemaker.timelines.list' })",
-    icon="keyboard_backspace", round, small)
+    // back button
+      q-btn(v-if="!isMobile", slot="backButton", @click="$router.push({ name: 'piecemaker.timelines.list' })",
+      icon="keyboard_backspace", round, size="sm")
+    back-button-new(v-if="!isMobile", slot="backButton", :target="'piecemaker.timelines.list'")
 
-    .q-pa-xl(style="min-width: 50vw;")
+    div(style="min-width: 50vw;")
       h5.caption(dark) {{ $t('routes.piecemaker.timelines.create.title') }}
       .row
         .col-md-12
@@ -26,6 +28,7 @@
   import { mapGetters } from 'vuex'
   import Tags from '../../../components/shared/partials/Tags'
   import FormMain from '../../../components/shared/forms/FormMain'
+  import BackButtonNew from '../../../components/shared/buttons/BackButtonNew'
 
   import { required } from 'vuelidate/lib/validators'
   import constants from 'mbjs-data-models/src/constants'
@@ -33,7 +36,8 @@
   export default {
     components: {
       FormMain,
-      Tags
+      Tags,
+      BackButtonNew
     },
     data () {
       const _this = this
