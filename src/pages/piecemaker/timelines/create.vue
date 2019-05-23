@@ -5,7 +5,8 @@
     back-button-new(v-if="!isMobile", slot="backButton", :target="'piecemaker.timelines.list'")
 
     // headline
-    h5(slot="form-title") {{ $t('routes.piecemaker.timelines.create.title') }}
+    <!--h5(slot="form-title") {{ $t('routes.piecemaker.timelines.create.title') }}-->
+    headline(:content="$t('routes.piecemaker.timelines.create.title')")
 
     // add new timeline
     div
@@ -14,7 +15,7 @@
     // import timeline
     div
       // headline
-      h5.caption(dark) {{ $t('forms.timelines.import.title') }}
+      headline(:content="$t('forms.timelines.import.title')")
 
       // new title
       q-input(dark, :placeholder="$t('forms.timelines.import.fields.title')", v-model="uploadTitle")
@@ -32,6 +33,7 @@
   import Tags from '../../../components/shared/partials/Tags'
   import FormMain from '../../../components/shared/forms/FormMain'
   import BackButtonNew from '../../../components/shared/buttons/BackButtonNew'
+  import Headline from '../../../components/shared/elements/Headline'
 
   import { required } from 'vuelidate/lib/validators'
   import constants from 'mbjs-data-models/src/constants'
@@ -40,7 +42,8 @@
     components: {
       FormMain,
       Tags,
-      BackButtonNew
+      BackButtonNew,
+      Headline
     },
     data () {
       const _this = this
