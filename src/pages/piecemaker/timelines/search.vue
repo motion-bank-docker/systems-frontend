@@ -1,18 +1,17 @@
 <template lang="pug">
   full-screen
 
-    // back button
-      q-btn(v-if="!isMobile", slot="backButton", @click="$router.push({ name: 'piecemaker.timelines.list' })",
-      icon="keyboard_backspace", round, small)
     back-button-new(v-if="!isMobile", slot="backButton", :target="'piecemaker.timelines.list'")
 
-    headline(:content="'HEADLINE'")
+    headline(:content="'Search for'")
 
-    .row
-      .col-md-12
-        q-field(label="Search for", dark)
-          q-input(v-model="query", dark)
-        q-btn(@click="search", color="primary") Search
+    <!--q-field(label="Search for", dark, :label-width="2")-->
+    .row.justify-right
+      <!--q-field.q-mb-sm.full-width(icon="search")-->
+      q-field.q-mb-sm.full-width
+        q-input.full-width(v-model="query", dark, float-label="Search")
+      q-btn(@click="search", color="primary") Search
+
     .row.q-mt-md(v-for="result in results")
       .col-md-6
         markdown-display.markdown-display(:content="result.body.value", :options="mdOptions")
