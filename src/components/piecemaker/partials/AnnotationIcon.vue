@@ -1,8 +1,5 @@
 <template lang="pug">
-  .annotation-icon(
-    :style="{backgroundColor: bgColor}",
-    :class="{'bright-shadow': bgColor === 'black', 'is-selected': isSelected, 'has-duration': annotation.target.selector._valueDuration}"
-    )
+  .annotation-icon(:class="classes")
 </template>
 
 <script>
@@ -11,43 +8,38 @@
     props: ['annotation', 'isSelected'],
     data () {
       return {
-        bgColor: undefined
+        colors: {
+          'TextualBody': '#57aeff',
+          'Video': 'tomato',
+          'VocabularyEntry': 'black'
+        }
       }
     },
     mounted () {
-      this.setType(this.annotation.body.type)
     },
     watch: {
-      selectedAnnotation () {
-        this.setType(this.annotation.body.type)
+    },
+    computed: {
+      classes () {
+        let c = []
+        if (this.isSelected) c.push('is-selected')
+        if (this.annotation.target.selector._valueDuration) c.push('has-duration')
+        c.push('annotation-type-' + this.annotation.body.type)
+        return c
       }
     },
     methods: {
-      setType (type) {
-        switch (type) {
-        case 'TextualBody':
-          this.bgColor = '#57aeff'
-          break
-        case 'Video':
-          this.bgColor = 'tomato'
-          break
-        case 'VocabularyEntry':
-          this.bgColor = 'black'
-          break
-        default:
-          this.bgColor = 'transparent'
-          break
-        }
-      }
     }
   }
 </script>
 
 <style scoped lang="stylus">
+  @import '~variables'
+
   .annotation-icon
     width 16px
     height 16px
-    opacity: 0.3
+    opacity: 0.4
     border-radius 100%
     &.is-selected
       opacity: 1
@@ -55,5 +47,5 @@
       border-radius: 0
   .bright-shadow
     // box-shadow 0 0 5px 0 rgba(255, 255, 255, .4)
-    border 1px solid rgba(255, 255, 255, .4)
+    border 1px solid $faded
 </style>

@@ -147,6 +147,9 @@
         await deleteHelper.deleteMap(this, item)
         this.$refs.listTable.request()
       }
+    },
+    mounted () {
+      this.$root.$emit('setBackButton')
     }
   }
 </script>

@@ -203,7 +203,36 @@ export default {
     logout: 'Sign Out',
     login: 'Sign In',
     manage_account: 'Account',
-    terms: 'Terms'
+    terms: 'Terms',
+    piecemaker: {
+      label: 'Piecemaker',
+      piecemaker_timelines_list: 'All timelines',
+      piecemaker_timelines_annotate: 'Live annotate this timeline',
+      piecemaker_videos_list: 'View all videos in this timeline',
+      piecemaker_videos_annotate: 'Annotate this video',
+      piecemaker_videos_edit: 'Edit this video\'s information',
+      piecemaker_videos_sync: 'Synchronize this video with others from this timeline',
+      piecemaker_timelines_search: 'Search this timeline',
+      piecemaker_timelines_edit: 'Edit this timeline\'s information',
+      piecemaker_timelines_create: 'Create timeline'
+    },
+    mosys: {
+      label: 'Mosys',
+      mosys_grids_list: 'All Grids',
+      mosys_grids_annotate: 'Add cells: Edit the content from this grid',
+      mosys_grids_show: 'Show Cells: Show the grid how it will be seen by others',
+      mosys_grids_edit: 'Edit this grid\'s information',
+      mosys_grids_create: 'Create Grid'
+    },
+    documents: {
+      label: 'Documents',
+      documents_list: 'All Documents',
+      documents_edit: 'Edit this document\'s information'
+    },
+    users: {
+      label: 'Account settings',
+      users_manage: 'Edit your account settings'
+    }
   },
   routes: {
     documents: {

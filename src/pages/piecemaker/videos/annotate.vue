@@ -20,44 +20,47 @@
 
       // back button
 
-      q-page-sticky(position="top-left", style="z-index: 2100;")
+      q-page-sticky(v-if="!isMobile", position="top-left", style="z-index: 2100;")
         back-button.q-ma-md
 
       // button toggles annotations
 
       q-page-sticky(position="top-right", style="z-index: 2100;")
         q-btn.q-ma-md(@click="handlerToggle('annotations')", color="dark", round,
-        :class="[drawer ? 'rotate-180' : '']", icon="keyboard_backspace", size="sm")
+        :class="[drawer ? 'rotate-180' : '']", icon="keyboard_backspace", size="xs")
 
       // swimlane content
 
-      .absolute-bottom-right.bg-dark.full-width.shadow-up-4(v-if="visibilitySwimlanes",
-      :style="{height: swimlanesHeight + 'px', borderTop: '1px solid #333', minHeight: '250px'}",
-      ref="swimlaneWrap")
-        swim-lane(
-        v-if="timeline",
-        :map="timeline",
-        :timelineUuid="timeline._uuid",
-        :markerDetails="false",
-        :resizable="true",
-        :start="getVideoDate().toMillis()",
-        :duration="getVideoDuration()",
-        :annotations="annotations",
-        :video="video",
-        :key="componentKey",
-        :currentAnnotation="selectorMillis",
-        :forceRendererMarker="fRendererMarker",
-        @emitHandler="handlerToggle('swimlanes')",
-        @forceRenderer="onForceRenderer",
-        @timecodeChange="gotoMillis",
-        @updateAnnotation="updateAnnotation"
+      .absolute-bottom-right.bg-dark.full-width.ui-border-top(
+        v-if="visibilitySwimlanes",
+        :style="{height: swimlanesHeight + 'px', minHeight: '250px'}",
+        ref="swimlaneWrap"
         )
+        swim-lane(
+          v-if="timeline",
+          :map="timeline",
+          :timelineUuid="timeline._uuid",
+          :markerDetails="false",
+          :resizable="true",
+          :start="getVideoDate().toMillis()",
+          :duration="getVideoDuration()",
+          :annotations="annotations",
+          :video="video",
+          :key="componentKey",
+          :selectedMillis="selectedMillis",
+          :focusedAnnotation="focusedAnnotation",
+          :forceRendererMarker="fRendererMarker",
+          @emitHandler="handlerToggle('swimlanes')",
+          @forceRenderer="onForceRenderer",
+          @timecodeChange="gotoMillis",
+          @updateAnnotation="updateAnnotation"
+          )
 
       // button toggles swimlanes visibility
 
       q-page-sticky.q-pa-md(position="bottom-right")
         q-btn(v-if="!visibilitySwimlanes && userHasSwimlane", @click="handlerToggle('swimlanes')", color="dark", round,
-        :class="[visibilitySwimlanes ? 'rotate-270' : 'rotate-90']", icon="keyboard_backspace", size="sm")
+        :class="[visibilitySwimlanes ? 'rotate-270' : 'rotate-90']", icon="keyboard_backspace", size="xs")
 
       // input field for new annotations
 
@@ -71,31 +74,30 @@
 
     // anntoation list filters, settings, etc.
 
-    div.fixed-right-top.bg-light.q-pr-md.q-pl-md(style="width: 400px; top: 50px; z-index: 1010; border-bottom: 1px solid #444")
+    div.fixed-right-top.bg-light.q-pr-md.q-pl-md(style="width: 400px; top: 50px; z-index: 1010;")
       q-input(float-label="Filter", value="")
 
     // annotations list
     q-layout-drawer.bg-dark(v-if="annotations", v-model="drawerVisibility", side="right", :width="400")
-      .absolute.fit.bg-dark(style="border-left: 1px solid #333;")
-      q-list.no-border.bg-dark.q-py-none(dark, @mouseleave.native="currentHover === undefined")
+      .absolute.fit.bg-dark(style="")
+      q-list.bg-dark.q-py-none(dark, @mouseleave.native="currentHover === undefined")
 
         q-item.annotation-list-item.q-pb-lg(
-        dark,
-        v-for="(annotation, i) in annotations",
-        :key="annotation._uuid",
-        :ref="annotation._uuid",
-        :class="{'is-selected' : currentIndex === i || editAnnotationIndex === i, 'is-being-edited': editAnnotationIndex === i}",
-        style="border-left: 1px solid #444; border-top: 1px solid #444;",
-        @mouseover.native="setHover(annotation._uuid)"
-        )
+          dark,
+          v-for="(annotation, i) in annotations",
+          :key="annotation._uuid",
+          :ref="annotation._uuid",
+          :class="{'is-selected' : currentIndex === i || editAnnotationIndex === i, 'is-being-edited': editAnnotationIndex === i}",
+          @mouseover.native="setHover(annotation._uuid)"
+          )
           q-item-main
             q-item-tile.relative-position
 
-              .annotation-list-item-header
-                annotation-icon.cursor-pointer(
+              .row.items-center.q-mt-sm
+                annotation-icon.q-mr-sm.cursor-pointer(
                   :annotation="annotation",
                   :isSelected="selectedAnnotation ? selectedAnnotation._uuid === annotation._uuid : false",
-                  @click.native="selectAnnotation(annotation)"
+                  @click.native="gotoSelector(annotation.target.selector, false, annotation)"
                   )
                 timecode-label(
                   @click.native="gotoSelector(annotation.target.selector, false, annotation)",
@@ -121,7 +123,7 @@
               // buttons
 
               <!--div.float-right(v-if="currentHover === annotation.uuid")-->
-              .absolute-top-right.annotation-list-item-buttons.show-on-hover.show-on-edit
+              .absolute-top-right.annotation-list-item-buttons.show-on-hover.show-on-edit(style="margin-top: -4px;")
                 q-btn.float-right(@click="$refs.confirmModal.show('messages.confirm_delete', annotation, 'buttons.delete')",
                 size="xs", flat, icon="delete", round)
 
@@ -211,7 +213,7 @@
         videoHeight: undefined,
         detailsWidth: undefined,
         componentKey: 0,
-        selectorMillis: undefined,
+        selectedMillis: undefined,
         fRendererMarker: false,
         drawerVisibility: undefined
       }
@@ -222,7 +224,8 @@
         selectedAnnotation: 'swimLaneSettings/getSelectedAnnotation',
         drawer: 'swimLaneSettings/getVisibilityDrawer',
         visibilitySwimlanes: 'swimLaneSettings/getVisibilitySwimlanes',
-        visibilityDetails: 'swimLaneSettings/getVisibilityDetails'
+        visibilityDetails: 'swimLaneSettings/getVisibilityDetails',
+        isMobile: 'globalSettings/getIsMobile'
       }),
       storeCursorTop () {
         return this.$store.state.swimLaneSettings.cursorTop
@@ -339,6 +342,7 @@
       async getVideo () {
         this.video = await this.$store.dispatch('annotations/get', this.$route.params.uuid)
         this.timeline = await this.$store.dispatch('maps/get', parseURI(this.video.target.id).uuid)
+        this.$root.$emit('setBackButton', '/piecemaker/timelines/' + parseURI(this.video.target.id).uuid + '/videos')
         if (this.video) {
           this.metadata = await this.$store.dispatch('metadata/getLocal', this.video)
         }
@@ -443,13 +447,16 @@
         let millis = selector._valueMillis - this.video.target.selector._valueMillis
         if (useDuration) {
           millis += selector._valueDuration
-          this.selectorMillis = selector._valueMillis + selector._valueDuration
+          this.selectedMillis = selector._valueMillis + selector._valueDuration
         }
         else {
-          this.selectorMillis = selector._valueMillis
+          this.selectedMillis = selector._valueMillis
         }
         this.gotoMillis(millis)
-        this.$store.commit('swimLaneSettings/setSelectedAnnotation', annotation)
+
+        if (annotation) {
+          this.$store.commit('swimLaneSettings/setSelectedAnnotation', annotation)
+        }
         this.fRendererMarker = !this.fRendererMarker
       },
       gotoHashvalue () {
@@ -514,8 +521,9 @@
         }
       },
       selectAnnotation (annotation) {
-        // this.selectorMillis = annotation.target.selector._valueMillis
+        // this.selectedMillis = annotation.target.selector._valueMillis
         this.gotoSelector(annotation.target.selector)
+        // this.gotoMillis(annotation.target.selector._valueMillis - this.video.target.selector._valueMillis)
         this.$store.commit('swimLaneSettings/setSelectedAnnotation', annotation)
       }
     }
@@ -545,7 +553,20 @@
     border-bottom: 1px solid $faded
     width: 8px
 
+  .ui-border-left
+    border-left: 1px solid $darker
+
   .annotation-list-item
+    position: relative
+    margin-top: -1px
+    &::before
+      content: ''
+      position: absolute
+      top: 0
+      left: 16px
+      width: calc(100% - 32px)
+      height: 1px
+      background: $darker
     &:not(:hover) .show-on-hover
       display: none
     &.is-being-edited
@@ -553,11 +574,4 @@
         display: block
     &.is-selected
       background-color $darker
-    .annotation-list-item-header
-      margin-top 5px
-      > *
-        display inline-block
-        vertical-align middle
-      .annotation-icon
-        margin 1px 8px 0 0
 </style>

@@ -22,7 +22,7 @@
       v-if="(root.isFocused('timecodeBar') && !root.isDragged()) || root.isDragged('timecodeBar')",
       :x="timecodeMarkerHover.x", y="0"
       )
-      path.fill-neutral(d="M 0 0 L 10 0 L 0 10 L 0 0")
+      path.fill-black(d="M 0 0 L 10 0 L 0 10 L 0 0")
 </template>
 
 <script>
@@ -90,6 +90,9 @@
     async mounted () {
       this.$root.$on('inputPositionChange', this.onInputPositionChange)
       // console.log(this.root.getVisibleTimecodeRange())
+    },
+    beforeDestroy () {
+      this.$root.$off('inputPositionChange', this.onInputPositionChange)
     },
     methods: {
       onTimecodeBarDown () {

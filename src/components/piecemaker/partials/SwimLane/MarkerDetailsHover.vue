@@ -8,8 +8,8 @@
     q-window-resize-observable(@resize="viewportResize")
     q-resize-observable(@resize="elementResize")
 
-    .row.q-mt-xs
-      .q-mt-xs.q-mr-sm
+    .row.items-center
+      .q-mr-sm
         annotation-icon(
         :annotation="hoveredAnnotation"
         )
@@ -111,8 +111,9 @@
       this.$root.$on('globalUp', this.onMarkerLeave)
     },
     beforeDestroy () {
-      // EventHub.$off('markerEnter', this.onMarkerEnter)
-      // EventHub.$off('markerLeave', this.onMarkerLeave)
+      this.$root.$off('markerEnter', this.onMarkerEnter)
+      this.$root.$off('markerLeave', this.onMarkerLeave)
+      this.$root.$off('globalUp', this.onMarkerLeave)
     },
     methods: {
       elementResize (obj) {
@@ -227,6 +228,5 @@
   .timecode-label-duration-spacer
     border-bottom: 1px solid $faded
     width: 8px
-    height 10px
 
 </style>

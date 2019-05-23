@@ -1,14 +1,14 @@
 <template lang="pug">
-  svg.marker-map(height="4", y="20")
-    rect.fill-medium(x="0", y="0", height="4", width="100%")
+  svg.marker-map.no-event(height="4", y="0")
+    rect.fill-faded(x="0", y="0", height="4", width="100%")
     rect(
       v-for="a in annotations",
       :width="width(a)", height="3",
       :x="x(a)", y="0",
-      :fill="fill[a.body.type]",
-      opacity="0.2"
+      :class="getTypeClass(a)",
+      opacity="0.35"
       )
-    rect.no-event.fill-black(x="0", y="3", width="100%", height="1")
+    rect.no-event.fill-medium(x="0", y="3", width="100%", height="1")
 </template>
 
 <script>
@@ -24,7 +24,12 @@
         }
       }
     },
+    computed: {
+    },
     methods: {
+      getTypeClass (a) {
+        return 'annotation-type-' + a.body.type
+      },
       width (annotation) {
         return Math.max(this.root.millisToAbsComp(annotation.target.selector._valueDuration), 1) || 0
       },

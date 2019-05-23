@@ -53,8 +53,10 @@
 
   .timecode-label
     display: inline-block
-    font-size: 13px
-    padding: 1px 8px
+    font-size: 12px
+    line-height: 16px
+    height: 18px
+    padding: 0px 8px
     border: 1px solid $faded
     border-radius 2px
     /*opacity .6*/

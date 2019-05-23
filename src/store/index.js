@@ -27,6 +27,7 @@ import {
   mosys,
   notifications,
   swimLaneSettings,
+  globalSettings,
   vocabularies
 } from './modules'
 
@@ -68,6 +69,7 @@ const store = new Vuex.Store({
     mosys,
     notifications,
     swimLaneSettings,
+    globalSettings,
     vocabularies
   }
 })

@@ -9,13 +9,14 @@
 
       // ----------------------------------------------------------------------------------------------------- left side
 
-      div.shadow-10.q-pa-md.scroll(
-      v-if="showDetails",
-      :style="{width: dimensions.details.width.current + '%', minWidth: dimensions.details.width.min + '%', maxWidth: dimensions.details.width.max + '%', borderRight: '1px solid #333', maxHeight: '100%'}")
+      .ui-border-right.q-pa-md.scroll(
+        v-if="visibilityDetails",
+        :style="selectedAnnotationContainerStyles"
+        )
         q-resize-observable(@resize="onDetailsResize")
         .full-width.row.relative-position
 
-          div
+          //div
             // go to prev/next annotation
 
               q-btn.q-mr-xs(icon="navigate_before", round, size="sm", flat, :disabled="!selectedAnnotation")
@@ -23,90 +24,104 @@
 
             // icon + timestamp
 
-            .row.q-mt-xs
-              .q-mt-xs.q-mr-sm(v-if="selectedAnnotation")
-                annotation-icon.cursor-pointer(:annotation="selectedAnnotation",
-                @click.native="onTimecodeLabel(selectedAnnotation)")
+          .row.items-center
+            .q-mr-sm(v-if="selectedAnnotation")
+              annotation-icon.cursor-pointer(
+                :annotation="selectedAnnotation",
+                :isSelected="true",
+                @click.native="onTimecodeLabelClick()"
+                )
 
-              div(v-if="selectedAnnotation", :class="{'row': !timecodeLabelBreakpoint}")
-                timecode-label(
+            div(v-if="selectedAnnotation", :class="{'row': !timecodeLabelBreakpoint}")
+              timecode-label(
                 v-if="selectedAnnotation",
-                @click.native="onTimecodeLabel(selectedAnnotation)",
+                @click.native="onTimecodeLabelClick()",
                 :millis="selectedAnnotation.target.selector._valueMillis",
                 :videoDate="getVideoDate()"
                 )
 
-                // duration
-                template(v-if="selectedAnnotation.target.selector._valueDuration")
-                  .timecode-label-duration-spacer(v-if="!timecodeLabelBreakpoint")
-                  .timecode-label-duration-spacer-vertical(v-else)
-                  timecode-label(
-                  @click.native="onTimecodeLabel(selectedAnnotation, true)",
+              // duration
+              template(v-if="selectedAnnotation.target.selector._valueDuration")
+                .timecode-label-duration-spacer(v-if="!timecodeLabelBreakpoint")
+                .timecode-label-duration-spacer-vertical(v-else)
+                timecode-label(
+                  @click.native="onTimecodeLabelClick(true)",
                   :millis="getEndMillisFromDuration(selectedAnnotation)",
                   :videoDate="getVideoDate()"
                   )
 
-              .q-caption.q-mt-xs(v-else) empty
+            .q-caption.q-mt-xs(v-else) empty
 
           // button hide details
 
-          q-btn.absolute-top-right(@click="handlerToggle('markerDetails')",
-          icon="clear", size="sm", round, flat, color="white", style="margin: 0 -6px 0 0;")
+          q-btn.absolute-top-right(
+            @click="handlerToggle('markerDetails')",
+            style="margin: -12px -6px 0 0;",
+            icon="clear", size="xs", round, flat
+            )
 
         // details content
 
         .q-mt-md.text-white
-          marker-details-selected(v-if="showDetails", :root="self", :resizable="resizable")
+          marker-details-selected(v-if="visibilityDetails", :root="self", :resizable="resizable")
 
       // ---------------------------------------------------------------------------------------------------- right side
 
-      div.q-pa-md(
-      :style="{width: dimensions.swimlanes.width.current + '%', minWidth: dimensions.swimlanes.width.min + '%', maxWidth: dimensions.swimlanes.width.max + '%'}"
-      )
+      div.column.q-pl-md.q-pr-md.q-pt-xs(:style="swimLaneContainerStyles")
 
         // settings
 
-        div.row.q-mb-md
+        div.row.q-mb-xs
 
           // fix: mouse up in offset from resizeX button
 
-          .fit.bg-transparent.absolute-top-left(v-if="hideSwimlanes", @mouseup="onMouseUp")
+          .fit.bg-transparent.absolute-top-left(v-if="hideSwimlanes", @mouseup="onSettingsUp")
 
           // button show details
 
           q-btn.q-px-sm.q-mr-xs(
-          v-if="!showDetails",
-          @click="handlerToggle('markerDetails')", icon="keyboard_backspace",
-          :class="[showDetails ? '' : 'rotate-180']", size="sm", round, flat)
+            v-if="!visibilityDetails",
+            @click="handlerToggle('markerDetails')", icon="keyboard_backspace",
+            :class="[visibilityDetails ? '' : 'rotate-180']", size="xs", round, flat
+            )
 
           // button change horizontal dimensions from details (affects swimlane width, too)
 
           q-btn.q-px-sm.q-mr-xs(
-          v-if="showDetails", v-touch-pan="handlerResizeX",
-          @mousedown.native="onMouse", @mouseup.native="onMouseUp",
-          size="sm", icon="code", round, flat)
+            v-if="visibilityDetails", v-touch-pan="handlerResizeX",
+            @mousedown.native="onSettingsDown", @mouseup.native="onSettingsUp",
+            size="xs", icon="code", round, flat
+            )
 
           // setting buttons
 
-          .settings
-            settings(ref="settings")
+          settings(ref="settings")
 
           // resize (y) and hide swimlanes
 
-          .absolute-top-right.text-right.q-ma-md(v-if="resizable")
-            q-btn.q-ml-lg(@mousedown.native="onMouse", @mouseup.native="onMouseUp", v-touch-pan="handlerResizeY",
-            round, size="sm", flat)
+          .absolute-top-right.text-right.q-mt-xs.q-mr-md(v-if="resizable")
+            q-btn.q-ml-lg(
+              @mousedown.native="onSettingsDown",
+              @mouseup.native="onSettingsUp",
+              v-touch-pan="handlerResizeY",
+              round, size="xs", flat
+              )
               q-icon.rotate-90(name="code")
-            q-btn.q-ml-sm(@click="handlerToggle('swimlanes')", icon="clear", round, size="sm", flat)
+            q-btn.q-ml-xs(
+              @click="handlerToggle('swimlanes')",
+              icon="clear",
+              round, size="xs", flat
+              )
 
         // swim lane
 
-        div.full-width(
-        ref="swimlanewrap",
-        v-if="!hideSwimlanes",
-        style="background-color: #4C494A;"
-        )
-          .swim-lane-wrapper.wrapper(:style="{height: dimensions.swimlanes.height.current + 'px'}")
+        div.full-width.flex-fit-column(
+          ref="swimlanewrap",
+          v-if="!hideSwimlanes",
+          style="background-color: #4C494A;"
+          )
+          //.swim-lane-wrapper.wrapper(:style="{height: dimensions.swimlanes.height.current + 'px'}")
+          .swim-lane-wrapper.wrapper
 
             // hovering timecode
 
@@ -118,11 +133,6 @@
 
             // --------------------------------------------------------------------------------------------- Outer SVG
             //
-              svg.swim-lane(
-              @mousedown.left.prevent,
-              width="100%", height="50vh",
-              ref="root"
-              )
             svg.swim-lane(
               @mousedown.left.prevent,
               width="100%", height="100%",
@@ -141,20 +151,21 @@
                 :root="self",
                 :offset="offset"
                 )
-              marker-map(
-                :root="self",
-                :annotations="annotations"
-                )
               // TODO: own component
               line.sl-graph-timecode-current.stroke-neutral.no-event(
                 :x1="timecodeMarkerCurrentX", y1="0",
                 :x2="timecodeMarkerCurrentX", y2="100%"
                 )
+              marker-map(
+                :root="self",
+                :annotations="annotations"
+                )
               // scroll and zoom bar
               navigation-bar(
                 ref="nav",
                 :root="self",
-                :offset="offset"
+                :offset="offset",
+                :annotations="annotations"
                 )
 </template>
 
@@ -188,8 +199,18 @@
       MarkerContextMenu,
       TimecodeLabel
     },
-    props: ['timelineUuid', 'markerDetails', 'resizable', 'start', 'duration', 'annotations', 'video', 'map',
-      'currentAnnotation', 'forceRendererMarker'],
+    props: [
+      'timelineUuid',
+      'markerDetails',
+      'resizable',
+      'start',
+      'duration',
+      'annotations',
+      'video',
+      'map',
+      'selectedMillis',
+      'forceRendererMarker'
+    ],
     data () {
       return {
         self: this,
@@ -240,11 +261,6 @@
             }
           },
           swimlanes: {
-            height: {
-              min: undefined,
-              current: undefined,
-              max: undefined
-            },
             width: {
               min: 50,
               current: 100,
@@ -296,11 +312,21 @@
     beforeDestroy () {
       this.setScrollPosition({x: 0, y: 0})
       this.setScaleFactor(1)
+
       window.removeEventListener('mousemove', this.onGlobalMove)
       window.removeEventListener('mouseup', this.onGlobalUp)
       window.removeEventListener('resize', this.onResize)
       window.removeEventListener('keydown', this.onKeyDown)
       window.removeEventListener('keyup', this.onKeyUp)
+
+      this.$root.$off('UIDown', this.onUIDown)
+      this.$root.$off('UIEnter', this.onUIEnter)
+      this.$root.$off('UILeave', this.onUILeave)
+
+      this.$root.$off('timecodeChange', this.setTimecode)
+      this.$root.$off('scrollPositionChange', this.setScrollPosition)
+      this.$root.$off('scaleFactorChange', this.setScaleFactor)
+      this.$root.$off('annotationChange', this.onAnnotationChange)
 
       EventHub.$off()
     },
@@ -312,14 +338,11 @@
         groupAnnotationsBy: 'swimLaneSettings/getGroupAnnotationsBy',
         selectedAnnotation: 'swimLaneSettings/getSelectedAnnotation',
         detailsWidth: 'swimLaneSettings/getDetailsWidth',
-        timecodeLabelBreakpoint: 'swimLaneSettings/getTimecodeLabelBreakpoint'
+        timecodeLabelBreakpoint: 'swimLaneSettings/getTimecodeLabelBreakpoint',
+        expandedMode: 'swimLaneSettings/getExpandedMode',
+        cursorTop: 'swimLaneSettings/getgetCursorTop',
+        visibilityDetails: 'swimLaneSettings/getVisibilityDetails'
       }),
-      storeCursorTop () {
-        return this.$store.state.swimLaneSettings.cursorTop
-      },
-      showDetails () {
-        return this.$store.state.swimLaneSettings.visibilityDetails
-      },
       cursorGlobalResize () {
         return this.isDragged(['navHandleRight', 'navHandleLeft']) ? 'global-ew-resize' : ''
       },
@@ -361,17 +384,35 @@
           // return p
         }
         return 0
+      },
+      selectedAnnotationContainerStyles () {
+        return {
+          width: this.dimensions.details.width.current + '%',
+          minWidth: this.dimensions.details.width.min + '%',
+          maxWidth: this.dimensions.details.width.max + '%',
+          maxHeight: '100%'
+        }
+      },
+      swimLaneContainerStyles () {
+        return {
+          width: this.dimensions.swimlanes.width.current + '%',
+          minWidth: this.dimensions.swimlanes.width.min + '%',
+          maxWidth: this.dimensions.swimlanes.width.max + '%'
+        }
       }
     },
     watch: {
+      expandedMode () {
+        this.setScrollPosition({y: 0})
+      },
       forceRendererMarker () {
         // alert('bla')
         // this.setScrollPosition({x: this.millisTotaltoRelGraph(val) - this.scaleFactor / 2, y: 0})
         // this.jumpToMarker()
       },
-      currentAnnotation (val) {
-        // this.setScrollPosition({x: this.millisTotaltoRelGraph(val), y: 0})
-        this.setScrollPosition({x: this.millisTotaltoRelGraph(val) - this.scaleFactor / 2, y: 0})
+      selectedMillis (ms) {
+        let v = this.isVisible({left: this.millisTotaltoAbsGraph(ms), top: 0})
+        if (!v.x) this.setScrollPosition({x: this.millisTotaltoRelGraph(ms) - this.scaleFactor / 2})
       },
       timecodeCurrent (tc) {
         this.timecode.currentText = this.millisToText(tc)
@@ -393,7 +434,7 @@
       jumpToMarker (val, useDuration) {
         let jumpingPoint
         if (!useDuration) {
-          // if (!val) jumpingPoint = this.currentAnnotation
+          // if (!val) jumpingPoint = this.selectedMillis
           if (!val) jumpingPoint = this.selectedAnnotation
           else jumpingPoint = val
         }
@@ -402,10 +443,9 @@
         }
         this.setScrollPosition({x: this.millisTotaltoRelGraph(jumpingPoint), y: 0})
       },
-      onTimecodeLabel (annotation, useDuration) {
-        this.$root.$emit('emitSelector', annotation.target.selector, useDuration)
-        this.$store.commit('swimLaneSettings/setSelectedAnnotation', annotation)
-        this.jumpToMarker(annotation.target.selector, useDuration)
+      onTimecodeLabelClick (useDuration) {
+        this.$root.$emit('emitSelector', this.selectedAnnotation.target.selector, useDuration)
+        this.jumpToMarker(this.selectedAnnotation.target.selector, useDuration)
       },
       getVideoDate () {
         return DateTime.fromMillis(this.video.target.selector._valueMillis)
@@ -418,21 +458,20 @@
         }
         else this.selectedAnnotationTime = '–'
 
-        if (this.showDetails) this.dimensions.swimlanes.width.max = 80
+        if (this.visibilityDetails) this.dimensions.swimlanes.width.max = 80
         else this.dimensions.swimlanes.width.max = 100
 
-        if (this.showDetails && this.detailsWidth) {
+        if (this.visibilityDetails && this.detailsWidth) {
           this.dimensions.details.width.current = this.detailsWidth
           this.dimensions.swimlanes.width.current = 100 - this.dimensions.details.width.current
         }
-        else if (this.showDetails && !this.detailsWidth) {
+        else if (this.visibilityDetails && !this.detailsWidth) {
           this.dimensions.details.width.current = 30
           this.dimensions.swimlanes.width.current = 70
         }
       },
       onWrapperResize (obj) {
         this.dimensions.details.height.current = obj.height
-        this.dimensions.swimlanes.height.current = obj.height - 85
       },
       onDetailsResize (obj) {
         this.dimensions.details.height.currentPx = obj.width
@@ -445,10 +484,10 @@
         }
         else this.$store.commit('swimLaneSettings/setTimecodeLabelBreakpoint', false)
       },
-      onMouse () {
+      onSettingsDown () {
         this.hideSwimlanes = !this.hideSwimlanes
       },
-      onMouseUp () {
+      onSettingsUp () {
         this.$emit('forceRenderer')
       },
       handlerResizeY (obj) {
@@ -472,55 +511,6 @@
           this.$store.commit('swimLaneSettings/setVisibilitySwimlanes')
           break
         }
-      },
-      // ----------------------------------------------------------------------------------------------------- Load Data
-      async loadData () {
-        const timeline = await this.$store.dispatch('maps/get', this.timelineUuid)
-        const result = await this.$store.dispatch('annotations/find', {
-          type: 'Annotation',
-          'target.type': 'Timeline',
-          'target.id': timeline.id
-        })
-
-        // TODO: clean this up, use/add helper methods
-        const annotations = result.items.sort(this.$sort.onRef)
-        // this.annotations = annotations
-
-        // sort annotations earliest to latest
-        // TODO: does not account for possible duration of annotations
-        // annotations.sort((obj1, obj2) => {
-        //   return this.isoToMillis(obj1.target.selector.value) - this.isoToMillis(obj2.target.selector.value)
-        // })
-
-        // scale swim lane to first and last annotation loaded
-
-        // const duration = annotations[0].getDurationTo(annotations[annotations.length - 1])
-        // // TODO: find better way to set a padding so that annotations don't sit on the edges of the graph
-        // const padding = 120000 // 2 seconds
-        // this.timeline.duration = duration.as('milliseconds') + padding * 2
-        // this.timeline.start = DateTime.fromISO(annotations[0].target.selector.value).toMillis() - padding
-
-        this.timeline.duration = this.duration
-        this.timeline.start = this.start
-
-        this.annotations = annotations
-
-        // Add fake duration
-        // let idx = 0
-        // this.annotations = result.items.map(a => {
-        //   a = a.toObject()
-        //   if (idx % 2 === 0) a.body.duration = Math.round(60000 + Math.random() * 60000)
-        //   idx++
-        //   return a
-        // })
-
-        // TODO: add latest end point of annotation to timeline.duration so it will not lie beyond the visible graph
-
-        // for (let a in this.annotations) {
-        //   let ann = this.annotations[a]
-        //   console.debug('a:', ann)
-        // }
-        // console.log('annotations', this.annotations.length, DateTime.fromMillis(this.timeline.duration).toFormat('HH:mm:ss.SSS'), this.timelineUuid)
       },
       // -------------------------------------------------------------------------------------------------- E Input Move
       onGlobalMove: function (event) {
@@ -587,7 +577,6 @@
         }
       },
       onKeyDown (event) {
-        console.log(event.key)
         this.currentKeyDown = event.key
         EventHub.currentKeyPressed = event.key
         if (event.key === ' ' && !this.resizable) event.preventDefault()
@@ -600,29 +589,11 @@
         }
       },
       // ----------------------------------------------------------------------------------------------------- E Actions
-      createMarker () {
-        // TODO create marker here
-        this.setTimecode(Math.floor(this.timeline.duration * Math.random()))
-        let d = DateTime.fromMillis(this.getTimecodeCurrentTotal()).toISO()
-        let m = {
-          created: d,
-          author: {
-            name: 'Author TEMP'
-          },
-          type: 'immer annotation',
-          body: {
-            src: '',
-            purpose: 'Purpose TEMP',
-            type: 'TEMP',
-            duration: Math.random() > 0.5 ? Math.round(Math.random() * 120000) : 0
-          },
-          target: {
-            selector: {
-              value: d
-            }
-          }
-        }
-        this.annotations.push(m)
+      scrollToMillis (ms) {
+        return ms
+      },
+      scrollToAnnotation (a) {
+        return a
       },
       // ------------------------------------------------------------------------------------------------------- E Other
       onResize () {
@@ -634,10 +605,10 @@
         let x = null
         let y = null
 
-        if (!isNaN(sp.x) && this.$refs.nav) {
-          x = this.restrict(sp.x, 0, this.toRelCompX(this.el.width - this.$refs.nav.navHandleWidth))
+        if (!isNaN(sp.x) && sp.x !== null && this.$refs.nav) {
+          x = this.restrict(sp.x, 0, this.toRelCompX(this.el.width - (this.el.width * this.scaleFactor)))
         }
-        if (!isNaN(sp.y) && this.$refs.graph && this.el) {
+        if (!isNaN(sp.y) && sp.y !== null && this.$refs.graph && this.el) {
           y = this.restrict(sp.y, 0, this.toRelGraphY(this.$refs.graph.height - this.el.height))
         }
         this.$store.commit('swimLaneSettings/setScrollPosition', {x: x, y: y})
@@ -678,9 +649,8 @@
         else return this.inputPosition
       },
       getInputPositionAbsGraph () {
-        return {x: this.inputPosition.x - this.$refs.graph.x, y: this.inputPosition.y - this.$refs.graph.y}
+        return this.$refs.graph ? {x: this.inputPosition.x - this.$refs.graph.x, y: this.inputPosition.y - this.$refs.graph.y} : {x: 0, y: 0}
       },
-      // TODO add y value
       getInputPositionRelGraph () {
         return {x: this.toRelGraphX(this.getInputPositionAbsGraph().x), y: this.toRelGraphY(this.getInputPositionAbsGraph().y)}
       },
@@ -711,6 +681,9 @@
         let t0 = this.relToMillis(this.scrollPosition.x)
         let t1 = this.relToMillis(this.toRelGraphX(this.el.width))
         return {start: t0, length: t1}
+      },
+      getMarkerByUUID (uuid) {
+        this.$refs.graph.getMarkerByUUID(uuid)
       },
       // ---------------------------------------------------------------------------------------------------------- Misc
       registerMarker (m) {
@@ -753,18 +726,32 @@
         }
       },
       // checking for visibility seems to be slower than just rendering everything D=
+      // top and left needs to be set
       isVisible (bounds) {
-        let spa = this.toAbsGraphX(this.scrollPosition.x)
-        let offset = bounds.offset || 0
-        return bounds.left - spa >= -offset && bounds.right - spa <= this.el.width + offset
+        let sx = this.toAbsGraphX(this.scrollPosition.x)
+        let sy = this.toAbsGraphY(this.scrollPosition.y)
+        let ox = bounds.offsetX || 0
+        let oy = bounds.offsetY || 0
+        let b = {
+          left: bounds.left,
+          right: bounds.right || bounds.left,
+          top: bounds.top,
+          bottom: bounds.bottom || bounds.top
+        }
+        return {
+          x: b.left - sx >= -ox && b.right - sx <= this.el.width + ox,
+          y: b.top - sy >= -oy && b.bottom - sy <= this.el.height + oy
+        }
       },
       // ---------------------------------------------------------------------------------------------------- Conversion
       toAbsCompX (rel) {
         return rel * this.el.width
       },
       toAbsGraphX (rel) {
-        if (this.$refs.graph) return rel * this.$refs.graph.width
-        else return rel * 1
+        return (this.$refs.graph) ? rel * this.$refs.graph.width : rel * 1
+      },
+      toAbsGraphY (rel) {
+        return (this.$refs.graph) ? rel * this.$refs.graph.height : rel * 1
       },
       toRelCompX (abs) { // return 0 - 1
         return abs / this.el.width
@@ -786,9 +773,6 @@
         }
         else return 0
       },
-      // relComptoRelGraphX (rel) {
-      //   return rel + this.scroll
-      // },
       millisToRelGraph (ms) {
         let res = ms / this.timeline.duration
         if (isFinite(res)) return res
@@ -898,32 +882,16 @@
 
   .wrapper
     position: relative
-
-  /*
-  .timecode-display-current
-    height: 25px
-    line-height: 25px
-  */
+    height: 100%
 
   .timecode-display-hover
     height: 20px
     line-height: 20px
-    background: $neutral
-    color: $dark
+    background: $darker
+    color: $white
     padding: 0 6px
     top: 4px
     z-index: 99
-
-  /*
-  .details
-    .details-buttons
-      opacity 0
-    &:hover .details-buttons
-      opacity 1
-  */
-
-  .settings
-    margin-top -2px
 
   .timecode-label-duration-spacer
     border-bottom: 1px solid $faded
@@ -932,7 +900,7 @@
 
   .timecode-label-duration-spacer-vertical
     border-right 1px solid $faded
-    width 47px
+    width 44px
     height 10px
     margin-bottom -1px
 

@@ -15,8 +15,8 @@
     rect.sl-marker-background(
       @mousedown.left="onDownBackground ($event)",
       width="100%", height="100%",
-      :fill="fill",
-      :opacity="opacity"
+      :opacity="opacity",
+      :class="typeClass"
       )
     <!--rect.no-event.no-select(v-if="isHovered", fill="rgba(0,0,0,0.3)", width="100%", height="100%")-->
     rect.sl-marker-handle-left.ew-resize(
@@ -45,8 +45,8 @@
     )
     circle.sl-marker.pointer(
       :cx="circleR", :cy="circleR" :r="circleR",
-      :fill="fill"
-      :opacity="opacity"
+      :opacity="opacity",
+      :class="typeClass"
       )
     <!--circle.no-event.no-select(v-if="isHovered", :cx="8", :cy="8", fill="rgba(0,0,0,0.3)", r="8")-->
 </template>
@@ -69,38 +69,25 @@
         durationCached: undefined,
         inputOffsetX: 0,
         endCached: 0,
-        handleFill: 'rgba(255,255,255,0.5)',
         circleR: 8,
-        height: 20,
-        colors: {
-          'Video': 'tomato',
-          'TextualBody': '#57aeff'
-        }
+        height: 20
       }
     },
     computed: {
       ...mapGetters({
         laneMode: 'swimLaneSettings/getLaneMode',
         expandedMode: 'swimLaneSettings/getExpandedMode',
-        selectedAnnotation: 'swimLaneSettings/getSelectedAnnotation'
+        selectedAnnotation: 'swimLaneSettings/getSelectedAnnotation',
+        scaleFactor: 'swimLaneSettings/getScaleFactor'
       }),
-      fill () {
-        // if (this.isSelected) return 'black'
-        // // else if (this.isHovered) return 'black'
-        // else {
-        //   let t = this.annotationData.body.type
-        //   if (t === 'Video') return 'tomato'
-        //   else if (t === 'TextualBody') return 'yellow'
-        // }
-        // if (this.isDragged) return 'blue'
-        // else {
-        let t = this.annotationData.body.type
-        if (this.colors.hasOwnProperty(t)) return this.colors[t]
-        else return 'black'
-        // }
+      handleFill () {
+        return this.isHovered || this.isDragged ? 'rgba(255,255,255,0.5)' : 'transparent'
+      },
+      typeClass () {
+        return 'annotation-type-' + this.annotationData.body.type
       },
       opacity () {
-        return this.isHovered || this.isSelected ? 1 : 0.5
+        return this.isHovered || this.isSelected ? 1 : 0.4
       },
       millis () {
         if (this.millisCached !== undefined) return this.millisCached
@@ -156,13 +143,34 @@
       this.$root.$on('MarkerAction_EndToTimecode', this.setEndToTimecode)
       // for collision detection
       this.root.registerMarker(this)
-      this.$parent.addRow()
     },
     beforeDestroy () {
+      this.$root.$off('globalUp', this.onGlobalUp)
+      this.$root.$off('componentMove', this.onComponentMove)
+      this.$root.$off('markerUnselect', this.onUnselect)
+      this.$root.$off('markerUpdate', this.onUpdate)
+      this.$root.$off('MarkerAction_StartToTimecode', this.setStartToTimecode)
+      this.$root.$off('MarkerAction_EndToTimecode', this.setEndToTimecode)
     },
     watch: {
       selectedAnnotation () {
-        if (this.selectedAnnotation) this.isSelected = this.selectedAnnotation._uuid === this.annotationData._uuid
+        if (this.selectedAnnotation) {
+          this.isSelected = this.selectedAnnotation._uuid === this.annotationData._uuid
+          if (this.isSelected) {
+            const bounds = {
+              top: this.y + this.$parent.y,
+              bottom: this.y + this.$parent.y,
+              right: this.root.toAbsGraphX(this.xRel),
+              left: this.root.toAbsGraphX(this.xRel)
+            }
+            const v = this.root.isVisible(bounds)
+            const s = {
+              // x: !v.x ? this.xRel - (this.scaleFactor / 2) : null,
+              y: !v.y ? this.root.toRelGraphY(this.y + this.$parent.y - 2) : null
+            }
+            this.$root.$emit('scrollPositionChange', s)
+          }
+        }
       }
     },
     methods: {
@@ -184,8 +192,8 @@
         this.draggedEl = 'background'
         this.isDragged = true
         // move marker to current timecode
-        if (EventHub.keyIsPressed('Alt') && this.duration === 0) {
-          this.millis = this.root.getTimecodeCurrentTotal()
+        if (EventHub.keyIsPressed('Alt')) {
+          this.moveToTimecode()
         }
         // set timecode to maker position
         // else if (!EventHub.keyIsPressed('Shift')) {
@@ -324,6 +332,12 @@
           }
           this.durationCached = Math.max(e, 0)
           console.log(this.durationCached)
+          this.save()
+        }
+      },
+      moveToTimecode () {
+        if (this.isSelected) {
+          this.millisCached = this.root.getTimecodeCurrentTotal()
           this.save()
         }
       },

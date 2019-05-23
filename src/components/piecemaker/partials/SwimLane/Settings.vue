@@ -1,8 +1,8 @@
 <template lang="pug">
-  .row.q-px-md
+  .settings.row.q-pr-xs
 
     // sort by author/type
-    q-btn-dropdown.q-mt-xs.bg-grey-9(:label="groupAnnotationsBy", size="sm", flat)
+    q-btn-dropdown(:label="groupAnnotationsBy", size="xs", flat)
       q-list.q-py-none
         q-item.cursor-pointer.q-caption(v-for="o in options", :key="o.value",
         @click.native="groupAnnotationsBy = o.value", v-close-overlay,
@@ -17,7 +17,7 @@
           // :class="[laneMode === o.value ? 'bg-primary text-white' : '']") {{ o.label }}
 
     // expand button
-    q-btn.flip-vertical.q-mt-xs.q-ml-sm(@click="expand()", size="sm", flat, round, icon="clear_all",
+    q-btn.flip-vertical.q-ml-xs(@click="expand()", size="xs", flat, round, icon="clear_all",
     :class="[expandedMode ? 'bg-primary text-white' : '']")
 
     // FIXME: add buttons later
@@ -69,5 +69,5 @@
 
 <style scoped lang="stylus">
   .q-item
-    min-height auto!important
+    min-height auto !important
 </style>

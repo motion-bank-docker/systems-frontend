@@ -1,5 +1,5 @@
 <template lang="pug">
-  svg.sl-nav(:height="height", y="0", @dblclick="onDoubleClick ($event)",)
+  svg.sl-nav(:height="height", y="4", @dblclick="onDoubleClick ($event)",)
     rect.sl-nav-background.fill-medium(
       @mousedown="onNavBackgroundDown ($event)",
       :class="root.isDragged('navBackground') ? '' : 'pointer'",
@@ -7,19 +7,19 @@
       )
     // Nav Handle
     svg.sl-nav-handle( :x="navHandleX", :width="navHandleWidth", :height="height", )
-      rect.sl-nav-handle-background.fill-black(
+      rect.sl-nav-handle-background.fill-faded(
         @mousedown="onNavHandleBackgroundDown ($event)",
         :class="root.isDragged(['navHandleBackground', 'navBackground']) ? 'grabbing' : 'grab'"
         height="100%", width="100%"
         )
-      rect.sl-nav-handle-left.ew-resize.fill-faded(
+      rect.sl-nav-handle-left.ew-resize.fill-white(
         @mousedown="onNavHandleLeftDown ($event)",
-        height="100%", width="10",
+        height="100%", width="8",
         )
-      rect.sl-nav-handle-right.ew-resize.fill-faded(
+      rect.sl-nav-handle-right.ew-resize.fill-white(
         @mousedown="onNavHandleRightDown ($event)",
-        height="100%", width="10",
-        :x="navHandleWidth - 10",
+        height="100%", width="8",
+        :x="navHandleWidth - 8",
         )
     // Nav Handle Timecode Current
     line.sl-nav-timecode-current.stroke-neutral.no-event(
@@ -33,10 +33,14 @@
 <script>
   // import { EventHub } from '../EventHub'
   import { mapGetters } from 'vuex'
+  import MarkerMap from '../MarkerMap/MarkerMap'
 
   export default {
     name: 'NavigationBar',
-    props: ['root'],
+    props: ['root', 'annotations'],
+    components: {
+      MarkerMap
+    },
     data () {
       return {
         navHandle: {
@@ -76,6 +80,7 @@
       this.$root.$on('globalUp', this.onGlobalUp)
     },
     beforeDestroy () {
+      this.$root.$off('globalUp', this.onGlobalUp)
     },
     methods: {
       onNavBackgroundDown () {
@@ -136,4 +141,8 @@
 
 <style scoped lang="stylus">
   @import '../swimLane'
+
+  .sl-nav-handle-left
+  .sl-nav-handle-right
+    opacity: 0.2
 </style>

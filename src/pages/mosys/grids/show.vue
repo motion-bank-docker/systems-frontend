@@ -1,6 +1,6 @@
 <template lang="pug">
   .grid-display-container
-    div.backbutton
+    div.backbutton(v-if="!isMobile")
       q-btn(slot="backButton", @click="$router.push('/mosys/grids')", icon="keyboard_backspace", round, small, color="black")
     grid-display.grid-display(:gridUuid="$route.params.uuid")
 </template>
@@ -10,6 +10,11 @@
   export default {
     components: {
       GridDisplay
+    },
+    computed: {
+      isMobile () {
+        return this.$q.platform.is.mobile
+      }
     }
   }
 </script>

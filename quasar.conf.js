@@ -117,6 +117,8 @@ module.exports = function (ctx) {
         'QTab',
         'QTabPane',
         'QRouteTab',
+        'QBreadcrumbs',
+        'QBreadcrumbsEl',
         //
         // Form Components
         //

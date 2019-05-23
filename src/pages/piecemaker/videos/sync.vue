@@ -1,7 +1,7 @@
 <template lang="pug">
 
   card-full
-    q-btn(v-if="timeline",
+    q-btn(v-if="timeline && !isMobile",
           slot="backButton",
           @click="$router.push(`/piecemaker/timelines/${timeline._uuid}/videos`)",
           icon="keyboard_backspace",
@@ -69,6 +69,8 @@
 </template>
 
 <script>
+  import { mapGetters } from 'vuex'
+
   import Vue from 'vue'
   import { ObjectUtil } from 'mbjs-utils'
   import { DateTime } from 'luxon'
@@ -119,6 +121,12 @@
         return item._uuid !== _this.$route.params.uuid
       })
       await _this.fetchRefVideoMetadata()
+      this.getVideo()
+    },
+    computed: {
+      ...mapGetters({
+        isMobile: 'globalSettings/getIsMobile'
+      })
     },
     watch: {
       refIndex () {
@@ -126,6 +134,11 @@
       }
     },
     methods: {
+      async getVideo () {
+        this.video = await this.$store.dispatch('annotations/get', this.$route.params.uuid)
+        this.timeline = await this.$store.dispatch('maps/get', parseURI(this.video.target.id).uuid)
+        this.$root.$emit('setBackButton', '/piecemaker/timelines/' + parseURI(this.video.target.id).uuid + '/videos')
+      },
       getRefVideoTitle (index) {
         if (index >= 0 && this.refVideos[index]) {
           const refVideo = this.refVideos[index]

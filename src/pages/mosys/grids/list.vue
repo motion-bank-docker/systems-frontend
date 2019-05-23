@@ -87,6 +87,9 @@
         }
       }
     },
+    mounted () {
+      this.$root.$emit('setBackButton')
+    },
     methods: {
       async handleConfirmModal (item) {
         await deleteHelper.deleteMap(this, item)

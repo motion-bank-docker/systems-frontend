@@ -9,7 +9,7 @@
     // TOP LEFT
     //
     //
-    .absolute-top-left.q-ma-md
+    .absolute-top-left.q-ma-md(v-if="!isMobile")
       // BUTTON - GO BACK
       back-button.fixed-top-left.q-ma-md(slot="nav-button", style="top: 50px; z-index: 2100;")
 
@@ -45,6 +45,7 @@
 </template>
 
 <script>
+  import { mapGetters } from 'vuex'
   import AnnotationField from '../../../components/piecemaker/partials/AnnotationField'
   import { ObjectUtil, Assert } from 'mbjs-utils'
   import { DateTime } from 'luxon'
@@ -64,7 +65,13 @@
       }
     },
     async mounted () {
+      this.$root.$emit('setBackButton', '/piecemaker/timelines')
       this.timeline = await this.$store.dispatch('maps/get', this.$route.params.uuid)
+    },
+    computed: {
+      ...mapGetters({
+        isMobile: 'globalSettings/getIsMobile'
+      })
     },
     methods: {
       async cloneEntry (annotation) {

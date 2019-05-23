@@ -1,28 +1,36 @@
 <template lang="pug">
 
-  .row.q-mt-sm.q-pl-sm.q-pr-md.round-borders(v-shortkey="shortcuts.focusInput", @shortkey="setFocusOnInput()",
+  .row.q-mt-sm.q-pl-sm.q-pr-md.round-borders(v-shortkey="shortcuts.focusInput", @shortkey="focusInput()",
   :class="[hasTransparency && !isFocused && !isVisible ? 'bg-with-transparency' : 'bg-dark']")
 
     // button toggles vocabulary
 
-    q-btn.text-primary.q-mr-sm.q-mt-sm(v-if="!vocabularyVisible && staging", round, flat, icon="local_offer",
-      v-shortkey="shortcuts.showVocabulary", @shortkey.native="toggleVocabulary()", @click="toggleVocabulary()")
+    <!--q-btn.text-primary.q-mr-sm.q-mt-sm(v-if="!vocabularyVisible && staging", round, flat, icon="local_offer",-->
+      <!--v-shortkey="shortcuts.showVocabulary", @shortkey.native="toggleVocabulary()", @click="toggleVocabulary()")-->
+
+    q-btn.text-primary.q-mr-sm.q-mt-sm(
+      v-if="!vocabularyVisible && staging", round, flat, icon="local_offer", @click="toggleVocabulary()"
+      )
 
     // input area
 
     div.round-borders(:class="{ 'shadow-4': vocabularyVisible }", style="width: 40vw;")
 
       q-input.q-pa-md(v-on:keydown="onKeyDown", @focus="onInputFocus", @blur="onInputBlur",
-        v-model="annotationText", ref="textInput", type="textarea", autofocus, dark
+        v-model="annotationText", ref="textInput", type="textarea", dark
         :class="[vocabularyVisible ? 'q-pl-xl text-primary' : 'text-white']"
         )
 
       // CLOSE BUTTON (unused?)
 
       .absolute-top.q-mt-sm(v-if="staging", style="width: 3rem;")
-        q-btn.q-ml-sm.q-mt-xs.q-mr-none.text-primary(round, flat, icon="clear", size="sm",
-          v-if="vocabularyVisible", v-shortkey="shortcuts.showVocabulary",
-          @shortkey.native="toggleVocabulary()", @click="toggleVocabulary()")
+        <!--q-btn.q-ml-sm.q-mt-xs.q-mr-none.text-primary(round, flat, icon="clear", size="sm",-->
+          <!--v-if="vocabularyVisible", v-shortkey="shortcuts.showVocabulary",-->
+          <!--@shortkey.native="toggleVocabulary()", @click="toggleVocabulary()")-->
+        q-btn.q-ml-sm.q-mt-xs.q-mr-none.text-primary(
+          round, flat, icon="clear", size="sm",
+          v-if="vocabularyVisible", @click="toggleVocabulary()"
+          )
 
       // vocabularies
 
@@ -30,7 +38,7 @@
         vocabulary(
           ref="vocabulary",
           @select-entry="selectEntry",
-          @focus="setFocusOnInput",
+          @focus="focusInput",
           :highlight="selectedEntry")
 
 </template>
@@ -76,12 +84,13 @@
 
         shortcuts: {
           focusInput: ['tab'],
-          showVocabulary: ['alt']
+          showVocabulary: [],
+          preventStartAnnotationOnKeys: ['alt', 'tab', 'control', 'meta', 'shift', 'backspace']
         },
         enterDown: 0,
         selectedEntry: undefined,
         staging: process.env.IS_STAGING,
-        isFocused: Boolean,
+        isFocused: false,
         isVisible: false
       }
     },
@@ -121,14 +130,17 @@
       getSelectorValue () {
         return this.currentSelectorValue || this.selectorValue || DateTime.local().toISO()
       },
-      setFocusOnInput () {
+      focusInput () {
         if (this.$refs.textInput) this.$refs.textInput.focus()
+      },
+      blurInput () {
+        if (this.$refs.textInput) this.$refs.textInput.blur()
       },
       toggleVocabulary () {
         if (!this.$refs.vocabulary) return
         this.$refs.vocabulary.toggle()
         this.isVisible = this.$refs.vocabulary.visible
-        this.setFocusOnInput()
+        this.focusInput()
       },
       selectEntry (entry, andCreate = false) {
         this.selectedEntry = entry
@@ -139,7 +151,7 @@
           this.createAnnotation()
         }
         else {
-          this.setFocusOnInput()
+          this.focusInput()
         }
       },
       addToVocabulary (annotation) {
@@ -158,10 +170,12 @@
       },
       onKeyDown (event) {
         const key = event.key.toLowerCase().replace(/\s/g, '')
+
         if (key === 'enter') {
           if (this.enterDown === this.$props.submitOnNumEnters - 1) {
             event.preventDefault()
             this.createAnnotation()
+            this.blurInput()
           }
           else {
             this.enterDown += 1
@@ -169,13 +183,23 @@
         }
         else if (key === 'escape') {
           console.debug('esc')
+          this.blurInput()
           this.reset()
         }
-        else {
+        else if (key === 'backspace') {
+          console.log('bs', this.annotationText)
+          if (this.annotationText !== undefined) {
+            if (this.annotationText.length === 1) {
+              this.blurInput()
+              this.reset()
+            }
+          }
+        }
+        else if (this.annotationText === undefined && !this.shortcuts.preventStartAnnotationOnKeys.includes(key) && event.code !== 'Space') {
           this.enterDown = 0
           if (event.target.tagName.toLowerCase() !== 'textarea') {
             // only set focus if not already in a textfield
-            this.setFocusOnInput()
+            this.focusInput()
           }
         }
       },
