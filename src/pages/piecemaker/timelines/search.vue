@@ -1,6 +1,7 @@
 <template lang="pug">
   full-screen
-    q-btn(slot="backButton", @click="$router.push({ name: 'piecemaker.timelines.list' })", icon="keyboard_backspace", round, small)
+    q-btn(v-if="!isMobile", slot="backButton", @click="$router.push({ name: 'piecemaker.timelines.list' })",
+    icon="keyboard_backspace", round, small)
     .row
       .col-md-12
         q-field(label="Search for", dark)
@@ -17,6 +18,7 @@
 </template>
 
 <script>
+  import { mapGetters } from 'vuex'
   import { DateTime } from 'luxon'
 
   export default {
@@ -32,6 +34,7 @@
       }
     },
     async mounted () {
+      this.$root.$emit('setBackButton', '/piecemaker/timelines')
       this.$q.loading.show()
       this.map = await this.$store.dispatch('maps/get', this.$route.params.uuid)
       const videos = await this.$store.dispatch('annotations/find', {
@@ -46,6 +49,11 @@
         catch (e) { this.videos[i].metadata = {} }
       }
       this.$q.loading.hide()
+    },
+    computed: {
+      ...mapGetters({
+        isMobile: 'globalSettings/getIsMobile'
+      })
     },
     methods: {
       async search () {

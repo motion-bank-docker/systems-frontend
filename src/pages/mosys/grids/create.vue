@@ -20,6 +20,7 @@
 </template>
 
 <script>
+  import { mapGetters } from 'vuex'
   import Tags from '../../../components/shared/partials/Tags'
   import FormMain from '../../../components/shared/forms/FormMain'
 
@@ -66,6 +67,14 @@
           }
         }
       }
+    },
+    computed: {
+      ...mapGetters({
+        isMobile: 'globalSettings/getIsMobile'
+      })
+    },
+    mounted () {
+      this.$root.$emit('setBackButton', '/mosys/grids')
     },
     watch: {
       uploadTitle () {

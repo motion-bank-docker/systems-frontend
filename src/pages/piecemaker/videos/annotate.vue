@@ -20,7 +20,7 @@
 
       // back button
 
-      q-page-sticky(position="top-left", style="z-index: 2100;")
+      q-page-sticky(v-if="!isMobile", position="top-left", style="z-index: 2100;")
         back-button.q-ma-md
 
       // button toggles annotations
@@ -224,7 +224,8 @@
         selectedAnnotation: 'swimLaneSettings/getSelectedAnnotation',
         drawer: 'swimLaneSettings/getVisibilityDrawer',
         visibilitySwimlanes: 'swimLaneSettings/getVisibilitySwimlanes',
-        visibilityDetails: 'swimLaneSettings/getVisibilityDetails'
+        visibilityDetails: 'swimLaneSettings/getVisibilityDetails',
+        isMobile: 'globalSettings/getIsMobile'
       }),
       storeCursorTop () {
         return this.$store.state.swimLaneSettings.cursorTop
@@ -341,6 +342,7 @@
       async getVideo () {
         this.video = await this.$store.dispatch('annotations/get', this.$route.params.uuid)
         this.timeline = await this.$store.dispatch('maps/get', parseURI(this.video.target.id).uuid)
+        this.$root.$emit('setBackButton', '/piecemaker/timelines/' + parseURI(this.video.target.id).uuid + '/videos')
         if (this.video) {
           this.metadata = await this.$store.dispatch('metadata/getLocal', this.video)
         }

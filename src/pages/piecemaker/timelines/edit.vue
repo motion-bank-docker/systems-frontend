@@ -1,6 +1,7 @@
 <template lang="pug">
   full-screen
-    q-btn(slot="backButton", @click="$router.push({ name: 'piecemaker.timelines.list' })", icon="keyboard_backspace", round, small)
+    q-btn(v-if="!isMobile", slot="backButton", @click="$router.push({ name: 'piecemaker.timelines.list' })",
+    icon="keyboard_backspace", round, small)
 
     .q-px-xl
       h5.caption.text-light(dark) {{ $t('routes.piecemaker.timelines.edit.title') }}
@@ -85,6 +86,7 @@
       }
     },
     async mounted () {
+      this.$root.$emit('setBackButton', '/piecemaker/timelines')
       this.$q.loading.show()
       this.timeline = await this.$store.dispatch('maps/get', this.$route.params.uuid)
       if (process.env.IS_STAGING) {
@@ -96,7 +98,8 @@
     },
     computed: {
       ...mapGetters({
-        user: 'auth/getUserState'
+        user: 'auth/getUserState',
+        isMobile: 'globalSettings/getIsMobile'
       }),
       availableRoles () {
         try {

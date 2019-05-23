@@ -1,6 +1,6 @@
 <template lang="pug">
   .grid-editor-container(:class="{'sources-open': $store.state.mosys.showSources}")
-    div.backbutton
+    div.backbutton(v-if="!isMobile")
       q-btn(slot="backButton", @click="$router.push('/mosys/grids')", icon="keyboard_backspace", round, small, color="black")
     div.grid-editor-shadow-right(v-if="$store.state.mosys.showSources")
     grid-editor.grid-editor(:gridUuid="$route.params.uuid")
@@ -8,6 +8,7 @@
 </template>
 
 <script>
+  import { mapGetters } from 'vuex'
   import GridEditor from '../../../components/mosys/partials/GridEditor'
   import GridEditorSources from '../../../components/mosys/partials/GridEditorSources'
 
@@ -15,6 +16,11 @@
     components: {
       GridEditor,
       GridEditorSources
+    },
+    computed: {
+      ...mapGetters({
+        isMobile: 'globalSettings/getIsMobile'
+      })
     }
   }
 </script>

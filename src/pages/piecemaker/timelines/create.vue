@@ -1,6 +1,7 @@
 <template lang="pug">
   full-screen
-    q-btn(slot="backButton", @click="$router.push({ name: 'piecemaker.timelines.list' })", icon="keyboard_backspace", round, small)
+    q-btn(v-if="!isMobile", slot="backButton", @click="$router.push({ name: 'piecemaker.timelines.list' })",
+    icon="keyboard_backspace", round, small)
 
     .q-pa-xl(style="min-width: 50vw;")
       h5.caption(dark) {{ $t('routes.piecemaker.timelines.create.title') }}
@@ -22,6 +23,7 @@
 </template>
 
 <script>
+  import { mapGetters } from 'vuex'
   import Tags from '../../../components/shared/partials/Tags'
   import FormMain from '../../../components/shared/forms/FormMain'
 
@@ -69,6 +71,11 @@
         }
       }
     },
+    computed: {
+      ...mapGetters({
+        isMobile: 'globalSettings/getIsMobile'
+      })
+    },
     watch: {
       uploadTitle (val) {
         this.setOrAddField('title', val)
@@ -79,6 +86,9 @@
       skipAcl (val) {
         this.setOrAddField('skipAcl', val)
       }
+    },
+    mounted () {
+      this.$root.$emit('setBackButton', '/piecemaker/timelines')
     },
     methods: {
       setOrAddField (name, value) {

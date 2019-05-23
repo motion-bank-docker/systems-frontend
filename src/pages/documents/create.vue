@@ -1,6 +1,7 @@
 <template lang="pug">
   full-screen
-    q-btn(slot="backButton", @click="$router.push({ name: 'documents.list' })", icon="keyboard_backspace", round, small)
+    q-btn(v-if="!isMobile", slot="backButton", @click="$router.push({ name: 'documents.list' })",
+    icon="keyboard_backspace", round, small)
 
     h5.caption(dark) {{ $t('routes.documents.create.title') }}
       .row
@@ -21,11 +22,15 @@
     },
     computed: {
       ...mapGetters({
-        user: 'auth/getUserState'
+        user: 'auth/getUserState',
+        isMobile: 'globalSettings/getIsMobile'
       }),
       url () {
         return this.user ? `${process.env.STORAGE_HOST}/files/user-${this.user.uuid}` : undefined
       }
+    },
+    mounted () {
+      this.$root.$emit('setBackButton', 'list')
     },
     methods: {
       onFinish (responses) {
