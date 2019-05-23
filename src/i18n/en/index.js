@@ -215,6 +215,14 @@ export default {
       piecemaker_timelines_search: 'Search this timeline',
       piecemaker_timelines_edit: 'Edit this timeline\'s information',
       piecemaker_timelines_create: 'Create timeline'
+    },
+    mosys: {
+      label: 'Mosys',
+      mosys_grids_list: 'All Grids',
+      mosys_grids_annotate: 'Add cells: Edit the content from this grid',
+      mosys_grids_show: 'Show Cells: Show the grid how it will be seen by others',
+      mosys_grids_edit: 'Edit this grid\'s information',
+      mosys_grids_create: 'Create Grid'
     }
   },
   routes: {
