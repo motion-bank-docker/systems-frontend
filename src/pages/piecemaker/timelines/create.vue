@@ -1,27 +1,30 @@
 <template lang="pug">
   full-screen
+
     // back button
-      q-btn(v-if="!isMobile", slot="backButton", @click="$router.push({ name: 'piecemaker.timelines.list' })",
-      icon="keyboard_backspace", round, size="sm")
     back-button-new(v-if="!isMobile", slot="backButton", :target="'piecemaker.timelines.list'")
 
-    div(style="min-width: 50vw;")
-      h5.caption(dark) {{ $t('routes.piecemaker.timelines.create.title') }}
-      .row
-        .col-md-12
-          form-main(v-model="payload", :schema="schema")
-      .row
-        .col-12
-          h5.caption(dark) {{ $t('forms.timelines.import.title') }}
-      .column
-        .col-12.q-pa-md
-          q-input(dark, :placeholder="$t('forms.timelines.import.fields.title')", v-model="uploadTitle")
-        .col-12.q-pa-md
-          q-checkbox(dark, :label="$t('forms.timelines.import.fields.override_author')", v-model="overrideAuthor")
-        <!--.col-12.q-pa-md-->
-          <!--q-checkbox(dark, :label="$t('forms.timelines.import.fields.skip_acl')", v-model="skipAcl")-->
-        .col-12.q-pa-md
-          uploader(dark, :url="url", @finish="onFinish", allowed=".zip", :headers="headers", :fields="uploadFields")
+    // headline
+    h5(slot="form-title") {{ $t('routes.piecemaker.timelines.create.title') }}
+
+    // add new timeline
+    div
+      form-main(v-model="payload", :schema="schema")
+
+    // import timeline
+    div
+      // headline
+      h5.caption(dark) {{ $t('forms.timelines.import.title') }}
+
+      // new title
+      q-input(dark, :placeholder="$t('forms.timelines.import.fields.title')", v-model="uploadTitle")
+
+      // set ownership
+      q-checkbox(dark, :label="$t('forms.timelines.import.fields.override_author')", v-model="overrideAuthor")
+
+      // uploader
+      uploader(dark, :url="url", @finish="onFinish", allowed=".zip", :headers="headers", :fields="uploadFields")
+
 </template>
 
 <script>
