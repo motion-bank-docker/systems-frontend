@@ -2,8 +2,10 @@
   full-screen
     confirm-modal(ref="confirmModal", @confirm="handleConfirmModal")
 
-    span(slot="form-logo")
-    span(slot="form-title") {{ $t('routes.piecemaker.timelines.list.title') }}
+    //
+      span(slot="form-logo")
+      span(slot="form-title") {{ $t('routes.piecemaker.timelines.list.title') }}
+    headline(:content="$t('routes.piecemaker.timelines.list.title')")
 
     // DIAGRAM
       div.q-mb-xl(ref="diagramList")
@@ -30,8 +32,12 @@
   import constants from 'mbjs-data-models/src/constants'
   import { DateTime } from 'luxon'
   import { deleteHelper } from 'mbjs-quasar/src/lib'
+  import Headline from '../../../components/shared/elements/Headline'
 
   export default {
+    components: {
+      Headline
+    },
     data () {
       const _this = this
       return {

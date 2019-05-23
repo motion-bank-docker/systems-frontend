@@ -3,8 +3,11 @@
     confirm-modal(ref="confirmModal", @confirm="handleConfirmModal")
 
     back-button(v-if="!isMobile", slot="backButton")
-    span(slot="form-logo")
-    span(slot="form-title" v-if="timeline") {{ timeline.title }}: {{ $t('routes.piecemaker.videos.list.title') }}
+    //
+      span(slot="form-logo")
+      span(slot="form-title" v-if="timeline") {{ timeline.title }}: {{ $t('routes.piecemaker.videos.list.title') }}
+    headline(v-if="timeline", :content="timeline.title + ': ' + $t('routes.piecemaker.videos.list.title')")
+
     data-table(v-if="query", ref="listTable", :config="config", :title="'routes.piecemaker.videos.list.title'",
       path="annotations", :query="query", base-path="videos", :request-transform="requestTransform")
       template(slot="buttons-left")
@@ -15,8 +18,12 @@
 <script>
   import { DateTime } from 'luxon'
   import { mapGetters } from 'vuex'
+  import Headline from '../../../components/shared/elements/Headline'
 
   export default {
+    components: {
+      Headline
+    },
     data () {
       const _this = this
       return {

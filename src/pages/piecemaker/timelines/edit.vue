@@ -1,39 +1,42 @@
 <template lang="pug">
   full-screen
-    q-btn(v-if="!isMobile", slot="backButton", @click="$router.push({ name: 'piecemaker.timelines.list' })",
-    icon="keyboard_backspace", round, small)
+    //
+      q-btn(v-if="!isMobile", slot="backButton", @click="$router.push({ name: 'piecemaker.timelines.list' })",
+      icon="keyboard_backspace", round, small)
+    back-button-new(v-if="!isMobile", slot="backButton", :target="'piecemaker.timelines.list'")
 
-    .q-px-xl
-      h5.caption.text-light(dark) {{ $t('routes.piecemaker.timelines.edit.title') }}
+    headline(:content="$t('routes.piecemaker.timelines.edit.title')")
 
-      .row
-        .col-md-12
-          form-main(v-model="payload", :schema="schema")
-            q-btn.q-mr-md.bg-grey-9(q-if="$route.params.uuid", slot="form-buttons-add", :label="exportLabel", @click="exportTimeline")
+    .row
+      .col-md-12
+        form-main(v-model="payload", :schema="schema")
+          q-btn.q-mr-md.bg-grey-9(q-if="$route.params.uuid", slot="form-buttons-add", :label="exportLabel", @click="exportTimeline")
 
-      .row(v-if="availableRoles.length")
-        .col-md-12
-          h5.caption.text-light {{ $t('labels.access_control') }}
-          p {{ $t('descriptions.access_control') }}
-        .col-md-12.q-mb-md
-          q-field(orientation="vertical", dark)
-            q-select(v-model="acl.group", :clearable="true", :clear-value="undefined",
-            :float-label="$t('labels.access_control_add_group')", :options="availableRoles", dark)
-        .col-md-12.q-mb-md
-          q-field(orientation="vertical", dark)
-            q-select(v-model="acl.group_remove", :clearable="true", :clear-value="undefined",
-            :float-label="$t('labels.access_control_remove_group')", :options="availableRoles", dark)
-        .col-md-12.q-mb-md
-          q-field(dark)
-            q-checkbox(v-model="acl.recursive", :label="$t('labels.recursive')", dark)
-        .row.xs-gutter.full-width.justify-end.items-end
-          q-btn(:label="$t('buttons.update_access_control')", @click="updateACL", color="grey")
+    .row(v-if="availableRoles.length")
+      .col-md-12
+        h5.caption.text-light {{ $t('labels.access_control') }}
+        p {{ $t('descriptions.access_control') }}
+      .col-md-12.q-mb-md
+        q-field(orientation="vertical", dark)
+          q-select(v-model="acl.group", :clearable="true", :clear-value="undefined",
+          :float-label="$t('labels.access_control_add_group')", :options="availableRoles", dark)
+      .col-md-12.q-mb-md
+        q-field(orientation="vertical", dark)
+          q-select(v-model="acl.group_remove", :clearable="true", :clear-value="undefined",
+          :float-label="$t('labels.access_control_remove_group')", :options="availableRoles", dark)
+      .col-md-12.q-mb-md
+        q-field(dark)
+          q-checkbox(v-model="acl.recursive", :label="$t('labels.recursive')", dark)
+      .row.xs-gutter.full-width.justify-end.items-end
+        q-btn(:label="$t('buttons.update_access_control')", @click="updateACL", color="grey")
 </template>
 
 <script>
   import AccessControl from '../../../components/shared/forms/AccessControl'
   import Tags from '../../../components/shared/partials/Tags'
   import FormMain from '../../../components/shared/forms/FormMain'
+  import BackButtonNew from '../../../components/shared/buttons/BackButtonNew'
+  import Headline from '../../../components/shared/elements/Headline'
 
   import { required } from 'vuelidate/lib/validators'
   import constants from 'mbjs-data-models/src/constants'
@@ -46,7 +49,9 @@
   export default {
     components: {
       AccessControl,
+      BackButtonNew,
       FormMain,
+      Headline,
       Tags
     },
     data () {

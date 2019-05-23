@@ -1,7 +1,13 @@
 <template lang="pug">
   full-screen
-    q-btn(v-if="!isMobile", slot="backButton", @click="$router.push({ name: 'piecemaker.timelines.list' })",
-    icon="keyboard_backspace", round, small)
+
+    // back button
+      q-btn(v-if="!isMobile", slot="backButton", @click="$router.push({ name: 'piecemaker.timelines.list' })",
+      icon="keyboard_backspace", round, small)
+    back-button-new(v-if="!isMobile", slot="backButton", :target="'piecemaker.timelines.list'")
+
+    headline(:content="'HEADLINE'")
+
     .row
       .col-md-12
         q-field(label="Search for", dark)
@@ -20,8 +26,14 @@
 <script>
   import { mapGetters } from 'vuex'
   import { DateTime } from 'luxon'
+  import BackButtonNew from '../../../components/shared/buttons/BackButtonNew'
+  import Headline from '../../../components/shared/elements/Headline'
 
   export default {
+    components: {
+      BackButtonNew,
+      Headline
+    },
     data () {
       return {
         query: undefined,
