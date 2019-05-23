@@ -4,26 +4,22 @@
     // back button
     back-button-new(v-if="!isMobile", slot="backButton", :target="'piecemaker.timelines.list'")
 
-    // headline
-    <!--h5(slot="form-title") {{ $t('routes.piecemaker.timelines.create.title') }}-->
-    headline(:content="$t('routes.piecemaker.timelines.create.title')")
-
     // add new timeline
     div
+      // h5(slot="form-title") {{ $t('routes.piecemaker.timelines.create.title') }}
+      headline(:content="$t('routes.piecemaker.timelines.create.title')")
       form-main(v-model="payload", :schema="schema")
 
     // import timeline
     div
-      // headline
       headline(:content="$t('forms.timelines.import.title')")
 
-      // new title
+      // new title (optional)
       q-input(dark, :placeholder="$t('forms.timelines.import.fields.title')", v-model="uploadTitle")
 
       // set ownership
       q-checkbox(dark, :label="$t('forms.timelines.import.fields.override_author')", v-model="overrideAuthor")
 
-      // uploader
       uploader(dark, :url="url", @finish="onFinish", allowed=".zip", :headers="headers", :fields="uploadFields")
 
 </template>
