@@ -44,28 +44,6 @@
           height: 100,
           offsetY: 20
         },
-        /* dummyData: [
-          {
-            author: 'ch',
-            created: 0
-          },
-          {
-            author: 'ch',
-            created: 100
-          },
-          {
-            author: 'ch',
-            created: 105
-          },
-          {
-            author: 'ch',
-            created: 300
-          },
-          {
-            author: 'ch',
-            created: 800
-          }
-        ], */
         query: { type: constants.mapTypes.MAP_TYPE_TIMELINE },
         requestTransform: async rows => {
           for (let i in rows) {
