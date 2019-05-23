@@ -223,6 +223,15 @@ export default {
       mosys_grids_show: 'Show Cells: Show the grid how it will be seen by others',
       mosys_grids_edit: 'Edit this grid\'s information',
       mosys_grids_create: 'Create Grid'
+    },
+    documents: {
+      label: 'Documents',
+      documents_list: 'All Documents',
+      documents_edit: 'Edit this document\'s information'
+    },
+    users: {
+      label: 'Account settings',
+      users_manage: 'Edit your account settings'
     }
   },
   routes: {
