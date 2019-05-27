@@ -1,19 +1,18 @@
 <template lang="pug">
   full-screen
     back-button(v-if="!isMobile", slot="backButton")
-    .q-px-xl(style="min-width: 50vw;")
-      h5.caption(dark) {{ $t('routes.piecemaker.videos.edit.title') }}
 
-      .row
-        .col-md-12
-          calendar-time-main(:datetime="selectorValue", @update="onCalendarUpdate")
-          p {{ $t('labels.video_duration') }}: {{ duration }}
-          p.q-mb-lg(v-if="selectorOverride !== selectorValue") {{ $t('messages.caution_video_time_override') }}
-          form-main(v-model.lazy="payload", :schema="schema", ref="videoForm")
+    headline(:content="$t('routes.piecemaker.videos.edit.title')")
 
-      .row
-        .col-md-12
-          access-control
+    div
+      calendar-time-main(:datetime="selectorValue", @update="onCalendarUpdate")
+      .q-mb-xl
+        p.q-mt-md {{ $t('labels.video_duration') }}: {{ duration }}
+        p(v-if="selectorOverride !== selectorValue") {{ $t('messages.caution_video_time_override') }}
+      form-main(v-model.lazy="payload", :schema="schema", ref="videoForm")
+
+    div
+      access-control
 </template>
 
 <script>
@@ -22,6 +21,7 @@
   import AccessControl from '../../../components/shared/forms/AccessControl'
   import CalendarTimeMain from '../../../components/shared/forms/CalendarTimeMain'
   import FormMain from '../../../components/shared/forms/FormMain'
+  import Headline from '../../../components/shared/elements/Headline'
 
   import { required } from 'vuelidate/lib/validators'
   import guessType from 'mbjs-media/src/util/guess-type'
@@ -35,7 +35,8 @@
     components: {
       AccessControl,
       CalendarTimeMain,
-      FormMain
+      FormMain,
+      Headline
     },
     methods: {
       onCalendarUpdate (val) {
