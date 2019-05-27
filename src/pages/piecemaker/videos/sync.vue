@@ -1,13 +1,13 @@
 <template lang="pug">
 
-  card-full
+  full-screen
     q-btn(v-if="timeline && !isMobile",
           slot="backButton",
           @click="$router.push(`/piecemaker/timelines/${timeline._uuid}/videos`)",
           icon="keyboard_backspace",
           small, round)
-    div(slot="form-logo")
-    div(v-if="timeline", slot="form-title")
+
+    headline(:content="$t('routes.piecemaker.videos.sync.title')")
 
     // titles
     .video-titles.row
@@ -74,13 +74,13 @@
   import Vue from 'vue'
   import { ObjectUtil } from 'mbjs-utils'
   import { DateTime } from 'luxon'
-  import CardFull from '../../../components/shared/layouts/CardFull'
   import constants from 'mbjs-data-models/src/constants'
   import {parseURI} from 'mbjs-data-models/src/lib'
+  import Headline from '../../../components/shared/elements/Headline'
 
   export default {
     components: {
-      CardFull
+      Headline
     },
     data () {
       return {
