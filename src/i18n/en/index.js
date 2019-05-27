@@ -369,6 +369,10 @@ export default {
         create: {
           title: 'Add Video',
           caption: 'Add a new video to your timeline.'
+        },
+        sync: {
+          title: 'Sync Video',
+          caption: 'Synchronize a video with others.'
         }
       }
     },
