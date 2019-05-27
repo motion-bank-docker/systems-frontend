@@ -2,8 +2,10 @@
   full-screen
     confirm-modal(ref="confirmModal", @confirm="handleConfirmModal")
 
-    span(slot="form-logo")
-    span(slot="form-title") {{ $t('routes.documents.list.title') }}
+    //
+      span(slot="form-logo")
+      span(slot="form-title") {{ $t('routes.documents.list.title') }}
+    headline(:content="$t('routes.documents.list.title')")
 
     data-table(v-if="user", :config="config", :title="'routes.documents.list.title'", ref="listTable")
       template(slot="buttons-left")
@@ -13,8 +15,12 @@
 <script>
   import { mapGetters } from 'vuex'
   import { openURL } from 'quasar'
+  import Headline from '../../components/shared/elements/Headline'
 
   export default {
+    components: {
+      Headline
+    },
     data () {
       const _this = this
       return {
