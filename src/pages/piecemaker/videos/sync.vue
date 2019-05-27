@@ -7,23 +7,28 @@
           icon="keyboard_backspace",
           small, round)
 
-    headline(:content="$t('routes.piecemaker.videos.sync.title')")
+    headline(:content="$t('routes.piecemaker.videos.sync.title') + ': ' + (videoMetadata && videoMetadata.title) || (video && video._uuid)")
 
     // titles
-    .video-titles.row
+    .row.q-mb-md
 
-      .col-6.row
-        .col-12(title="Applying the synchronisation will move this video in time") Target video to be synchronized:
-          br
-          span {{(videoMetadata && videoMetadata.title) || (video && video._uuid)}}
+      .col-12.col-sm-6
+        div(title="Applying the synchronisation will move this video in time")
+          | Target video to be synchronized:
+          //
+            br
+            span {{(videoMetadata && videoMetadata.title) || (video && video._uuid)}}
 
-      .col-6.row
-        .col-12.text-right(title="This video is used as source reference and will not be changed")
+      .col-6.desktop-only
+        .text-right(title="This video is used as source reference and will not be changed")
           | Synchronize with reference video:
-          br
+
           template(v-if="refIndex > -1")
-            span {{ getRefVideoTitle(refIndex) }}
-            q-btn(small, @click="refIndex = -1") {{ $t('buttons.change') }}
+            div
+              |{{ getRefVideoTitle(refIndex) }}
+              // q-btn(small, @click="refIndex = -1") {{ $t('buttons.change') }}
+              q-btn.q-ml-md(@click="refIndex = -1", icon="clear", round, size="sm")
+
           template(v-else)
             span Select video from list below
 
@@ -31,25 +36,23 @@
     .video-player.row
 
       // video to be sync'd
-      .target-video.col-6.row
-        .video.col-12(v-if="video")
+      //.target-video.col-xs-12.col-sm-6
+      .col-xs-12.col-sm-6
+        template(v-if="video")
           video-player.relative-position(:src="video.body.source.id", :fine-controls="true",
-                       @ready="onVidPlayerReady($event)")
+          @ready="onVidPlayerReady($event)")
 
       // video used as reference
-      .reference-video.col-6.row
+      .reference-video.col-xs-12.col-sm-6
         template(v-if="video && refIndex > -1")
-          .video.col-12
-            video-player(:annotation="refVideos[refIndex]", :fine-controls="true",
-                         @ready="onTargetPlayerReady($event)")
+          video-player(:annotation="refVideos[refIndex]", :fine-controls="true",
+          @ready="onTargetPlayerReady($event)")
+
         template(v-else)
-          .video-list.col-12
-            q-list(v-if="refVideos && refIndex === -1").no-border
-              q-item(v-for="(vid, i) in refVideos",
-                     highlight,
-                     :key="vid._uuid",
-                     @click.native="refIndex = i")
-                span {{ getRefVideoTitle(i) }}
+          .video-list
+            q-list.no-border.q-py-none(v-if="refVideos && refIndex === -1", separator)
+              q-item(v-for="(vid, i) in refVideos",highlight,:key="vid._uuid",@click.native="refIndex = i")
+                | {{ getRefVideoTitle(i) }}
 
     .row
       .col-6
@@ -229,8 +232,8 @@
     border 3px solid green
     display none
 
-  .video-titles
-    margin-bottom 1em
+  /*.video-titles*/
+    /*margin-bottom 1em*/
 
   .video-player
     .video-list
