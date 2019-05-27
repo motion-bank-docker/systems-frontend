@@ -2,7 +2,9 @@
   full-screen
     confirm-modal(ref="confirmModal", @confirm="handleConfirmModal")
 
-    span(slot="form-title") {{ $t('routes.mosys.grids.list.title') }}
+    // span(slot="form-title") {{ $t('routes.mosys.grids.list.title') }}
+    headline(:content="$t('routes.mosys.grids.list.title')")
+
     data-table(
       ref="listTable",
       :config="config",
@@ -20,8 +22,12 @@
   import constants from 'mbjs-data-models/src/constants'
   import { DateTime } from 'luxon'
   import { deleteHelper } from 'mbjs-quasar/src/lib'
+  import Headline from '../../../components/shared/elements/Headline'
 
   export default {
+    components: {
+      Headline
+    },
     data () {
       const _this = this
       return {

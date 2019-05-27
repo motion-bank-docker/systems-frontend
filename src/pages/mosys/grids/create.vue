@@ -1,28 +1,31 @@
 <template lang="pug">
   full-screen
-    .q-pa-xl(style="min-width: 50vw;")
-      h5.caption(dark) {{ $t('routes.mosys.grids.create.title') }}
-      .row
-        .col-md-12
-          form-main(v-model="payload", :schema="schema")
-      .row
-        .col-12
-          h5.caption(dark) {{ $t('forms.grids.import.title') }}
-      .column
-        .col-12.q-pa-md
-          q-input(dark, :placeholder="$t('forms.grids.import.fields.title')", v-model="uploadTitle")
-        .col-12.q-pa-md
-          q-checkbox(dark, :label="$t('forms.grids.import.fields.override_author')", v-model="overrideAuthor")
-        <!--.col-12.q-pa-md-->
-          <!--q-checkbox(dark, :label="$t('forms.grids.import.fields.skip_acl')", v-model="skipAcl")-->
-        .col-12.q-pa-md
-          uploader(dark, :url="url", @finish="onFinish", allowed=".zip", :headers="headers", :fields="uploadFields")
+
+    // h5.caption(dark) {{ $t('routes.mosys.grids.create.title') }}
+    headline(:content="$t('routes.mosys.grids.create.title')")
+
+    .row
+      .col-md-12
+        form-main(v-model="payload", :schema="schema")
+    .row
+      .col-12
+        h5.caption(dark) {{ $t('forms.grids.import.title') }}
+    .column
+      .col-12.q-pa-md
+        q-input(dark, :placeholder="$t('forms.grids.import.fields.title')", v-model="uploadTitle")
+      .col-12.q-pa-md
+        q-checkbox(dark, :label="$t('forms.grids.import.fields.override_author')", v-model="overrideAuthor")
+      <!--.col-12.q-pa-md-->
+        <!--q-checkbox(dark, :label="$t('forms.grids.import.fields.skip_acl')", v-model="skipAcl")-->
+      .col-12.q-pa-md
+        uploader(dark, :url="url", @finish="onFinish", allowed=".zip", :headers="headers", :fields="uploadFields")
 </template>
 
 <script>
   import { mapGetters } from 'vuex'
   import Tags from '../../../components/shared/partials/Tags'
   import FormMain from '../../../components/shared/forms/FormMain'
+  import Headline from '../../../components/shared/elements/Headline'
 
   import { required } from 'vuelidate/lib/validators'
   import constants from 'mbjs-data-models/src/constants'
@@ -30,7 +33,8 @@
   export default {
     components: {
       FormMain,
-      Tags
+      Tags,
+      Headline
     },
     data () {
       const _this = this

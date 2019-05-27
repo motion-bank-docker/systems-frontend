@@ -1,50 +1,53 @@
 <template lang="pug">
   full-screen
-    .q-px-xl(style="min-width: 50vw;")
-      h5.caption(dark) {{ $t('routes.mosys.grids.edit.title') }}
 
-      .row
-        .col-md-12
-          form-main(v-model="payload", :schema="schema")
-            q-btn.q-mr-md.bg-grey-9(q-if="$route.params.uuid", slot="form-buttons-add",
-              :label="exportLabel", @click="exportGrid")
-            q-btn.q-mr-md.bg-grey-9(q-if="$route.params.uuid && userHasPackager", slot="form-buttons-add",
-              :label="packageLabel", @click="createPackage")
+    headline(:content="$t('routes.mosys.grids.edit.title')")
 
-      .row.q-mb-lg(v-if="availableRoles.length")
-        .col-md-12
-          h5.caption.text-light {{ $t('labels.access_control') }}
-          p {{ $t('descriptions.access_control') }}
-        .col-md-12.q-mb-md
-          q-field(orientation="vertical", dark)
-            q-select(v-model="acl.group", :clearable="true", :clear-value="undefined",
-            :float-label="$t('labels.access_control_add_group')", :options="availableRoles", dark)
-        .col-md-12.q-mb-md
-          q-field(orientation="vertical", dark)
-            q-select(v-model="acl.group_remove", :clearable="true", :clear-value="undefined",
-            :float-label="$t('labels.access_control_remove_group')", :options="availableRoles", dark)
-        .col-md-12.q-mb-md
-          q-field(dark)
-            q-checkbox(v-model="acl.recursive", :label="$t('labels.recursive')", dark)
-        .row.xs-gutter.full-width.justify-end.items-end
-          q-btn(:label="$t('buttons.update_access_control')", @click="updateACL", color="grey")
+    h5.caption(dark) {{ $t('routes.mosys.grids.edit.title') }}
 
-      .row.q-mb-lg(v-if="userHasCSSEditing")
-        .col-md-12.q-mb-md
-          h5.caption.text-light {{ $t('labels.css_stylesheet') }}
-          p {{ $t('descriptions.css_stylesheet') }}
-        .col-md-12.q-mb-md
-          q-input(v-model="stylesheetUrl", dark, type="text", float-label="External CSS Stylesheet URL")
-        .col-md-12.q-mb-md
-          q-input(v-model="stylesheet", dark, type="textarea", float-label="Embedded CSS Stylesheet", rows="4")
-        .col-md-12
-          q-btn.float-right(q-if="$route.params.uuid", color="primary", label="Submit", @click="submit")
+    .row
+      .col-md-12
+        form-main(v-model="payload", :schema="schema")
+          q-btn.q-mr-md.bg-grey-9(q-if="$route.params.uuid", slot="form-buttons-add",
+            :label="exportLabel", @click="exportGrid")
+          q-btn.q-mr-md.bg-grey-9(q-if="$route.params.uuid && userHasPackager", slot="form-buttons-add",
+            :label="packageLabel", @click="createPackage")
+
+    .row.q-mb-lg(v-if="availableRoles.length")
+      .col-md-12
+        h5.caption.text-light {{ $t('labels.access_control') }}
+        p {{ $t('descriptions.access_control') }}
+      .col-md-12.q-mb-md
+        q-field(orientation="vertical", dark)
+          q-select(v-model="acl.group", :clearable="true", :clear-value="undefined",
+          :float-label="$t('labels.access_control_add_group')", :options="availableRoles", dark)
+      .col-md-12.q-mb-md
+        q-field(orientation="vertical", dark)
+          q-select(v-model="acl.group_remove", :clearable="true", :clear-value="undefined",
+          :float-label="$t('labels.access_control_remove_group')", :options="availableRoles", dark)
+      .col-md-12.q-mb-md
+        q-field(dark)
+          q-checkbox(v-model="acl.recursive", :label="$t('labels.recursive')", dark)
+      .row.xs-gutter.full-width.justify-end.items-end
+        q-btn(:label="$t('buttons.update_access_control')", @click="updateACL", color="grey")
+
+    .row.q-mb-lg(v-if="userHasCSSEditing")
+      .col-md-12.q-mb-md
+        h5.caption.text-light {{ $t('labels.css_stylesheet') }}
+        p {{ $t('descriptions.css_stylesheet') }}
+      .col-md-12.q-mb-md
+        q-input(v-model="stylesheetUrl", dark, type="text", float-label="External CSS Stylesheet URL")
+      .col-md-12.q-mb-md
+        q-input(v-model="stylesheet", dark, type="textarea", float-label="Embedded CSS Stylesheet", rows="4")
+      .col-md-12
+        q-btn.float-right(q-if="$route.params.uuid", color="primary", label="Submit", @click="submit")
 </template>
 
 <script>
   import AccessControl from '../../../components/shared/forms/AccessControl'
   import Tags from '../../../components/shared/partials/Tags'
   import FormMain from '../../../components/shared/forms/FormMain'
+  import Headline from '../../../components/shared/elements/Headline'
 
   import { required } from 'vuelidate/lib/validators'
   import constants from 'mbjs-data-models/src/constants'
@@ -56,7 +59,8 @@
     components: {
       AccessControl,
       FormMain,
-      Tags
+      Tags,
+      Headline
     },
     data () {
       const _this = this
