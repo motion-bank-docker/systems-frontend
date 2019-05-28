@@ -1,6 +1,19 @@
 <template lang="pug">
 
   full-screen
+    // q-modal(v-model="modalVideos", position="bottom", :content-css="{maxHeight: '50vh'}")
+      .bg-dark
+        q-btn(@click="modalVideos = false") close
+        q-list.q-py-none
+          div.q-pb-sm
+            span.text-grey-8 Synchronize with:
+          q-item.q-pa-none.cursor-pointer.relative-position(v-for="(vid, i) in refVideos", highlight, :key="vid._uuid",
+          @click.native="refIndex = i")
+            q-item-main.q-pa-none
+              q-item-tile.lt-md.bg-darker(v-if="isMobile", style="height: 1px; width: 200vw; margin-left: -10vw;")
+              q-item-tile.q-py-sm
+                | {{ getRefVideoTitle(i) }}
+
     q-btn(v-if="timeline && !isMobile",
           slot="backButton",
           @click="$router.push(`/piecemaker/timelines/${timeline._uuid}/videos`)",
@@ -33,12 +46,10 @@
             template(v-else)
               span Select video from list below
 
-    //.row.bg-green.gutter-sm
     .row(:class="[isMobile ? 'gutter-sm' : 'gutter-md']")
 
-      // left side
-      .col-12.col-md-6.q-mt-md
-        //.bg-red
+      //------------------------------------------------------------------------------------------------------ left side
+      .col-12.col-md-6
         div
           template(v-if="video")
             video-player.relative-position(:src="video.body.source.id", :fine-controls="true",
@@ -52,10 +63,12 @@
             q-btn.border-light.q-mr-sm(@click="setMarker(vidPlayer)") {{ $t('buttons.set_marker') }}
             template(v-if="vidMarkerTimecode") {{ vidMarkerTimecode }}
 
-      // right side
-      .col-12.col-md-6.q-mt-md
-        //.bg-blue
+      //----------------------------------------------------------------------------------------------------- right side
+      .col-12.col-md-6(:class="[isMobile ? 'q-mt-lg' : '']")
+        <!--div.bg-light.q-mb-lg(v-if="!video && !isMobile", style="height: 1px; width: 1000vw; margin-left: -10vw;")-->
         div
+
+          // video player
           template(v-if="video && refIndex > -1")
             video-player.relative-position(:annotation="refVideos[refIndex]", :fine-controls="true",
             @ready="onTargetPlayerReady($event)")
@@ -75,18 +88,23 @@
                   | {{ refVidMarkerTimecode }}
                   <!--q-btn.q-ml-sm.button-offset.border-light(@click="", icon="clear", round, size="xs")-->
 
+          <!--q-btn(@click="handlerModalButton") modal-->
+          // list
           template(v-else)
-            .video-list(:class="[isMobile ? 'q-pt-lg' : '']")
-              q-list.no-border.q-py-none(v-if="refVideos && refIndex === -1", separator)
-                div.q-pb-md
-                  //
-                    span.text-grey-8 Synchronize&nbsp;
-                    | {{ (videoMetadata && videoMetadata.title) || (video && video._uuid) }}
-                    span.text-grey-8 &nbsp;with:
-                  span.text-grey-8 Synchronize with:
-                q-item.q-px-none.cursor-pointer(v-for="(vid, i) in refVideos", highlight, :key="vid._uuid",
-                @click.native="refIndex = i")
-                  | {{ getRefVideoTitle(i) }}
+            //.video-list
+            q-list.q-py-none(v-if="refVideos && refIndex === -1")
+              div.q-pb-sm
+                //
+                  span.text-grey-8 Synchronize&nbsp;
+                  | {{ (videoMetadata && videoMetadata.title) || (video && video._uuid) }}
+                  span.text-grey-8 &nbsp;with:
+                span.text-grey-8 Synchronize with:
+              q-item.q-pa-none.cursor-pointer.relative-position(v-for="(vid, i) in refVideos", highlight, :key="vid._uuid",
+              @click.native="refIndex = i")
+                q-item-main.q-pa-none
+                  q-item-tile.lt-md.bg-darker(style="height: 1px; width: 200vw; margin-left: -10vw;")
+                  q-item-tile.q-py-sm
+                    | {{ getRefVideoTitle(i) }}
 
     // video players
       .video-player.row.gutter-md
@@ -122,6 +140,7 @@
             template(v-if="refVidMarkerTimecode") {{ refVidMarkerTimecode }}
             q-btn(@click="setMarker(refVidPlayer, 1)") {{ $t('buttons.set_marker') }}
 
+    //----------------------------------------------------------------------------------------------------- apply button
     div.q-mt-lg.q-pt-lg.text-center(v-if="vidMarkerSelector && refVidMarkerSelector")
       q-btn(color="primary", @click="applySync()", icon="check", :label="$t('buttons.apply_synchronisation')")
 
@@ -161,7 +180,9 @@
         refVidPlayer: undefined,
         refVidTime: undefined,
         refVidMarkerTimecode: undefined,
-        refVidMarkerSelector: undefined
+        refVidMarkerSelector: undefined,
+
+        modalVideos: false
       }
     },
     async mounted () {
@@ -193,6 +214,9 @@
       }
     },
     methods: {
+      handlerModalButton () {
+        this.modalVideos = true
+      },
       clearButton (val) {
         switch (val) {
         case 'video':
@@ -294,13 +318,16 @@
 <style lang="stylus">
   @import '~variables'
 
+  /*
   .q-card-main:first-child
     border 3px solid green
     display none
+  */
 
   /*.video-titles*/
     /*margin-bottom 1em*/
 
+  /*
   .video-player
     .video-list
       q-list
@@ -310,6 +337,7 @@
     .reference-video
       position relative
       overflow scroll
+        */
 
   .button-offset
     margin-top -2px
@@ -322,4 +350,9 @@
 
   .border-top-light
     border-top 1px solid $light
+
+  .border-top-darker
+    border-top 1px solid $darker
+  .q-item
+    min-height auto
 </style>
