@@ -34,45 +34,56 @@
               span Select video from list below
 
     //.row.bg-green.gutter-sm
-    .row.gutter-sm
-      .col-12.col-md-6
+    .row(:class="[isMobile ? 'gutter-sm' : 'gutter-md']")
+
+      // left side
+      .col-12.col-md-6.q-mt-md
         //.bg-red
         div
-          div.q-mb-md(title="Applying the synchronisation will move this video in time")
-            .text-grey-9 Target video to be synchronized:
-            .ellipsis.q-mt-xs {{(videoMetadata && videoMetadata.title) || (video && video._uuid)}}
-
           template(v-if="video")
             video-player.relative-position(:src="video.body.source.id", :fine-controls="true",
             @ready="onVidPlayerReady($event)")
 
-          q-btn(@click="setMarker(vidPlayer)") {{ $t('buttons.set_marker') }}
-          template(v-if="vidMarkerTimecode") {{ vidMarkerTimecode }}
+          .q-mt-sm
+            div.q-mb-sm.q-mt-xs(title="Applying the synchronisation will move this video in time")
+              <!--.text-grey-8 Target video to be synchronized:-->
+              .ellipsis.q-mt-xs {{(videoMetadata && videoMetadata.title) || (video && video._uuid)}}
 
-      .col-12.col-md-6
+            q-btn.border-light.q-mr-sm(@click="setMarker(vidPlayer)") {{ $t('buttons.set_marker') }}
+            template(v-if="vidMarkerTimecode") {{ vidMarkerTimecode }}
+
+      // right side
+      .col-12.col-md-6.q-mt-md
         //.bg-blue
         div
-          div.q-mb-md(title="This video is used as source reference and will not be changed")
-            .text-grey-9 Synchronize with reference video:
-            div(v-if="refIndex > -1")
-              q-btn.absolute.q-mr-md.change-video-button(@click="refIndex = -1", icon="clear", round,
-              size="xs", color="primary")
-              .ellipsis.q-mt-xs.q-ml-lg.q-pl-sm {{ getRefVideoTitle(refIndex) }}
-              // q-btn(small, @click="refIndex = -1") {{ $t('buttons.change') }}
-
           template(v-if="video && refIndex > -1")
             video-player.relative-position(:annotation="refVideos[refIndex]", :fine-controls="true",
             @ready="onTargetPlayerReady($event)")
 
-            div
-              q-btn(@click="setMarker(refVidPlayer, 1)") {{ $t('buttons.set_marker') }}
+            div.q-mb-sm.q-mt-sm(title="This video is used as source reference and will not be changed")
+              <!--.text-grey-8 Synchronize with reference video:-->
+              div(v-if="refIndex > -1")
+                q-btn.absolute.q-mr-md.button-offset.border-light(@click="clearButton('video')", icon="clear", round,
+                size="xs")
+                .ellipsis.q-mt-xs.q-ml-lg.q-pl-sm {{ getRefVideoTitle(refIndex) }}
+                // q-btn(small, @click="refIndex = -1") {{ $t('buttons.change') }}
+
+            .q-mt-sm
+              q-btn.border-light.q-mr-sm(@click="setMarker(refVidPlayer, 1)") {{ $t('buttons.set_marker') }}
               template(v-if="refVidMarkerTimecode")
-                | {{ refVidMarkerTimecode }}
-                q-btn.q-ml-sm(@click="", icon="clear", round, size="sm")
+                span.q-mt-xs
+                  | {{ refVidMarkerTimecode }}
+                  <!--q-btn.q-ml-sm.button-offset.border-light(@click="", icon="clear", round, size="xs")-->
 
           template(v-else)
-            .video-list
+            .video-list(:class="[isMobile ? 'q-pt-lg' : '']")
               q-list.no-border.q-py-none(v-if="refVideos && refIndex === -1", separator)
+                div.q-pb-md
+                  //
+                    span.text-grey-8 Synchronize&nbsp;
+                    | {{ (videoMetadata && videoMetadata.title) || (video && video._uuid) }}
+                    span.text-grey-8 &nbsp;with:
+                  span.text-grey-8 Synchronize with:
                 q-item.q-px-none.cursor-pointer(v-for="(vid, i) in refVideos", highlight, :key="vid._uuid",
                 @click.native="refIndex = i")
                   | {{ getRefVideoTitle(i) }}
@@ -111,10 +122,8 @@
             template(v-if="refVidMarkerTimecode") {{ refVidMarkerTimecode }}
             q-btn(@click="setMarker(refVidPlayer, 1)") {{ $t('buttons.set_marker') }}
 
-    .row(v-if="vidMarkerSelector && refVidMarkerSelector")
-      .col-12.text-center
-        q-btn(color="primary",
-              @click="applySync()") {{ $t('buttons.apply_synchronisation') }}
+    div.q-mt-lg.q-pt-lg.text-center(v-if="vidMarkerSelector && refVidMarkerSelector")
+      q-btn(color="primary", @click="applySync()", icon="check", :label="$t('buttons.apply_synchronisation')")
 
 </template>
 
@@ -184,6 +193,13 @@
       }
     },
     methods: {
+      clearButton (val) {
+        switch (val) {
+        case 'video':
+          this.refIndex = -1
+          this.refVidMarkerSelector = undefined
+        }
+      },
       async getVideo () {
         this.video = await this.$store.dispatch('annotations/get', this.$route.params.uuid)
         this.timeline = await this.$store.dispatch('maps/get', parseURI(this.video.target.id).uuid)
@@ -294,9 +310,15 @@
       position relative
       overflow scroll
 
-  .change-video-button
-    margin-top -1px
+  .button-offset
+    margin-top -2px
 
   .q-list-separator > .q-item-division + .q-item-division
     border-top 1px solid $darker
+
+  .border-light
+    border 1px solid $light
+
+  .border-top-light
+    border-top 1px solid $light
 </style>
