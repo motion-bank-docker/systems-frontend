@@ -198,6 +198,7 @@
         case 'video':
           this.refIndex = -1
           this.refVidMarkerSelector = undefined
+          this.refVidMarkerTimecode = undefined
         }
       },
       async getVideo () {
