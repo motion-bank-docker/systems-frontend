@@ -7,62 +7,109 @@
           icon="keyboard_backspace",
           small, round)
 
-    headline(:content="$t('routes.piecemaker.videos.sync.title') + ': ' + (videoMetadata && videoMetadata.title) || (video && video._uuid)")
+    <!--headline(:content="$t('routes.piecemaker.videos.sync.title') + ': ' + (videoMetadata && videoMetadata.title) || (video && video._uuid)")-->
+    headline(:content="$t('routes.piecemaker.videos.sync.title')")
 
     // titles
-    .row.q-mb-md
+      .row.q-mb-md
 
-      .col-12.col-sm-6
-        div(title="Applying the synchronisation will move this video in time")
-          | Target video to be synchronized:
-          //
-            br
-            span {{(videoMetadata && videoMetadata.title) || (video && video._uuid)}}
+        .col-12.col-sm-6
+          div(title="Applying the synchronisation will move this video in time")
+            | Target video to be synchronized:
+            //
+              br
+              span {{(videoMetadata && videoMetadata.title) || (video && video._uuid)}}
 
-      .col-6.desktop-only
-        .text-right(title="This video is used as source reference and will not be changed")
-          | Synchronize with reference video:
+        .col-6.desktop-only
+          .text-right(title="This video is used as source reference and will not be changed")
+            | Synchronize with reference video:
 
-          template(v-if="refIndex > -1")
-            div
-              |{{ getRefVideoTitle(refIndex) }}
+            template(v-if="refIndex > -1")
+              div
+                |{{ getRefVideoTitle(refIndex) }}
+                // q-btn(small, @click="refIndex = -1") {{ $t('buttons.change') }}
+                q-btn.q-ml-md(@click="refIndex = -1", icon="clear", round, size="sm")
+
+            template(v-else)
+              span Select video from list below
+
+    //.row.bg-green.gutter-sm
+    .row.gutter-sm
+      .col-12.col-md-6
+        //.bg-red
+        div
+          div.q-mb-md(title="Applying the synchronisation will move this video in time")
+            .text-grey-9 Target video to be synchronized:
+            .ellipsis.q-mt-xs {{(videoMetadata && videoMetadata.title) || (video && video._uuid)}}
+
+          template(v-if="video")
+            video-player.relative-position(:src="video.body.source.id", :fine-controls="true",
+            @ready="onVidPlayerReady($event)")
+
+          q-btn(@click="setMarker(vidPlayer)") {{ $t('buttons.set_marker') }}
+          template(v-if="vidMarkerTimecode") {{ vidMarkerTimecode }}
+
+      .col-12.col-md-6
+        //.bg-blue
+        div
+          div.q-mb-md(title="This video is used as source reference and will not be changed")
+            .text-grey-9 Synchronize with reference video:
+            div(v-if="refIndex > -1")
+              q-btn.absolute.q-mr-md.change-video-button(@click="refIndex = -1", icon="clear", round,
+              size="xs", color="primary")
+              .ellipsis.q-mt-xs.q-ml-lg.q-pl-sm {{ getRefVideoTitle(refIndex) }}
               // q-btn(small, @click="refIndex = -1") {{ $t('buttons.change') }}
-              q-btn.q-ml-md(@click="refIndex = -1", icon="clear", round, size="sm")
+
+          template(v-if="video && refIndex > -1")
+            video-player.relative-position(:annotation="refVideos[refIndex]", :fine-controls="true",
+            @ready="onTargetPlayerReady($event)")
+
+            div
+              q-btn(@click="setMarker(refVidPlayer, 1)") {{ $t('buttons.set_marker') }}
+              template(v-if="refVidMarkerTimecode")
+                | {{ refVidMarkerTimecode }}
+                q-btn.q-ml-sm(@click="", icon="clear", round, size="sm")
 
           template(v-else)
-            span Select video from list below
+            .video-list
+              q-list.no-border.q-py-none(v-if="refVideos && refIndex === -1", separator)
+                q-item.q-px-none.cursor-pointer(v-for="(vid, i) in refVideos", highlight, :key="vid._uuid",
+                @click.native="refIndex = i")
+                  | {{ getRefVideoTitle(i) }}
 
     // video players
-    .video-player.row
+      .video-player.row.gutter-md
 
-      // video to be sync'd
-      //.target-video.col-xs-12.col-sm-6
-      .col-xs-12.col-sm-6
-        template(v-if="video")
-          video-player.relative-position(:src="video.body.source.id", :fine-controls="true",
-          @ready="onVidPlayerReady($event)")
+        // video to be sync'd
+        //.target-video.col-xs-12.col-sm-6
+        .col-xs-12.col-sm-6
+          template(v-if="video")
+            video-player.relative-position(:src="video.body.source.id", :fine-controls="true",
+            @ready="onVidPlayerReady($event)")
 
-      // video used as reference
-      .reference-video.col-xs-12.col-sm-6
-        template(v-if="video && refIndex > -1")
+        // video used as reference
+        //.reference-video.col-xs-12.col-sm-6
+        .col-xs-12.col-sm-6
+          // template(v-if="video && refIndex > -1")
           video-player(:annotation="refVideos[refIndex]", :fine-controls="true",
           @ready="onTargetPlayerReady($event)")
 
-        template(v-else)
-          .video-list
-            q-list.no-border.q-py-none(v-if="refVideos && refIndex === -1", separator)
-              q-item(v-for="(vid, i) in refVideos",highlight,:key="vid._uuid",@click.native="refIndex = i")
-                | {{ getRefVideoTitle(i) }}
+          //template(v-else)
+          template
+            .video-list
+              q-list.no-border.q-py-none(v-if="refVideos && refIndex === -1", separator)
+                q-item(v-for="(vid, i) in refVideos",highlight,:key="vid._uuid",@click.native="refIndex = i")
+                  | {{ getRefVideoTitle(i) }}
 
-    .row
-      .col-6
-        q-btn(@click="setMarker(vidPlayer)") {{ $t('buttons.set_marker') }}
-        template(v-if="vidMarkerTimecode") {{ vidMarkerTimecode }}
+      .row
+        .col-6
+          q-btn(@click="setMarker(vidPlayer)") {{ $t('buttons.set_marker') }}
+          template(v-if="vidMarkerTimecode") {{ vidMarkerTimecode }}
 
-      .col-6
-        .text-right(v-if="video && refIndex > -1")
-          template(v-if="refVidMarkerTimecode") {{ refVidMarkerTimecode }}
-          q-btn(@click="setMarker(refVidPlayer, 1)") {{ $t('buttons.set_marker') }}
+        .col-6
+          .text-right(v-if="video && refIndex > -1")
+            template(v-if="refVidMarkerTimecode") {{ refVidMarkerTimecode }}
+            q-btn(@click="setMarker(refVidPlayer, 1)") {{ $t('buttons.set_marker') }}
 
     .row(v-if="vidMarkerSelector && refVidMarkerSelector")
       .col-12.text-center
@@ -228,6 +275,8 @@
 </script>
 
 <style lang="stylus">
+  @import '~variables'
+
   .q-card-main:first-child
     border 3px solid green
     display none
@@ -244,4 +293,10 @@
     .reference-video
       position relative
       overflow scroll
+
+  .change-video-button
+    margin-top -1px
+
+  .q-list-separator > .q-item-division + .q-item-division
+    border-top 1px solid $darker
 </style>
