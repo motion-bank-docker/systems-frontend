@@ -1,46 +1,57 @@
 <template lang="pug">
   full-screen
 
+    // ------------------------------------------------------------------------------------------------------- edit grid
+
     headline(:content="$t('routes.mosys.grids.edit.title')")
 
-    h5.caption(dark) {{ $t('routes.mosys.grids.edit.title') }}
+    form-main(v-model="payload", :schema="schema")
+      q-btn.q-mr-sm.bg-grey-9(q-if="$route.params.uuid", :label="exportLabel",
+      @click="exportGrid", slot="form-buttons-add")
+      q-btn.q-mr-sm.bg-grey-9(q-if="$route.params.uuid && userHasPackager", :label="packageLabel",
+      @click="createPackage", slot="form-buttons-add")
 
-    .row
-      .col-md-12
-        form-main(v-model="payload", :schema="schema")
-          q-btn.q-mr-md.bg-grey-9(q-if="$route.params.uuid", slot="form-buttons-add",
-            :label="exportLabel", @click="exportGrid")
-          q-btn.q-mr-md.bg-grey-9(q-if="$route.params.uuid && userHasPackager", slot="form-buttons-add",
-            :label="packageLabel", @click="createPackage")
+    // -------------------------------------------------------------------------------------------------- access control
 
-    .row.q-mb-lg(v-if="availableRoles.length")
-      .col-md-12
-        h5.caption.text-light {{ $t('labels.access_control') }}
-        p {{ $t('descriptions.access_control') }}
-      .col-md-12.q-mb-md
-        q-field(orientation="vertical", dark)
-          q-select(v-model="acl.group", :clearable="true", :clear-value="undefined",
-          :float-label="$t('labels.access_control_add_group')", :options="availableRoles", dark)
-      .col-md-12.q-mb-md
-        q-field(orientation="vertical", dark)
-          q-select(v-model="acl.group_remove", :clearable="true", :clear-value="undefined",
-          :float-label="$t('labels.access_control_remove_group')", :options="availableRoles", dark)
-      .col-md-12.q-mb-md
-        q-field(dark)
-          q-checkbox(v-model="acl.recursive", :label="$t('labels.recursive')", dark)
-      .row.xs-gutter.full-width.justify-end.items-end
+    .q-mt-lg(v-if="availableRoles.length")
+
+      headline(:content="$t('labels.access_control')")
+      p {{ $t('descriptions.access_control') }}
+
+      // add to group
+      q-field(orientation="vertical", dark)
+        q-select(v-model="acl.group", :clearable="true", :clear-value="undefined",
+        :float-label="$t('labels.access_control_add_group')", :options="availableRoles", dark)
+
+      // remove from group
+      q-field(orientation="vertical", dark)
+        q-select(v-model="acl.group_remove", :clearable="true", :clear-value="undefined",
+        :float-label="$t('labels.access_control_remove_group')", :options="availableRoles", dark)
+
+      // apply to all contained annotations and videos
+      q-field(dark)
+        q-checkbox(v-model="acl.recursive", :label="$t('labels.recursive')", dark)
+
+      // button "update access settings"
+      .full-width.text-right.q-mt-sm
         q-btn(:label="$t('buttons.update_access_control')", @click="updateACL", color="grey")
 
-    .row.q-mb-lg(v-if="userHasCSSEditing")
-      .col-md-12.q-mb-md
-        h5.caption.text-light {{ $t('labels.css_stylesheet') }}
-        p {{ $t('descriptions.css_stylesheet') }}
-      .col-md-12.q-mb-md
-        q-input(v-model="stylesheetUrl", dark, type="text", float-label="External CSS Stylesheet URL")
-      .col-md-12.q-mb-md
-        q-input(v-model="stylesheet", dark, type="textarea", float-label="Embedded CSS Stylesheet", rows="4")
-      .col-md-12
+    // -------------------------------------------------------------------------------------------------- css stylesheet
+
+    .q-mt-lg(v-if="userHasCSSEditing")
+      headline(:content="$t('labels.css_stylesheet')")
+      p {{ $t('descriptions.css_stylesheet') }}
+
+      // external css stylesheet url
+      q-input(v-model="stylesheetUrl", dark, type="text", float-label="External CSS Stylesheet URL")
+
+      // embedded css stylesheet
+      q-input(v-model="stylesheet", dark, type="textarea", float-label="Embedded CSS Stylesheet", rows="4")
+
+      // button "submit"
+      .full-width.text-right.q-mt-sm
         q-btn.float-right(q-if="$route.params.uuid", color="primary", label="Submit", @click="submit")
+
 </template>
 
 <script>
