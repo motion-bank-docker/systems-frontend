@@ -2,18 +2,23 @@
 
   full-screen
     q-modal(v-model="modalVideos", position="bottom", :content-css="{maxHeight: '50vh'}")
-      .bg-dark
-        q-item.q-pa-none
-          q-item-main Synchronize with:
-          q-item-side
-            q-btn(@click="modalVideos = false", icon="clear")
+      q-modal-layout.bg-dark
+        q-toolbar.bg-dark.border-bottom-darker.q-py-sm(slot="header")
+          q-toolbar-title.q-px-xs.text-weight-regular Synchronize with:
+          q-btn.border-light(@click="modalVideos = false", icon="clear", size="xs", round)
+          //
+            q-item
+              q-item-main Synchronize with:
+              q-item-side.text-right
+                q-btn.border-light(@click="modalVideos = false", icon="clear", size="xs", round)
         q-list.q-py-none
           q-item.q-pa-none.cursor-pointer.relative-position(v-for="(ref, i) in refVideos", highlight, :key="ref._uuid",
           @click.native="handlerModalItem(i)")
             q-item-main.q-pa-none
-              q-item-tile.lt-md.bg-darker(v-if="isMobile", style="height: 1px; width: 200vw; margin-left: -10vw;")
-              q-item-tile.q-py-sm
+              <!--q-item-tile.lt-md.bg-darker(v-if="isMobile", style="height: 1px; width: 200vw; margin-left: -10vw;")-->
+              q-item-tile.q-py-sm.q-px-md
                 | {{ getRefVideoTitle(i) }}
+              q-item-tile.lt-md.bg-darker(v-if="isMobile && i !== refVideos.length - 1", style="height: 1px;")
 
     q-btn(v-if="timeline && !isMobile",
           slot="backButton",
@@ -82,14 +87,17 @@
                   size="xs")
                   .ellipsis.q-mt-xs.q-ml-lg.q-pl-sm(@click="handlerRefVideoTitle") {{ getRefVideoTitle(refIndex) }}
                 q-item.q-pa-none
-                  q-item-side
-                    q-btn.button-offset.border-light(@click="clearButton('video')", icon="clear", round,
-                    size="xs")
-                  q-item-main.ellipsis(@click.native="handlerRefVideoTitle")
+                  //
+                    q-item-side(style="min-width: auto;")
+                      q-btn.cursor-pointer.button-offset.border-light(@click="clearButton('video')", icon="clear", round,
+                      size="xs")
+                  //
+                    q-item-main.ellipsis(@click.native="handlerRefVideoTitle")
+                  q-item-main.ellipsis
                     | {{ getRefVideoTitle(refIndex) }}
-                  q-item-side.text-right.text-white(@click.native="handlerRefVideoTitle",
-                  style="min-width: auto;")
-                    q-icon(name="arrow_drop_down")
+                  q-item-side.text-right(style="min-width: auto;")
+                    q-btn.cursor-pointer.button-offset.border-light(@click.native="handlerRefVideoTitle", icon="edit",
+                    round, size="xs", title="Change video")
 
                 // q-btn(small, @click="refIndex = -1") {{ $t('buttons.change') }}
 
@@ -373,6 +381,14 @@
 
   .border-top-darker
     border-top 1px solid $darker
-  .q-item
+
+  .border-bottom-darker
+    border-bottom 1px solid $darker
+
+  .q-item,
+  .q-toolbar
     min-height auto
+
+  .q-layout-header
+    box-shadow none!important
 </style>
