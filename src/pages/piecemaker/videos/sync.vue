@@ -12,11 +12,11 @@
               q-item-side.text-right
                 q-btn.border-light(@click="modalVideos = false", icon="clear", size="xs", round)
         q-list.q-py-none
-          q-item.q-pa-none.cursor-pointer.relative-position(v-for="(ref, i) in refVideos", highlight, :key="ref._uuid",
+          q-item.q-pa-none.cursor-pointer.relative-position(v-for="(ref, i) in refVideos", :key="ref._uuid",
           @click.native="handlerModalItem(i)")
             q-item-main.q-pa-none
               <!--q-item-tile.lt-md.bg-darker(v-if="isMobile", style="height: 1px; width: 200vw; margin-left: -10vw;")-->
-              q-item-tile.q-py-sm.q-px-md
+              q-item-tile.q-py-sm.q-px-md(:class="{'text-primary': getRefVideoTitle(refIndex) === getRefVideoTitle(i) }")
                 | {{ getRefVideoTitle(i) }}
               q-item-tile.lt-md.bg-darker(v-if="isMobile && i !== refVideos.length - 1", style="height: 1px;")
 
