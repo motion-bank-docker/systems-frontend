@@ -28,17 +28,17 @@
       //------------------------------------------------------------------------------------------------------ left side
       .col-12.col-md-6
         div
+          // video to be sync'd
           template(v-if="video")
             video-player.relative-position(:src="video.body.source.id", :fine-controls="true",
             @ready="onVidPlayerReady($event)")
 
-          .q-mt-sm
-            div.q-mb-sm.q-mt-xs(title="Applying the synchronisation will move this video in time")
-              <!--.text-grey-8 Target video to be synchronized:-->
-              .ellipsis.q-mt-xs {{(videoMetadata && videoMetadata.title) || (video && video._uuid)}}
+            .q-mt-sm
+              div.q-mb-sm.q-mt-xs(title="Applying the synchronisation will move this video in time")
+                .ellipsis.q-mt-xs {{(videoMetadata && videoMetadata.title) || (video && video._uuid)}}
 
-            q-btn.border-light.q-mr-sm(@click="setMarker(vidPlayer)") {{ $t('buttons.set_marker') }}
-            template(v-if="vidMarkerTimecode") {{ vidMarkerTimecode }}
+              q-btn.border-light.q-mr-sm(@click="setMarker(vidPlayer)") {{ $t('buttons.set_marker') }}
+              template(v-if="vidMarkerTimecode") {{ vidMarkerTimecode }}
 
       //----------------------------------------------------------------------------------------------------- right side
       .col-12.col-md-6
@@ -46,20 +46,23 @@
         // distance to top placeholder in mobile view
         div.lt-md.q-mt-lg
 
-        // video player
+        // reference video
         template(v-if="video && refIndex > -1")
           video-player.relative-position(:annotation="refVideos[refIndex]", :fine-controls="true",
           @ready="onTargetPlayerReady($event)", :key="refIndex")
 
-          div.q-mb-sm.q-mt-sm(title="This video is used as source reference and will not be changed")
+          div.q-mb-sm.q-mt-sm(v-if="refIndex > -1",
+          title="This video is used as source reference and will not be changed")
 
-            div(v-if="refIndex > -1")
-              q-item.q-pa-none
-                q-item-main.ellipsis
-                  | {{ getRefVideoTitle(refIndex) }}
-                q-item-side.text-right(style="min-width: auto;")
-                  q-btn.cursor-pointer.button-offset.border-light(@click.native="handlerRefVideoTitle", icon="edit",
-                  round, size="xs", title="Change video")
+            q-item.q-pa-none
+
+              // title
+              q-item-main.ellipsis {{ getRefVideoTitle(refIndex) }}
+
+              // "change reference video" button
+              q-item-side.text-right(style="min-width: auto;")
+                q-btn.cursor-pointer.button-offset.border-light(@click.native="handlerRefVideoTitle", icon="edit",
+                round, size="xs", title="Change video")
 
           .q-mt-sm
             q-btn.border-light.q-mr-sm(@click="setMarker(refVidPlayer, 1)") {{ $t('buttons.set_marker') }}
@@ -67,7 +70,7 @@
               span.q-mt-xs
                 | {{ refVidMarkerTimecode }}
 
-        // list
+        // list with reference videos
         template(v-else)
 
           q-list.q-py-none(v-if="refVideos && refIndex === -1")
