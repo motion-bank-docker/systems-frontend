@@ -6,25 +6,25 @@
     // h5.caption(dark) {{ $t('routes.documents.edit.title') }}
     headline(:content="$t('routes.documents.edit.title')")
 
-    .row(v-if="availableRoles.length")
-      .col-md-12
-        h5.caption.text-light {{ $t('labels.access_control') }}
-        p {{ $t('descriptions.access_control_documents') }}
-      .col-md-12.q-mb-md
-        q-field(dark)
-          q-checkbox(v-model="acl.public", :label="$t('labels.public')", dark)
-      .col-md-12.q-mb-md
-        q-field(orientation="vertical", dark)
-          q-select(v-model="acl.group", :clearable="true", :clear-value="undefined",
-          :float-label="$t('labels.access_control_add_group')", :options="availableRoles", dark)
-      .col-md-12.q-mb-md
-        q-field(orientation="vertical", dark)
-          q-select(v-model="acl.group_remove", :clearable="true", :clear-value="undefined",
-          :float-label="$t('labels.access_control_remove_group')", :options="availableRoles", dark)
-      <!--.col-md-12.q-mb-md-->
-        <!--q-field(dark)-->
-          <!--q-checkbox(v-model="acl.recursive", :label="$t('labels.recursive')", dark)-->
-      .row.xs-gutter.full-width.justify-end.items-end
+    .q-mt-lg(v-if="availableRoles.length")
+      headline(:content="$t('labels.access_control')")
+      p {{ $t('descriptions.access_control_documents') }}
+
+      q-field.q-mt-xl(dark)
+        q-checkbox(v-model="acl.public", :label="$t('labels.public')", dark)
+
+      q-field.q-mt-xl(orientation="vertical", dark)
+        q-select(v-model="acl.group", :clearable="true", :clear-value="undefined",
+        :float-label="$t('labels.access_control_add_group')", :options="availableRoles", dark)
+
+      q-field.q-mt-xl(orientation="vertical", dark)
+        q-select(v-model="acl.group_remove", :clearable="true", :clear-value="undefined",
+        :float-label="$t('labels.access_control_remove_group')", :options="availableRoles", dark)
+
+      <!--q-field(dark)-->
+        <!--q-checkbox(v-model="acl.recursive", :label="$t('labels.recursive')", dark)-->
+
+      .full-width.text-right.q-mt-sm
         q-btn(:label="$t('buttons.update_access_control')", @click="updateACL", color="grey")
 </template>
 
