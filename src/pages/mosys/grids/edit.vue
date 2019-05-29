@@ -4,7 +4,6 @@
     // ------------------------------------------------------------------------------------------------------- edit grid
 
     headline(:content="$t('routes.mosys.grids.edit.title')")
-      | blabla
 
     form-main(v-model="payload", :schema="schema")
       q-btn.q-mr-sm.bg-grey-9(q-if="$route.params.uuid", :label="exportLabel",
@@ -17,7 +16,7 @@
     .q-mt-lg(v-if="availableRoles.length")
 
       headline(:content="$t('labels.access_control')")
-      p {{ $t('descriptions.access_control') }}
+        | {{ $t('descriptions.access_control') }}
 
       // add to group
       q-field(orientation="vertical", dark)
@@ -41,7 +40,7 @@
 
     .q-mt-lg(v-if="userHasCSSEditing")
       headline(:content="$t('labels.css_stylesheet')")
-      p {{ $t('descriptions.css_stylesheet') }}
+        | {{ $t('descriptions.css_stylesheet') }}
 
       // external css stylesheet url
       q-input(v-model="stylesheetUrl", dark, type="text", float-label="External CSS Stylesheet URL")
