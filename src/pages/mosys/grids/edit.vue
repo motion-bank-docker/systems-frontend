@@ -4,6 +4,7 @@
     // ------------------------------------------------------------------------------------------------------- edit grid
 
     headline(:content="$t('routes.mosys.grids.edit.title')")
+      | blabla
 
     form-main(v-model="payload", :schema="schema")
       q-btn.q-mr-sm.bg-grey-9(q-if="$route.params.uuid", :label="exportLabel",
