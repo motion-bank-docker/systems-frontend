@@ -72,7 +72,11 @@
             template(v-if="vidMarkerTimecode") {{ vidMarkerTimecode }}
 
       //----------------------------------------------------------------------------------------------------- right side
-      .col-12.col-md-6(:class="[isMobile ? 'q-mt-lg' : '']")
+      .col-12.col-md-6
+
+        // distance to top placeholder in mobile view
+        div.lt-md.q-mt-lg
+
         <!--div.bg-light.q-mb-lg(v-if="!video && !isMobile", style="height: 1px; width: 1000vw; margin-left: -10vw;")-->
         div
 
