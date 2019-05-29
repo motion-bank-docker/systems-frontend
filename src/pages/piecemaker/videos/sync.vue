@@ -16,43 +16,12 @@
           q-item.q-pa-none.cursor-pointer(v-for="(ref, i) in refVideos", :key="ref._uuid",
           @click.native="handlerModalItem(i)")
             q-item-main.q-pa-none(:class="[i === refVideos.length - 1 ? 'q-mb-sm' : '']")
-              <!--q-item-tile.lt-md.bg-darker(v-if="isMobile", style="height: 1px; width: 200vw; margin-left: -10vw;")-->
               q-item-tile.q-py-sm(:class="{'text-primary': getRefVideoTitle(refIndex) === getRefVideoTitle(i) }")
                 | {{ getRefVideoTitle(i) }}
               q-item-tile.bg-darker(v-if="isMobile && i !== refVideos.length - 1", style="height: 1px;")
 
-    //
-      q-btn(v-if="timeline && !isMobile",
-            slot="backButton",
-            @click="$router.push(`/piecemaker/timelines/${timeline._uuid}/videos`)",
-            icon="keyboard_backspace",
-            small, round)
-
     <!--headline(:content="$t('routes.piecemaker.videos.sync.title') + ': ' + (videoMetadata && videoMetadata.title) || (video && video._uuid)")-->
     headline(:content="$t('routes.piecemaker.videos.sync.title')")
-
-    // titles
-      .row.q-mb-md
-
-        .col-12.col-sm-6
-          div(title="Applying the synchronisation will move this video in time")
-            | Target video to be synchronized:
-            //
-              br
-              span {{(videoMetadata && videoMetadata.title) || (video && video._uuid)}}
-
-        .col-6.desktop-only
-          .text-right(title="This video is used as source reference and will not be changed")
-            | Synchronize with reference video:
-
-            template(v-if="refIndex > -1")
-              div
-                |{{ getRefVideoTitle(refIndex) }}
-                // q-btn(small, @click="refIndex = -1") {{ $t('buttons.change') }}
-                q-btn.q-ml-md(@click="refIndex = -1", icon="clear", round, size="sm")
-
-            template(v-else)
-              span Select video from list below
 
     .row(:class="[isMobile ? 'gutter-sm' : 'gutter-md']")
 
@@ -77,96 +46,39 @@
         // distance to top placeholder in mobile view
         div.lt-md.q-mt-lg
 
-        <!--div.bg-light.q-mb-lg(v-if="!video && !isMobile", style="height: 1px; width: 1000vw; margin-left: -10vw;")-->
-        div
+        // video player
+        template(v-if="video && refIndex > -1")
+          video-player.relative-position(:annotation="refVideos[refIndex]", :fine-controls="true",
+          @ready="onTargetPlayerReady($event)", :key="refIndex")
 
-          // video player
-          template(v-if="video && refIndex > -1")
-            video-player.relative-position(:annotation="refVideos[refIndex]", :fine-controls="true",
-            @ready="onTargetPlayerReady($event)", :key="refIndex")
+          div.q-mb-sm.q-mt-sm(title="This video is used as source reference and will not be changed")
 
-            div.q-mb-sm.q-mt-sm(title="This video is used as source reference and will not be changed")
-              <!--.text-grey-8 Synchronize with reference video:-->
-              div(v-if="refIndex > -1")
-                //
-                  q-btn.absolute.q-mr-md.button-offset.border-light(@click="clearButton('video')", icon="clear", round,
-                  size="xs")
-                  .ellipsis.q-mt-xs.q-ml-lg.q-pl-sm(@click="handlerRefVideoTitle") {{ getRefVideoTitle(refIndex) }}
-                q-item.q-pa-none
-                  //
-                    q-item-side(style="min-width: auto;")
-                      q-btn.cursor-pointer.button-offset.border-light(@click="clearButton('video')", icon="clear", round,
-                      size="xs")
-                  //
-                    q-item-main.ellipsis(@click.native="handlerRefVideoTitle")
-                  q-item-main.ellipsis
-                    | {{ getRefVideoTitle(refIndex) }}
-                  q-item-side.text-right(style="min-width: auto;")
-                    q-btn.cursor-pointer.button-offset.border-light(@click.native="handlerRefVideoTitle", icon="edit",
-                    round, size="xs", title="Change video")
+            div(v-if="refIndex > -1")
+              q-item.q-pa-none
+                q-item-main.ellipsis
+                  | {{ getRefVideoTitle(refIndex) }}
+                q-item-side.text-right(style="min-width: auto;")
+                  q-btn.cursor-pointer.button-offset.border-light(@click.native="handlerRefVideoTitle", icon="edit",
+                  round, size="xs", title="Change video")
 
-                // q-btn(small, @click="refIndex = -1") {{ $t('buttons.change') }}
+          .q-mt-sm
+            q-btn.border-light.q-mr-sm(@click="setMarker(refVidPlayer, 1)") {{ $t('buttons.set_marker') }}
+            template(v-if="refVidMarkerTimecode")
+              span.q-mt-xs
+                | {{ refVidMarkerTimecode }}
 
-            .q-mt-sm
-              q-btn.border-light.q-mr-sm(@click="setMarker(refVidPlayer, 1)") {{ $t('buttons.set_marker') }}
-              template(v-if="refVidMarkerTimecode")
-                span.q-mt-xs
-                  | {{ refVidMarkerTimecode }}
-                  <!--q-btn.q-ml-sm.button-offset.border-light(@click="", icon="clear", round, size="xs")-->
+        // list
+        template(v-else)
 
-          // list
-          template(v-else)
+          q-list.q-py-none(v-if="refVideos && refIndex === -1")
+            div.q-pb-sm.text-grey-8.border-bottom-light Synchronize with:
 
-            // mobile view
-              q-btn.lt-md.border-light.full-width(@click="handlerModalButton", label="Synchronize with",
-              flat)
-
-            // desktop view
-            q-list.q-py-none(v-if="refVideos && refIndex === -1")
-              div.q-pb-sm.text-grey-8.border-bottom-light Synchronize with:
-              q-item.q-pa-none.cursor-pointer.relative-position(v-for="(vid, i) in refVideos", highlight, :key="vid._uuid",
-              @click.native="refIndex = i")
-                q-item-main.q-pa-none
-                  q-item-tile.q-py-sm(:class="{'q-caption': !isMobile}")
-                    | {{ getRefVideoTitle(i) }}
-                  <!--q-item-tile.gt-sm.bg-darker(style="height: 1px;")-->
-                  q-item-tile.bg-darker(v-if="i !== refVideos.length - 1", style="height: 1px;")
-
-        <!--q-btn(@click="handlerModalButton()") modal-->
-
-    // video players
-      .video-player.row.gutter-md
-
-        // video to be sync'd
-        //.target-video.col-xs-12.col-sm-6
-        .col-xs-12.col-sm-6
-          template(v-if="video")
-            video-player.relative-position(:src="video.body.source.id", :fine-controls="true",
-            @ready="onVidPlayerReady($event)")
-
-        // video used as reference
-        //.reference-video.col-xs-12.col-sm-6
-        .col-xs-12.col-sm-6
-          // template(v-if="video && refIndex > -1")
-          video-player(:annotation="refVideos[refIndex]", :fine-controls="true",
-          @ready="onTargetPlayerReady($event)")
-
-          //template(v-else)
-          template
-            .video-list
-              q-list.no-border.q-py-none(v-if="refVideos && refIndex === -1", separator)
-                q-item(v-for="(vid, i) in refVideos",highlight,:key="vid._uuid",@click.native="refIndex = i")
+            q-item.q-pa-none.cursor-pointer.relative-position(v-for="(vid, i) in refVideos", highlight, :key="vid._uuid",
+            @click.native="refIndex = i")
+              q-item-main.q-pa-none
+                q-item-tile.q-py-sm(:class="{'q-caption': !isMobile}")
                   | {{ getRefVideoTitle(i) }}
-
-      .row
-        .col-6
-          q-btn(@click="setMarker(vidPlayer)") {{ $t('buttons.set_marker') }}
-          template(v-if="vidMarkerTimecode") {{ vidMarkerTimecode }}
-
-        .col-6
-          .text-right(v-if="video && refIndex > -1")
-            template(v-if="refVidMarkerTimecode") {{ refVidMarkerTimecode }}
-            q-btn(@click="setMarker(refVidPlayer, 1)") {{ $t('buttons.set_marker') }}
+                q-item-tile.bg-darker(v-if="i !== refVideos.length - 1", style="height: 1px;")
 
     //----------------------------------------------------------------------------------------------------- apply button
     div.q-mt-lg.q-pt-lg.text-center(v-if="vidMarkerSelector && refVidMarkerSelector")
