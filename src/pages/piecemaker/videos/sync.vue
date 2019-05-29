@@ -1,16 +1,17 @@
 <template lang="pug">
 
   full-screen
+
+    // video list modal for mobile view
     q-modal(v-model="modalVideos", position="bottom", :content-css="{maxHeight: '50vh'}")
       q-modal-layout.bg-dark
+
+        // header
         q-toolbar.bg-dark.border-bottom-darker.q-py-sm(slot="header")
           q-toolbar-title.q-px-xs.text-weight-regular Synchronize with:
           q-btn.border-light(@click="modalVideos = false", icon="clear", size="xs", round)
-          //
-            q-item
-              q-item-main Synchronize with:
-              q-item-side.text-right
-                q-btn.border-light(@click="modalVideos = false", icon="clear", size="xs", round)
+
+        // video list
         q-list.q-py-none
           q-item.q-pa-none.cursor-pointer.relative-position(v-for="(ref, i) in refVideos", :key="ref._uuid",
           @click.native="handlerModalItem(i)")
@@ -20,11 +21,12 @@
                 | {{ getRefVideoTitle(i) }}
               q-item-tile.lt-md.bg-darker(v-if="isMobile && i !== refVideos.length - 1", style="height: 1px;")
 
-    q-btn(v-if="timeline && !isMobile",
-          slot="backButton",
-          @click="$router.push(`/piecemaker/timelines/${timeline._uuid}/videos`)",
-          icon="keyboard_backspace",
-          small, round)
+    //
+      q-btn(v-if="timeline && !isMobile",
+            slot="backButton",
+            @click="$router.push(`/piecemaker/timelines/${timeline._uuid}/videos`)",
+            icon="keyboard_backspace",
+            small, round)
 
     <!--headline(:content="$t('routes.piecemaker.videos.sync.title') + ': ' + (videoMetadata && videoMetadata.title) || (video && video._uuid)")-->
     headline(:content="$t('routes.piecemaker.videos.sync.title')")
@@ -110,8 +112,12 @@
 
           // list
           template(v-else)
-            //.video-list
-            q-list.q-py-none(v-if="refVideos && refIndex === -1")
+            // mobile view
+            q-btn.lt-md.border-light.full-width(@click="handlerModalButton", label="Synchronize with",
+            flat)
+
+            // desktop view
+            q-list.gt-sm.q-py-none(v-if="refVideos && refIndex === -1")
               div.q-pb-sm
                 //
                   span.text-grey-8 Synchronize&nbsp;
@@ -236,7 +242,12 @@
     },
     methods: {
       handlerRefVideoTitle () {
-        if (this.isMobile) this.modalVideos = true
+        if (this.isMobile) {
+          this.modalVideos = true
+          this.refVidMarkerSelector = undefined
+          this.refVidMarkerTimecode = undefined
+        }
+        else this.clearButton('video')
       },
       handlerModalItem (i) {
         this.refIndex = i
