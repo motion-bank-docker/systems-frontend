@@ -4,22 +4,22 @@
 
     // video list modal for mobile view
     q-modal(v-model="modalVideos", position="bottom", :content-css="{maxHeight: '50vh'}")
-      q-modal-layout.bg-dark
+      q-modal-layout.bg-dark.q-px-md
 
         // header
-        q-toolbar.bg-dark.border-bottom-darker.q-py-sm(slot="header")
-          q-toolbar-title.q-px-xs.text-weight-regular Synchronize with:
+        q-toolbar.bg-dark.border-bottom-light.q-py-sm.q-px-none(slot="header")
+          q-toolbar-title.text-weight-regular.text-grey-8.q-px-none Synchronize with:
           q-btn.border-light(@click="modalVideos = false", icon="clear", size="xs", round)
 
         // video list
         q-list.q-py-none
-          q-item.q-pa-none.cursor-pointer.relative-position(v-for="(ref, i) in refVideos", :key="ref._uuid",
+          q-item.q-pa-none.cursor-pointer(v-for="(ref, i) in refVideos", :key="ref._uuid",
           @click.native="handlerModalItem(i)")
-            q-item-main.q-pa-none
+            q-item-main.q-pa-none(:class="[i === refVideos.length - 1 ? 'q-mb-sm' : '']")
               <!--q-item-tile.lt-md.bg-darker(v-if="isMobile", style="height: 1px; width: 200vw; margin-left: -10vw;")-->
-              q-item-tile.q-py-sm.q-px-md(:class="{'text-primary': getRefVideoTitle(refIndex) === getRefVideoTitle(i) }")
+              q-item-tile.q-py-sm(:class="{'text-primary': getRefVideoTitle(refIndex) === getRefVideoTitle(i) }")
                 | {{ getRefVideoTitle(i) }}
-              q-item-tile.lt-md.bg-darker(v-if="isMobile && i !== refVideos.length - 1", style="height: 1px;")
+              q-item-tile.bg-darker(v-if="isMobile && i !== refVideos.length - 1", style="height: 1px;")
 
     //
       q-btn(v-if="timeline && !isMobile",
@@ -112,24 +112,21 @@
 
           // list
           template(v-else)
+
             // mobile view
-            q-btn.lt-md.border-light.full-width(@click="handlerModalButton", label="Synchronize with",
-            flat)
+              q-btn.lt-md.border-light.full-width(@click="handlerModalButton", label="Synchronize with",
+              flat)
 
             // desktop view
-            q-list.gt-sm.q-py-none(v-if="refVideos && refIndex === -1")
-              div.q-pb-sm
-                //
-                  span.text-grey-8 Synchronize&nbsp;
-                  | {{ (videoMetadata && videoMetadata.title) || (video && video._uuid) }}
-                  span.text-grey-8 &nbsp;with:
-                span.text-grey-8 Synchronize with:
+            q-list.q-py-none(v-if="refVideos && refIndex === -1")
+              div.q-pb-sm.text-grey-8.border-bottom-light Synchronize with:
               q-item.q-pa-none.cursor-pointer.relative-position(v-for="(vid, i) in refVideos", highlight, :key="vid._uuid",
               @click.native="refIndex = i")
                 q-item-main.q-pa-none
-                  q-item-tile.lt-md.bg-darker(style="height: 1px; width: 200vw; margin-left: -10vw;")
-                  q-item-tile.q-py-sm
+                  q-item-tile.q-py-sm(:class="{'q-caption': !isMobile}")
                     | {{ getRefVideoTitle(i) }}
+                  <!--q-item-tile.gt-sm.bg-darker(style="height: 1px;")-->
+                  q-item-tile.bg-darker(v-if="i !== refVideos.length - 1", style="height: 1px;")
 
         <!--q-btn(@click="handlerModalButton()") modal-->
 
@@ -389,6 +386,9 @@
 
   .border-top-light
     border-top 1px solid $light
+
+  .border-bottom-light
+    border-bottom 1px solid $light
 
   .border-top-darker
     border-top 1px solid $darker
