@@ -3,17 +3,18 @@
 
     // ------------------------------------------------------------------------------------------------------- edit grid
 
-    headline(:content="$t('routes.mosys.grids.edit.title')")
+    .q-py-md.ui-border.q-px-lg
+      headline(:content="$t('routes.mosys.grids.edit.title')")
 
-    form-main(v-model="payload", :schema="schema")
-      q-btn.q-mr-sm.bg-grey-9(q-if="$route.params.uuid", :label="exportLabel",
-      @click="exportGrid", slot="form-buttons-add")
-      q-btn.q-mr-sm.bg-grey-9(q-if="$route.params.uuid && userHasPackager", :label="packageLabel",
-      @click="createPackage", slot="form-buttons-add")
+      form-main(v-model="payload", :schema="schema")
+        q-btn.q-mr-sm.bg-grey-9(q-if="$route.params.uuid", :label="exportLabel",
+        @click="exportGrid", slot="form-buttons-add")
+        q-btn.q-mr-sm.bg-grey-9(q-if="$route.params.uuid && userHasPackager", :label="packageLabel",
+        @click="createPackage", slot="form-buttons-add")
 
     // -------------------------------------------------------------------------------------------------- access control
 
-    .q-mt-lg(v-if="availableRoles.length")
+    .q-mt-lg.q-py-md.ui-border.q-px-lg(v-if="availableRoles.length")
 
       headline(:content="$t('labels.access_control')")
         | {{ $t('descriptions.access_control') }}
@@ -38,7 +39,7 @@
 
     // -------------------------------------------------------------------------------------------------- css stylesheet
 
-    .q-mt-lg(v-if="userHasCSSEditing")
+    .q-mt-md.q-py-md.ui-border.q-px-lg(v-if="userHasCSSEditing")
       headline(:content="$t('labels.css_stylesheet')")
         | {{ $t('descriptions.css_stylesheet') }}
 
@@ -50,7 +51,7 @@
 
       // button "submit"
       .full-width.text-right.q-mt-sm
-        q-btn.float-right(q-if="$route.params.uuid", color="primary", label="Submit", @click="submit")
+        q-btn(q-if="$route.params.uuid", color="primary", label="Submit", @click="submit")
 
 </template>
 
