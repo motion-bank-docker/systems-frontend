@@ -1,24 +1,15 @@
 <template lang="pug">
   full-screen
 
-    // h5.caption(dark) {{ $t('routes.mosys.grids.create.title') }}
     headline(:content="$t('routes.mosys.grids.create.title')")
+    form-main(v-model="payload", :schema="schema")
 
-    .row
-      .col-md-12
-        form-main(v-model="payload", :schema="schema")
-    .row
-      .col-12
-        h5.caption(dark) {{ $t('forms.grids.import.title') }}
-    .column
-      .col-12.q-pa-md
-        q-input(dark, :placeholder="$t('forms.grids.import.fields.title')", v-model="uploadTitle")
-      .col-12.q-pa-md
-        q-checkbox(dark, :label="$t('forms.grids.import.fields.override_author')", v-model="overrideAuthor")
-      <!--.col-12.q-pa-md-->
-        <!--q-checkbox(dark, :label="$t('forms.grids.import.fields.skip_acl')", v-model="skipAcl")-->
-      .col-12.q-pa-md
-        uploader(dark, :url="url", @finish="onFinish", allowed=".zip", :headers="headers", :fields="uploadFields")
+    headline(:content="$t('forms.grids.import.title')")
+    div
+      q-input.q-mb-lg(dark, :placeholder="$t('forms.grids.import.fields.title')", v-model="uploadTitle")
+      q-checkbox.q-mb-lg(dark, :label="$t('forms.grids.import.fields.override_author')", v-model="overrideAuthor")
+      uploader(dark, :url="url", @finish="onFinish", allowed=".zip", :headers="headers", :fields="uploadFields")
+
 </template>
 
 <script>
