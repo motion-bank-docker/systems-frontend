@@ -1,14 +1,15 @@
 <template lang="pug">
 
   full-screen
-    // q-modal(v-model="modalVideos", position="bottom", :content-css="{maxHeight: '50vh'}")
+    q-modal(v-model="modalVideos", position="bottom", :content-css="{maxHeight: '50vh'}")
       .bg-dark
-        q-btn(@click="modalVideos = false") close
+        q-item.q-pa-none
+          q-item-main Synchronize with:
+          q-item-side
+            q-btn(@click="modalVideos = false", icon="clear")
         q-list.q-py-none
-          div.q-pb-sm
-            span.text-grey-8 Synchronize with:
-          q-item.q-pa-none.cursor-pointer.relative-position(v-for="(vid, i) in refVideos", highlight, :key="vid._uuid",
-          @click.native="refIndex = i")
+          q-item.q-pa-none.cursor-pointer.relative-position(v-for="(ref, i) in refVideos", highlight, :key="ref._uuid",
+          @click.native="handlerModalItem(i)")
             q-item-main.q-pa-none
               q-item-tile.lt-md.bg-darker(v-if="isMobile", style="height: 1px; width: 200vw; margin-left: -10vw;")
               q-item-tile.q-py-sm
@@ -71,14 +72,25 @@
           // video player
           template(v-if="video && refIndex > -1")
             video-player.relative-position(:annotation="refVideos[refIndex]", :fine-controls="true",
-            @ready="onTargetPlayerReady($event)")
+            @ready="onTargetPlayerReady($event)", :key="refIndex")
 
             div.q-mb-sm.q-mt-sm(title="This video is used as source reference and will not be changed")
               <!--.text-grey-8 Synchronize with reference video:-->
               div(v-if="refIndex > -1")
-                q-btn.absolute.q-mr-md.button-offset.border-light(@click="clearButton('video')", icon="clear", round,
-                size="xs")
-                .ellipsis.q-mt-xs.q-ml-lg.q-pl-sm {{ getRefVideoTitle(refIndex) }}
+                //
+                  q-btn.absolute.q-mr-md.button-offset.border-light(@click="clearButton('video')", icon="clear", round,
+                  size="xs")
+                  .ellipsis.q-mt-xs.q-ml-lg.q-pl-sm(@click="handlerRefVideoTitle") {{ getRefVideoTitle(refIndex) }}
+                q-item.q-pa-none
+                  q-item-side
+                    q-btn.button-offset.border-light(@click="clearButton('video')", icon="clear", round,
+                    size="xs")
+                  q-item-main.ellipsis(@click.native="handlerRefVideoTitle")
+                    | {{ getRefVideoTitle(refIndex) }}
+                  q-item-side.text-right.text-white(@click.native="handlerRefVideoTitle",
+                  style="min-width: auto;")
+                    q-icon(name="arrow_drop_down")
+
                 // q-btn(small, @click="refIndex = -1") {{ $t('buttons.change') }}
 
             .q-mt-sm
@@ -88,7 +100,6 @@
                   | {{ refVidMarkerTimecode }}
                   <!--q-btn.q-ml-sm.button-offset.border-light(@click="", icon="clear", round, size="xs")-->
 
-          <!--q-btn(@click="handlerModalButton") modal-->
           // list
           template(v-else)
             //.video-list
@@ -105,6 +116,8 @@
                   q-item-tile.lt-md.bg-darker(style="height: 1px; width: 200vw; margin-left: -10vw;")
                   q-item-tile.q-py-sm
                     | {{ getRefVideoTitle(i) }}
+
+        <!--q-btn(@click="handlerModalButton()") modal-->
 
     // video players
       .video-player.row.gutter-md
@@ -214,6 +227,13 @@
       }
     },
     methods: {
+      handlerRefVideoTitle () {
+        if (this.isMobile) this.modalVideos = true
+      },
+      handlerModalItem (i) {
+        this.refIndex = i
+        this.modalVideos = false
+      },
       handlerModalButton () {
         this.modalVideos = true
       },
