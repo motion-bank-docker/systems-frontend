@@ -18,11 +18,6 @@
         video-player.full-height.relative-position(v-if="video", :annotation="video", :fine-controls="true",
         @ready="playerReady($event)", @time="onPlayerTime($event)")
 
-      // back button
-
-      q-page-sticky(v-if="!isMobile", position="top-left", style="z-index: 2100;")
-        back-button.q-ma-md
-
       // button toggles annotations
 
       q-page-sticky(position="top-right", style="z-index: 2100;")
