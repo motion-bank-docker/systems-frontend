@@ -1,6 +1,5 @@
 <template lang="pug">
   full-screen
-    back-button(v-if="!isMobile", slot="backButton")
     .q-px-xl(style="min-width: 50vw;")
       h5.caption(dark) {{ $t('routes.piecemaker.videos.edit.title') }}
 

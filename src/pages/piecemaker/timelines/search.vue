@@ -1,7 +1,6 @@
 <template lang="pug">
   full-screen
-    q-btn(v-if="!isMobile", slot="backButton", @click="$router.push({ name: 'piecemaker.timelines.list' })",
-    icon="keyboard_backspace", round, small)
+    //q-btn(v-if="!isMobile", slot="backButton", @click="$router.push({ name: 'piecemaker.timelines.list' })", icon="keyboard_backspace", round, small)
     .row
       .col-md-12
         q-field(label="Search for", dark)

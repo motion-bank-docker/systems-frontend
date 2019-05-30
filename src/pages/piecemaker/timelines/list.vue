@@ -20,8 +20,16 @@
           circle.cursor-pointer.moba-svg-circle(v-for="n in 11", r="3", :cx="(diagramDimensions.currentWidth / 10) * n", :cy="diagramDimensions.height / 2", fill="rgba( 255, 255, 255, .5)")
           // rect.moba-test(@click="testWidth = testWidth + 30", fill="red", :width="testWidth", height="30")
 
-    data-table(:config="config", :title="'routes.piecemaker.timelines.list.title'", ref="listTable",
-      path="maps", :query="query", base-path="timelines", :has-show="isStaging", :request-transform="requestTransform")
+    data-table(
+      :config="config",
+      :title="'routes.piecemaker.timelines.list.title'",
+      ref="listTable",
+      path="maps",
+      :query="query",
+      base-path="timelines",
+      :has-show="isStaging",
+      :request-transform="requestTransform"
+      )
       template(slot="buttons-left")
         q-btn(@click="$router.push({ name: 'piecemaker.timelines.create' })", color="primary") {{ $t('buttons.create_timeline') }}
 </template>
@@ -108,17 +116,23 @@
           ],
           actions: [
             {
+              type: 'show',
+              title: 'Details',
+              color: 'primary',
+              click: (item) => _this.$router.push({ name: 'piecemaker.timelines.show', params: { uuid: item._uuid } })
+            },
+            {
               type: 'live-annotate',
               title: 'buttons.live_annotate',
               color: 'primary',
               click: (item) => _this.$router.push({ name: 'piecemaker.timelines.annotate', params: { uuid: item._uuid } })
             },
-            {
-              type: 'videos',
-              title: 'buttons.videos',
-              color: 'primary',
-              click: (item) => _this.$router.push({ name: 'piecemaker.videos.list', params: { timelineUuid: item._uuid } })
-            },
+            // {
+            //   type: 'videos',
+            //   title: 'buttons.videos',
+            //   color: 'primary',
+            //   click: (item) => _this.$router.push({ name: 'piecemaker.videos.list', params: { timelineUuid: item._uuid } })
+            // },
             {
               type: 'search',
               title: 'buttons.search',

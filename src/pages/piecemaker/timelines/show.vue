@@ -2,15 +2,28 @@
   full-screen
     confirm-modal(ref="confirmModal", @confirm="handleConfirmModal")
 
-    back-button(v-if="!isMobile", slot="backButton")
     span(slot="form-logo")
-    span(slot="form-title" v-if="timeline") {{ timeline.title }}: {{ $t('routes.piecemaker.videos.list.title') }}
-    data-table(v-if="query", ref="listTable", :config="config", :title="'routes.piecemaker.videos.list.title'",
-      path="annotations", :query="query", base-path="videos", :request-transform="requestTransform", :customTitleLink="'piecemaker.videos.annotate'"
-    )
+    span(slot="form-title" v-if="timeline") {{ timeline.title }}
+
+    q-btn(@click="$router.push({ name: 'piecemaker.timelines.annotate', params: { uuid: $route.params.uuid } })", label="Live Annotate")
+    q-btn(@click="$router.push({ name: 'piecemaker.timelines.edit', params: { uuid: $route.params.uuid } })", label="Edit")
+    q-btn(@click="$router.push({ name: 'piecemaker.timelines.search', params: { uuid: $route.params.uuid } })", label="Search")
+
+    h5.caption.text-light Videos
+    data-table(
+      v-if="query",
+      ref="listTable",
+      :config="config",
+      :title="'routes.piecemaker.videos.list.title'",
+      path="annotations",
+      :query="query",
+      base-path="videos",
+      :request-transform="requestTransform",
+      :customTitleLink="'piecemaker.videos.annotate'"
+      )
       template(slot="buttons-left")
-        q-btn(@click="$router.push({ name: 'piecemaker.videos.create', params: { timelineUuid: $route.params.timelineUuid } })",
-          color="primary") {{ $t('buttons.add_video') }}
+        q-btn(@click="$router.push({ name: 'piecemaker.videos.create', params: { timelineUuid: $route.params.uuid } })",
+        color="primary") {{ $t('buttons.add_video') }}
 </template>
 
 <script>
@@ -73,7 +86,7 @@
               sort: _this.$sort.onDateValue,
               field: 'last_updated',
               format: val => DateTime.fromISO(val)
-                  .toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS)
+                .toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS)
             },
             {
               name: 'tags',
@@ -125,7 +138,7 @@
     },
     async mounted () {
       this.$root.$emit('setBackButton', '/piecemaker/timelines')
-      this.timeline = await this.$store.dispatch('maps/get', this.$route.params.timelineUuid)
+      this.timeline = await this.$store.dispatch('maps/get', this.$route.params.uuid)
       if (this.timeline) {
         this.query = {
           'body.purpose': 'linking',
