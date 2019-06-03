@@ -5,7 +5,7 @@
     //
       span(slot="form-logo")
       span(slot="form-title") {{ $t('routes.piecemaker.timelines.list.title') }}
-    content-block(:position="first")
+    content-block(:position="'first'")
       headline(:content="$t('routes.piecemaker.timelines.list.title')")
 
       // DIAGRAM
