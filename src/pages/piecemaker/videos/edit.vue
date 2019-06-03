@@ -2,12 +2,13 @@
   full-screen
     back-button(v-if="!isMobile", slot="backButton")
 
-    headline(:content="$t('routes.piecemaker.videos.edit.title')")
+    headline(:content="$t('routes.piecemaker.videos.edit.title') + ':'")
+      | {{ payload.title }} ({{ duration }})
 
     div
       calendar-time-main(:datetime="selectorValue", @update="onCalendarUpdate")
       .q-mb-xl
-        p.q-mt-md {{ $t('labels.video_duration') }}: {{ duration }}
+        // p.q-mt-md {{ $t('labels.video_duration') }}: {{ duration }}
         p(v-if="selectorOverride !== selectorValue") {{ $t('messages.caution_video_time_override') }}
       form-main(v-model.lazy="payload", :schema="schema", ref="videoForm")
 
