@@ -4,7 +4,8 @@
     // ------------------------------------------------------------------------------------------------------- edit grid
 
     //.q-py-md.ui-border.q-px-lg
-    .q-pb-xl.ui-border-bottom
+    //.q-pb-xl.ui-border-bottom
+    content-block(:position="'first'")
       headline(:content="$t('routes.mosys.grids.edit.title')")
         // | {{ payload.title }}
 
@@ -18,7 +19,8 @@
     // -------------------------------------------------------------------------------------------------- access control
 
     // .q-mt-lg.q-py-md.ui-border.q-px-lg(v-if="availableRoles.length")
-    .q-mt-xl.q-pb-xl.ui-border-bottom(v-if="availableRoles.length")
+    // .q-mt-xl.q-pb-xl.ui-border-bottom(v-if="availableRoles.length")
+    content-block(v-if="availableRoles.length")
 
       headline(:content="$t('labels.access_control')")
         | {{ $t('descriptions.access_control') }}
@@ -45,7 +47,8 @@
     // -------------------------------------------------------------------------------------------------- css stylesheet
 
     // .q-mt-md.q-py-md.ui-border.q-px-lg(v-if="userHasCSSEditing")
-    .q-mt-xl.q-pb-xl(v-if="userHasCSSEditing")
+    // .q-mt-xl.q-pb-xl(v-if="userHasCSSEditing")
+    content-block(v-if="userHasCSSEditing", :position="'last'")
       headline(:content="$t('labels.css_stylesheet')")
         | {{ $t('descriptions.css_stylesheet') }}
 
@@ -67,6 +70,7 @@
   import Tags from '../../../components/shared/partials/Tags'
   import FormMain from '../../../components/shared/forms/FormMain'
   import Headline from '../../../components/shared/elements/Headline'
+  import ContentBlock from '../../../components/shared/elements/ContentBlock'
 
   import { required } from 'vuelidate/lib/validators'
   import constants from 'mbjs-data-models/src/constants'
@@ -79,7 +83,8 @@
       AccessControl,
       FormMain,
       Tags,
-      Headline
+      Headline,
+      ContentBlock
     },
     data () {
       const _this = this
