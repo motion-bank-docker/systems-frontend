@@ -8,16 +8,15 @@
 
       // input field
       content-paragraph(:position="'first'")
-        q-field.q-mb-sm.full-width
-          q-input.full-width(v-model="query", dark, float-label="Search", :before="[{icon: 'search'}]")
+        q-input.q-mb-sm(v-model="query", dark, float-label="Search", :before="[{icon: 'search'}]")
         .full-width.text-right
           q-btn.full-width(@click="search", color="primary") Search
 
       // results
       content-paragraph(v-for="(result, i) in results", :class="{'q-mt-xl': i === 0}")
         div(:class="{'ui-border-bottom': i < results.length - 1}")
-          div
-            markdown-display.markdown-display(:content="result.body.value", :options="mdOptions")
+          // div
+          markdown-display.markdown-display(:content="result.body.value", :options="mdOptions")
           .q-my-md
             a.cursor-pointer(:href="`/piecemaker/videos/${getVideo(result).annotation._uuid}/annotate#${result._uuid}`")
               | {{ getVideo(result).metadata.title }}
