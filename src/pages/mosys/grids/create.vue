@@ -3,13 +3,20 @@
 
     content-block(:position="'first'")
       headline(:content="$t('routes.mosys.grids.create.title')")
-      form-main(v-model="payload", :schema="schema")
+
+      content-paragraph
+        form-main(v-model="payload", :schema="schema")
 
     content-block(:position="'last'")
       headline(:content="$t('forms.grids.import.title')")
-      div
-        q-input.q-mb-lg(dark, :placeholder="$t('forms.grids.import.fields.title')", v-model="uploadTitle")
-        q-checkbox.q-mb-lg(dark, :label="$t('forms.grids.import.fields.override_author')", v-model="overrideAuthor")
+
+      content-paragraph
+        q-input(dark, :placeholder="$t('forms.grids.import.fields.title')", v-model="uploadTitle")
+
+      content-paragraph
+        q-checkbox(dark, :label="$t('forms.grids.import.fields.override_author')", v-model="overrideAuthor")
+
+      content-paragraph
         uploader(dark, :url="url", @finish="onFinish", allowed=".zip", :headers="headers", :fields="uploadFields")
 
 </template>
@@ -20,6 +27,7 @@
   import FormMain from '../../../components/shared/forms/FormMain'
   import Headline from '../../../components/shared/elements/Headline'
   import ContentBlock from '../../../components/shared/elements/ContentBlock'
+  import ContentParagraph from '../../../components/shared/elements/ContentParagraph'
 
   import { required } from 'vuelidate/lib/validators'
   import constants from 'mbjs-data-models/src/constants'
@@ -29,7 +37,8 @@
       FormMain,
       Tags,
       Headline,
-      ContentBlock
+      ContentBlock,
+      ContentParagraph
     },
     data () {
       const _this = this
