@@ -4,23 +4,29 @@
     // back button
     back-button-new(v-if="!isMobile", slot="backButton", :target="'piecemaker.timelines.list'")
 
+    // -----------------------------------------------------------------------------------------------------------------
     // add new timeline
     content-block(:position="'first'")
-      // h5(slot="form-title") {{ $t('routes.piecemaker.timelines.create.title') }}
       headline(:content="$t('routes.piecemaker.timelines.create.title')")
-      form-main(v-model="payload", :schema="schema")
 
+      content-paragraph
+        form-main(v-model="payload", :schema="schema")
+
+    // -----------------------------------------------------------------------------------------------------------------
     // import timeline
     content-block(:position="'last'")
       headline(:content="$t('forms.timelines.import.title')")
 
       // new title (optional)
-      q-input(dark, :placeholder="$t('forms.timelines.import.fields.title')", v-model="uploadTitle")
+      content-paragraph(:position="first")
+        q-input(dark, :placeholder="$t('forms.timelines.import.fields.title')", v-model="uploadTitle")
 
       // set ownership
-      q-checkbox(dark, :label="$t('forms.timelines.import.fields.override_author')", v-model="overrideAuthor")
+      content-paragraph
+        q-checkbox(dark, :label="$t('forms.timelines.import.fields.override_author')", v-model="overrideAuthor")
 
-      uploader(dark, :url="url", @finish="onFinish", allowed=".zip", :headers="headers", :fields="uploadFields")
+      content-paragraph(:position="last")
+        uploader(dark, :url="url", @finish="onFinish", allowed=".zip", :headers="headers", :fields="uploadFields")
 
 </template>
 
@@ -31,6 +37,7 @@
   import BackButtonNew from '../../../components/shared/buttons/BackButtonNew'
   import Headline from '../../../components/shared/elements/Headline'
   import ContentBlock from '../../../components/shared/elements/ContentBlock'
+  import ContentParagraph from '../../../components/shared/elements/ContentParagraph'
 
   import { required } from 'vuelidate/lib/validators'
   import constants from 'mbjs-data-models/src/constants'
@@ -41,7 +48,8 @@
       Tags,
       BackButtonNew,
       Headline,
-      ContentBlock
+      ContentBlock,
+      ContentParagraph
     },
     data () {
       const _this = this
