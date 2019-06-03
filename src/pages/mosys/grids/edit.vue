@@ -3,65 +3,70 @@
 
     // ------------------------------------------------------------------------------------------------------- edit grid
 
-    //.q-py-md.ui-border.q-px-lg
-    //.q-pb-xl.ui-border-bottom
     content-block(:position="'first'")
       headline(:content="$t('routes.mosys.grids.edit.title')")
         // | {{ payload.title }}
 
-      form-main(v-model="payload", :schema="schema")
-        q-btn.bg-grey-9(q-if="$route.params.uuid", :label="exportLabel",
-        @click="exportGrid", slot="form-buttons-add")
-        q-btn.q-ml-sm.bg-grey-9(q-if="$route.params.uuid && userHasPackager", :label="packageLabel",
-        @click="createPackage", slot="form-buttons-add",
-        :class="[!isMobile ? 'q-mr-sm' : '']")
+      content-paragraph
+        form-main(v-model="payload", :schema="schema")
+          div(slot="form-buttons-add", :class="{'full-width row': isMobile}")
+            q-btn.bg-grey-9.col(q-if="$route.params.uuid", :label="exportLabel",
+            @click="exportGrid",
+            :class="[!isMobile ? 'col' : '']")
+            q-btn.q-ml-sm.bg-grey-9(q-if="$route.params.uuid && userHasPackager", :label="packageLabel",
+            @click="createPackage",
+            :class="[!isMobile ? 'q-mr-sm col' : '']")
 
     // -------------------------------------------------------------------------------------------------- access control
 
-    // .q-mt-lg.q-py-md.ui-border.q-px-lg(v-if="availableRoles.length")
-    // .q-mt-xl.q-pb-xl.ui-border-bottom(v-if="availableRoles.length")
     content-block(v-if="availableRoles.length")
 
       headline(:content="$t('labels.access_control')")
         | {{ $t('descriptions.access_control') }}
 
       // add to group
-      q-field.q-mb-md(orientation="vertical", dark)
+      content-paragraph(:position="'first'")
+        // q-field.q-mb-md(orientation="vertical", dark)
         q-select(v-model="acl.group", :clearable="true", :clear-value="undefined",
         :float-label="$t('labels.access_control_add_group')", :options="availableRoles", dark)
 
       // remove from group
-      q-field(orientation="vertical", dark)
+      content-paragraph
+        // q-field(orientation="vertical", dark)
         q-select(v-model="acl.group_remove", :clearable="true", :clear-value="undefined",
         :float-label="$t('labels.access_control_remove_group')", :options="availableRoles", dark)
 
       // apply to all contained annotations and videos
-      q-field(dark)
+      content-paragraph
+        // q-field(dark)
         q-checkbox(v-model="acl.recursive", :label="$t('labels.recursive')", dark)
 
       // button "update access settings"
-      .full-width.text-right.q-mt-sm.q-pt-lg
-        q-btn(:label="$t('buttons.update_access_control')", @click="updateACL", color="primary",
-        :class="[isMobile ? 'full-width' : '']")
+      content-paragraph(:position="'last'")
+        //.full-width.text-right.q-mt-sm.q-pt-lg
+        .full-width.text-right
+          q-btn(:label="$t('buttons.update_access_control')", @click="updateACL", color="primary",
+          :class="[isMobile ? 'full-width' : '']")
 
     // -------------------------------------------------------------------------------------------------- css stylesheet
 
-    // .q-mt-md.q-py-md.ui-border.q-px-lg(v-if="userHasCSSEditing")
-    // .q-mt-xl.q-pb-xl(v-if="userHasCSSEditing")
     content-block(v-if="userHasCSSEditing", :position="'last'")
       headline(:content="$t('labels.css_stylesheet')")
         | {{ $t('descriptions.css_stylesheet') }}
 
       // external css stylesheet url
-      q-input.q-mb-md(v-model="stylesheetUrl", dark, type="text", float-label="External CSS Stylesheet URL")
+      content-paragraph(:position="'first'")
+        q-input(v-model="stylesheetUrl", dark, type="text", float-label="External CSS Stylesheet URL")
 
       // embedded css stylesheet
-      q-input(v-model="stylesheet", dark, type="textarea", float-label="Embedded CSS Stylesheet", rows="4")
+      content-paragraph
+        q-input(v-model="stylesheet", dark, type="textarea", float-label="Embedded CSS Stylesheet", rows="4")
 
       // button "submit"
-      .full-width.text-right.q-mt-sm.q-pt-lg
-        q-btn(q-if="$route.params.uuid", color="primary", label="Submit", @click="submit",
-        :class="[isMobile ? 'full-width' : '']")
+      content-paragraph(:position="'last'")
+        .full-width.text-right
+          q-btn(q-if="$route.params.uuid", color="primary", label="Submit", @click="submit",
+          :class="[isMobile ? 'full-width' : '']")
 
 </template>
 
@@ -71,6 +76,7 @@
   import FormMain from '../../../components/shared/forms/FormMain'
   import Headline from '../../../components/shared/elements/Headline'
   import ContentBlock from '../../../components/shared/elements/ContentBlock'
+  import ContentParagraph from '../../../components/shared/elements/ContentParagraph'
 
   import { required } from 'vuelidate/lib/validators'
   import constants from 'mbjs-data-models/src/constants'
@@ -84,7 +90,8 @@
       FormMain,
       Tags,
       Headline,
-      ContentBlock
+      ContentBlock,
+      ContentParagraph
     },
     data () {
       const _this = this
