@@ -4,7 +4,7 @@
     content-block(:position="'first'")
       headline(:content="$t('routes.mosys.grids.create.title')")
 
-      content-paragraph
+      content-paragraph(:position="'last'")
         form-main(v-model="payload", :schema="schema")
 
     content-block(:position="'last'")
@@ -16,7 +16,7 @@
       content-paragraph
         q-checkbox(dark, :label="$t('forms.grids.import.fields.override_author')", v-model="overrideAuthor")
 
-      content-paragraph
+      content-paragraph(:position="'last'")
         uploader(dark, :url="url", @finish="onFinish", allowed=".zip", :headers="headers", :fields="uploadFields")
 
 </template>
