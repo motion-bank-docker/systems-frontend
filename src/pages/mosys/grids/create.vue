@@ -1,14 +1,16 @@
 <template lang="pug">
   full-screen
 
-    headline(:content="$t('routes.mosys.grids.create.title')")
-    form-main(v-model="payload", :schema="schema")
+    content-block(:position="'first'")
+      headline(:content="$t('routes.mosys.grids.create.title')")
+      form-main(v-model="payload", :schema="schema")
 
-    headline(:content="$t('forms.grids.import.title')")
-    div
-      q-input.q-mb-lg(dark, :placeholder="$t('forms.grids.import.fields.title')", v-model="uploadTitle")
-      q-checkbox.q-mb-lg(dark, :label="$t('forms.grids.import.fields.override_author')", v-model="overrideAuthor")
-      uploader(dark, :url="url", @finish="onFinish", allowed=".zip", :headers="headers", :fields="uploadFields")
+    content-block(:position="'last'")
+      headline(:content="$t('forms.grids.import.title')")
+      div
+        q-input.q-mb-lg(dark, :placeholder="$t('forms.grids.import.fields.title')", v-model="uploadTitle")
+        q-checkbox.q-mb-lg(dark, :label="$t('forms.grids.import.fields.override_author')", v-model="overrideAuthor")
+        uploader(dark, :url="url", @finish="onFinish", allowed=".zip", :headers="headers", :fields="uploadFields")
 
 </template>
 
@@ -17,6 +19,7 @@
   import Tags from '../../../components/shared/partials/Tags'
   import FormMain from '../../../components/shared/forms/FormMain'
   import Headline from '../../../components/shared/elements/Headline'
+  import ContentBlock from '../../../components/shared/elements/ContentBlock'
 
   import { required } from 'vuelidate/lib/validators'
   import constants from 'mbjs-data-models/src/constants'
@@ -25,7 +28,8 @@
     components: {
       FormMain,
       Tags,
-      Headline
+      Headline,
+      ContentBlock
     },
     data () {
       const _this = this
