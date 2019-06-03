@@ -15,12 +15,16 @@
       base-path="grids",
       :has-show="true")
         template(slot="buttons-left")
-          q-btn(@click="$router.push({ name: 'mosys.grids.create' })", color="primary") {{ $t('buttons.create_grid') }}
+          // q-btn(@click="$router.push({ name: 'mosys.grids.create' })", color="primary") {{ $t('buttons.create_grid') }}
+          q-btn(@click="$router.push({ name: 'mosys.grids.create' })",
+          color="primary", icon="add")
+            span.on-right(v-if="!isMobile") {{ $t('buttons.create_grid') }}
 </template>
 
 <script>
   import constants from 'mbjs-data-models/src/constants'
   import { DateTime } from 'luxon'
+  import { mapGetters } from 'vuex'
   import { deleteHelper } from 'mbjs-quasar/src/lib'
   import Headline from '../../../components/shared/elements/Headline'
 
@@ -95,6 +99,11 @@
     },
     mounted () {
       this.$root.$emit('setBackButton')
+    },
+    computed: {
+      ...mapGetters({
+        isMobile: 'globalSettings/getIsMobile'
+      })
     },
     methods: {
       async handleConfirmModal (item) {
