@@ -6,23 +6,29 @@
     //
       span(slot="form-logo")
       span(slot="form-title" v-if="timeline") {{ timeline.title }}: {{ $t('routes.piecemaker.videos.list.title') }}
-    headline(v-if="timeline", :content="timeline.title + ': ' + $t('routes.piecemaker.videos.list.title')")
+    content-block(:position="first")
+      headline(v-if="timeline", :content="timeline.title + ': ' + $t('routes.piecemaker.videos.list.title')")
 
-    data-table(v-if="query", ref="listTable", :config="config", :title="'routes.piecemaker.videos.list.title'",
-      path="annotations", :query="query", base-path="videos", :request-transform="requestTransform")
-      template(slot="buttons-left")
-        q-btn(@click="$router.push({ name: 'piecemaker.videos.create', params: { timelineUuid: $route.params.timelineUuid } })",
-          color="primary") {{ $t('buttons.add_video') }}
+      content-paragraph(:position="first")
+        data-table(v-if="query", ref="listTable", :config="config", :title="'routes.piecemaker.videos.list.title'",
+          path="annotations", :query="query", base-path="videos", :request-transform="requestTransform")
+          template(slot="buttons-left")
+            q-btn(@click="$router.push({ name: 'piecemaker.videos.create', params: { timelineUuid: $route.params.timelineUuid } })",
+              color="primary") {{ $t('buttons.add_video') }}
 </template>
 
 <script>
   import { DateTime } from 'luxon'
   import { mapGetters } from 'vuex'
   import Headline from '../../../components/shared/elements/Headline'
+  import ContentBlock from '../../../components/shared/elements/ContentBlock'
+  import ContentParagraph from '../../../components/shared/elements/ContentParagraph'
 
   export default {
     components: {
-      Headline
+      Headline,
+      ContentBlock,
+      ContentParagraph
     },
     data () {
       const _this = this
