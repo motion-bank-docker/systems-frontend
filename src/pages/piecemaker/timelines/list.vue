@@ -26,8 +26,13 @@
       content-paragraph
         data-table(:config="config", :title="'routes.piecemaker.timelines.list.title'", ref="listTable",
           path="maps", :query="query", base-path="timelines", :has-show="isStaging", :request-transform="requestTransform")
+
+          // button: create timeline
           template(slot="buttons-left")
-            q-btn(@click="$router.push({ name: 'piecemaker.timelines.create' })", color="primary") {{ $t('buttons.create_timeline') }}
+
+            q-btn(@click="$router.push({ name: 'piecemaker.timelines.create' })",
+            color="primary", icon="add")
+              span.on-right(v-if="!isMobile") {{ $t('buttons.create_timeline') }}
 </template>
 
 <script>
@@ -37,6 +42,7 @@
   import Headline from '../../../components/shared/elements/Headline'
   import ContentBlock from '../../../components/shared/elements/ContentBlock'
   import ContentParagraph from '../../../components/shared/elements/ContentParagraph'
+  import { mapGetters } from 'vuex'
 
   export default {
     components: {
@@ -140,6 +146,11 @@
     },
     mounted () {
       this.$root.$emit('setBackButton')
+    },
+    computed: {
+      ...mapGetters({
+        isMobile: 'globalSettings/getIsMobile'
+      })
     }
   }
 </script>
