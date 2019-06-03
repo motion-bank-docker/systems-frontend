@@ -3,13 +3,14 @@
 
     back-button-new(v-if="!isMobile", slot="backButton", :target="'piecemaker.timelines.list'")
 
-    headline(:content="$t('routes.piecemaker.timelines.edit.title')")
+    content-block(:position="'first'")
+      headline(:content="$t('routes.piecemaker.timelines.edit.title')")
+      // edit timeline title
+      form-main(v-model="payload", :schema="schema")
+        q-btn.q-mr-md.bg-grey-9(q-if="$route.params.uuid", slot="form-buttons-add", :label="exportLabel", @click="exportTimeline")
 
-    // edit timeline title
-    form-main(v-model="payload", :schema="schema")
-      q-btn.q-mr-md.bg-grey-9(q-if="$route.params.uuid", slot="form-buttons-add", :label="exportLabel", @click="exportTimeline")
-
-    template(v-if="availableRoles.length")
+    // template(v-if="availableRoles.length")
+    content-block(v-if="availableRoles.length", :position="'last'")
       headline.q-mt-lg(:content="$t('labels.access_control')")
       p {{ $t('descriptions.access_control') }}
 
@@ -38,6 +39,7 @@
   import FormMain from '../../../components/shared/forms/FormMain'
   import BackButtonNew from '../../../components/shared/buttons/BackButtonNew'
   import Headline from '../../../components/shared/elements/Headline'
+  import ContentBlock from '../../../components/shared/elements/ContentBlock'
 
   import { required } from 'vuelidate/lib/validators'
   import constants from 'mbjs-data-models/src/constants'
@@ -53,7 +55,8 @@
       BackButtonNew,
       FormMain,
       Headline,
-      Tags
+      Tags,
+      ContentBlock
     },
     data () {
       const _this = this
