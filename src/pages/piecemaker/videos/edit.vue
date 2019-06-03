@@ -2,18 +2,22 @@
   full-screen
     back-button(v-if="!isMobile", slot="backButton")
 
-    headline(:content="$t('routes.piecemaker.videos.edit.title') + ':'")
-      | {{ payload.title }} ({{ duration }})
+    content-block(:position="'first'")
+      headline(:content="$t('routes.piecemaker.videos.edit.title') + ':'")
+        | {{ payload.title }} ({{ duration }})
 
-    div
-      calendar-time-main(:datetime="selectorValue", @update="onCalendarUpdate")
-      .q-mb-xl
+      content-paragraph(:position="'first'")
+        calendar-time-main(:datetime="selectorValue", @update="onCalendarUpdate")
+
+      content-paragraph
         // p.q-mt-md {{ $t('labels.video_duration') }}: {{ duration }}
         p(v-if="selectorOverride !== selectorValue") {{ $t('messages.caution_video_time_override') }}
-      form-main(v-model.lazy="payload", :schema="schema", ref="videoForm")
 
-    div
-      access-control
+      content-paragraph
+        form-main(v-model.lazy="payload", :schema="schema", ref="videoForm")
+
+      content-paragraph(:position="'last'")
+        access-control
 </template>
 
 <script>
@@ -23,6 +27,8 @@
   import CalendarTimeMain from '../../../components/shared/forms/CalendarTimeMain'
   import FormMain from '../../../components/shared/forms/FormMain'
   import Headline from '../../../components/shared/elements/Headline'
+  import ContentBlock from '../../../components/shared/elements/ContentBlock'
+  import ContentParagraph from '../../../components/shared/elements/ContentParagraph'
 
   import { required } from 'vuelidate/lib/validators'
   import guessType from 'mbjs-media/src/util/guess-type'
@@ -37,7 +43,9 @@
       AccessControl,
       CalendarTimeMain,
       FormMain,
-      Headline
+      Headline,
+      ContentBlock,
+      ContentParagraph
     },
     methods: {
       onCalendarUpdate (val) {
