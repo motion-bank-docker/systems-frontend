@@ -3,23 +3,24 @@
 
     back-button-new(v-if="!isMobile", slot="backButton", :target="'piecemaker.timelines.list'")
 
-    headline(:content="'Search for'")
+    content-block(:position="'first'")
+      headline(:content="'Search for'")
 
-    <!--q-field(label="Search for", dark, :label-width="2")-->
-    .row.justify-right
-      <!--q-field.q-mb-sm.full-width(icon="search")-->
-      q-field.q-mb-sm.full-width
-        q-input.full-width(v-model="query", dark, float-label="Search")
-      q-btn(@click="search", color="primary") Search
+      <!--q-field(label="Search for", dark, :label-width="2")-->
+      .row.justify-right
+        <!--q-field.q-mb-sm.full-width(icon="search")-->
+        q-field.q-mb-sm.full-width
+          q-input.full-width(v-model="query", dark, float-label="Search")
+        q-btn(@click="search", color="primary") Search
 
-    .row.q-mt-md(v-for="result in results")
-      .col-md-6
-        markdown-display.markdown-display(:content="result.body.value", :options="mdOptions")
-        small {{ getVideo(result).metadata.title }}
-      .col-md-6
-        p {{ formatDate(result.target.selector._valueMillis) }}
-        p
-          a(:href="`/piecemaker/videos/${getVideo(result).annotation._uuid}/annotate#${result._uuid}`") Goto Video
+      .row.q-mt-md(v-for="result in results")
+        .col-md-6
+          markdown-display.markdown-display(:content="result.body.value", :options="mdOptions")
+          small {{ getVideo(result).metadata.title }}
+        .col-md-6
+          p {{ formatDate(result.target.selector._valueMillis) }}
+          p
+            a(:href="`/piecemaker/videos/${getVideo(result).annotation._uuid}/annotate#${result._uuid}`") Goto Video
 </template>
 
 <script>
@@ -27,11 +28,13 @@
   import { DateTime } from 'luxon'
   import BackButtonNew from '../../../components/shared/buttons/BackButtonNew'
   import Headline from '../../../components/shared/elements/Headline'
+  import ContentBlock from '../../../components/shared/elements/ContentBlock'
 
   export default {
     components: {
       BackButtonNew,
-      Headline
+      Headline,
+      ContentBlock
     },
     data () {
       return {
