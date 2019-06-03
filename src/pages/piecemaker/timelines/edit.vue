@@ -3,7 +3,6 @@
 
     .q-px-xl
       h5.caption.text-light(dark) {{ $t('routes.piecemaker.timelines.edit.title') }}
-
       .row
         .col-md-12
           form-main(v-model="payload", :schema="schema")
@@ -40,9 +39,11 @@
 
   import { openURL } from 'quasar'
   import { mapGetters } from 'vuex'
+  import PageSubNav from '../../../components/shared/navigation/PageSubNav'
 
   export default {
     components: {
+      PageSubNav,
       AccessControl,
       FormMain,
       Tags

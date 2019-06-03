@@ -3,11 +3,7 @@
     confirm-modal(ref="confirmModal", @confirm="handleConfirmModal")
 
     span(slot="form-logo")
-    span(slot="form-title" v-if="timeline") {{ timeline.title }}
-
-    q-btn(@click="$router.push({ name: 'piecemaker.timelines.annotate', params: { uuid: $route.params.uuid } })", label="Live Annotate")
-    q-btn(@click="$router.push({ name: 'piecemaker.timelines.edit', params: { uuid: $route.params.uuid } })", label="Edit")
-    q-btn(@click="$router.push({ name: 'piecemaker.timelines.search', params: { uuid: $route.params.uuid } })", label="Search")
+    //span(slot="form-title" v-if="timeline") {{ timeline.title }}
 
     h5.caption.text-light Videos
     data-table(
@@ -29,8 +25,12 @@
 <script>
   import { DateTime } from 'luxon'
   import { mapGetters } from 'vuex'
+  import PageSubNav from '../../../components/shared/navigation/PageSubNav'
 
   export default {
+    components: {
+      PageSubNav
+    },
     data () {
       const _this = this
       return {

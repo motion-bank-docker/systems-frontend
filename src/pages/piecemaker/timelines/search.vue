@@ -19,8 +19,12 @@
 <script>
   import { mapGetters } from 'vuex'
   import { DateTime } from 'luxon'
+  import PageSubNav from '../../../components/shared/navigation/PageSubNav'
 
   export default {
+    components: {
+      PageSubNav
+    },
     data () {
       return {
         query: undefined,
