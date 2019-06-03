@@ -6,21 +6,30 @@
     content-block(:position="'first'")
       headline(:content="'Search for'")
 
-      <!--q-field(label="Search for", dark, :label-width="2")-->
-      .row.justify-right
+      content-paragraph(:position="'first'")
+        <!--q-field(label="Search for", dark, :label-width="2")-->
+        // .row.justify-right
         <!--q-field.q-mb-sm.full-width(icon="search")-->
         q-field.q-mb-sm.full-width
           q-input.full-width(v-model="query", dark, float-label="Search")
-        q-btn(@click="search", color="primary") Search
+        .full-width.text-right
+          q-btn(@click="search", color="primary") Search
 
-      .row.q-mt-md(v-for="result in results")
-        .col-md-6
-          markdown-display.markdown-display(:content="result.body.value", :options="mdOptions")
-          small {{ getVideo(result).metadata.title }}
-        .col-md-6
-          p {{ formatDate(result.target.selector._valueMillis) }}
-          p
-            a(:href="`/piecemaker/videos/${getVideo(result).annotation._uuid}/annotate#${result._uuid}`") Goto Video
+      // .row.q-mt-md(v-for="result in results")
+      content-paragraph(v-for="result in results")
+        // .row
+        .ui-border-bottom
+          div
+            // .col-md-6
+            markdown-display.markdown-display(:content="result.body.value", :options="mdOptions")
+            // small {{ getVideo(result).metadata.title }}
+          .q-mt-sm.q-mb-md
+            a.cursor-pointer(:href="`/piecemaker/videos/${getVideo(result).annotation._uuid}/annotate#${result._uuid}`")
+              | {{ getVideo(result).metadata.title }}
+            // .col-md-6
+            p.text-grey-8 {{ formatDate(result.target.selector._valueMillis) }}
+              // p
+                a(:href="`/piecemaker/videos/${getVideo(result).annotation._uuid}/annotate#${result._uuid}`") Goto Video
 </template>
 
 <script>
@@ -29,12 +38,14 @@
   import BackButtonNew from '../../../components/shared/buttons/BackButtonNew'
   import Headline from '../../../components/shared/elements/Headline'
   import ContentBlock from '../../../components/shared/elements/ContentBlock'
+  import ContentParagraph from '../../../components/shared/elements/ContentParagraph'
 
   export default {
     components: {
       BackButtonNew,
       Headline,
-      ContentBlock
+      ContentBlock,
+      ContentParagraph
     },
     data () {
       return {
