@@ -117,7 +117,7 @@
           actions: [
             {
               type: 'show',
-              title: 'Details',
+              title: 'Videos',
               color: 'primary',
               click: (item) => _this.$router.push({ name: 'piecemaker.timelines.show', params: { uuid: item._uuid } })
             },
