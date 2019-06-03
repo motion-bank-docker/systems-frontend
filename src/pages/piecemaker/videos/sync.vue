@@ -7,7 +7,7 @@
       q-modal-layout.bg-dark.q-px-md
 
         // header
-        q-toolbar.bg-dark.border-bottom-light.q-py-sm.q-px-none(slot="header")
+        q-toolbar.bg-dark.ui-border-bottom.q-py-sm.q-px-none(slot="header")
           q-toolbar-title.text-weight-regular.text-grey-8.q-px-none Synchronize with:
           q-btn.border-light(@click="modalVideos = false", icon="clear", size="xs", round)
 
@@ -74,7 +74,7 @@
         template(v-else)
 
           q-list.q-py-none(v-if="refVideos && refIndex === -1")
-            div.q-pb-sm.text-grey-8.border-bottom-light Synchronize with:
+            div.q-pb-sm.text-grey-8.ui-border-bottom Synchronize with:
 
             q-item.q-pa-none.cursor-pointer.relative-position(v-for="(vid, i) in refVideos", highlight, :key="vid._uuid",
             @click.native="refIndex = i")
