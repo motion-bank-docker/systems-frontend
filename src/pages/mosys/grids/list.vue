@@ -15,6 +15,8 @@
           :requestTransform="requestTransform"
           base-path="grids",
           :has-show="true")
+
+            // "create grid" button
             template(slot="buttons-left")
               // q-btn(@click="$router.push({ name: 'mosys.grids.create' })", color="primary") {{ $t('buttons.create_grid') }}
               q-btn(@click="$router.push({ name: 'mosys.grids.create' })",
