@@ -3,24 +3,28 @@
 
     // ------------------------------------------------------------------------------------------------------- edit grid
 
-    .q-py-md.ui-border.q-px-lg
+    //.q-py-md.ui-border.q-px-lg
+    .q-pb-xl.ui-border-bottom
       headline(:content="$t('routes.mosys.grids.edit.title')")
+        // | {{ payload.title }}
 
       form-main(v-model="payload", :schema="schema")
-        q-btn.q-mr-sm.bg-grey-9(q-if="$route.params.uuid", :label="exportLabel",
+        q-btn.bg-grey-9(q-if="$route.params.uuid", :label="exportLabel",
         @click="exportGrid", slot="form-buttons-add")
-        q-btn.q-mr-sm.bg-grey-9(q-if="$route.params.uuid && userHasPackager", :label="packageLabel",
-        @click="createPackage", slot="form-buttons-add")
+        q-btn.q-ml-sm.bg-grey-9(q-if="$route.params.uuid && userHasPackager", :label="packageLabel",
+        @click="createPackage", slot="form-buttons-add",
+        :class="[!isMobile ? 'q-mr-sm' : '']")
 
     // -------------------------------------------------------------------------------------------------- access control
 
-    .q-mt-lg.q-py-md.ui-border.q-px-lg(v-if="availableRoles.length")
+    // .q-mt-lg.q-py-md.ui-border.q-px-lg(v-if="availableRoles.length")
+    .q-mt-xl.q-pb-xl.ui-border-bottom(v-if="availableRoles.length")
 
       headline(:content="$t('labels.access_control')")
         | {{ $t('descriptions.access_control') }}
 
       // add to group
-      q-field(orientation="vertical", dark)
+      q-field.q-mb-md(orientation="vertical", dark)
         q-select(v-model="acl.group", :clearable="true", :clear-value="undefined",
         :float-label="$t('labels.access_control_add_group')", :options="availableRoles", dark)
 
@@ -34,24 +38,27 @@
         q-checkbox(v-model="acl.recursive", :label="$t('labels.recursive')", dark)
 
       // button "update access settings"
-      .full-width.text-right.q-mt-sm
-        q-btn(:label="$t('buttons.update_access_control')", @click="updateACL", color="grey")
+      .full-width.text-right.q-mt-sm.q-pt-lg
+        q-btn(:label="$t('buttons.update_access_control')", @click="updateACL", color="primary",
+        :class="[isMobile ? 'full-width' : '']")
 
     // -------------------------------------------------------------------------------------------------- css stylesheet
 
-    .q-mt-md.q-py-md.ui-border.q-px-lg(v-if="userHasCSSEditing")
+    // .q-mt-md.q-py-md.ui-border.q-px-lg(v-if="userHasCSSEditing")
+    .q-mt-xl.q-pb-xl(v-if="userHasCSSEditing")
       headline(:content="$t('labels.css_stylesheet')")
         | {{ $t('descriptions.css_stylesheet') }}
 
       // external css stylesheet url
-      q-input(v-model="stylesheetUrl", dark, type="text", float-label="External CSS Stylesheet URL")
+      q-input.q-mb-md(v-model="stylesheetUrl", dark, type="text", float-label="External CSS Stylesheet URL")
 
       // embedded css stylesheet
       q-input(v-model="stylesheet", dark, type="textarea", float-label="Embedded CSS Stylesheet", rows="4")
 
       // button "submit"
-      .full-width.text-right.q-mt-sm
-        q-btn(q-if="$route.params.uuid", color="primary", label="Submit", @click="submit")
+      .full-width.text-right.q-mt-sm.q-pt-lg
+        q-btn(q-if="$route.params.uuid", color="primary", label="Submit", @click="submit",
+        :class="[isMobile ? 'full-width' : '']")
 
 </template>
 
@@ -130,7 +137,8 @@
     },
     computed: {
       ...mapGetters({
-        user: 'auth/getUserState'
+        user: 'auth/getUserState',
+        isMobile: 'globalSettings/getIsMobile'
       }),
       availableRoles () {
         try {
