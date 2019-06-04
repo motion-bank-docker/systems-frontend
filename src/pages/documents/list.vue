@@ -9,12 +9,18 @@
         data-table(v-if="user", :config="config", :title="'routes.documents.list.title'", ref="listTable")
 
           // "create grid" button
+          //
             template(slot="buttons-left")
               q-btn(@click="$router.push({ name: 'documents.create' })", color="primary") {{ $t('buttons.create_document') }}
-          template(slot="buttons-left")
+          //
+            template(slot="buttons-left")
+              q-btn(@click="$router.push({ name: 'documents.create' })",
+              color="primary", icon="add")
+                span.on-right(v-if="!isMobile") {{ $t('buttons.create_document') }}
+          template(slot="top-buttons")
             q-btn(@click="$router.push({ name: 'documents.create' })",
-            color="primary", icon="add")
-              span.on-right(v-if="!isMobile") {{ $t('buttons.create_document') }}
+            color="primary", :class="{'full-width': isMobile}", icon="add")
+              span.on-right.gt-xs {{ $t('buttons.create_document') }}
 </template>
 
 <script>
