@@ -36,8 +36,8 @@
 
       // update button
       content-paragraph
-        q-btn(:label="$t('buttons.update_access_control')", @click="updateACL", color="primary", slot="buttons",
-        rounded, :class="{'full-width': isMobile}")
+        q-btn(:label="$t('buttons.update_access_control')", @click="updateACL", color="primary",
+        slot="buttons", :class="{'full-width': isMobile}")
 </template>
 
 <script>
