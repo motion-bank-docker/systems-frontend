@@ -9,13 +9,13 @@
 
       content-paragraph
         form-main(v-model="payload", :schema="schema")
-          div(slot="form-buttons-add", :class="{'full-width row': isMobile}")
+          div(slot="form-buttons-add", :class="{'full-width row q-mb-sm': isMobile}")
             q-btn.bg-grey-9.col(q-if="$route.params.uuid", :label="exportLabel",
             @click="exportGrid",
-            :class="[!isMobile ? 'col' : '']")
-            q-btn.q-ml-sm.bg-grey-9(q-if="$route.params.uuid && userHasPackager", :label="packageLabel",
+            :class="[!isMobile ? '' : '']")
+            q-btn.bg-grey-9.col(q-if="$route.params.uuid && userHasPackager", :label="packageLabel",
             @click="createPackage",
-            :class="[!isMobile ? 'q-mr-sm col' : '']")
+            :class="[!isMobile ? 'q-mx-sm' : 'q-ml-sm']")
 
     // -------------------------------------------------------------------------------------------------- access control
 
