@@ -6,31 +6,33 @@
     content-block(:position="'first'")
       headline(:content="$t('routes.piecemaker.timelines.edit.title')")
       // edit timeline title
-      form-main(v-model="payload", :schema="schema")
-        q-btn.q-mr-md.bg-grey-9(q-if="$route.params.uuid", slot="form-buttons-add", :label="exportLabel", @click="exportTimeline")
+      content-paragraph
+        form-main(v-model="payload", :schema="schema")
+          q-btn.q-mr-md.bg-grey-9(q-if="$route.params.uuid", slot="form-buttons-add", :label="exportLabel", @click="exportTimeline")
 
     // template(v-if="availableRoles.length")
     content-block(v-if="availableRoles.length", :position="'last'")
       headline.q-mt-lg(:content="$t('labels.access_control')")
-      p {{ $t('descriptions.access_control') }}
+        | {{ $t('descriptions.access_control') }}
 
       // 'add to group'
-      q-field(orientation="vertical", dark)
+      content-paragraph
         q-select(v-model="acl.group", :clearable="true", :clear-value="undefined",
         :float-label="$t('labels.access_control_add_group')", :options="availableRoles", dark)
 
       // 'remove from group'
-      q-field(orientation="vertical", dark)
+      content-paragraph
         q-select(v-model="acl.group_remove", :clearable="true", :clear-value="undefined",
         :float-label="$t('labels.access_control_remove_group')", :options="availableRoles", dark)
 
       // 'apply to all contained annotations and videos'
-      q-field(dark)
+      content-paragraph
         q-checkbox(v-model="acl.recursive", :label="$t('labels.recursive')", dark)
 
       // update button
-      .row.xs-gutter.full-width.justify-end.items-end
-        q-btn(:label="$t('buttons.update_access_control')", @click="updateACL", color="grey")
+      content-paragraph
+        .row.xs-gutter.full-width.justify-end.items-end
+          q-btn(:label="$t('buttons.update_access_control')", @click="updateACL", color="primary")
 </template>
 
 <script>
@@ -40,6 +42,7 @@
   import BackButtonNew from '../../../components/shared/buttons/BackButtonNew'
   import Headline from '../../../components/shared/elements/Headline'
   import ContentBlock from '../../../components/shared/elements/ContentBlock'
+  import ContentParagraph from '../../../components/shared/elements/ContentParagraph'
 
   import { required } from 'vuelidate/lib/validators'
   import constants from 'mbjs-data-models/src/constants'
@@ -56,7 +59,8 @@
       FormMain,
       Headline,
       Tags,
-      ContentBlock
+      ContentBlock,
+      ContentParagraph
     },
     data () {
       const _this = this
