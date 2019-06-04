@@ -7,7 +7,8 @@
       span(slot="form-logo")
       span(slot="form-title" v-if="timeline") {{ timeline.title }}: {{ $t('routes.piecemaker.videos.list.title') }}
     content-block(:position="'first'")
-      headline(v-if="timeline", :content="timeline.title + ': ' + $t('routes.piecemaker.videos.list.title')")
+      headline(v-if="timeline", :content="$t('routes.piecemaker.videos.list.title')")
+        | {{ timeline.title }}
 
       content-paragraph(:position="'first'")
         data-table(v-if="query", ref="listTable", :config="config", :title="'routes.piecemaker.videos.list.title'",
