@@ -13,13 +13,19 @@
         data-table(v-if="query", ref="listTable", :config="config", :title="'routes.piecemaker.videos.list.title'",
           path="annotations", :query="query", base-path="videos", :request-transform="requestTransform")
 
-          template(slot="buttons-left")
-            //
-              q-btn(@click="$router.push({ name: 'piecemaker.videos.create', params: { timelineUuid: $route.params.timelineUuid } })",
-              color="primary") {{ $t('buttons.add_video') }}
+          //
+            template(slot="buttons-left")
+              //
+                q-btn(@click="$router.push({ name: 'piecemaker.videos.create', params: { timelineUuid: $route.params.timelineUuid } })",
+                color="primary") {{ $t('buttons.add_video') }}
+              //
+                q-btn(@click="$router.push({ name: 'piecemaker.videos.create', params: { timelineUuid: $route.params.timelineUuid } })",
+                color="primary", icon="add")
+                  span.on-right(v-if="!isMobile") {{ $t('buttons.add_video') }}
+          template(slot="top-buttons")
             q-btn(@click="$router.push({ name: 'piecemaker.videos.create', params: { timelineUuid: $route.params.timelineUuid } })",
-            color="primary", icon="add")
-              span.on-right(v-if="!isMobile") {{ $t('buttons.add_video') }}
+            color="primary", :class="{'full-width': isMobile}", icon="add")
+              span.on-right.gt-xs {{ $t('buttons.add_video') }}
 </template>
 
 <script>
