@@ -3,14 +3,19 @@
 
     back-button-new(v-if="!isMobile", slot="backButton", :target="'piecemaker.timelines.list'")
 
+    // --------------------------------------------------------------------------------------------------- edit timeline
+
     content-block(:position="'first'")
       headline(:content="$t('routes.piecemaker.timelines.edit.title')")
-      // edit timeline title
+
       content-paragraph
         form-main(v-model="payload", :schema="schema")
-          q-btn.q-mr-md.bg-grey-9(q-if="$route.params.uuid", slot="form-buttons-add", :label="exportLabel", @click="exportTimeline")
+          div(slot="form-buttons-add", :class="{'full-width row q-mb-sm': isMobile}")
+            q-btn.col(q-if="$route.params.uuid", slot="form-buttons-add", :label="exportLabel", @click="exportTimeline",
+            color="grey", :class="[!isMobile ? 'q-mr-sm' : '']")
 
-    // template(v-if="availableRoles.length")
+    // -------------------------------------------------------------------------------------------------- access control
+
     content-block(v-if="availableRoles.length", :position="'last'")
       headline.q-mt-lg(:content="$t('labels.access_control')")
         | {{ $t('descriptions.access_control') }}
@@ -31,8 +36,8 @@
 
       // update button
       content-paragraph
-        .row.xs-gutter.full-width.justify-end.items-end
-          q-btn(:label="$t('buttons.update_access_control')", @click="updateACL", color="primary")
+        q-btn(:label="$t('buttons.update_access_control')", @click="updateACL", color="primary", slot="buttons",
+        rounded, :class="{'full-width': isMobile}")
 </template>
 
 <script>
