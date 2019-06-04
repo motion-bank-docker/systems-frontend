@@ -3,39 +3,44 @@
     q-btn(v-if="!isMobile", slot="backButton", @click="$router.push({ name: 'documents.list' })",
     icon="keyboard_backspace", round, small)
 
-    // h5.caption(dark) {{ $t('routes.documents.edit.title') }}
-    headline(:content="$t('routes.documents.edit.title')")
+    content-block(:position="'first'")
+      headline(:content="$t('routes.documents.edit.title')")
 
-    .q-mt-lg(v-if="availableRoles.length")
-      headline(:content="$t('labels.access_control')")
-      p {{ $t('descriptions.access_control_documents') }}
+    content-block(v-if="availableRoles.length", :position="'last'")
+      headline(:content="$t('routes.documents.edit.title')")
+        | {{ $t('descriptions.access_control_documents') }}
 
-      q-field.q-mt-xl(dark)
+      content-paragraph(:position="'first'")
         q-checkbox(v-model="acl.public", :label="$t('labels.public')", dark)
 
-      q-field.q-mt-xl(orientation="vertical", dark)
+      content-paragraph
         q-select(v-model="acl.group", :clearable="true", :clear-value="undefined",
         :float-label="$t('labels.access_control_add_group')", :options="availableRoles", dark)
 
-      q-field.q-mt-xl(orientation="vertical", dark)
+      content-paragraph
         q-select(v-model="acl.group_remove", :clearable="true", :clear-value="undefined",
         :float-label="$t('labels.access_control_remove_group')", :options="availableRoles", dark)
 
       <!--q-field(dark)-->
         <!--q-checkbox(v-model="acl.recursive", :label="$t('labels.recursive')", dark)-->
 
-      .full-width.text-right.q-mt-sm
-        q-btn(:label="$t('buttons.update_access_control')", @click="updateACL", color="grey")
+      content-paragraph(:position="'last'")
+        .full-width.text-right.q-mt-sm
+          q-btn(:label="$t('buttons.update_access_control')", @click="updateACL", color="grey")
 </template>
 
 <script>
   import { mapGetters } from 'vuex'
   import { ObjectUtil } from 'mbjs-utils'
   import Headline from '../../components/shared/elements/Headline'
+  import ContentBlock from '../../components/shared/elements/ContentBlock'
+  import ContentParagraph from '../../components/shared/elements/ContentParagraph'
 
   export default {
     components: {
-      Headline
+      Headline,
+      ContentBlock,
+      ContentParagraph
     },
     data () {
       return {
