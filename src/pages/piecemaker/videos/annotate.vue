@@ -20,9 +20,8 @@
 
       // button toggles annotations
 
-      q-page-sticky(position="top-right", style="z-index: 2100;")
-        q-btn.q-ma-md(@click="handlerToggle('annotations')", color="dark", round,
-        :class="[drawer ? 'rotate-180' : '']", icon="keyboard_backspace", size="xs")
+      //q-page-sticky(position="top-right", style="z-index: 2100;")
+        q-btn.q-ma-md(@click="handlerToggle('annotations')", color="dark", round, :class="[drawer ? 'rotate-180' : '']", icon="keyboard_backspace", size="xs")
 
       // swimlane content
 
@@ -53,9 +52,8 @@
 
       // button toggles swimlanes visibility
 
-      q-page-sticky.q-pa-md(position="bottom-right")
-        q-btn(v-if="!visibilitySwimlanes && userHasSwimlane", @click="handlerToggle('swimlanes')", color="dark", round,
-        :class="[visibilitySwimlanes ? 'rotate-270' : 'rotate-90']", icon="keyboard_backspace", size="xs")
+      //q-page-sticky.q-pa-md(position="bottom-right")
+        q-btn(v-if="!visibilitySwimlanes && userHasSwimlane", @click="handlerToggle('swimlanes')", color="dark", round, :class="[visibilitySwimlanes ? 'rotate-270' : 'rotate-90']", icon="keyboard_backspace", size="xs")
 
       // input field for new annotations
 
@@ -73,7 +71,7 @@
       q-input(float-label="Filter", value="")
 
     // annotations list
-    q-layout-drawer.bg-dark(v-if="annotations", v-model="drawerVisibility", side="right", :width="400")
+    q-layout-drawer.bg-dark(v-if="annotations && drawer !== undefined", v-model="drawer", side="right", :width="400")
       .absolute.fit.bg-dark(style="")
       q-list.bg-dark.q-py-none(dark, @mouseleave.native="currentHover === undefined")
 
@@ -174,6 +172,8 @@
         await this.getAnnotations()
         this.$q.loading.hide()
       }
+      this.drawer = this.visibilityDrawer
+      console.log('vaas', this.visibilityDrawer)
       this.setupScreen()
     },
     beforeDestroy () {
@@ -210,14 +210,14 @@
         componentKey: 0,
         selectedMillis: undefined,
         fRendererMarker: false,
-        drawerVisibility: undefined
+        drawer: undefined
       }
     },
     computed: {
       ...mapGetters({
         user: 'auth/getUserState',
         selectedAnnotation: 'swimLaneSettings/getSelectedAnnotation',
-        drawer: 'swimLaneSettings/getVisibilityDrawer',
+        visibilityDrawer: 'swimLaneSettings/getVisibilityDrawer',
         visibilitySwimlanes: 'swimLaneSettings/getVisibilitySwimlanes',
         visibilityDetails: 'swimLaneSettings/getVisibilityDetails',
         isMobile: 'globalSettings/getIsMobile'
@@ -261,12 +261,12 @@
       }
     },
     watch: {
-      drawer (val) {
-        this.drawerVisibility = val
-      },
       storeCursorTop (val) {
         this.videoHeight = val - this.headerHeight
         this.swimlanesHeight = (this.viewport.height - val)
+      },
+      visibilityDrawer (val) {
+        this.drawer = val
       },
       visibilityDetails () {
         this.onForceRenderer()

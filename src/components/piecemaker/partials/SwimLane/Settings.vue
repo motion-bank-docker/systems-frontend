@@ -17,7 +17,7 @@
           // :class="[laneMode === o.value ? 'bg-primary text-white' : '']") {{ o.label }}
 
     // expand button
-    q-btn.flip-vertical.q-ml-xs(@click="expand()", size="xs", flat, round, icon="clear_all",
+    q-btn.flip-vertical.q-ml-xs(@click="event => {expand(event)}", size="xs", flat, round, icon="clear_all",
     :class="[expandedMode ? 'bg-primary text-white' : '']")
 
     // FIXME: add buttons later
@@ -44,7 +44,9 @@
     mounted () {
     },
     methods: {
-      expand () {
+      expand (event) {
+        // FIXME: prevent button from getting focused. Pressing space after click toggles it again. preventDefault does not work.
+        event.preventDefault()
         this.$store.commit('swimLaneSettings/setExpandedMode')
       }
     },

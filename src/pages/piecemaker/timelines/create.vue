@@ -1,7 +1,7 @@
 <template lang="pug">
   full-screen
-    q-btn(v-if="!isMobile", slot="backButton", @click="$router.push({ name: 'piecemaker.timelines.list' })",
-    icon="keyboard_backspace", round, small)
+    //q-btn(v-if="!isMobile", slot="backButton", @click="$router.push({ name: 'piecemaker.timelines.list' })",
+      icon="keyboard_backspace", round, small)
 
     .q-pa-xl(style="min-width: 50vw;")
       h5.caption(dark) {{ $t('routes.piecemaker.timelines.create.title') }}
@@ -20,6 +20,8 @@
           <!--q-checkbox(dark, :label="$t('forms.timelines.import.fields.skip_acl')", v-model="skipAcl")-->
         .col-12.q-pa-md
           uploader(dark, :url="url", @finish="onFinish", allowed=".zip", :headers="headers", :fields="uploadFields")
+      q-btn(label="Cancel", @click.native="$router.push({name: 'piecemaker.timelines.list'})")
+
 </template>
 
 <script>

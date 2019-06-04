@@ -54,7 +54,7 @@
 
           // button hide details
 
-          q-btn.absolute-top-right(
+          //q-btn.absolute-top-right(
             @click="handlerToggle('markerDetails')",
             style="margin: -12px -6px 0 0;",
             icon="clear", size="xs", round, flat
@@ -79,10 +79,9 @@
 
           // button show details
 
-          q-btn.q-px-sm.q-mr-xs(
+          //q-btn.q-px-sm.q-mr-xs(
             v-if="!visibilityDetails",
-            @click="handlerToggle('markerDetails')", icon="keyboard_backspace",
-            :class="[visibilityDetails ? '' : 'rotate-180']", size="xs", round, flat
+            @click="handlerToggle('markerDetails')", icon="keyboard_backspace", :class="[visibilityDetails ? '' : 'rotate-180']", size="xs", round, flat
             )
 
           // button change horizontal dimensions from details (affects swimlane width, too)
@@ -107,7 +106,7 @@
               round, size="xs", flat
               )
               q-icon.rotate-90(name="code")
-            q-btn.q-ml-xs(
+            //q-btn.q-ml-xs(
               @click="handlerToggle('swimlanes')",
               icon="clear",
               round, size="xs", flat

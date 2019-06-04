@@ -1,7 +1,7 @@
 <template lang="pug">
   full-screen
     // q-btn(slot="backButton", @click="$router.push({ name: 'piecemaker.videos.list' })", icon="keyboard_backspace", round, small)
-    back-button(slot="backButton")
+    // back-button(slot="backButton")
     .q-px-xl(style="min-width: 50vw;")
       h5.caption(dark) {{ $t('routes.piecemaker.videos.create.title') }}
 
@@ -9,6 +9,7 @@
         .col-md-12
           calendar-time-main(@update="onCalendarUpdate")
           form-main(v-model="payload", :schema="schema", ref="videoForm")
+          q-btn(label="Cancel", @click.native="$router.push({name: 'piecemaker.timelines.show', params: {uuid: $route.params.timelineUuid} })")
 
 </template>
 
