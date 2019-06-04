@@ -3,9 +3,6 @@
     q-btn(v-if="!isMobile", slot="backButton", @click="$router.push({ name: 'documents.list' })",
     icon="keyboard_backspace", round, small)
 
-    content-block(:position="'first'")
-      headline(:content="$t('routes.documents.edit.title')")
-
     content-block(v-if="availableRoles.length", :position="'last'")
       headline(:content="$t('routes.documents.edit.title')")
         | {{ $t('descriptions.access_control_documents') }}
@@ -26,7 +23,7 @@
 
       content-paragraph(:position="'last'")
         .full-width.text-right.q-mt-sm
-          q-btn(:label="$t('buttons.update_access_control')", @click="updateACL", color="grey")
+          q-btn(:label="$t('buttons.update_access_control')", @click="updateACL", color="primary")
 </template>
 
 <script>
