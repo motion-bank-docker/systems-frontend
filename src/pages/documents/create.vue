@@ -3,7 +3,7 @@
     q-btn(v-if="!isMobile", slot="backButton", @click="$router.push({ name: 'documents.list' })",
     icon="keyboard_backspace", round, small)
 
-    content-block(position="'first'")
+    content-block(:position="'first'")
       headline(:content="$t('routes.documents.create.title')")
 
       content-paragraph(:position="'first'")
