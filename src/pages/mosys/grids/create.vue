@@ -11,7 +11,7 @@
       headline(:content="$t('forms.grids.import.title')")
 
       content-paragraph
-        q-input(dark, :placeholder="$t('forms.grids.import.fields.title')", v-model="uploadTitle")
+        q-input(dark, :float-label="$t('forms.grids.import.fields.title')", v-model="uploadTitle")
 
       content-paragraph
         q-checkbox(dark, :label="$t('forms.grids.import.fields.override_author')", v-model="overrideAuthor")

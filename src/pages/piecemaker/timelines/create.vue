@@ -19,7 +19,7 @@
 
       // new title (optional)
       content-paragraph(:position="first")
-        q-input(dark, :placeholder="$t('forms.timelines.import.fields.title')", v-model="uploadTitle")
+        q-input(dark, :float-label="$t('forms.timelines.import.fields.title')", v-model="uploadTitle")
 
       // set ownership
       content-paragraph
