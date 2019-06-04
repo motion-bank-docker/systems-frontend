@@ -26,27 +26,22 @@
 
       // add to group
       content-paragraph(:position="'first'")
-        // q-field.q-mb-md(orientation="vertical", dark)
         q-select(v-model="acl.group", :clearable="true", :clear-value="undefined",
         :float-label="$t('labels.access_control_add_group')", :options="availableRoles", dark)
 
       // remove from group
       content-paragraph
-        // q-field(orientation="vertical", dark)
         q-select(v-model="acl.group_remove", :clearable="true", :clear-value="undefined",
         :float-label="$t('labels.access_control_remove_group')", :options="availableRoles", dark)
 
       // apply to all contained annotations and videos
       content-paragraph
-        // q-field(dark)
         q-checkbox(v-model="acl.recursive", :label="$t('labels.recursive')", dark)
 
       // button "update access settings"
-      content-paragraph(:position="'last'")
-        //.full-width.text-right.q-mt-sm.q-pt-lg
-        .full-width.text-right
-          q-btn(:label="$t('buttons.update_access_control')", @click="updateACL", color="primary",
-          :class="[isMobile ? 'full-width' : '']")
+      content-paragraph
+        q-btn(:label="$t('buttons.update_access_control')", @click="updateACL", color="primary",
+        :class="[isMobile ? 'full-width' : '']", slot="buttons")
 
     // -------------------------------------------------------------------------------------------------- css stylesheet
 
@@ -64,9 +59,8 @@
 
       // button "submit"
       content-paragraph(:position="'last'")
-        .full-width.text-right
-          q-btn(q-if="$route.params.uuid", color="primary", label="Submit", @click="submit",
-          :class="[isMobile ? 'full-width' : '']")
+        q-btn(q-if="$route.params.uuid", color="primary", label="Submit", @click="submit",
+        :class="[isMobile ? 'full-width' : '']", slot="buttons")
 
 </template>
 
