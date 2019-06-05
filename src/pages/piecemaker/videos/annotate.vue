@@ -18,11 +18,6 @@
         video-player.full-height.relative-position(v-if="video", :annotation="video", :fine-controls="true",
         @ready="playerReady($event)", @time="onPlayerTime($event)")
 
-      // button toggles annotations
-
-      //q-page-sticky(position="top-right", style="z-index: 2100;")
-        q-btn.q-ma-md(@click="handlerToggle('annotations')", color="dark", round, :class="[drawer ? 'rotate-180' : '']", icon="keyboard_backspace", size="xs")
-
       // swimlane content
 
       .absolute-bottom-right.bg-dark.full-width.ui-border-top(
@@ -49,11 +44,6 @@
           @timecodeChange="gotoMillis",
           @updateAnnotation="updateAnnotation"
           )
-
-      // button toggles swimlanes visibility
-
-      //q-page-sticky.q-pa-md(position="bottom-right")
-        q-btn(v-if="!visibilitySwimlanes && userHasSwimlane", @click="handlerToggle('swimlanes')", color="dark", round, :class="[visibilitySwimlanes ? 'rotate-270' : 'rotate-90']", icon="keyboard_backspace", size="xs")
 
       // input field for new annotations
 
@@ -173,7 +163,6 @@
         this.$q.loading.hide()
       }
       this.drawer = this.visibilityDrawer
-      console.log('vaas', this.visibilityDrawer)
       this.setupScreen()
     },
     beforeDestroy () {
@@ -402,11 +391,15 @@
             Assert.isType(annotation.body.value, 'string')
             await this.$store.dispatch('annotations/patch', [annotation.id, annotation])
             await this.getAnnotations()
-            this.$store.commit('notifications/addMessage', {
-              body: 'messages.updated_annotation',
-              mode: 'alert',
-              type: 'success'
-            })
+            // this.$store.commit('notifications/addMessage', {
+            //   body: 'messages.updated_annotation',
+            //   mode: 'alert',
+            //   type: 'success',
+            //   options: {
+            //     position: 'top',
+            //     timeout: 200
+            //   }
+            // })
           }
           catch (err) {
             this.$handleError(this, err, 'errors.update_annotation_failed')

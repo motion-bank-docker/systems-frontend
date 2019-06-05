@@ -1,11 +1,6 @@
 <template lang="pug">
 
   card-full
-    q-btn(v-if="timeline && !isMobile",
-          slot="backButton",
-          @click="$router.push(`/piecemaker/timelines/${timeline._uuid}/videos`)",
-          icon="keyboard_backspace",
-          small, round)
     div(slot="form-logo")
     div(v-if="timeline", slot="form-title")
 
