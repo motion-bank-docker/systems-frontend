@@ -17,8 +17,15 @@
           // :class="[laneMode === o.value ? 'bg-primary text-white' : '']") {{ o.label }}
 
     // expand button
-    q-btn.flip-vertical.q-ml-xs(@click="event => {expand(event)}", size="xs", flat, round, icon="clear_all",
-    :class="[expandedMode ? 'bg-primary text-white' : '']")
+    q-btn.flip-vertical.q-ml-xs(
+      @click.prevent="event => {expand(event)}",
+      ref="expandBtn",
+      size="xs",
+      flat,
+      round,
+      icon="clear_all",
+      :class="[expandedMode ? 'bg-primary text-white' : '']"
+      )
 
     // FIXME: add buttons later
       // undo
@@ -44,9 +51,12 @@
     mounted () {
     },
     methods: {
-      expand (event) {
+      expand () {
+        // prevents the button from beeing focused.
+        // otherwise interferes with using space to select
+        // the viewport of the swim lane after it has been clicked
+        this.$refs.expandBtn.$el.blur()
         // FIXME: prevent button from getting focused. Pressing space after click toggles it again. preventDefault does not work.
-        event.preventDefault()
         this.$store.commit('swimLaneSettings/setExpandedMode')
       }
     },
