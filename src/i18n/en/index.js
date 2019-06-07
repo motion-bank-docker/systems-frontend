@@ -355,6 +355,10 @@ export default {
         users: {
           title: 'Users in this timeline',
           caption: '.'
+        },
+        videos: {
+          title: 'Videos',
+          caption: '.'
         }
       },
       videos: {
