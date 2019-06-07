@@ -1,7 +1,5 @@
 <template lang="pug">
   full-screen
-    // q-btn(slot="backButton", @click="$router.push({ name: 'piecemaker.videos.list' })", icon="keyboard_backspace", round, small)
-    back-button(slot="backButton")
 
     content-block(:position="'first'")
       headline(:content="$t('routes.piecemaker.videos.create.title')")
