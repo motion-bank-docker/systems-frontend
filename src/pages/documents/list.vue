@@ -2,19 +2,40 @@
   full-screen
     confirm-modal(ref="confirmModal", @confirm="handleConfirmModal")
 
-    span(slot="form-logo")
-    span(slot="form-title") {{ $t('routes.documents.list.title') }}
+    content-block(:position="'first'")
+      headline(:content="$t('routes.documents.list.title')")
 
-    data-table(v-if="user", :config="config", :title="'routes.documents.list.title'", ref="listTable")
-      template(slot="buttons-left")
-        q-btn(@click="$router.push({ name: 'documents.create' })", color="primary") {{ $t('buttons.create_document') }}
+      content-paragraph(:position="'first'")
+        data-table(v-if="user", :config="config", :title="'routes.documents.list.title'", ref="listTable")
+
+          // "create grid" button
+          //
+            template(slot="buttons-left")
+              q-btn(@click="$router.push({ name: 'documents.create' })", color="primary") {{ $t('buttons.create_document') }}
+          //
+            template(slot="buttons-left")
+              q-btn(@click="$router.push({ name: 'documents.create' })",
+              color="primary", icon="add")
+                span.on-right(v-if="!isMobile") {{ $t('buttons.create_document') }}
+          template(slot="top-buttons")
+            q-btn(@click="$router.push({ name: 'documents.create' })",
+            color="primary", :class="{'full-width': isMobile}", icon="add")
+              span.on-right.gt-xs {{ $t('buttons.create_document') }}
 </template>
 
 <script>
   import { mapGetters } from 'vuex'
   import { openURL } from 'quasar'
+  import Headline from '../../components/shared/elements/Headline'
+  import ContentBlock from '../../components/shared/elements/ContentBlock'
+  import ContentParagraph from '../../components/shared/elements/ContentParagraph'
 
   export default {
+    components: {
+      Headline,
+      ContentBlock,
+      ContentParagraph
+    },
     data () {
       const _this = this
       return {
@@ -71,7 +92,8 @@
     },
     computed: {
       ...mapGetters({
-        user: 'auth/getUserState'
+        user: 'auth/getUserState',
+        isMobile: 'globalSettings/getIsMobile'
       }),
       bucketName () {
         return `user-${this.user.uuid}`

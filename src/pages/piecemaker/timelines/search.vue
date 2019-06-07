@@ -1,27 +1,43 @@
 <template lang="pug">
   full-screen
-    q-btn(v-if="!isMobile", slot="backButton", @click="$router.push({ name: 'piecemaker.timelines.list' })",
-    icon="keyboard_backspace", round, small)
-    .row
-      .col-md-12
-        q-field(label="Search for", dark)
-          q-input(v-model="query", dark)
-        q-btn(@click="search", color="primary") Search
-    .row.q-mt-md(v-for="result in results")
-      .col-md-6
-        markdown-display.markdown-display(:content="result.body.value", :options="mdOptions")
-        small {{ getVideo(result).metadata.title }}
-      .col-md-6
-        p {{ formatDate(result.target.selector._valueMillis) }}
-        p
-          a(:href="`/piecemaker/videos/${getVideo(result).annotation._uuid}/annotate#${result._uuid}`") Goto Video
+
+    back-button-new(v-if="!isMobile", slot="backButton", :target="'piecemaker.timelines.list'")
+
+    content-block(:position="'first'")
+      headline(:content="'Search timelines'")
+
+      // input field
+      content-paragraph(:position="'first'")
+        q-input.q-mb-sm(v-model="query", dark, float-label="Search", :before="[{icon: 'search'}]")
+        .full-width.text-right
+          q-btn.full-width(@click="search", color="primary") Search
+
+      // results
+      content-paragraph(v-for="(result, i) in results", :class="{'q-mt-xl': i === 0}")
+        div(:class="{'ui-border-bottom': i < results.length - 1}")
+          // div
+          markdown-display.markdown-display(:content="result.body.value", :options="mdOptions")
+          .q-my-md
+            a.cursor-pointer(:href="`/piecemaker/videos/${getVideo(result).annotation._uuid}/annotate#${result._uuid}`")
+              | {{ getVideo(result).metadata.title }}
+            p.text-grey-8 {{ formatDate(result.target.selector._valueMillis) }}
 </template>
 
 <script>
   import { mapGetters } from 'vuex'
   import { DateTime } from 'luxon'
+  import BackButtonNew from '../../../components/shared/buttons/BackButtonNew'
+  import Headline from '../../../components/shared/elements/Headline'
+  import ContentBlock from '../../../components/shared/elements/ContentBlock'
+  import ContentParagraph from '../../../components/shared/elements/ContentParagraph'
 
   export default {
+    components: {
+      BackButtonNew,
+      Headline,
+      ContentBlock,
+      ContentParagraph
+    },
     data () {
       return {
         query: undefined,

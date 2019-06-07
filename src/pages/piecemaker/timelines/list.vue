@@ -2,36 +2,58 @@
   full-screen
     confirm-modal(ref="confirmModal", @confirm="handleConfirmModal")
 
-    span(slot="form-logo")
-    span(slot="form-title") {{ $t('routes.piecemaker.timelines.list.title') }}
+    //
+      span(slot="form-logo")
+      span(slot="form-title") {{ $t('routes.piecemaker.timelines.list.title') }}
+    content-block(:position="'first'")
+      headline(:content="$t('routes.piecemaker.timelines.list.title')")
 
-    // DIAGRAM
-      div.q-mb-xl(ref="diagramList")
-        svg(width="100%", :height="diagramDimensions.height")
-          defs
-            linearGradient(id="lgrad" x1="0%" y1="50%" x2="100%" y2="50%")
-              stop(offset="0%" style="stop-color:rgb(255,255,255);stop-opacity:.2")
-              stop(offset="100%" style="stop-color:rgb(255,255,255);stop-opacity:.025")
-          line(x1="0", x2="100%", :y1="diagramDimensions.height / 2", :y2="diagramDimensions.height / 2", style="stroke: rgba( 255, 255, 255, .25 ); stroke-width: 1;")
-          text.q-caption(v-for="n in 11",:x="(diagramDimensions.currentWidth / 10) * n - 2", :y="diagramDimensions.height / 2 - 10", fill="rgba( 255, 255, 255, .2)") {{ 1999 + n }}
-          svg(v-for="(dummy, i) in dummyData", :width="diagramDimensions.currentWidth - dummy.created", height="diagramDimensions.barHeight", :x="dummy.created")
-            line(x1="0", x2="0", y1="0", y2="100%", style="stroke: rgba( 255, 255, 255, .25 ); stroke-width: 1;")
-            rect.cursor-pointer.moba-hover-timeline(width="100%", height="100%")
-          circle.cursor-pointer.moba-svg-circle(v-for="n in 11", r="3", :cx="(diagramDimensions.currentWidth / 10) * n", :cy="diagramDimensions.height / 2", fill="rgba( 255, 255, 255, .5)")
-          // rect.moba-test(@click="testWidth = testWidth + 30", fill="red", :width="testWidth", height="30")
+      // DIAGRAM
+        div.q-mb-xl(ref="diagramList")
+          svg(width="100%", :height="diagramDimensions.height")
+            defs
+              linearGradient(id="lgrad" x1="0%" y1="50%" x2="100%" y2="50%")
+                stop(offset="0%" style="stop-color:rgb(255,255,255);stop-opacity:.2")
+                stop(offset="100%" style="stop-color:rgb(255,255,255);stop-opacity:.025")
+            line(x1="0", x2="100%", :y1="diagramDimensions.height / 2", :y2="diagramDimensions.height / 2", style="stroke: rgba( 255, 255, 255, .25 ); stroke-width: 1;")
+            text.q-caption(v-for="n in 11",:x="(diagramDimensions.currentWidth / 10) * n - 2", :y="diagramDimensions.height / 2 - 10", fill="rgba( 255, 255, 255, .2)") {{ 1999 + n }}
+            svg(v-for="(dummy, i) in dummyData", :width="diagramDimensions.currentWidth - dummy.created", height="diagramDimensions.barHeight", :x="dummy.created")
+              line(x1="0", x2="0", y1="0", y2="100%", style="stroke: rgba( 255, 255, 255, .25 ); stroke-width: 1;")
+              rect.cursor-pointer.moba-hover-timeline(width="100%", height="100%")
+            circle.cursor-pointer.moba-svg-circle(v-for="n in 11", r="3", :cx="(diagramDimensions.currentWidth / 10) * n", :cy="diagramDimensions.height / 2", fill="rgba( 255, 255, 255, .5)")
+            // rect.moba-test(@click="testWidth = testWidth + 30", fill="red", :width="testWidth", height="30")
 
-    data-table(:config="config", :title="'routes.piecemaker.timelines.list.title'", ref="listTable",
-      path="maps", :query="query", base-path="timelines", :has-show="isStaging", :request-transform="requestTransform")
-      template(slot="buttons-left")
-        q-btn(@click="$router.push({ name: 'piecemaker.timelines.create' })", color="primary") {{ $t('buttons.create_timeline') }}
+      content-paragraph
+        data-table(:config="config", :title="'routes.piecemaker.timelines.list.title'", ref="listTable",
+        path="maps", :query="query", base-path="timelines", :has-show="isStaging", :request-transform="requestTransform")
+
+          // button: create timeline
+          //
+            template(slot="buttons-left")
+              q-btn(@click="$router.push({ name: 'piecemaker.timelines.create' })",
+              color="primary", icon="add")
+                span.on-right(v-if="!isMobile") {{ $t('buttons.create_timeline') }}
+          template(slot="top-buttons")
+            q-btn(@click="$router.push({ name: 'piecemaker.timelines.create' })",
+            color="primary", :class="{'full-width': isMobile}", icon="add")
+              span.on-right.gt-xs {{ $t('buttons.create_timeline') }}
 </template>
 
 <script>
   import constants from 'mbjs-data-models/src/constants'
   import { DateTime } from 'luxon'
   import { deleteHelper } from 'mbjs-quasar/src/lib'
+  import Headline from '../../../components/shared/elements/Headline'
+  import ContentBlock from '../../../components/shared/elements/ContentBlock'
+  import ContentParagraph from '../../../components/shared/elements/ContentParagraph'
+  import { mapGetters } from 'vuex'
 
   export default {
+    components: {
+      Headline,
+      ContentBlock,
+      ContentParagraph
+    },
     data () {
       const _this = this
       return {
@@ -44,28 +66,6 @@
           height: 100,
           offsetY: 20
         },
-        /* dummyData: [
-          {
-            author: 'ch',
-            created: 0
-          },
-          {
-            author: 'ch',
-            created: 100
-          },
-          {
-            author: 'ch',
-            created: 105
-          },
-          {
-            author: 'ch',
-            created: 300
-          },
-          {
-            author: 'ch',
-            created: 800
-          }
-        ], */
         query: { type: constants.mapTypes.MAP_TYPE_TIMELINE },
         requestTransform: async rows => {
           for (let i in rows) {
@@ -150,6 +150,11 @@
     },
     mounted () {
       this.$root.$emit('setBackButton')
+    },
+    computed: {
+      ...mapGetters({
+        isMobile: 'globalSettings/getIsMobile'
+      })
     }
   }
 </script>

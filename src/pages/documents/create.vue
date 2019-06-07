@@ -3,15 +3,26 @@
     q-btn(v-if="!isMobile", slot="backButton", @click="$router.push({ name: 'documents.list' })",
     icon="keyboard_backspace", round, small)
 
-    h5.caption(dark) {{ $t('routes.documents.create.title') }}
-      .row
-        .col-md-12
-          uploader(v-if="user", dark, :url="url", @finish="onFinish", :headers="headers", :fields="uploadFields")
+    content-block(:position="'first'")
+      headline(:content="$t('routes.documents.create.title')")
+
+      content-paragraph(:position="'first'")
+        uploader(v-if="user", dark, :url="url", @finish="onFinish", :headers="headers", :fields="uploadFields")
+
 </template>
 
 <script>
   import { mapGetters } from 'vuex'
+  import Headline from '../../components/shared/elements/Headline'
+  import ContentBlock from '../../components/shared/elements/ContentBlock'
+  import ContentParagraph from '../../components/shared/elements/ContentParagraph'
+
   export default {
+    components: {
+      Headline,
+      ContentBlock,
+      ContentParagraph
+    },
     data () {
       return {
         uploadFields: [],

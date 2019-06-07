@@ -3,34 +3,42 @@
     q-btn(v-if="!isMobile", slot="backButton", @click="$router.push({ name: 'documents.list' })",
     icon="keyboard_backspace", round, small)
 
-    h5.caption(dark) {{ $t('routes.documents.edit.title') }}
-    .row(v-if="availableRoles.length")
-      .col-md-12
-        h5.caption.text-light {{ $t('labels.access_control') }}
-        p {{ $t('descriptions.access_control_documents') }}
-      .col-md-12.q-mb-md
-        q-field(dark)
-          q-checkbox(v-model="acl.public", :label="$t('labels.public')", dark)
-      .col-md-12.q-mb-md
-        q-field(orientation="vertical", dark)
-          q-select(v-model="acl.group", :clearable="true", :clear-value="undefined",
-          :float-label="$t('labels.access_control_add_group')", :options="availableRoles", dark)
-      .col-md-12.q-mb-md
-        q-field(orientation="vertical", dark)
-          q-select(v-model="acl.group_remove", :clearable="true", :clear-value="undefined",
-          :float-label="$t('labels.access_control_remove_group')", :options="availableRoles", dark)
-      <!--.col-md-12.q-mb-md-->
-        <!--q-field(dark)-->
-          <!--q-checkbox(v-model="acl.recursive", :label="$t('labels.recursive')", dark)-->
-      .row.xs-gutter.full-width.justify-end.items-end
-        q-btn(:label="$t('buttons.update_access_control')", @click="updateACL", color="grey")
+    content-block(v-if="availableRoles.length", :position="'last'")
+      headline(:content="$t('routes.documents.edit.title')")
+        | {{ $t('descriptions.access_control_documents') }}
+
+      content-paragraph(:position="'first'")
+        q-checkbox(v-model="acl.public", :label="$t('labels.public')", dark)
+
+      content-paragraph
+        q-select(v-model="acl.group", :clearable="true", :clear-value="undefined",
+        :float-label="$t('labels.access_control_add_group')", :options="availableRoles", dark)
+
+      content-paragraph
+        q-select(v-model="acl.group_remove", :clearable="true", :clear-value="undefined",
+        :float-label="$t('labels.access_control_remove_group')", :options="availableRoles", dark)
+
+      <!--q-field(dark)-->
+        <!--q-checkbox(v-model="acl.recursive", :label="$t('labels.recursive')", dark)-->
+
+      content-paragraph(:position="'last'")
+        .full-width.text-right.q-mt-sm
+          q-btn(:label="$t('buttons.update_access_control')", @click="updateACL", color="primary")
 </template>
 
 <script>
   import { mapGetters } from 'vuex'
   import { ObjectUtil } from 'mbjs-utils'
+  import Headline from '../../components/shared/elements/Headline'
+  import ContentBlock from '../../components/shared/elements/ContentBlock'
+  import ContentParagraph from '../../components/shared/elements/ContentParagraph'
 
   export default {
+    components: {
+      Headline,
+      ContentBlock,
+      ContentParagraph
+    },
     data () {
       return {
         acl: {

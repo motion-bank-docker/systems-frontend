@@ -10,7 +10,8 @@ a
   text-decoration none
 
 body
-  background: $dark
+  //background: $dark
+  background: $grey-10
 
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -59,9 +60,12 @@ body
   -moz-box-shadow: none
   box-shadow: none
 
+.q-table-horizontal-separator tbody tr:last-of-type td
+  border none!important
+
 .q-table-container.q-table-dark
   .q-table-top
-    border-top: 1px solid $darker
+    //border-top: 1px solid $darker
   td
   table
   thead
@@ -71,7 +75,41 @@ body
       &:hover
         background: $darker
 
+.q-table-top,
+.q-table-control
+  padding 0!important
+  min-height auto
 
+.border-darker
+  border 1px solid $darker
+
+.bg-darker
+  background-color $darker
+
+.q-field-bottom
+  display none
+
+.q-field-content > div
+  margin-top 0
+  margin-bottom 0
+
+.q-table-dark .q-table-top
+  border-top 0
+
+.q-table-top .q-table-control
+  min-height 0
+
+.q-collapsible-inner > .q-item
+  padding-left 0!important
+  padding-right 0!important
+
+.q-collapsible-sub-item
+  padding-left 0
+  padding-right 0
+
+@media screen and (max-width: 767px)
+  h5
+    font-size 20px
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * custom ui classes
  */
