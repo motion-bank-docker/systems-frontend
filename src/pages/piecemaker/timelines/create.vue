@@ -26,8 +26,8 @@
         q-checkbox(dark, :label="$t('forms.timelines.import.fields.override_author')", v-model="overrideAuthor")
 
       content-paragraph(:position="last")
-        uploader(dark, :url="url", @finish="onFinish", allowed=".zip", :headers="headers", :fields="uploadFields")
-
+          uploader(dark, :url="url", @finish="onFinish", allowed=".zip", :headers="headers", :fields="uploadFields")
+      q-btn(label="Cancel", @click.native="$router.push({name: 'piecemaker.timelines.list'})")
 </template>
 
 <script>

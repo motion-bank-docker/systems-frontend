@@ -7,7 +7,6 @@
 
     content-block(:position="'first'")
       headline(:content="$t('routes.piecemaker.timelines.edit.title')")
-
       content-paragraph
         form-main(v-model="payload", :schema="schema")
           div(slot="form-buttons-add", :class="{'full-width row q-mb-sm': isMobile}")
@@ -56,9 +55,11 @@
 
   import { openURL } from 'quasar'
   import { mapGetters } from 'vuex'
+  import PageSubNav from '../../../components/shared/navigation/PageSubNav'
 
   export default {
     components: {
+      PageSubNav,
       AccessControl,
       BackButtonNew,
       FormMain,

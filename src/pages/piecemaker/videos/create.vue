@@ -11,6 +11,7 @@
 
       content-paragraph(:position="'last'")
         form-main(v-model="payload", :schema="schema", ref="videoForm")
+          q-btn(label="Cancel", @click.native="$router.push({name: 'piecemaker.timelines.show', params: {uuid: $route.params.timelineUuid} })")
 
 </template>
 

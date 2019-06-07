@@ -30,9 +30,11 @@
   import Headline from '../../../components/shared/elements/Headline'
   import ContentBlock from '../../../components/shared/elements/ContentBlock'
   import ContentParagraph from '../../../components/shared/elements/ContentParagraph'
+  import PageSubNav from '../../../components/shared/navigation/PageSubNav'
 
   export default {
     components: {
+      PageSubNav,
       BackButtonNew,
       Headline,
       ContentBlock,

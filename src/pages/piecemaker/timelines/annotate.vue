@@ -9,9 +9,9 @@
     // TOP LEFT
     //
     //
-    .absolute-top-left.q-ma-md(v-if="!isMobile")
+    //.absolute-top-left.q-ma-md(v-if="!isMobile")
       // BUTTON - GO BACK
-      back-button.fixed-top-left.q-ma-md(slot="nav-button", style="top: 50px; z-index: 2100;")
+      //back-button.fixed-top-left.q-ma-md(slot="nav-button", style="top: 50px; z-index: 2100;")
 
     // TOP CENTER: INPUT AREA
     //

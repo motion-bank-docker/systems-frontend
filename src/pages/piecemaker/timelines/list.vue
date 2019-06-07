@@ -24,8 +24,16 @@
             // rect.moba-test(@click="testWidth = testWidth + 30", fill="red", :width="testWidth", height="30")
 
       content-paragraph
-        data-table(:config="config", :title="'routes.piecemaker.timelines.list.title'", ref="listTable",
-        path="maps", :query="query", base-path="timelines", :has-show="isStaging", :request-transform="requestTransform")
+        data-table(
+      :config="config",
+      :title="'routes.piecemaker.timelines.list.title'",
+      ref="listTable",
+        path="maps",
+      :query="query",
+      base-path="timelines",
+      :has-show="isStaging",
+      :request-transform="requestTransform"
+      )
 
           // button: create timeline
           //
@@ -108,17 +116,23 @@
           ],
           actions: [
             {
+              type: 'show',
+              title: 'Videos',
+              color: 'primary',
+              click: (item) => _this.$router.push({ name: 'piecemaker.timelines.show', params: { uuid: item._uuid } })
+            },
+            {
               type: 'live-annotate',
               title: 'buttons.live_annotate',
               color: 'primary',
               click: (item) => _this.$router.push({ name: 'piecemaker.timelines.annotate', params: { uuid: item._uuid } })
             },
-            {
-              type: 'videos',
-              title: 'buttons.videos',
-              color: 'primary',
-              click: (item) => _this.$router.push({ name: 'piecemaker.videos.list', params: { timelineUuid: item._uuid } })
-            },
+            // {
+            //   type: 'videos',
+            //   title: 'buttons.videos',
+            //   color: 'primary',
+            //   click: (item) => _this.$router.push({ name: 'piecemaker.videos.list', params: { timelineUuid: item._uuid } })
+            // },
             {
               type: 'search',
               title: 'buttons.search',

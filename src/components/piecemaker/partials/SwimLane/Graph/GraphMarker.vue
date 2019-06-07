@@ -331,7 +331,6 @@
             this.millisCached = tc
           }
           this.durationCached = Math.max(e, 0)
-          console.log(this.durationCached)
           this.save()
         }
       },

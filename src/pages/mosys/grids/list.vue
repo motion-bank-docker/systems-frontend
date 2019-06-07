@@ -90,6 +90,12 @@
           ],
           actions: [
             {
+              type: 'show',
+              title: 'Preview',
+              color: 'primary',
+              click: (item) => _this.$router.push({ name: 'mosys.grids.show', params: { uuid: item._uuid } })
+            },
+            {
               type: 'annotate',
               title: 'routes.mosys.grids.buttons.annotate',
               color: 'primary',
