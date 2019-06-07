@@ -2,34 +2,42 @@
   full-screen
     confirm-modal(ref="confirmModal", @confirm="handleConfirmModal")
 
-    span(slot="form-logo")
-    //span(slot="form-title" v-if="timeline") {{ timeline.title }}
+    content-block(:position="'first'")
+      headline(:content="$t('routes.piecemaker.timelines.videos.title')")
+        | {{ timeline.title }}
 
-    h5.caption.text-light Videos
-    data-table(
-      v-if="query",
-      ref="listTable",
-      :config="config",
-      :title="'routes.piecemaker.videos.list.title'",
-      path="annotations",
-      :query="query",
-      base-path="videos",
-      :request-transform="requestTransform",
-      :customTitleLink="'piecemaker.videos.annotate'"
-      )
-      template(slot="buttons-left")
-        q-btn(@click="$router.push({ name: 'piecemaker.videos.create', params: { timelineUuid: $route.params.uuid } })",
-        color="primary") {{ $t('buttons.add_video') }}
+      content-paragraph
+        data-table(
+        v-if="query",
+        ref="listTable",
+        :config="config",
+        :title="'routes.piecemaker.videos.list.title'",
+        path="annotations",
+        :query="query",
+        base-path="videos",
+        :request-transform="requestTransform",
+        :customTitleLink="'piecemaker.videos.annotate'"
+        )
+          template(slot="top-buttons")
+            q-btn(@click="$router.push({ name: 'piecemaker.videos.create', params: { timelineUuid: $route.params.uuid } })",
+            color="primary", :class="{'full-width': isMobile}", icon="add")
+              span.on-right.gt-xs {{ $t('buttons.add_video') }}
 </template>
 
 <script>
   import { DateTime } from 'luxon'
   import { mapGetters } from 'vuex'
   import PageSubNav from '../../../components/shared/navigation/PageSubNav'
+  import Headline from '../../../components/shared/elements/Headline'
+  import ContentBlock from '../../../components/shared/elements/ContentBlock'
+  import ContentParagraph from '../../../components/shared/elements/ContentParagraph'
 
   export default {
     components: {
-      PageSubNav
+      PageSubNav,
+      Headline,
+      ContentBlock,
+      ContentParagraph
     },
     data () {
       const _this = this
@@ -137,7 +145,6 @@
       }
     },
     async mounted () {
-      this.$root.$emit('setBackButton', '/piecemaker/timelines')
       this.timeline = await this.$store.dispatch('maps/get', this.$route.params.uuid)
       if (this.timeline) {
         this.query = {
