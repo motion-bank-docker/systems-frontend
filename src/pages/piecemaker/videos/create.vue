@@ -1,14 +1,16 @@
 <template lang="pug">
   full-screen
     // q-btn(slot="backButton", @click="$router.push({ name: 'piecemaker.videos.list' })", icon="keyboard_backspace", round, small)
-    // back-button(slot="backButton")
-    .q-px-xl(style="min-width: 50vw;")
-      h5.caption(dark) {{ $t('routes.piecemaker.videos.create.title') }}
+    back-button(slot="backButton")
 
-      .row
-        .col-md-12
-          calendar-time-main(@update="onCalendarUpdate")
-          form-main(v-model="payload", :schema="schema", ref="videoForm")
+    content-block(:position="'first'")
+      headline(:content="$t('routes.piecemaker.videos.create.title')")
+
+      content-paragraph(:position="'first'")
+        calendar-time-main(@update="onCalendarUpdate")
+
+      content-paragraph(:position="'last'")
+        form-main(v-model="payload", :schema="schema", ref="videoForm")
           q-btn(label="Cancel", @click.native="$router.push({name: 'piecemaker.timelines.show', params: {uuid: $route.params.timelineUuid} })")
 
 </template>
@@ -16,6 +18,9 @@
 <script>
   import CalendarTimeMain from '../../../components/shared/forms/CalendarTimeMain'
   import FormMain from '../../../components/shared/forms/FormMain'
+  import Headline from '../../../components/shared/elements/Headline'
+  import ContentBlock from '../../../components/shared/elements/ContentBlock'
+  import ContentParagraph from '../../../components/shared/elements/ContentParagraph'
 
   import { DateTime } from 'luxon'
   import { required } from 'vuelidate/lib/validators'
@@ -25,7 +30,10 @@
   export default {
     components: {
       CalendarTimeMain,
-      FormMain
+      FormMain,
+      Headline,
+      ContentBlock,
+      ContentParagraph
     },
     methods: {
       onCalendarUpdate (val) {

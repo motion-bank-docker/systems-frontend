@@ -2,26 +2,50 @@
   full-screen
     confirm-modal(ref="confirmModal", @confirm="handleConfirmModal")
 
-    span(slot="form-title") {{ $t('routes.mosys.grids.list.title') }}
-    data-table(
-      ref="listTable",
-      :config="config",
-      :title="'routes.mosys.grids.list.title'",
-      path="maps",
-      :query="query",
-      :requestTransform="requestTransform"
-      base-path="grids",
-      :has-show="true")
-        template(slot="buttons-left")
-          q-btn(@click="$router.push({ name: 'mosys.grids.create' })", color="primary") {{ $t('buttons.create_grid') }}
+    content-block(:position="'first'")
+      headline(:content="$t('routes.mosys.grids.list.title')")
+
+      content-paragraph
+        data-table(
+        ref="listTable",
+        :config="config",
+        :title="'routes.mosys.grids.list.title'",
+        path="maps",
+        :query="query",
+        :requestTransform="requestTransform"
+        base-path="grids",
+        :has-show="true")
+
+          // "create grid" button
+          // template(slot="buttons-left")
+          template(slot="top-buttons")
+            // q-btn(@click="$router.push({ name: 'mosys.grids.create' })", color="primary") {{ $t('buttons.create_grid') }}
+            //
+              q-btn(@click="$router.push({ name: 'mosys.grids.create' })",
+              color="primary", icon="add")
+                span.on-right(v-if="!isMobile") {{ $t('buttons.create_grid') }}
+            q-btn(@click="$router.push({ name: 'mosys.grids.create' })",
+            color="primary", :class="{'full-width': isMobile}", icon="add")
+              span.on-right.gt-xs {{ $t('buttons.create_grid') }}
+              // span.on-right(v-if="!isMobile") {{ $t('buttons.create_grid') }}
+              // span.on-right {{ $t('buttons.create_grid') }}
 </template>
 
 <script>
   import constants from 'mbjs-data-models/src/constants'
   import { DateTime } from 'luxon'
+  import { mapGetters } from 'vuex'
   import { deleteHelper } from 'mbjs-quasar/src/lib'
+  import Headline from '../../../components/shared/elements/Headline'
+  import ContentBlock from '../../../components/shared/elements/ContentBlock'
+  import ContentParagraph from '../../../components/shared/elements/ContentParagraph'
 
   export default {
+    components: {
+      Headline,
+      ContentBlock,
+      ContentParagraph
+    },
     data () {
       const _this = this
       return {
@@ -95,6 +119,11 @@
     },
     mounted () {
       this.$root.$emit('setBackButton')
+    },
+    computed: {
+      ...mapGetters({
+        isMobile: 'globalSettings/getIsMobile'
+      })
     },
     methods: {
       async handleConfirmModal (item) {
