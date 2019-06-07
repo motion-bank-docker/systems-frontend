@@ -1,39 +1,54 @@
 <template lang="pug">
+  full-screen
 
-  // center-card-three-quarter
-  card-full
+    content-block(:position="'first'")
 
-    // hides logo
-    span(slot="form-logo")
-
-    h5.no-margin(slot="form-title")
-      div(v-if="state == 'manage-profile'")
-        span.text-grey-6 {{ $t('routes.users.manage.title') }}
-        br
+      headline(v-if="state == 'manage-profile'", :content="$t('routes.users.manage.title')")
         | {{ $t('routes.users.manage.caption') }}
-        div(v-if="isFirst")
-          br
+        template(v-if="isFirst")
           | {{ $t('routes.users.manage.first_login') }}
-      div(v-else)
-        span.text-grey-6 {{ $t('routes.users.first_login.title') }}
-        br
-        | {{ $t('routes.users.first_login.caption') }}
 
-    // form-main(v-if="payload !== undefined", v-model="payload", :schema="schema")
-    form-main(v-model="payload", :schema="schema")
-      q-btn.q-mr-md.bg-grey-9(v-if="!isFirst", slot="form-buttons-add", label="close account")
+      headline(v-else, :content="$t('routes.users.first_login.title')")
+        template()
+          | {{ $t('routes.users.first_login.caption') }}
+
+      content-paragraph
+        form-main(v-model="payload", :schema="schema")
+          q-btn.q-mr-md.bg-grey-9(v-if="!isFirst", slot="form-buttons-add", :label="$t('buttons.close_account')")
+
+    //
+      h5.no-margin(slot="form-title")
+        div(v-if="state == 'manage-profile'")
+          span.text-grey-6 {{ $t('routes.users.manage.title') }}
+          br
+          | {{ $t('routes.users.manage.caption') }}
+          div(v-if="isFirst")
+            br
+            | {{ $t('routes.users.manage.first_login') }}
+
+        div(v-else)
+          span.text-grey-6 {{ $t('routes.users.first_login.title') }}
+          br
+          | {{ $t('routes.users.first_login.caption') }}
 
 </template>
 
 <script>
-  import CardFull from '../../../components/shared/layouts/CardFull'
+  import FullScreen from '../../../components/shared/layouts/FullScreen'
   import { FormMain } from '../../../components/shared/forms'
   // import { required, sameAs, minLength, email } from 'vuelidate/lib/validators'
   import { required, minLength } from 'vuelidate/lib/validators'
+  import Headline from '../../../components/shared/elements/Headline'
+  import ContentBlock from '../../../components/shared/elements/ContentBlock'
+  import ContentParagraph from '../../../components/shared/elements/ContentParagraph'
+
   export default {
     components: {
-      CardFull,
-      FormMain
+      FullScreen,
+      FormMain,
+      Headline,
+      ContentBlock,
+      ContentParagraph
     },
     mounted () {
       this.isFirst = this.$route.params.isFirst
