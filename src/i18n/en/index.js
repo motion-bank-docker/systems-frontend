@@ -12,6 +12,7 @@ export default {
     add_and_go: 'Add & Go',
     back: 'Back',
     create_account: 'Create Account',
+    close_account: 'Close Account',
     create_document: 'Add Document',
     create_timeline: 'Create Timeline',
     create_grid: 'Create Grid',
