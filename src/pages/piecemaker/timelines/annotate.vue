@@ -26,7 +26,13 @@
 
     // input field
     q-page-sticky(position="top")
-      annotation-field(@annotation="onAnnotation", ref="annotationField", :submit-on-num-enters="2")
+      // annotation-field(@annotation="onAnnotation", ref="annotationField", :submit-on-num-enters="2")
+      annotation-field(
+      @annotation="onAnnotation",
+      ref="annotationField",
+      :submit-on-num-enters="1",
+      :selector-value="baseSelector",
+      :hasTransparency="false")
 
 </template>
 
@@ -51,7 +57,7 @@
       }
     },
     async mounted () {
-      this.$root.$emit('setBackButton', '/piecemaker/timelines')
+      // this.$root.$emit('setBackButton', '/piecemaker/timelines')
       this.timeline = await this.$store.dispatch('maps/get', this.$route.params.uuid)
     },
     computed: {
@@ -77,7 +83,8 @@
           const target = this.timeline.getInterval(annotation.target.selector.value['date-time:t'])
           const payload = ObjectUtil.merge(annotation, {target})
           const result = await this.$store.dispatch('annotations/post', payload)
-          if (result.body.type === 'VocabularyEntry') {
+          // if (result.body.type === 'VocabularyEntry') {
+          if (result.body.type === 'VocabularyEntry' && !result.body.value) {
             const entry = await this.$vocabularies.getEntry(result.body.source.id)
             result.body.value = entry.value
           }
