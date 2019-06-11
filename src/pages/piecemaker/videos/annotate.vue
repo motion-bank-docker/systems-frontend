@@ -27,6 +27,7 @@
         )
         swim-lane(
           v-if="timeline",
+          ref="swimLane",
           :map="timeline",
           :timelineUuid="timeline._uuid",
           :markerDetails="false",
@@ -38,9 +39,7 @@
           :key="componentKey",
           :selectedMillis="selectedMillis",
           :focusedAnnotation="focusedAnnotation",
-          :forceRendererMarker="fRendererMarker",
           @emitHandler="handlerToggle('swimlanes')",
-          @forceRenderer="onForceRenderer",
           @timecodeChange="gotoMillis",
           @updateAnnotation="updateAnnotation"
           )
@@ -61,7 +60,11 @@
       q-input(float-label="Filter", value="")
 
     // annotations list
-    q-layout-drawer.bg-dark(v-if="annotations && drawer !== undefined", v-model="drawer", side="right", :width="400")
+    q-layout-drawer.bg-dark(
+      v-if="annotations && drawer !== undefined",
+      v-model="drawer",
+      side="right",
+      :width="400")
       .absolute.fit.bg-dark(style="")
       q-list.bg-dark.q-py-none(dark, @mouseleave.native="currentHover === undefined")
 
@@ -256,9 +259,7 @@
       },
       visibilityDrawer (val) {
         this.drawer = val
-      },
-      visibilityDetails () {
-        this.onForceRenderer()
+        this.$refs.swimLane.updateCache(400)
       },
       currentIndex (val) {
         if (typeof this.editAnnotationIndex === 'number') return
@@ -280,9 +281,6 @@
           this.videoHeight = this.viewport.height / 2 - this.headerHeight
           this.swimlanesHeight = this.viewport.height / 2
         }
-      },
-      onForceRenderer () {
-        this.componentKey += 1
       },
       setHover (val) {
         this.currentHover = val

@@ -6,7 +6,7 @@
       width="100%", height="100%"
       )
     // Nav Handle
-    svg.sl-nav-handle( :x="navHandleX", :width="navHandleWidth", :height="height", )
+    svg.sl-nav-handle( :x="navHandleXPercent", :width="navHandleWidthPercent", :height="height", )
       rect.sl-nav-handle-background.fill-faded(
         @mousedown="onNavHandleBackgroundDown ($event)",
         :class="root.isDragged(['navHandleBackground', 'navBackground']) ? 'grabbing' : 'grab'"
@@ -65,11 +65,16 @@
         scrollPosition: 'swimLaneSettings/getScrollPosition'
       }),
       navHandleX () {
-        // return this.root.toAbsCompX(this.scrollPosition.x)
         return this.root.toAbsCompX(this.scrollPosition.x)
+      },
+      navHandleXPercent () {
+        return this.scrollPosition.x * 100 + '%'
       },
       navHandleWidth () {
         return this.root.toAbsCompX(this.scaleFactor)
+      },
+      navHandleWidthPercent () {
+        return this.scaleFactor * 100 + '%'
       },
       timecodeCurrentX () {
         if (this.timecodeCurrent) return Math.floor(this.root.millisToAbsComp(this.timecodeCurrent)) + 0.5
