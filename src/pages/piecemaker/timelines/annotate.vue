@@ -2,37 +2,42 @@
 
   // LIVE ANNOTATE
 
-  .wrapper.relative-position(v-if="timeline")
+  .q-pb-xl(v-if="timeline")
 
     // annotations
-    .row.q-pb-xl
-      .col-xs-12.offset-xs-none.col-md-10.offset-md-1.col-lg-8.offset-lg-2
-        q-list(v-if="inputStyle", no-border, style="margin-top: 8rem;")
-          q-item(v-for="(annotation, i) in annotations", :key="annotation._uuid", :id="annotation._uuid")
-            q-item-side(v-if="annotation.target.selector")
-              | {{ formatSelectorForList(annotation.target.selector) }}
-            q-item-main
+    .row
+      q-list.col-xs-12.offset-xs-none.col-md-10.offset-md-1.col-lg-8.offset-lg-2(
+      v-if="inputStyle", no-border, style="margin-top: 8rem;")
+
+        q-item(v-for="(annotation, i) in annotations", :key="annotation._uuid", :id="annotation._uuid")
+          q-item-main
+
+            q-item-tile.items-center.row
+              .col-6(v-if="annotation.target.selector")
+                timecode-label(:millis="annotation.target.selector._valueMillis")
+
+              .col-6.text-right.annotation-buttons
+                q-btn.q-mr-sm(@click="cloneEntry(annotation)", size="sm", round, icon="filter_none")
+                q-btn.q-mr-sm(v-if="staging", size="sm", round, icon="playlist_add",
+                :disabled="annotation.body.type !== 'TextualBody'",
+                @click="$refs.annotationField.addToVocabulary(annotation)")
+                  // q-tooltip.q-caption.bg-dark(:offset="[0,5]") alt + e
+                q-btn(@click="deleteAnnotation(annotation.id, i)", icon="delete", round, size="sm")
+
+            q-item-tile
               q-input(v-if="annotation.body.type === 'TextualBody'", type="textarea",
               v-model="annotation.body.value", dark)
               q-input(v-if="annotation.body.type === 'VocabularyEntry'", type="textarea",
               v-model="annotation.body.value", dark, disabled)
-            q-item-side.text-right
-              q-btn.q-mr-sm(@click="cloneEntry(annotation)", small, round, icon="filter_none")
-              q-btn.q-mr-sm(v-if="staging", small, round, icon="playlist_add",
-              :disabled="annotation.body.type !== 'TextualBody'",
-              @click="$refs.annotationField.addToVocabulary(annotation)")
-                // q-tooltip.q-caption.bg-dark(:offset="[0,5]") alt + e
-              q-btn(@click="deleteAnnotation(annotation.id, i)", icon="clear", round, small)
 
-    // input field
-    q-page-sticky(position="top")
-      // annotation-field(@annotation="onAnnotation", ref="annotationField", :submit-on-num-enters="2")
-      annotation-field(
-      @annotation="onAnnotation",
-      ref="annotationField",
-      :submit-on-num-enters="1",
-      :selector-value="baseSelector",
-      :hasTransparency="false")
+      // input field
+      q-page-sticky(position="top")
+        annotation-field(
+        @annotation="onAnnotation",
+        ref="annotationField",
+        :submit-on-num-enters="1",
+        :selector-value="baseSelector",
+        :hasTransparency="false")
 
 </template>
 
@@ -42,10 +47,12 @@
   import { ObjectUtil, Assert } from 'mbjs-utils'
   import { DateTime } from 'luxon'
   import constants from 'mbjs-data-models/src/constants'
+  import TimecodeLabel from '../../../components/piecemaker/partials/TimecodeLabel'
 
   export default {
     components: {
-      AnnotationField
+      AnnotationField,
+      TimecodeLabel
     },
     data () {
       return {
@@ -57,7 +64,6 @@
       }
     },
     async mounted () {
-      // this.$root.$emit('setBackButton', '/piecemaker/timelines')
       this.timeline = await this.$store.dispatch('maps/get', this.$route.params.uuid)
     },
     computed: {
@@ -125,5 +131,9 @@
   }
 </script>
 
-<style scoped>
+<style scoped lang="stylus">
+  .annotation-buttons
+    opacity 0
+  .q-item:hover .annotation-buttons
+    opacity 1
 </style>
