@@ -3,26 +3,8 @@
   // LIVE ANNOTATE
 
   .wrapper.relative-position(v-if="timeline")
-    span(slot="form-logo")
-    span(slot="form-title")
 
-    // TOP LEFT
-    //
-    //
-    //.absolute-top-left.q-ma-md(v-if="!isMobile")
-      // BUTTON - GO BACK
-      //back-button.fixed-top-left.q-ma-md(slot="nav-button", style="top: 50px; z-index: 2100;")
-
-    // TOP CENTER: INPUT AREA
-    //
-    //
-    <!--.fixed-top.bg-dark.q-pb-md(style="top: 50px; width: 100%; z-index: 1000;")-->
-    q-page-sticky(position="top")
-      annotation-field(@annotation="onAnnotation", ref="annotationField", :submit-on-num-enters="2")
-
-    // CENTER: SHOW ANNOTATIONS
-    //
-    //
+    // annotations
     .row.q-pb-xl
       .col-xs-12.offset-xs-none.col-md-10.offset-md-1.col-lg-8.offset-lg-2
         q-list(v-if="inputStyle", no-border, style="margin-top: 8rem;")
@@ -41,6 +23,10 @@
               @click="$refs.annotationField.addToVocabulary(annotation)")
                 // q-tooltip.q-caption.bg-dark(:offset="[0,5]") alt + e
               q-btn(@click="deleteAnnotation(annotation.id, i)", icon="clear", round, small)
+
+    // input field
+    q-page-sticky(position="top")
+      annotation-field(@annotation="onAnnotation", ref="annotationField", :submit-on-num-enters="2")
 
 </template>
 
