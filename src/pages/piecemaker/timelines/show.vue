@@ -4,7 +4,7 @@
 
     content-block(:position="'first'")
       headline(:content="$t('routes.piecemaker.timelines.videos.title')")
-        | {{ timeline.title }}
+        | {{ timelineTitle }}
 
       content-paragraph
         data-table(
@@ -174,7 +174,10 @@
     computed: {
       ...mapGetters({
         isMobile: 'globalSettings/getIsMobile'
-      })
+      }),
+      timelineTitle () {
+        return this.timeline ? this.timeline.title : ''
+      }
     }
   }
 </script>

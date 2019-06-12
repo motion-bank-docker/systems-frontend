@@ -1,8 +1,6 @@
 <template lang="pug">
   full-screen
 
-    back-button-new(v-if="!isMobile", slot="backButton", :target="'piecemaker.timelines.list'")
-
     content-block(:position="'first'")
       headline(:content="'Search timelines'")
 
