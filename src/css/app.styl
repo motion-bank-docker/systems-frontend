@@ -54,9 +54,9 @@ body
 .q-btn
   text-transform: none
   font-size: 1rem
-  &.q-btn-flat
-    &:hover
-      background: $medium
+  //&.q-btn-flat
+  //  &:hover
+  //    background: $medium
 
 // TODO: do we need to use -dark quasar modifiers or just style the default option?
 .q-table-container
@@ -112,12 +112,34 @@ body
   padding-left 0
   padding-right 0
 
+.q-tab
+  text-transform none
+  font-size 1rem
+  &.active
+    background: $primary
+    color: white
+
 @media screen and (max-width: 767px)
   h5
     font-size 20px
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * custom ui classes
  */
+
+.router-button {
+  vertical-align: middle
+  cursor: pointer
+  padding: 4px 16px
+  font-size: 14px
+  text-decoration: none
+  color: white
+  border-radius: 3px
+  background: $faded
+  -webkit-transition: .3s cubic-bezier(.25,.8,.5,1)
+  transition: .3s cubic-bezier(.25,.8,.5,1)
+  min-height: 2.572em
+}
 
 .flex-fit-column
   flex-grow: 1
@@ -137,6 +159,25 @@ body
 .ui-border-top
   border-top: 1px solid $darker
 
+.ui-directory-link
+  width: 100%
+  display: inline-block
+  .q-btn
+    width: 100%
+  i
+    position: absolute
+    top: 0
+    right: 8px
+    height: 100%
+
+.ui-button-list
+  .q-list-header
+  .q-item
+    padding-right: 0
+    padding-left: 0
+  .q-list-header
+    padding-top: 0
+
 .icon-color-inactive
   color: $light
 
@@ -149,6 +190,13 @@ body
 
 .background-black
   background-color: $darker
+
+.data-list-compact
+  &.q-list
+  .q-list
+  .q-list-header
+  .q-item
+    padding 0
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 * svg color classes
