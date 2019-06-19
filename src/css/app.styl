@@ -50,6 +50,13 @@ body
 
 .q-list
   border: 0
+  .q-list-header
+    font-size: 1rem
+    > *:not(:last-child)
+      margin-bottom: 12px
+
+.q-item-separator-component:last-child
+  display: block
 
 .q-btn
   text-transform: none
@@ -116,9 +123,12 @@ body
   text-transform none
   font-size 1rem
   &.active
+    color: $primary
+    background: $primary15
+  .q-tabs-bar
     background: $primary
-    color: white
-
+.q-tabs-global-bar
+  border-color: $primary
 @media screen and (max-width: 767px)
   h5
     font-size 20px
@@ -173,10 +183,21 @@ body
 .ui-button-list
   .q-list-header
   .q-item
-    padding-right: 0
-    padding-left: 0
+    //padding-right: 0
+    //padding-left: 0
+    padding: 4px 0
   .q-list-header
     padding-top: 0
+  .q-item-separator-component
+    margin: 4px 0
+
+.ui-tab-pane-inner-button
+  position: absolute
+  top: 28px
+  right: 28px
+
+.q-item.button-item
+    padding: 0
 
 .icon-color-inactive
   color: $light
@@ -188,15 +209,24 @@ body
   box-shadow: 0 10px 30px rgba(0,0,0,0.5)
   border: 1px solid $darker
 
-.background-black
-  background-color: $darker
-
 .data-list-compact
   &.q-list
   .q-list
   .q-list-header
   .q-item
     padding 0
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* color modifier classes
+*/
+
+.background-black
+  background-color: $darker
+
+.background-primary-20
+  background-color: $primary15
+
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 * svg color classes
