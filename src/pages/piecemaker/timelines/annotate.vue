@@ -34,7 +34,8 @@
 
             q-item-tile(v-if="annotation.body.type === 'VocabularyEntry'")
               div {{ annotation.body.value }}
-                span.text-grey-7 &nbsp;({{ annotation.body.source.id }})
+              div.text-grey-7(@click="") {{ getPieceTitle(annotation.body.source.id) }}
+              // div.text-grey-7(@click="") ({{ annotation }})
 
       // input field
       q-page-sticky(position="top")
@@ -80,6 +81,9 @@
       })
     },
     methods: {
+      getPieceTitle (entryId) {
+        return this.$store.state.vocabularies.scopedLabels[entryId.split('_')[0]]
+      },
       async cloneEntry (annotation) {
         const payload = {
           body: ObjectUtil.merge({}, annotation.body),
