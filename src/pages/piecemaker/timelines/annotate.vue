@@ -34,8 +34,7 @@
 
             q-item-tile(v-if="annotation.body.type === 'VocabularyEntry'")
               div {{ annotation.body.value }}
-              div.text-grey-7(@click="") {{ getPieceTitle(annotation.body.source.id) }}
-              // div.text-grey-7(@click="") ({{ annotation }})
+              div.text-grey-7.q-caption.q-mt-xs(@click="") {{ getPieceTitle(annotation.body.source.id) }}
 
       // input field
       q-page-sticky(position="top")
@@ -49,7 +48,7 @@
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
+  // import { mapGetters } from 'vuex'
   import AnnotationField from '../../../components/piecemaker/partials/AnnotationField'
   import { ObjectUtil, Assert } from 'mbjs-utils'
   import { DateTime } from 'luxon'
@@ -75,11 +74,13 @@
     async mounted () {
       this.timeline = await this.$store.dispatch('maps/get', this.$route.params.uuid)
     },
+    /*
     computed: {
       ...mapGetters({
         isMobile: 'globalSettings/getIsMobile'
       })
     },
+    */
     methods: {
       getPieceTitle (entryId) {
         return this.$store.state.vocabularies.scopedLabels[entryId.split('_')[0]]
