@@ -1,6 +1,5 @@
 <template lang="pug">
   full-screen
-    back-button(v-if="!isMobile", slot="backButton")
 
     content-block(:position="'first'")
       headline(:content="$t('routes.piecemaker.videos.edit.title') + ':'")

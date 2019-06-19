@@ -1,9 +1,6 @@
 <template lang="pug">
   full-screen
 
-    // back button
-    back-button-new(v-if="!isMobile", slot="backButton", :target="'piecemaker.timelines.list'")
-
     // -----------------------------------------------------------------------------------------------------------------
     // add new timeline
     content-block(:position="'first'")
@@ -27,7 +24,6 @@
 
       content-paragraph(:position="last")
           uploader(dark, :url="url", @finish="onFinish", allowed=".zip", :headers="headers", :fields="uploadFields")
-      q-btn(label="Cancel", @click.native="$router.push({name: 'piecemaker.timelines.list'})")
 </template>
 
 <script>

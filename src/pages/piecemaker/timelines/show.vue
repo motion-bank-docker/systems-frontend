@@ -4,7 +4,7 @@
 
     content-block(:position="'first'")
       headline(:content="$t('routes.piecemaker.timelines.videos.title')")
-        | {{ timeline.title }}
+        | {{ timelineTitle }}
 
       content-paragraph
         data-table(
@@ -146,6 +146,7 @@
     },
     async mounted () {
       this.timeline = await this.$store.dispatch('maps/get', this.$route.params.uuid)
+      console.log('timelineasdfasdf', this.timeline.title)
       if (this.timeline) {
         this.query = {
           'body.purpose': 'linking',
@@ -173,7 +174,10 @@
     computed: {
       ...mapGetters({
         isMobile: 'globalSettings/getIsMobile'
-      })
+      }),
+      timelineTitle () {
+        return this.timeline ? this.timeline.title : ''
+      }
     }
   }
 </script>

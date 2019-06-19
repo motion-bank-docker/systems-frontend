@@ -42,6 +42,10 @@
             return time.toFormat('HH:mm:ss')
           }
         }
+        else if (annotationDate && !this.videoDate) {
+          if (val === 'milliseconds') return annotationDate.toFormat('SSS')
+          else return annotationDate.toFormat('HH:mm:ss')
+        }
         return annotationDate ? annotationDate.toFormat(constants.config.TIMECODE_FORMAT) : ''
       }
     }

@@ -2,7 +2,6 @@
   full-screen
     confirm-modal(ref="confirmModal", @confirm="handleConfirmModal")
 
-    back-button(v-if="!isMobile", slot="backButton")
     //
       span(slot="form-logo")
       span(slot="form-title" v-if="timeline") {{ timeline.title }}: {{ $t('routes.piecemaker.videos.list.title') }}

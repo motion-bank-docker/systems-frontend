@@ -1,8 +1,6 @@
 <template lang="pug">
   full-screen
 
-    back-button-new(v-if="!isMobile", slot="backButton", :target="'piecemaker.timelines.list'")
-
     // --------------------------------------------------------------------------------------------------- edit timeline
 
     content-block(:position="'first'")
@@ -10,7 +8,7 @@
       content-paragraph
         form-main(v-model="payload", :schema="schema")
           div(slot="form-buttons-add", :class="{'full-width row q-mb-sm': isMobile}")
-            q-btn.col(q-if="$route.params.uuid", slot="form-buttons-add", :label="exportLabel", @click="exportTimeline",
+            q-btn.col(v-if="$route.params.uuid", slot="form-buttons-add", :label="exportLabel", @click="exportTimeline",
             color="grey", :class="[!isMobile ? 'q-mr-sm' : '']")
 
     // -------------------------------------------------------------------------------------------------- access control

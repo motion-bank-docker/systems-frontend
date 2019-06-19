@@ -2,7 +2,7 @@
   .swim-lane-component.fit.relative-position(ref="wrapper", :class="[cursorGlobalResize, cursorGlobalGrabbing]")
     q-resize-observable(@resize="onWrapperResize")
 
-    .row.full-height
+    .row.no-wrap.full-height
 
       marker-context-menu(:root="self")
       marker-details-hover(:root="self")
@@ -50,15 +50,7 @@
                   :videoDate="getVideoDate()"
                   )
 
-            .q-caption.q-mt-xs(v-else) empty
-
-          // button hide details
-
-          //q-btn.absolute-top-right(
-            @click="handlerToggle('markerDetails')",
-            style="margin: -12px -6px 0 0;",
-            icon="clear", size="xs", round, flat
-            )
+            .q-caption.q-mt-xs(v-else) No annotation selected
 
         // details content
 
@@ -75,20 +67,13 @@
 
           // fix: mouse up in offset from resizeX button
 
-          .fit.bg-transparent.absolute-top-left(v-if="hideSwimlanes", @mouseup="onSettingsUp")
-
-          // button show details
-
-          //q-btn.q-px-sm.q-mr-xs(
-            v-if="!visibilityDetails",
-            @click="handlerToggle('markerDetails')", icon="keyboard_backspace", :class="[visibilityDetails ? '' : 'rotate-180']", size="xs", round, flat
-            )
+          .bg-transparent.absolute-top-left
 
           // button change horizontal dimensions from details (affects swimlane width, too)
 
           q-btn.q-px-sm.q-mr-xs(
             v-if="visibilityDetails", v-touch-pan="handlerResizeX",
-            @mousedown.native="onSettingsDown", @mouseup.native="onSettingsUp",
+            @mousedown.native="onResizerDown",
             size="xs", icon="code", round, flat
             )
 
@@ -100,17 +85,11 @@
 
           .absolute-top-right.text-right.q-mt-xs.q-mr-md(v-if="resizable")
             q-btn.q-ml-lg(
-              @mousedown.native="onSettingsDown",
-              @mouseup.native="onSettingsUp",
+              @mousedown.native="onResizerDown",
               v-touch-pan="handlerResizeY",
               round, size="xs", flat
               )
               q-icon.rotate-90(name="code")
-            //q-btn.q-ml-xs(
-              @click="handlerToggle('swimlanes')",
-              icon="clear",
-              round, size="xs", flat
-              )
 
         // swim lane
 
@@ -119,7 +98,6 @@
           v-if="!hideSwimlanes",
           style="background-color: #4C494A;"
           )
-          //.swim-lane-wrapper.wrapper(:style="{height: dimensions.swimlanes.height.current + 'px'}")
           .swim-lane-wrapper.wrapper
 
             // hovering timecode
@@ -207,8 +185,7 @@
       'annotations',
       'video',
       'map',
-      'selectedMillis',
-      'forceRendererMarker'
+      'selectedMillis'
     ],
     data () {
       return {
@@ -245,7 +222,7 @@
         // annotations: [],
         // store all marker for collision detection later on
         markerList: [],
-        hideSwimlanes: false,
+        isResizing: false,
         dimensions: {
           details: {
             height: {
@@ -257,13 +234,6 @@
               min: 20,
               current: undefined,
               max: 50
-            }
-          },
-          swimlanes: {
-            width: {
-              min: 50,
-              current: 100,
-              max: 80
             }
           }
         },
@@ -300,13 +270,10 @@
 
       this.timecode.hoverText = this.millisToText(0)
 
-      // this.cacheDimensions()
-      // FIXME ugly fix because the call above seems to be fired to early
-      setTimeout(() => { this.cacheDimensions() }, 500)
       this.$root.$emit('afterComponentMounted')
       this.cacheDimensions()
-      // this.setScaleFactor(0.2)
-      // console.log('video start', this.start, this.duration)
+      // FIXME ugly fix because the call above seems to be fired to early
+      setTimeout(() => { this.cacheDimensions() }, 500)
     },
     beforeDestroy () {
       this.setScrollPosition({x: 0, y: 0})
@@ -339,7 +306,7 @@
         detailsWidth: 'swimLaneSettings/getDetailsWidth',
         timecodeLabelBreakpoint: 'swimLaneSettings/getTimecodeLabelBreakpoint',
         expandedMode: 'swimLaneSettings/getExpandedMode',
-        cursorTop: 'swimLaneSettings/getgetCursorTop',
+        cursorTop: 'swimLaneSettings/getCursorTop',
         visibilityDetails: 'swimLaneSettings/getVisibilityDetails'
       }),
       cursorGlobalResize () {
@@ -394,9 +361,7 @@
       },
       swimLaneContainerStyles () {
         return {
-          width: this.dimensions.swimlanes.width.current + '%',
-          minWidth: this.dimensions.swimlanes.width.min + '%',
-          maxWidth: this.dimensions.swimlanes.width.max + '%'
+          'flex-grow': 2
         }
       }
     },
@@ -404,10 +369,8 @@
       expandedMode () {
         this.setScrollPosition({y: 0})
       },
-      forceRendererMarker () {
-        // alert('bla')
-        // this.setScrollPosition({x: this.millisTotaltoRelGraph(val) - this.scaleFactor / 2, y: 0})
-        // this.jumpToMarker()
+      visibilityDetails () {
+        this.updateCache()
       },
       selectedMillis (ms) {
         let v = this.isVisible({left: this.millisTotaltoAbsGraph(ms), top: 0})
@@ -450,6 +413,7 @@
         return DateTime.fromMillis(this.video.target.selector._valueMillis)
       },
       setupScreen () {
+        console.log(this.dimensions.details, 'details dimen')
         let selectedA = this.selectedAnnotation
         if (selectedA) {
           let ms = this.millisTotalToTimeline(DateTime.fromISO(selectedA.target.selector.value).toMillis())
@@ -457,37 +421,25 @@
         }
         else this.selectedAnnotationTime = '–'
 
-        if (this.visibilityDetails) this.dimensions.swimlanes.width.max = 80
-        else this.dimensions.swimlanes.width.max = 100
-
         if (this.visibilityDetails && this.detailsWidth) {
           this.dimensions.details.width.current = this.detailsWidth
-          this.dimensions.swimlanes.width.current = 100 - this.dimensions.details.width.current
         }
         else if (this.visibilityDetails && !this.detailsWidth) {
           this.dimensions.details.width.current = 30
-          this.dimensions.swimlanes.width.current = 70
         }
       },
       onWrapperResize (obj) {
         this.dimensions.details.height.current = obj.height
       },
       onDetailsResize (obj) {
-        this.dimensions.details.height.currentPx = obj.width
-        // console.log(this.dimensions.details.height.currentPx)
-
-        // if (this.dimensions.details.height.currentPx < 280) this.timecodeLabelBreakpoint = true
-        // else this.timecodeLabelBreakpoint = false
-        if (this.dimensions.details.height.currentPx < 280) {
+        this.dimensions.details.width.currentPx = obj.width
+        if (this.dimensions.details.width.currentPx < 280) {
           this.$store.commit('swimLaneSettings/setTimecodeLabelBreakpoint', true)
         }
         else this.$store.commit('swimLaneSettings/setTimecodeLabelBreakpoint', false)
       },
-      onSettingsDown () {
-        this.hideSwimlanes = !this.hideSwimlanes
-      },
-      onSettingsUp () {
-        this.$emit('forceRenderer')
+      onResizerDown () {
+        this.isResizing = true
       },
       handlerResizeY (obj) {
         this.$store.commit('swimLaneSettings/setCursorTop', obj.position.top - 16 - 15)
@@ -497,7 +449,6 @@
           clWidth = this.$refs.wrapper.clientWidth,
           cursorPosLeft = obj.position.left - 16 - 15
         this.dimensions.details.width.current = cursorPosLeft / clWidth * 100
-        this.dimensions.swimlanes.width.current = (clWidth - cursorPosLeft) / clWidth * 100
         this.$store.commit('swimLaneSettings/setDetailsWidth', this.dimensions.details.width.current)
       },
       handlerToggle (val) {
@@ -546,6 +497,11 @@
       onGlobalUp () {
         this.activeEl = null
         this.inputOffset.x = 0
+
+        if (this.isResizing) {
+          this.updateCache()
+          this.isResizing = false
+        }
 
         // has dirty annotation => trigger updateAnnotation in parent
         if (this.dirtyAnnotation) {
@@ -613,13 +569,10 @@
         this.$store.commit('swimLaneSettings/setScrollPosition', {x: x, y: y})
       },
       setTimecode (tc) { // int ms
-        // this.$store.commit('swimLaneSettings/setTimecode', tc)
         this.$emit('timecodeChange', tc)
       },
       setScaleFactor (sf) {
-        // this.$forceUpdate()
         this.$store.commit('swimLaneSettings/setScaleFactor', this.restrict(sf, 0, 1))
-        // console.log('time frame', this.millisToText(this.getVisibleTimeFrame().millis / 5))
       },
       onAnnotationChange (annotation) {
         this.dirtyAnnotation = annotation
@@ -693,6 +646,9 @@
         this.el.width = this.$refs.root.clientWidth
         this.el.height = this.$refs.root.clientHeight
         this.el.bounds = this.$refs.root.getBoundingClientRect()
+      },
+      updateCache (delay = 0) {
+        setTimeout(this.cacheDimensions, delay)
       },
       // -------------------------------------------------------------------------------------------------------- States
       isDragged (el) {

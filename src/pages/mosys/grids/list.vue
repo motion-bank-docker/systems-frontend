@@ -91,13 +91,14 @@
           actions: [
             {
               type: 'show',
-              title: 'Preview',
+              title: 'routes.mosys.grids.buttons.show',
               color: 'primary',
               click: (item) => _this.$router.push({ name: 'mosys.grids.show', params: { uuid: item._uuid } })
             },
             {
               type: 'annotate',
               title: 'routes.mosys.grids.buttons.annotate',
+              // title: 'Grid Editor',
               color: 'primary',
               click: (item) => _this.$router.push({ name: 'mosys.grids.annotate', params: { uuid: item._uuid } })
             },

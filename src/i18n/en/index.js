@@ -390,7 +390,7 @@ export default {
         buttons: {
           edit: 'Edit',
           show: 'View',
-          annotate: 'Add cells'
+          annotate: 'Grid Editor'
         },
         create: {
           button: 'Create Grid', // TODO: where do buttons belong?
@@ -402,7 +402,7 @@ export default {
           caption: 'All your grids'
         },
         edit: {
-          title: 'Edit grid',
+          title: 'Edit',
           caption: 'Edit grid details'
         },
         users: {
