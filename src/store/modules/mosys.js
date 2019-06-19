@@ -6,14 +6,16 @@ const mosys = {
     showAddCells: false,
     showEditingCells: false,
     selectedCells: [],
-    editingCells: []
+    editingCells: [],
+    scrollPositionCache: 0
   },
   getters: {
     getShowSources: state => state.showSources,
     getShowAddCells: state => state.showAddCells,
     getSelectedCells: state => state.selectedCells,
     getEditingCells: state => state.editingCells,
-    getShowEditingCells: state => state.showEditingCells
+    getShowEditingCells: state => state.showEditingCells,
+    getScrollPositionCache: state => state.scrollPositionCache
   },
   mutations: {
     setEditingCells (state, cells) {
@@ -78,6 +80,9 @@ const mosys = {
     hideEditingCells: (state) => {
       state.showEditingCells = false
       state.editingCells = []
+    },
+    setScrollPositionCache: (state, p) => {
+      state.scrollPositionCache = p
     }
   }
 }

@@ -13,8 +13,9 @@
 
       q-item.q-pa-none.q-pa-sm(multiline)
         q-item-side(style="min-width: auto;")
-          q-btn.text-primary.q-mt-xs(v-if="!vocabularyVisible && staging", round, flat,
-          icon="local_offer", @click="toggleVocabulary()", size="sm")
+          q-btn.q-mt-xs(v-if="!vocabularyVisible && staging", round, flat,
+          icon="local_offer", @click="toggleVocabulary()", size="sm",
+          :class="[isVisible ? 'bg-primary text-white' : '']")
 
         q-item-main
           q-input(v-on:keydown="onKeyDown", @focus="onInputFocus", @blur="onInputBlur",
