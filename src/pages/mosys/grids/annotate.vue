@@ -3,7 +3,7 @@
     //div.backbutton(v-if="!isMobile")
       q-btn(slot="backButton", @click="$router.push('/mosys/grids')", icon="keyboard_backspace", round, small, color="black")
     div.grid-editor-shadow-right(v-if="tabsAreOpen")
-    grid-editor.grid-editor(:gridUuid="$route.params.uuid")
+    grid-editor.grid-editor(ref="gridEditor", :gridUuid="$route.params.uuid", :tabsAreOpen="tabsAreOpen")
     grid-editor-sources.grid-editor-sources(v-if="$store.state.mosys.showSources")
     grid-editor-editing-cells.grid-editor-editing-cells(v-if="showEditingCells")
     // grid-editor-add-cells.grid-editor-sources(v-if="$store.state.mosys.showAddCells")
@@ -23,13 +23,36 @@
       GridEditor,
       GridEditorSources
     },
+    data () {
+      return {
+        triggerScrollPositionReset: 0
+      }
+    },
+    mounted () {
+      this.$root.$on('mosys_saveScrollPosition', this.handleSaveGridScrollPosition)
+    },
+    beforeDestroy () {
+      this.$root.$off('mosys_saveScrollPosition', this.handleSaveGridScrollPosition)
+    },
+    watch: {
+      // tabsAreOpen () {
+      //   this.$refs.gridEditor.resetScrollPosition()
+      // }
+    },
     computed: {
       ...mapGetters({
         isMobile: 'globalSettings/getIsMobile',
-        showEditingCells: 'mosys/getShowEditingCells'
+        showEditingCells: 'mosys/getShowEditingCells',
+        showSources: 'mosys/getShowSources',
+        scrollPositionCache: 'mosys/getScrollPositionCache'
       }),
       tabsAreOpen () {
-        return this.$store.state.mosys.showSources || this.$store.state.mosys.showEditingCells
+        return this.showSources || this.showEditingCells
+      }
+    },
+    methods: {
+      handleSaveGridScrollPosition () {
+        this.$store.commit('mosys/setScrollPositionCache', this.$refs.gridEditor.$el.scrollLeft)
       }
     }
   }
