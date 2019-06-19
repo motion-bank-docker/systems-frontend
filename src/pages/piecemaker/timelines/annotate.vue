@@ -13,7 +13,8 @@
           q-item-main
 
             q-item-tile.items-center.row
-              .col-6(v-if="annotation.target.selector")
+              .col-6.row(v-if="annotation.target.selector")
+                annotation-icon.q-mr-sm(:annotation="annotation")
                 timecode-label(:millis="annotation.target.selector._valueMillis")
 
               .col-6.text-right.annotation-buttons
@@ -27,8 +28,13 @@
             q-item-tile
               q-input(v-if="annotation.body.type === 'TextualBody'", type="textarea",
               v-model="annotation.body.value", dark)
-              q-input(v-if="annotation.body.type === 'VocabularyEntry'", type="textarea",
-              v-model="annotation.body.value", dark, disabled)
+              //
+                q-input(v-if="annotation.body.type === 'VocabularyEntry'", type="textarea",
+                v-model="annotation.body.value", dark, disabled)
+
+            q-item-tile(v-if="annotation.body.type === 'VocabularyEntry'")
+              div {{ annotation.body.value }}
+                span.text-grey-7 &nbsp;({{ annotation.body.source.id }})
 
       // input field
       q-page-sticky(position="top")
@@ -48,11 +54,13 @@
   import { DateTime } from 'luxon'
   import constants from 'mbjs-data-models/src/constants'
   import TimecodeLabel from '../../../components/piecemaker/partials/TimecodeLabel'
+  import AnnotationIcon from '../../../components/piecemaker/partials/AnnotationIcon'
 
   export default {
     components: {
       AnnotationField,
-      TimecodeLabel
+      TimecodeLabel,
+      AnnotationIcon
     },
     data () {
       return {
