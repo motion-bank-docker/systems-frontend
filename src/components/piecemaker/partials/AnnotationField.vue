@@ -1,6 +1,6 @@
 <template lang="pug">
 
-  .row.q-mt-sm.q-pl-sm.q-pr-md.round-borders(v-shortkey="shortcuts.focusInput", @shortkey="focusInput()",
+  .row.q-mt-sm.round-borders(v-shortkey="shortcuts.focusInput", @shortkey="focusInput()",
   :class="[hasTransparency && !isFocused && !isVisible ? 'bg-with-transparency' : 'bg-dark']")
 
     // button toggles vocabulary
@@ -8,18 +8,21 @@
     <!--q-btn.text-primary.q-mr-sm.q-mt-sm(v-if="!vocabularyVisible && staging", round, flat, icon="local_offer",-->
       <!--v-shortkey="shortcuts.showVocabulary", @shortkey.native="toggleVocabulary()", @click="toggleVocabulary()")-->
 
-    q-btn.text-primary.q-mr-sm.q-mt-sm(
-      v-if="!vocabularyVisible && staging", round, flat, icon="local_offer", @click="toggleVocabulary()"
-      )
-
     // input area
-
     div.round-borders(:class="{ 'shadow-4': vocabularyVisible }", style="width: 40vw;")
 
-      q-input.q-pa-md(v-on:keydown="onKeyDown", @focus="onInputFocus", @blur="onInputBlur",
-        v-model="annotationText", ref="textInput", type="textarea", dark
-        :class="[vocabularyVisible ? 'q-pl-xl text-primary' : 'text-white']"
-        )
+      q-item.q-pa-none.q-pa-sm(multiline)
+        q-item-side(style="min-width: auto;")
+          q-btn.text-primary.q-mt-xs(v-if="!vocabularyVisible && staging", round, flat,
+          icon="local_offer", @click="toggleVocabulary()", size="sm")
+
+        q-item-main
+          q-input(v-on:keydown="onKeyDown", @focus="onInputFocus", @blur="onInputBlur",
+            v-model="annotationText", ref="textInput", type="textarea", dark
+            :class="[vocabularyVisible ? 'q-pl-xl text-primary' : 'text-white']")
+
+        q-item-side(v-if="isVisible && staging", style="min-width: auto;")
+          q-btn(@click="clearInputField", icon="clear", size="sm", round, flat, :disabled="!annotationText")
 
       // CLOSE BUTTON (unused?)
 
@@ -39,6 +42,7 @@
           ref="vocabulary",
           @select-entry="selectEntry",
           @focus="focusInput",
+          @clear-input-field="clearInputField",
           :highlight="selectedEntry")
 
 </template>
@@ -127,6 +131,10 @@
       }
     },
     methods: {
+      clearInputField () {
+        // alert('bla')
+        this.annotationText = undefined
+      },
       getSelectorValue () {
         return this.currentSelectorValue || this.selectorValue || DateTime.local().toISO()
       },
