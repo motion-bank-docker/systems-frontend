@@ -2,18 +2,33 @@
   .grid-display-container
     //div.backbutton(v-if="!isMobile")
       q-btn(slot="backButton", @click="$router.push('/mosys/grids')", icon="keyboard_backspace", round, small, color="black")
-    grid-display.grid-display(:gridUuid="$route.params.uuid")
+    grid-display.grid-display(ref="gridDisplay", :gridUuid="$route.params.uuid")
 </template>
 
 <script>
   import GridDisplay from '../../../components/mosys/partials/GridDisplay'
+  import { mapGetters } from 'vuex'
   export default {
     components: {
       GridDisplay
     },
     computed: {
+      ...mapGetters({
+        scrollPositionCache: 'mosys/getScrollPositionCache'
+      }),
       isMobile () {
         return this.$q.platform.is.mobile
+      }
+    },
+    mounted () {
+      this.$root.$on('mosys_saveScrollPosition', this.handleSaveGridScrollPosition)
+    },
+    beforeDestroy () {
+      this.$root.$off('mosys_saveScrollPosition', this.handleSaveGridScrollPosition)
+    },
+    methods: {
+      handleSaveGridScrollPosition () {
+        this.$store.commit('mosys/setScrollPositionCache', this.$refs.gridDisplay.$el.scrollLeft)
       }
     }
   }
