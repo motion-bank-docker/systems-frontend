@@ -85,16 +85,16 @@
         this.$q.loading.show()
         console.debug('setting acl...', this.acl, this.resourceName)
         if (this.acl.public) {
-          await this.setACL('acl/set', { role: 'public', uuid: this.resourceName, id: this.resourceName, permissions: ['get'] }, this.acl.recursive)
+          await this.setACL('acl/set', { role: 'public', id: this.resourceName, permissions: ['get'] }, this.acl.recursive)
         }
         else {
-          await this.setACL('acl/remove', { role: 'public', uuid: this.resourceName, id: this.resourceName, permission: 'get' }, this.acl.recursive)
+          await this.setACL('acl/remove', { role: 'public', id: this.resourceName, permission: 'get' }, this.acl.recursive)
         }
         if (this.acl.group) {
-          await this.setACL('acl/set', { role: this.acl.group, uuid: this.resourceName, id: this.resourceName, permissions: ['get'] }, this.acl.recursive)
+          await this.setACL('acl/set', { role: this.acl.group, id: this.resourceName, permissions: ['get'] }, this.acl.recursive)
         }
         if (this.acl.group_remove) {
-          await this.setACL('acl/remove', { role: this.acl.group_remove, uuid: this.resourceName, id: this.resourceName, permission: 'get' }, this.acl.recursive)
+          await this.setACL('acl/remove', { role: this.acl.group_remove, id: this.resourceName, permission: 'get' }, this.acl.recursive)
         }
         this.$q.loading.hide()
         this.$store.commit('notifications/addMessage', {
