@@ -134,6 +134,7 @@ module.exports = function (ctx) {
         'QDatetimePicker',
         'QDatetime',
         'QAutocomplete',
+        'QOptionGroup',
         //
         // Grouping
         //
@@ -176,7 +177,8 @@ module.exports = function (ctx) {
         //
         'QIcon',
         'QChip',
-        'QUploader'
+        'QUploader',
+        'QEditor'
       ],
       directives: [
         'Ripple',
