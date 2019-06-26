@@ -146,7 +146,6 @@
     },
     async mounted () {
       this.timeline = await this.$store.dispatch('maps/get', this.$route.params.uuid)
-      console.log('timelineasdfasdf', this.timeline.title)
       if (this.timeline) {
         this.query = {
           'body.purpose': 'linking',
