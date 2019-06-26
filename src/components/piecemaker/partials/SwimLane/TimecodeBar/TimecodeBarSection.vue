@@ -12,9 +12,7 @@
     props: ['index', 'numSections', 'root', 'millis', 'width', 'parentWidth'],
     data () {
       return {
-        // xCached: 0,
         xMapped: 0,
-        // hideIfDragged: ['navHandleBackground', 'navBackground', 'navHandleLeft', 'navHandleRight', 'graphBackground']
         hideIfDragged: ['navHandleLeft', 'navHandleRight']
       }
     },
@@ -40,12 +38,6 @@
       this.$root.$once('afterComponentMounted', this.calculateX)
     },
     watch: {
-      // scrollPosition () {
-      //   this.calculateX()
-      // },
-      // scaleFactor () {
-      //   console.log('current time viewport', this.root.getVisibleTimeFrame())
-      // }
     },
     methods: {
       calculateX () {

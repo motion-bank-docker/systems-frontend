@@ -17,11 +17,6 @@
     props: ['root', 'annotations'],
     data () {
       return {
-        fill: {
-          'TextualBody': '#57aeff',
-          'Video': 'tomato',
-          'VocabularyEntry': 'black'
-        }
       }
     },
     computed: {

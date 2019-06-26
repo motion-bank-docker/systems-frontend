@@ -45,7 +45,6 @@
       return {
         navHandle: {
           x: 0,
-          // TODO: implement differently? Used to determine handle width when left is dragged
           boundRight: 0
         },
         height: 20,
@@ -121,7 +120,6 @@
           sp = this.navHandleX
           // scaleFactor
           min = this.root.toAbsCompX(this.root.scaleFactorMin)
-          // max = this.root.el.width - this.navHandleX
           max = this.root.el.width - this.navHandleX
           raw = this.root.inputPosition.x - this.navHandleX
           w = this.root.restrict(raw, min, max)

@@ -77,19 +77,9 @@
       }
     },
     watch: {
-      scaleFactor () {
-        // TODO: calculate "good" time span for each section to display
-        // let tf = this.root.getVisibleTimeFrame().millis
-        // let s = Math.floor(tf / 1000)
-        // let m = Math.floor(tf / 1000 / 60)
-        // let mr = m % (tf / 1000 / 60) // not working why?
-        // let h = Math.floor(tf / 1000 / 60 / 60)
-        // console.log(h, m, s, 'mr', mr)
-      }
     },
     async mounted () {
       this.$root.$on('inputPositionChange', this.onInputPositionChange)
-      // console.log(this.root.getVisibleTimecodeRange())
     },
     beforeDestroy () {
       this.$root.$off('inputPositionChange', this.onInputPositionChange)
@@ -99,7 +89,6 @@
         let tc = this.root.getTimecodeFromInputPosition()
         this.$root.$emit('timecodeChange', tc)
         this.$root.$emit('UIDown', 'timecodeBar')
-        // console.log(Math.round(this.root.getVisibleTimecodeRange().length / 5))
       },
       trigger (event, args) {
         this.$root.$emit(event, args)

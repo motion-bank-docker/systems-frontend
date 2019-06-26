@@ -1,5 +1,4 @@
 <template lang="pug">
-  // TODO: refactor so events don't have to be registered to each element separately
   // ------------------------------------------------------------------------------------------------------ has duration
   svg.sl-marker.pointer(
     v-if="duration > 0 && isVisible"
@@ -118,21 +117,17 @@
         return this.xRel * 100 + '%' || 0
       },
       isVisible () {
+        // checking if a marker is in the current visible portion of the graph is too slow. Not used at the moment.
         // return this.root.isVisible({left: this.xAbs, right: this.xAbs, offset: 10})
         return true
       },
       y () {
-        // return (this.index % 7) * 50 + 25 + ((Math.floor(this.index / 7) % 2) * 25)
-        // return (this.index % 2) * 25 + 25 + ((Math.floor(this.index / 2) % 2) * 25)
-        // if (this.laneMode === 'expand') return (this.index + 1) * this.height
-        // if (this.laneMode === 'collapse') return this.height
         if (this.expandedMode) return (this.index + 1) * this.height
         if (!this.expandedMode) return this.height
         return 0
       }
     },
     async mounted () {
-      // TODO: TEMP: save duration to test resizing per drag and shift + click
       if (this.selectedAnnotation) this.isSelected = this.selectedAnnotation._uuid === this.annotationData._uuid
       this.$root.$on('globalUp', this.onGlobalUp)
       this.$root.$on('componentMove', this.onComponentMove)
@@ -165,7 +160,6 @@
             }
             const v = this.root.isVisible(bounds)
             const s = {
-              // x: !v.x ? this.xRel - (this.scaleFactor / 2) : null,
               y: !v.y ? this.root.toRelGraphY(this.y + this.$parent.y - 2) : null
             }
             this.$root.$emit('scrollPositionChange', s)
@@ -195,11 +189,6 @@
         if (EventHub.keyIsPressed('Alt')) {
           this.moveToTimecode()
         }
-        // set timecode to maker position
-        // else if (!EventHub.keyIsPressed('Shift')) {
-        //   let tc = this.root.millisTotalToTimeline(this.millis)
-        //   this.$root.$emit('timecodeChange', tc)
-        // }
         let tc = this.root.millisTotalToTimeline(this.millis)
         this.$root.$emit('timecodeChange', tc)
 
@@ -245,7 +234,6 @@
       onDownLeftMain () {
         return false
       },
-      // TODO: move this to onContext ???
       onDownRight () {
         this.checkUnselect()
         this.select()
@@ -304,8 +292,6 @@
         event.preventDefault()
       },
       onGlobalUp () {
-        // TODO: save millis only on release
-        // TODO: only call this function for markers in SwimLane.activeMarkers (to be implemented)
         this.isDragged = false
         this.inputOffsetX = 0
         this.clearCache()
@@ -344,7 +330,6 @@
         return this.millis + this.duration
       },
       checkUnselect () {
-        // if (!EventHub.keyIsPressed('Shift')) this.$root.$emit('markerUnselect')
         this.$root.$emit('markerUnselect')
       },
       save () {
