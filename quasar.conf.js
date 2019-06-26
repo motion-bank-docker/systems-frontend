@@ -1,4 +1,5 @@
 // Configuration for your app
+const pkg = require('./package.json')
 
 module.exports = function (ctx) {
   return {
@@ -36,6 +37,14 @@ module.exports = function (ctx) {
       // extractCSS: false,
       // useNotifier: false,
       extendWebpack (cfg) {
+        cfg.externals = Object.assign({
+          keytar: 'commonjs keytar',
+          // FIXME: nedb external causes browser version to fail
+          nedb: 'commonjs nedb',
+          'fluent-ffmpeg': 'commonjs fluent-ffmpeg',
+          'open-graph-scraper': 'commonjs open-graph-scraper',
+          'mbjs-archive': 'commonjs mbjs-archive'
+        }, cfg.externals)
         cfg.module.rules.push({
           enforce: 'pre',
           test: /\.(js|vue)$/,
@@ -48,6 +57,7 @@ module.exports = function (ctx) {
       },
       // Runtime globals
       env: {
+        NODE_ENV: JSON.stringify(process.env.NODE_ENV),
         //
         // Hosts
         //
@@ -77,8 +87,11 @@ module.exports = function (ctx) {
         // App config
         //
         IS_STAGING: JSON.stringify(process.env.IS_STAGING || false),
+        IS_ELECTRON: JSON.stringify(process.env.IS_ELECTRON || false),
+        BUILD_NAME_EXT: JSON.stringify(process.env.BUILD_NAME_EXT || null),
         USE_RESOURCE_CACHE: JSON.stringify(process.env.USE_RESOURCE_CACHE || false),
-        UI_VERSION: JSON.stringify(process.env.UI_VERSION || require('./package.json').version)
+        UI_VERSION: JSON.stringify(process.env.UI_VERSION || require('./package.json').version),
+        FLUENTFFMPEG_COV: JSON.stringify(false)
       }
     },
     devServer: {
@@ -240,6 +253,7 @@ module.exports = function (ctx) {
       // id: 'org.cordova.quasar.app'
     },
     electron: {
+      bundler: 'builder', // or 'packager'
       extendWebpack (cfg) {
         // do something with cfg
       },
@@ -252,6 +266,23 @@ module.exports = function (ctx) {
 
         // Window only
         // win32metadata: { ... }
+      },
+      builder: {
+        // https://www.electron.build/configuration/configuration
+
+        appId: `org.motionbank.${pkg.name}${process.env.BUILD_NAME_EXT ? `-${process.env.BUILD_NAME_EXT.toLocaleLowerCase()}` : ''}`,
+        productName: `Motion Bank Systems${process.env.BUILD_NAME_EXT ? ` (${process.env.BUILD_NAME_EXT})` : ''}`,
+        copyright: '2019 Motion Bank',
+        asarUnpack: [
+          // '**/app/node_modules/ffmpeg-static/*',
+          '**/app/node_modules/ffprobe-static/*'
+        ]
+        // publish: [{
+        //   provider: 'bintray',
+        //   package: `${pkg.name}-desktop`,
+        //   repo: 'motionbank',
+        //   token: process.env.BT_TOKEN
+        // }]
       }
     },
 

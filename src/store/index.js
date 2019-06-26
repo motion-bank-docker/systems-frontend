@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import { Platform } from 'quasar'
 
 Vue.use(Vuex)
 
@@ -32,17 +33,35 @@ import {
 } from './modules'
 
 /** Instantiate Motion Bank API Client */
-const apiClient = new WebAuth({
-  auth: {
-    domain: process.env.AUTH0_DOMAIN,
-    clientID: process.env.AUTH0_CLIENT_ID,
-    redirectUri: process.env.AUTH0_REDIRECT_URL,
-    audience: process.env.AUTH0_AUDIENCE,
-    scope: 'openid profile read write',
-    responseType: 'token id_token'
-  },
-  host: process.env.API_HOST
-})
+let apiClient
+
+if (process.env.USE_NEDB) {
+  /** Instantiate NeDB Client */
+  let filename
+  filename = process.env.NEDB_FILENAME || undefined
+  if (Platform.is.electron) {
+    const
+      path = require('path'),
+      { app } = require('electron').remote
+    filename = path.join(app.getPath('userData'), 'resources')
+  }
+  const NedbClient = require('../lib/nedb-client').default
+  apiClient = new NedbClient({ filename })
+}
+else {
+  /** Instantiate Motion Bank API Client */
+  apiClient = new WebAuth({
+    auth: {
+      domain: process.env.AUTH0_DOMAIN,
+      clientID: process.env.AUTH0_CLIENT_ID,
+      redirectUri: process.env.AUTH0_REDIRECT_URL,
+      audience: process.env.AUTH0_AUDIENCE,
+      scope: 'openid profile read write',
+      responseType: 'token id_token'
+    },
+    host: process.env.API_HOST
+  })
+}
 
 /**
  * Set up VueX store
@@ -65,7 +84,7 @@ const store = new Vuex.Store({
     forms,
     tags,
     timecodes,
-    metadata,
+    metadata: Platform.is.electron ? require('./modules/metadata-local').default : metadata,
     mosys,
     notifications,
     swimLaneSettings,

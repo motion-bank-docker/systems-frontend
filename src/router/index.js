@@ -50,8 +50,11 @@ Router.beforeEach((to, from, next) => {
           }
         }
         else if (to.meta.private) {
-          Router.app.$store.commit('auth/setRedirect', to.fullPath)
-          Router.app.$auth.authenticate()
+          if (process.env.IS_ELECTRON) next()
+          else {
+            Router.app.$store.commit('auth/setRedirect', to.fullPath)
+            Router.app.$auth.authenticate()
+          }
         }
         else next()
       }).catch(err => {
