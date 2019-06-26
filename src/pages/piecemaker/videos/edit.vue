@@ -95,8 +95,8 @@
           label: item.title
         }
       }).sort((a, b) => (a.label || '').localeCompare(b.label || ''))
+      await this.getVideo()
       this.$q.loading.hide()
-      this.getVideo()
     },
     data () {
       const context = this
@@ -109,12 +109,16 @@
         annotation: undefined,
         payload: this.$store.dispatch('annotations/get', this.$route.params.uuid)
           .then(async result => {
+            context.$q.loading.show()
+
             this.annotation = result
             this.map = await this.$store.dispatch('maps/get', parseURI(result.target.id).uuid)
-            this.meta = await this.$store.dispatch('metadata/get', result)
+            this.meta = await this.$store.dispatch('metadata/getLocal', result)
             this.titlePayload = this.meta.titleAnnotation
 
             const tags = await this.$store.dispatch('tags/get', result)
+
+            context.$q.loading.hide()
 
             return {
               gid: result.target.id,
