@@ -23,7 +23,6 @@
       zoom-rect(:root="root")
       // -------------------------------------------------------------------------------------------------- Marker Lanes
       svg.graph-lane-wrapper(ref="graphLaneWrapper", overflow="visible", , :y="y")
-        // TODO: rethink lane logic:
         graph-lane(
           v-for="(annotations, type, index) in annotationsGrouped",
           :annotations="annotations",
@@ -145,7 +144,6 @@
       trigger (event, args) {
         this.$root.$emit(event, args)
       },
-      // TODO implement also y movement on dragging
       update () {
         let x = Math.min(this.root.inputPosition.x - this.inputOffset.x, this.width - this.root.el.width)
         let y = Math.min(this.root.inputPosition.y - this.inputOffset.y, this.height - this.root.el.height)
@@ -164,11 +162,7 @@
           }
           else break
         }
-        // console.log('n:', n, 'for:', idx)
         return n
-      },
-      getMarkerByUUID (uuid) {
-        return uuid
       }
     }
   }

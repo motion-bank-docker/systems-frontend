@@ -128,7 +128,6 @@
                 :root="self",
                 :offset="offset"
                 )
-              // TODO: own component
               line.sl-graph-timecode-current.stroke-neutral.no-event(
                 :x1="timecodeMarkerCurrentX", y1="0",
                 :x2="timecodeMarkerCurrentX", y2="100%"
@@ -388,9 +387,6 @@
     },
     methods: {
       getEndMillisFromDuration (annotation) {
-        // FIXME: use the function in annotate.vue via $root
-        // this.$root.$emit('annotationEndMillis', annotation)
-        // this.$root.$emit('emitSelector', annotation.target.selector)
         return annotation.target.selector._valueMillis + annotation.target.selector._valueDuration
       },
       jumpToMarker (val, useDuration) {
@@ -523,7 +519,6 @@
       // ---------------------------------------------------------------------------------------------------- E Keyboard
       onKeyUp () {
         this.currentKeyDown = null
-        // TODO: is there another way to set this? How to setup event listening inside of EventHub?
         EventHub.currentKeyPressed = null
         switch (event.key) {
         case 'Control':
@@ -585,8 +580,6 @@
           text: this.millisToText(d)
         }
       },
-      // TODO: make single input or inputPosition object that holds all values?
-      // TODO: rethink this
       getInputPosition (event) {
         if (event) {
           return {
@@ -634,10 +627,8 @@
         let t1 = this.relToMillis(this.toRelGraphX(this.el.width))
         return {start: t0, length: t1}
       },
-      getMarkerByUUID (uuid) {
-        this.$refs.graph.getMarkerByUUID(uuid)
-      },
       // ---------------------------------------------------------------------------------------------------------- Misc
+      // markerList is currently not used for anything
       registerMarker (m) {
         this.markerList.push(m)
       },
@@ -763,21 +754,6 @@
         return Math.round(this.toRelGraphX(abs) * this.timeline.duration)
       },
       // ---------------------------------------------------------------------------------------------------- Formatting
-      // formatTimecode (tc) {
-      //   let v = tc
-      //   let mil = this.tripleDigit(v % 1000)
-      //   let sec = this.doubleDigit(Math.floor(v / 1000) % 60)
-      //   let min = this.doubleDigit(Math.floor(v / 1000 / 60) % 60)
-      //   let hou = this.doubleDigit(Math.floor(v / 1000 / 60 / 60) % 24)
-      //   let time = hou + ':' + min + ':' + sec + '.' + mil
-      //   return {
-      //     total: time,
-      //     ms: mil,
-      //     s: sec,
-      //     m: min,
-      //     h: hou
-      //   }
-      // },
       millisToText (ms, format) {
         if (!isNaN(ms)) {
           format = format || 'HH:mm:ss.SSS'
@@ -790,33 +766,10 @@
       millisToIso (ms) {
         return DateTime.fromMillis(ms).toISO()
       },
-      // doubleDigit (v) {
-      //   return (v < 10) ? '0' + v : v.toString()
-      // },
-      // tripleDigit (v) {
-      //   v = v.toString()
-      //   if (v < 10) v = '00' + v
-      //   else if (v < 100) v = '0' + v
-      //   return v
-      // },
-
-      // time scale on timecode bar
-      formatGraphTimeMarker (i) {
-        let s
-        if (i === 0) {
-          s = '00:'
-        }
-        else if (i < 10) {
-          s = '0' + i + ':'
-        }
-        else {
-          s = i + ':'
-        }
-        return s
-      },
       restrict (p, min, max) {
         return Math.min(Math.max(p, min), max)
       },
+      // ----------------------------------------------------------------------------------------------- Window Settings
       disableWindowScroll () {
         document.body.style.overflow = 'hidden'
       },
