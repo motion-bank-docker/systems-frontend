@@ -106,11 +106,6 @@
       this.$root.$emit('setBackButton', '/piecemaker/timelines')
       this.$q.loading.show()
       this.timeline = await this.$store.dispatch('maps/get', this.$route.params.uuid)
-      if (process.env.IS_STAGING) {
-        const aclQuery = {role: 'public', id: this.timeline.id, permission: 'get'}
-        const permissions = await this.$store.dispatch('acl/isRoleAllowed', aclQuery)
-        this.acl.public = permissions.get === true
-      }
       this.$q.loading.hide()
     },
     computed: {
