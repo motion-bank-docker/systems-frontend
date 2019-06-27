@@ -1,6 +1,7 @@
 import { BASE_URI } from 'mbjs-data-models/src/constants'
 import { Assert } from 'mbjs-utils'
 import getMetaData from 'mbjs-media/src/util/get-metadata'
+import guessType from 'mbjs-media/src/util/guess-type'
 
 const metadata = {
   namespaced: true,
@@ -18,10 +19,13 @@ const metadata = {
       Assert.ok(typeof payload === 'string' || typeof payload.body.source.id === 'string',
         'Metadata request payload must be UUID string or annotation object')
       let metadata
-      metadata = context.state.cache[payload.id] || metadata
+      metadata = context.state.cache[payload.id || payload] || metadata
       // const { ipcRenderer } = require('electron')
       const { getGlobal } = require('electron').remote
       if (!metadata) {
+        if (typeof payload !== 'string' && !payload.body.source.type) {
+          payload.body.source.type = guessType(payload.body.source.id)
+        }
         // metadata = ipcRenderer.sendSync('ffprobe', payload)
         const ffprobePath = getGlobal('FFPROBE_PATH')
         try {
