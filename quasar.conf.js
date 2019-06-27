@@ -80,9 +80,11 @@ module.exports = function (ctx) {
         AUTH0_REDIRECT_URL: JSON.stringify(process.env.AUTH0_REDIRECT_URL || 'https://app.motionbank.org/users/callback'),
         AUTH0_AUDIENCE: JSON.stringify(process.env.AUTH0_AUDIENCE || 'https://api.motionbank.org'),
         //
-        // Sentry
+        // API Keys
         //
         SENTRY_DSN: JSON.stringify(process.env.SENTRY_DSN || null),
+        YOUTUBE_API_KEY: JSON.stringify(process.env.YOUTUBE_API_KEY || null),
+        VIMEO_ACCESS_TOKEN: JSON.stringify(process.env.VIMEO_ACCESS_TOKEN || null),
         //
         // App config
         //
