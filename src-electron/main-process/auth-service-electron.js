@@ -9,7 +9,7 @@ const
 const
   redirectUri = 'file:///callback',
   keytarService = `${pkg.name}${process.env.BUILD_NAME_EXT
-    ? `-${process.env.BUILD_NAME_EXT.replace(/(\s+)/g, '_').toLocaleLowerCase()}` : ''}-openid-oauth`,
+    ? `-${process.env.BUILD_NAME_EXT.replace(/\s+/g, '_').toLocaleLowerCase()}` : ''}-openid-oauth`,
   keytarAccount = os.userInfo().username
 
 function getAuthenticationURL () {
