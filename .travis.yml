@@ -12,6 +12,7 @@ install:
   - git clone https://gitlab.rlp.net/motionbank/mbjs/quasar-components-mosys.git src/components/mosys
   - git clone https://gitlab.rlp.net/motionbank/mbjs/quasar-components-shared.git src/components/shared
   - npm install
+  - npm rebuild
 
 cache:
   directories:
@@ -28,6 +29,9 @@ env:
 
 jobs:
   include:
+    - stage: Test
+      script:
+        - npm test
     - stage: Build macOS & Windows
       if: tag IS present
       os: osx
