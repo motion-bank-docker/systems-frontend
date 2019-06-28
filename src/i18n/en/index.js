@@ -220,19 +220,19 @@ export default {
     mosys: {
       label: 'Mosys',
       mosys_grids_list: 'All Grids',
-      mosys_grids_annotate: 'Add cells: Edit the content from this grid',
-      mosys_grids_show: 'Show Cells: Show the grid how it will be seen by others',
-      mosys_grids_edit: 'Edit this grid\'s information',
+      mosys_grids_annotate: 'Fill',
+      mosys_grids_show: 'View',
+      mosys_grids_edit: 'Edit',
       mosys_grids_create: 'Create Grid'
     },
     documents: {
       label: 'Documents',
       documents_list: 'All Documents',
-      documents_edit: 'Edit this document\'s information'
+      documents_edit: 'Edit'
     },
     users: {
       label: 'Account settings',
-      users_manage: 'Edit your account settings'
+      users_manage: 'Account settings'
     }
   },
   routes: {
