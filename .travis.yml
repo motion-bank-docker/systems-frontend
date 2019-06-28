@@ -3,15 +3,10 @@ sudo: false
 language: node_js
 node_js: "10.16.0"
 
-before_install:
-  - cd app
-
 git:
   submodules: false
 
 install:
-  - git clone https://github.com/$TRAVIS_REPO_SLUG.git $TRAVIS_REPO_SLUG
-  - cd $TRAVIS_REPO_SLUG
   - git clone https://gitlab.rlp.net/motionbank/mbjs/quasar-components-mosys.git src/components/mosys
   - git clone https://gitlab.rlp.net/motionbank/mbjs/quasar-components-shared.git src/components/shared
   - npm remove --save-dev metapak
@@ -38,14 +33,14 @@ jobs:
       os: osx
       osx_image: xcode10.1
       script:
-        - npx quasar build -m electron -t mat -v 4.2.5 -- --mac --win
+        - quasar build -m electron -t mat -v 4.2.5 -- --mac --win
       before_cache:
         - rm -rf $HOME/.cache/electron-builder/wine
     - stage: Build Linux
       os: linux
       dist: trusty
       script:
-        - npx quasar build -m electron -t mat -v 4.2.5
+        - quasar build -m electron -t mat -v 4.2.5
 
 addons:
   ssh_known_hosts: gitlab.rlp.net
