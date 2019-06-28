@@ -11,7 +11,7 @@ install:
   - git clone https://gitlab.rlp.net/motionbank/mbjs/quasar-components-shared.git src/components/shared
   - npm remove --save-dev metapak
   - npm install
-  - npm i -g quasar-cli@0.17.20
+  - npm i -g quasar-cli
   - ln -s /usr/local/opt/openssl/include/openssl /usr/local/include/
   - npm run rebuild
 
