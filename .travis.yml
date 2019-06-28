@@ -16,6 +16,8 @@ install:
   - git clone https://gitlab.rlp.net/motionbank/mbjs/quasar-components-shared.git src/components/shared
   - npm remove --save-dev metapak
   - npm install
+  - cd /usr/local/include
+  - ln -s /usr/local/opt/openssl/include/openssl /usr/local/include/
   - npm run rebuild
 
 cache:
