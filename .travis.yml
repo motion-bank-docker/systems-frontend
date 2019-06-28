@@ -34,6 +34,7 @@ jobs:
       os: osx
       osx_image: xcode10.1
       script:
+        - pwd
         - quasar build -m electron -t mat -v 4.2.5 --mac --win
       before_cache:
         - rm -rf $HOME/.cache/electron-builder/wine
