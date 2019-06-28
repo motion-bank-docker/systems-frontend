@@ -10,6 +10,8 @@ git:
   submodules: false
 
 install:
+  - git clone https://github.com/$TRAVIS_REPO_SLUG.git $TRAVIS_REPO_SLUG
+  - cd $TRAVIS_REPO_SLUG
   - git clone https://gitlab.rlp.net/motionbank/mbjs/quasar-components-mosys.git src/components/mosys
   - git clone https://gitlab.rlp.net/motionbank/mbjs/quasar-components-shared.git src/components/shared
   - npm install
