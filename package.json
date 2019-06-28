@@ -16,7 +16,7 @@
   "scripts": {
     "release": "npm run build-electron",
     "build": "cross-env NODE_ENV=production node $NODE_DEBUG_OPTION ./node_modules/.bin/quasar build",
-    "build-electron": "cross-env NODE_ENV=production IS_ELECTRON=true IS_STAGING=true node ./node_modules/.bin/quasar build -m electron -t mat",
+    "build-electron": "cross-env NODE_ENV=production IS_ELECTRON=true IS_STAGING=true npx quasar build -m electron -t mat",
     "build-staging": "cross-env NODE_ENV=production IS_STAGING=true node $NODE_DEBUG_OPTION ./node_modules/.bin/quasar build",
     "clean": "quasar clean",
     "dev": "cross-env NODE_ENV=production node $NODE_DEBUG_OPTION ./node_modules/.bin/quasar dev",
