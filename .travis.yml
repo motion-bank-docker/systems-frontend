@@ -14,7 +14,7 @@ install:
   - cd $TRAVIS_REPO_SLUG
   - git clone https://gitlab.rlp.net/motionbank/mbjs/quasar-components-mosys.git src/components/mosys
   - git clone https://gitlab.rlp.net/motionbank/mbjs/quasar-components-shared.git src/components/shared
-  - npm i -g cross-env
+  - npm i -g cross-env quasar-cli@0.17.20
   - npm remove --save-dev metapak
   - npm install
   - npm rebuild
