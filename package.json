@@ -7,13 +7,14 @@
   "author": "Mainz University of Applied Sciences (Motion Bank Project)",
   "repository": {
     "type": "git",
-    "url": "git+https://gitlab.rlp.net/motionbank/systems-frontend.git"
+    "url": "git@gitlab.rlp.net/motionbank/systems-frontend.git"
   },
   "bugs": {
     "url": "https://gitlab.rlp.net/motionbank/systems-frontend/issues"
   },
   "homepage": "https://gitlab.rlp.net/motionbank/systems-frontend#readme",
   "scripts": {
+    "release": "npm run build-electron",
     "build": "cross-env NODE_ENV=production node $NODE_DEBUG_OPTION ./node_modules/.bin/quasar build",
     "build-electron": "cross-env NODE_ENV=production IS_ELECTRON=true IS_STAGING=true node ./node_modules/.bin/quasar build -m electron -t mat",
     "build-staging": "cross-env NODE_ENV=production IS_STAGING=true node $NODE_DEBUG_OPTION ./node_modules/.bin/quasar build",
