@@ -29,7 +29,7 @@
     "docker-release-staging": "npm run docker-build-staging && docker push motionbank/systems-frontend:staging",
     "lint": "eslint --ext .js,.vue src",
     "metapak": "metapak",
-    "rebuild": "npx electron-rebuild",
+    "rebuild": "npx electron-rebuild -v 4.2.5",
     "start": "node ./",
     "test": "echo \"No test specified\" && exit 0"
   },
