@@ -38,8 +38,6 @@ module.exports = function (ctx) {
       // useNotifier: false,
       extendWebpack (cfg) {
         cfg.externals = Object.assign({
-          keytar: 'commonjs keytar',
-          // FIXME: nedb external causes browser version to fail
           nedb: 'commonjs nedb',
           'fluent-ffmpeg': 'commonjs fluent-ffmpeg',
           'open-graph-scraper': 'commonjs open-graph-scraper',
@@ -257,17 +255,9 @@ module.exports = function (ctx) {
     electron: {
       bundler: 'builder', // or 'packager'
       extendWebpack (cfg) {
-        // do something with cfg
-      },
-      packager: {
-        // OS X / Mac App Store
-        // appBundleId: '',
-        // appCategoryType: '',
-        // osxSign: '',
-        // protocol: 'myapp://path',
-
-        // Window only
-        // win32metadata: { ... }
+        cfg.externals = Object.assign({
+          keytar: 'commonjs keytar'
+        }, cfg.externals)
       },
       builder: {
         // https://www.electron.build/configuration/configuration
