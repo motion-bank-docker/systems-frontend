@@ -38,3 +38,6 @@ jobs:
       dist: trusty
       script:
         - npm run release
+
+addons:
+  ssh_known_hosts: gitlab.rlp.net
