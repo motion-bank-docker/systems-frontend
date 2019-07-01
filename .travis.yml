@@ -32,17 +32,14 @@ jobs:
       os: osx
       osx_image: xcode10.1
       script:
-        - pwd
-        - ls -la node_modules
-        - ls -la node_modules/.bin
-        - npx quasar build -m electron -t mat -v 4.2.5 --mac --win
+        - NODE_ENV=production npx quasar build -m electron -t mat -v 4.2.5 --mac --win
       before_cache:
         - rm -rf $HOME/.cache/electron-builder/wine
     - stage: Build Linux
       os: linux
       dist: trusty
       script:
-        - npx quasar build -m electron -t mat -v 4.2.5
+        - NODE_ENV=production npx quasar build -m electron -t mat -v 4.2.5
 
 addons:
   ssh_known_hosts: gitlab.rlp.net
