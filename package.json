@@ -14,7 +14,6 @@
   },
   "homepage": "https://gitlab.rlp.net/motionbank/systems-frontend#readme",
   "scripts": {
-    "release": "npm run build-electron",
     "build": "cross-env NODE_ENV=production node npx quasar build",
     "build-electron": "NODE_ENV=production IS_ELECTRON=true IS_STAGING=true quasar build -m electron -t mat -v 4.2.5",
     "build-staging": "cross-env NODE_ENV=production IS_STAGING=true npx quasar build",
@@ -30,6 +29,7 @@
     "lint": "eslint --ext .js,.vue src",
     "metapak": "metapak",
     "rebuild": "npx electron-rebuild -v 4.2.5",
+    "release": "npm run build-electron",
     "start": "node ./",
     "test": "echo \"No test specified\" && exit 0"
   },
