@@ -9,7 +9,7 @@ git:
 install:
   - git clone https://gitlab.rlp.net/motionbank/mbjs/quasar-components-mosys.git src/components/mosys
   - git clone https://gitlab.rlp.net/motionbank/mbjs/quasar-components-shared.git src/components/shared
-  - CI=false npm install
+  - npm install
   - ln -s /usr/local/opt/openssl/include/openssl /usr/local/include/
   - npm run rebuild
 
@@ -31,18 +31,14 @@ jobs:
       os: osx
       osx_image: xcode10.1
       script:
-        - npx quasar build -m electron -t mat -v 4.2.5 --mac --win
-      env:
-        - NODE_ENV=production
+        - NODE_ENV=production npx quasar build -m electron -t mat -v 4.2.5 --mac --win
       before_cache:
         - rm -rf $HOME/.cache/electron-builder/wine
     - stage: Build Linux
       os: linux
       dist: trusty
       script:
-        - npx quasar build -m electron -t mat -v 4.2.5
-      env:
-        - NODE_ENV=production
+        - NODE_ENV=productionnpx quasar build -m electron -t mat -v 4.2.5
 
 addons:
   ssh_known_hosts: gitlab.rlp.net
