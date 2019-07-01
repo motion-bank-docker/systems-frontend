@@ -12,6 +12,7 @@ install:
   - npm install
   - ln -s /usr/local/opt/openssl/include/openssl /usr/local/include/
   - npm run rebuild
+  - sed -i 's/git@gitlab.rlp.net\/motionbank\/systems-frontend.git/git@github.com\/motionbank\/systems-frontend.git\/g' package.json
 
 cache:
   directories:
