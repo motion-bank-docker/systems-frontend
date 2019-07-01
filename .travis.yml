@@ -11,7 +11,6 @@ install:
   - git clone https://gitlab.rlp.net/motionbank/mbjs/quasar-components-shared.git src/components/shared
   - npm remove --save-dev metapak
   - npm install
-  - npm i -g @quasar/cli
   - ln -s /usr/local/opt/openssl/include/openssl /usr/local/include/
   - npm run rebuild
 
@@ -35,14 +34,15 @@ jobs:
       osx_image: xcode10.1
       script:
         - pwd
-        - quasar build -m electron -t mat -v 4.2.5 --mac --win
+        - ls -la
+        - npx quasar build -m electron -t mat -v 4.2.5 --mac --win
       before_cache:
         - rm -rf $HOME/.cache/electron-builder/wine
     - stage: Build Linux
       os: linux
       dist: trusty
       script:
-        - quasar build -m electron -t mat -v 4.2.5
+        - npx quasar build -m electron -t mat -v 4.2.5
 
 addons:
   ssh_known_hosts: gitlab.rlp.net
