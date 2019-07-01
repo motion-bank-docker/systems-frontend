@@ -12,7 +12,6 @@ install:
   - npm install
   - ln -s /usr/local/opt/openssl/include/openssl /usr/local/include/
   - npm run rebuild
-  - sed -i -e 's/gitlab.rlp.net/github.com/g' package.json
 
 cache:
   directories:
