@@ -36,9 +36,9 @@ jobs:
         - rm -rf $HOME/.cache/electron-builder/wine
     - stage: Build Linux
       os: linux
-      dist: trusty
+      dist: xenial
       script:
-        - NODE_ENV=productionnpx quasar build -m electron -t mat -v 4.2.5
+        - NODE_ENV=production npx quasar build -m electron -t mat -v 4.2.5
 
 addons:
   ssh_known_hosts: gitlab.rlp.net
