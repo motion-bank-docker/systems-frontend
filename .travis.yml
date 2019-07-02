@@ -37,8 +37,15 @@ jobs:
     - stage: Build Linux
       os: linux
       dist: xenial
+      before_install:
+        - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+        - sudo apt-get update -q
+        - sudo apt-get install -y libsecret-1-dev
       script:
         - NODE_ENV=production npx quasar build -m electron -t mat -v 4.2.5
+      addons:
+        apt:
+          update: true
 
 addons:
   ssh_known_hosts: gitlab.rlp.net
