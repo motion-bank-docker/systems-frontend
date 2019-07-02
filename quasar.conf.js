@@ -272,7 +272,8 @@ module.exports = function (ctx) {
         publish: [
           {
             provider: 'github',
-            releaseType: 'release'
+            releaseType: 'release',
+            repo: 'motionbank/systems-frontend'
           },
           // {
           //   'provider': 's3',
