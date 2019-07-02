@@ -31,7 +31,8 @@ jobs:
       os: osx
       osx_image: xcode10.2
       script:
-        - NODE_ENV=production npx quasar build -m electron -t mat -v 4.2.5 --mac --win
+        - NODE_ENV=production npx quasar build -m electron -t mat
+        - NODE_ENV=production npx quasar build -m electron -t mat --target win
       before_cache:
         - rm -rf $HOME/.cache/electron-builder/wine
     - stage: Build Linux
@@ -40,7 +41,7 @@ jobs:
       before_install:
         - sudo apt-get install -y libsecret-1-dev
       script:
-        - NODE_ENV=production npx quasar build -m electron -t mat -v 4.2.5
+        - NODE_ENV=production npx quasar build -m electron -t mat
       addons:
         apt:
           update: true
