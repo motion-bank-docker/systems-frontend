@@ -268,24 +268,6 @@ module.exports = function (ctx) {
         asarUnpack: [
           // '**/app/node_modules/ffmpeg-static/*',
           '**/app/node_modules/ffprobe-static/*'
-        ],
-        publish: [
-          {
-            provider: 'github',
-            releaseType: 'release',
-            repo: 'motionbank/systems-frontend'
-          },
-          // {
-          //   'provider': 's3',
-          //   'bucket': 'dist',
-          //   'endpoint': 'assets.motionbank.org'
-          // }
-          {
-            provider: 'bintray',
-            package: `${pkg.name}-desktop`,
-            repo: 'motionbank',
-            token: process.env.BT_TOKEN
-          }
         ]
       }
     },
