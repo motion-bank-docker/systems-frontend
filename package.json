@@ -18,7 +18,7 @@
     "build-electron": "NODE_ENV=production IS_ELECTRON=true IS_STAGING=true quasar build -m electron -t mat -v 4.2.5",
     "build-staging": "cross-env NODE_ENV=production IS_STAGING=true npx quasar build",
     "clean": "quasar clean",
-    "dev": "cross-env NODE_ENV=production node npx quasar dev",
+    "dev": "cross-env NODE_ENV=production npx quasar dev",
     "dev-electron": "cross-env NODE_ENV=production IS_ELECTRON=true IS_STAGING=true npx quasar dev -m electron -t mat",
     "docker-build": "docker build -t motionbank/systems-frontend:latest .",
     "docker-build-dev": "docker build -t motionbank/systems-frontend:dev .",
