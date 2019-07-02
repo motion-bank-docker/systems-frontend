@@ -268,7 +268,11 @@ module.exports = function (ctx) {
         asarUnpack: [
           // '**/app/node_modules/ffmpeg-static/*',
           '**/app/node_modules/ffprobe-static/*'
-        ]
+        ],
+        mac: {
+          category: 'public.app-category.education',
+          target: 'dmg'
+        }
       }
     },
 
