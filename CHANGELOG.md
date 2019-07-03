@@ -16,6 +16,12 @@ and this project adheres to
 - SwimLane component in post-annotator and on standalone page
 - Annotations can have durations through target.selector.value
 - PBA vocabularies (titles for pieces)
+- Frontend can be built as an [Electron](https://electronjs.org/)
+app, including a local transcoder service
+- Mobile device-friendliness
+- Breadcrumb navigation
+- Buttons now support right-click + open in new tab (still suffers from
+[#253](https://gitlab.rlp.net/motionbank/applications/systems-frontend/issues/253))
 
 ### Changed
 
@@ -26,7 +32,11 @@ and this project adheres to
 for YouTube sources to be GDPR compliant
 - VideoPlayer uses [dnt](https://github.com/vimeo/player.js/#embed-options)
 (do not track) option for showing Vimeo videos for GDPR compliance
-
+- Basic colors, look & feel
+- New post annotator layout
+- Vocabulary menu layout and functionality
+- Navigation redesign
+- MoSys redesign
 
 ### Updated
 
@@ -34,6 +44,12 @@ for YouTube sources to be GDPR compliant
   to version 1.2.4
 - [mbjs-quasar](https://gitlab.rlp.net/motionbank/mbjs/quasar)
   to version 2.2.0
+
+### Fixed
+
+- Sync screen
+- Timecode millisecond display
+- Video player scaling issue
 
 
 ## [1.3.1] - 2019-04-06
