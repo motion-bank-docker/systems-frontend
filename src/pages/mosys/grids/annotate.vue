@@ -1,11 +1,18 @@
 <template lang="pug">
   .grid-editor-container(:class="{'tabs-open': tabsAreOpen}")
-    //div.backbutton(v-if="!isMobile")
-      q-btn(slot="backButton", @click="$router.push('/mosys/grids')", icon="keyboard_backspace", round, small, color="black")
-    div.grid-editor-shadow-right(v-if="tabsAreOpen")
+
+    //
+      div.grid-editor-shadow-right(v-if="tabsAreOpen")
+    // ------------------------------------------------------------------------------------------------------------ grid
     grid-editor.grid-editor(ref="gridEditor", :gridUuid="$route.params.uuid", :tabsAreOpen="tabsAreOpen")
+    // -------------------------------------------------------------------------------------------------------- new cell
     grid-editor-sources.grid-editor-sources(v-if="$store.state.mosys.showSources")
-    grid-editor-editing-cells.grid-editor-editing-cells(v-if="showEditingCells")
+    // ----------------------------------------------------------------------------------------------------- cell editor
+    template(v-if="!isMobile")
+      grid-editor-editing-cells.grid-editor-editing-cells(v-if="showEditingCells")
+    template(v-else)
+      q-modal(v-model="showEditingCells", @hide="closedModal()", position="bottom")
+        grid-editor-editing-cells
     // grid-editor-add-cells.grid-editor-sources(v-if="$store.state.mosys.showAddCells")
 </template>
 
@@ -51,6 +58,9 @@
       }
     },
     methods: {
+      closedModal () {
+        this.$store.commit('mosys/hideEditingCells')
+      },
       handleSaveGridScrollPosition () {
         this.$store.commit('mosys/setScrollPositionCache', this.$refs.gridEditor.$el.scrollLeft)
       }

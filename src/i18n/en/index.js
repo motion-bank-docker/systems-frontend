@@ -385,6 +385,9 @@ export default {
       }
     },
     mosys: {
+      cells: {
+        edit_cell: 'Edit Cell'
+      },
       add: {
         title: 'Add',
         caption: 'Add an URL'
