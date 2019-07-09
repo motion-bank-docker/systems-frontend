@@ -228,6 +228,9 @@ export default {
     documents: {
       label: 'Documents',
       documents_list: 'All Documents',
+      documents_copy_url: 'Copy URL',
+      documents_delete: 'Delete',
+      documents_download: 'Download',
       documents_edit: 'Edit'
     },
     users: {
