@@ -22,6 +22,11 @@
     },
     mounted () {
       this.$store.commit('globalSettings/setIsMobile', this.$q.platform.is.mobile)
+    },
+    watch: {
+      '$route' (route) {
+        this.$store.commit('globalSettings/setCurrentRoute', route.name)
+      }
     }
   }
 </script>
