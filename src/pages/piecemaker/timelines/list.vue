@@ -25,26 +25,15 @@
 
       content-paragraph
         data-table(
-      :config="config",
-      :title="'routes.piecemaker.timelines.list.title'",
-      ref="listTable",
+        :config="config",
+        :title="'routes.piecemaker.timelines.list.title'",
+        ref="listTable",
         path="maps",
-      :query="query",
-      base-path="timelines",
-      :has-show="isStaging",
-      :request-transform="requestTransform"
-      )
-
-          // button: create timeline
-          //
-            template(slot="buttons-left")
-              q-btn(@click="$router.push({ name: 'piecemaker.timelines.create' })",
-              color="primary", icon="add")
-                span.on-right(v-if="!isMobile") {{ $t('buttons.create_timeline') }}
-          template(slot="top-buttons")
-            q-btn(@click="$router.push({ name: 'piecemaker.timelines.create' })",
-            color="primary", :class="{'full-width': isMobile}", icon="add")
-              span.on-right.gt-xs {{ $t('buttons.create_timeline') }}
+        :query="query",
+        base-path="timelines",
+        :has-show="isStaging",
+        :request-transform="requestTransform"
+        )
 </template>
 
 <script>

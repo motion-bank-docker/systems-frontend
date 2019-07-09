@@ -15,20 +15,6 @@
         :requestTransform="requestTransform"
         base-path="grids",
         :has-show="true")
-
-          // "create grid" button
-          // template(slot="buttons-left")
-          template(slot="top-buttons")
-            // q-btn(@click="$router.push({ name: 'mosys.grids.create' })", color="primary") {{ $t('buttons.create_grid') }}
-            //
-              q-btn(@click="$router.push({ name: 'mosys.grids.create' })",
-              color="primary", icon="add")
-                span.on-right(v-if="!isMobile") {{ $t('buttons.create_grid') }}
-            q-btn(@click="$router.push({ name: 'mosys.grids.create' })",
-            color="primary", :class="{'full-width': isMobile}", icon="add")
-              span.on-right.gt-xs {{ $t('buttons.create_grid') }}
-              // span.on-right(v-if="!isMobile") {{ $t('buttons.create_grid') }}
-              // span.on-right {{ $t('buttons.create_grid') }}
 </template>
 
 <script>
