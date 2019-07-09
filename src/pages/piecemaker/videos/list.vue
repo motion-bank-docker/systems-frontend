@@ -2,31 +2,14 @@
   full-screen
     confirm-modal(ref="confirmModal", @confirm="handleConfirmModal")
 
-    //
-      span(slot="form-logo")
-      span(slot="form-title" v-if="timeline") {{ timeline.title }}: {{ $t('routes.piecemaker.videos.list.title') }}
     content-block(:position="'first'")
       headline(v-if="timeline", :content="$t('routes.piecemaker.videos.list.title')")
         | {{ timeline.title }}
 
       content-paragraph(:position="'first'")
         data-table(v-if="query", ref="listTable", :config="config", :title="'routes.piecemaker.videos.list.title'",
-          path="annotations", :query="query", base-path="videos", :request-transform="requestTransform", :customTitleLink="'piecemaker.videos.annotate'"
-    )
-
-          //
-            template(slot="buttons-left")
-              //
-                q-btn(@click="$router.push({ name: 'piecemaker.videos.create', params: { timelineUuid: $route.params.timelineUuid } })",
-                color="primary") {{ $t('buttons.add_video') }}
-              //
-                q-btn(@click="$router.push({ name: 'piecemaker.videos.create', params: { timelineUuid: $route.params.timelineUuid } })",
-                color="primary", icon="add")
-                  span.on-right(v-if="!isMobile") {{ $t('buttons.add_video') }}
-          template(slot="top-buttons")
-            q-btn(@click="$router.push({ name: 'piecemaker.videos.create', params: { timelineUuid: $route.params.timelineUuid } })",
-            color="primary", :class="{'full-width': isMobile}", icon="add")
-              span.on-right.gt-xs {{ $t('buttons.add_video') }}
+        path="annotations", :query="query", base-path="videos", :request-transform="requestTransform",
+        :customTitleLink="'piecemaker.videos.annotate'")
 </template>
 
 <script>
