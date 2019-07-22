@@ -24,14 +24,18 @@ const metadata = {
       if (!metadata) {
         metadata = {}
         try {
-          const result = await new Promise(resolve => {
+          const result = await new Promise((resolve, reject) => {
             this.$router.app.$socket.emit(
               'metadata:get',
               { url: payload.body.source.id, token: localStorage.getItem('access_token') },
-              data => resolve(data)
+              (err, data) => {
+                if (err) reject(err)
+                else resolve(data)
+              }
             )
           })
           if (result) {
+            console.log('result', result)
             metadata = result
             context.commit('setCache', [payload.body.source.id, metadata])
           }
