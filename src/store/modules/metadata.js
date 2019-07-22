@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { BASE_URI } from 'mbjs-data-models/src/constants'
 import { Assert } from 'mbjs-utils'
 
@@ -17,26 +16,31 @@ const metadata = {
     async get (context, payload) {
       Assert.ok(typeof payload === 'string' || typeof payload.body.source.id === 'string',
         'Metadata request payload must be UUID string or annotation object')
-      const headers = {
-        Authorization: `Bearer ${localStorage.getItem('access_token')}`
+      if (typeof payload === 'string') {
+        payload = await context.dispatch('annotations/get', payload, { root: true })
       }
-      let metadataURL
-      if (typeof payload === 'string') metadataURL = `${process.env.TRANSCODER_HOST}/metadata/${payload}`
-      else metadataURL = `${process.env.TRANSCODER_HOST}/metadata/url?url=${encodeURIComponent(payload.body.source.id)}`
       let metadata
-      metadata = context.state.cache[metadataURL] || metadata
+      metadata = context.state.cache[payload.body.source.id] || metadata
       if (!metadata) {
         metadata = {}
         try {
-          let result = await axios.get(metadataURL, {headers})
-          metadata = result.data
-          context.commit('setCache', [metadataURL, metadata])
+          const result = await new Promise(resolve => {
+            this.$router.app.$socket.emit(
+              'metadata:get',
+              { url: payload.body.source.id, token: localStorage.getItem('access_token') },
+              data => resolve(data)
+            )
+          })
+          if (result) {
+            metadata = result
+            context.commit('setCache', [payload.body.source.id, metadata])
+          }
         }
         catch (err) {
           if (!err.response || err.response.status > 404) console.error(err.message)
         }
       }
-      if (typeof payload === 'string' || payload.id) {
+      if (payload.id) {
         const titleQuery = {
           'target.id': typeof payload === 'string' ? `${BASE_URI}/annotations/${payload}` : payload.id,
           'body.purpose': 'describing',
@@ -56,11 +60,11 @@ const metadata = {
       Assert.ok(typeof payload === 'string' || typeof payload.body.source.id === 'string',
         'Metadata request payload must be UUID string or annotation object')
 
-      let metadataURL
-      if (typeof payload === 'string') metadataURL = `${process.env.TRANSCODER_HOST}/metadata/${payload}`
-      else metadataURL = `${process.env.TRANSCODER_HOST}/metadata/url?url=${encodeURIComponent(payload.body.source.id)}`
+      if (typeof payload === 'string') {
+        payload = await context.dispatch('annotations/get', payload, { root: true })
+      }
       let metadata
-      metadata = context.state.cache[metadataURL] || {}
+      metadata = context.state.cache[payload.body.source.id] || {}
       const titleQuery = {
         'target.id': typeof payload === 'string' ? `${BASE_URI}/annotations/${payload}` : payload.id,
         'body.purpose': 'describing',

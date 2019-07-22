@@ -12,6 +12,8 @@ and this project adheres to
 
 ### Added
 
+- [cote](https://cote.js.org) Sockend client integration to
+connect to [sockets service](https://gitlab.rlp.net/motionbank/microservices/sockets)
 - Cell datatype available as vuex store module
 - SwimLane component in post-annotator and on standalone page
 - Annotations can have durations through target.selector.value
