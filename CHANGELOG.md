@@ -24,7 +24,8 @@ app, including a local transcoder service
 - Breadcrumb navigation
 - Buttons now support right-click + open in new tab (still suffers from
 [#253](https://gitlab.rlp.net/motionbank/applications/systems-frontend/issues/253))
-- Audio annotations can be added under `videos/create` (playback possible using forked
+- Audio annotations (supported types: `.m4a` and `.mp3`) can be added
+under `videos/create` (playback possible using forked
 [vue-video-player](https://github.com/dasantonym/vue-video-player))
 
 ### Changed
