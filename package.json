@@ -72,7 +72,7 @@
     "vue-i18n": "7.8.1",
     "vue-shortkey": "3.1.6",
     "vue-socket.io": "^3.0.7",
-    "vue-video-player": "5.0.2",
+    "vue-video-player": "git+https://github.com/dasantonym/vue-video-player.git",
     "vuelidate": "0.7.4"
   },
   "devDependencies": {
