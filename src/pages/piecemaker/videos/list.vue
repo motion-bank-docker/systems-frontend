@@ -44,6 +44,7 @@
             transformed.last_updated = row.updated ? row.updated : row.created
             const tags = await _this.$store.dispatch('tags/get', row)
             transformed.tags = tags.join(', ')
+            transformed.type = row.body.type
             transformed.author = row.author ? row.author.name : _this.$t('labels.unknown_author')
             transformed._uuid = row._uuid
             transformed.id = row.id
@@ -61,6 +62,13 @@
               name: 'title',
               label: _this.$t('labels.title'),
               field: 'title',
+              sortable: true,
+              filter: true
+            },
+            {
+              name: 'type',
+              label: _this.$t('labels.type'),
+              field: 'type',
               sortable: true,
               filter: true
             },
