@@ -136,7 +136,7 @@
       if (this.timeline) {
         this.query = {
           'body.purpose': 'linking',
-          'body.type': 'Video',
+          'body.type': { $in: ['Audio', 'Video'] },
           'target.id': this.timeline.id
         }
       }

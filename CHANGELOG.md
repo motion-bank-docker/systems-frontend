@@ -24,6 +24,7 @@ app, including a local transcoder service
 - Breadcrumb navigation
 - Buttons now support right-click + open in new tab (still suffers from
 [#253](https://gitlab.rlp.net/motionbank/applications/systems-frontend/issues/253))
+- Audio annotations can be added under `videos/create` (playback still missing)
 
 ### Changed
 

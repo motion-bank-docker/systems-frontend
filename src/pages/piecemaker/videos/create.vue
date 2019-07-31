@@ -73,14 +73,17 @@
               if (metadata && metadata.duration) {
                 end = DateTime.fromISO(start, {setZone: true}).plus(metadata.duration * 1000).toISO()
               }
-              const target = _this.timeline.getInterval(start, end)
+              const
+                target = _this.timeline.getInterval(start, end),
+                type = guessType(_this.payload.url),
+                typeName = type.split('/')[0].substr(0, 1).toUpperCase() + type.split('/')[0].substr(1)
               _this.apiPayload = {
                 body: {
                   source: {
                     id: _this.payload.url,
-                    type: guessType(_this.payload.url)
+                    type
                   },
-                  type: 'Video',
+                  type: typeName,
                   purpose: 'linking'
                 },
                 target
