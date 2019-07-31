@@ -108,7 +108,7 @@
               type: 'show',
               title: 'Videos',
               color: 'primary',
-              click: (item) => _this.$router.push({ name: 'piecemaker.timelines.show', params: { timelineUuid: item._uuid } })
+              click: (item) => _this.$router.push({ name: 'piecemaker.videos.list', params: { timelineUuid: item._uuid } })
             },
             {
               type: 'live-annotate',
