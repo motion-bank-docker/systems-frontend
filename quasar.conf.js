@@ -110,7 +110,7 @@ module.exports = function (ctx) {
         'QLayoutHeader',
         'QLayoutDrawer',
         'QPageContainer',
-        'QPage',
+        // 'QPage',
         'QWindowResizeObservable',
         'QResizeObservable',
         'QPageSticky',
@@ -118,7 +118,7 @@ module.exports = function (ctx) {
         // Buttons
         //
         'QBtn',
-        'QBtnToggle',
+        // 'QBtnToggle',
         'QBtnDropdown',
         //
         // Navigation
@@ -179,12 +179,12 @@ module.exports = function (ctx) {
         // Progress
         //
         'QSpinner',
-        'QSpinnerTail',
+        // 'QSpinnerTail',
         'QSpinnerPuff',
         //
         // Scrolling
         //
-        'QScrollArea',
+        // 'QScrollArea',
         //
         // Other Components
         //
