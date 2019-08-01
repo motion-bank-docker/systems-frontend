@@ -285,9 +285,9 @@ export default {
         caption: 'Media recording via Cellphone, Web- or other USB-camera.'
       }
     },
-    mocabulary: {
+    vocabularies: {
       trees: {
-        title: 'Mocabulary list',
+        title: 'Vocabulary list',
         caption: 'captions'
       }
     },

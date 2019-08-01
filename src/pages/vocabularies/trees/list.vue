@@ -5,7 +5,7 @@
       template(slot="content")
         q-input(v-model="newVocabulary", :float-label="$t('buttons.add_vocabulary')", dark)
 
-    <!--h5(dark) {{ $t('routes.mocabulary.trees.title') }}-->
+    <!--h5(dark) {{ $t('routes.vocabularies.trees.title') }}-->
     .row
       .col-6
         <!--h5 {{ $t('labels.my_vocabularies') }}-->

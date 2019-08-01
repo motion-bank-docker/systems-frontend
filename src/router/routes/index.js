@@ -1,5 +1,5 @@
 import documents from './documents'
-import mocabulary from './mocabulary'
+import vocabularies from './vocabularies'
 import mosys from './mosys'
 import piecemaker from './piecemaker'
 import site from './site'
@@ -7,7 +7,7 @@ import users from './users'
 
 export default [
   documents,
-  mocabulary,
+  vocabularies,
   mosys,
   piecemaker,
   site,
