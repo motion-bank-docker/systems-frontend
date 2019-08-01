@@ -10,8 +10,6 @@ module.exports = function (ctx) {
       'auth',
       'axios',
       'components',
-      'conversions',
-      'extractions',
       'handle-error',
       'i18n',
       'notifications',
