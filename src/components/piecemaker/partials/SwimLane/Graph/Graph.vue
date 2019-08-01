@@ -60,10 +60,10 @@
     },
     computed: {
       ...mapGetters({
-        timecodeCurrent: 'swimLaneSettings/getTimecode',
-        scaleFactor: 'swimLaneSettings/getScaleFactor',
-        scrollPosition: 'swimLaneSettings/getScrollPosition',
-        expandedMode: 'swimLaneSettings/getExpandedMode'
+        timecodeCurrent: 'swimLane/getTimecode',
+        scaleFactor: 'swimLane/getScaleFactor',
+        scrollPosition: 'swimLane/getScrollPosition',
+        expandedMode: 'swimLane/getExpandedMode'
       }),
       x () {
         return this.width * this.scrollPosition.x * -1

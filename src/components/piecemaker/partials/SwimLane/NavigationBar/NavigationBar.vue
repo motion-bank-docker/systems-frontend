@@ -59,9 +59,9 @@
     },
     computed: {
       ...mapGetters({
-        timecodeCurrent: 'swimLaneSettings/getTimecode',
-        scaleFactor: 'swimLaneSettings/getScaleFactor',
-        scrollPosition: 'swimLaneSettings/getScrollPosition'
+        timecodeCurrent: 'swimLane/getTimecode',
+        scaleFactor: 'swimLane/getScaleFactor',
+        scrollPosition: 'swimLane/getScrollPosition'
       }),
       navHandleX () {
         return this.root.toAbsCompX(this.scrollPosition.x)

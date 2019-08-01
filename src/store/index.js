@@ -27,7 +27,7 @@ import {
   metadata,
   mosys,
   notifications,
-  swimLaneSettings,
+  swimLane,
   vocabularies
 } from './modules'
 
@@ -86,7 +86,7 @@ const store = new Vuex.Store({
     metadata: Platform.is.electron ? require('./modules/metadata-local').default : metadata,
     mosys,
     notifications,
-    swimLaneSettings,
+    swimLane,
     vocabularies
   }
 })

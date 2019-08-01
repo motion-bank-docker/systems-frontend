@@ -74,10 +74,10 @@
     },
     computed: {
       ...mapGetters({
-        laneMode: 'swimLaneSettings/getLaneMode',
-        expandedMode: 'swimLaneSettings/getExpandedMode',
-        selectedAnnotation: 'swimLaneSettings/getSelectedAnnotation',
-        scaleFactor: 'swimLaneSettings/getScaleFactor'
+        laneMode: 'swimLane/getLaneMode',
+        expandedMode: 'swimLane/getExpandedMode',
+        selectedAnnotation: 'swimLane/getSelectedAnnotation',
+        scaleFactor: 'swimLane/getScaleFactor'
       }),
       handleFill () {
         return this.isHovered || this.isDragged ? 'rgba(255,255,255,0.5)' : 'transparent'
@@ -194,7 +194,7 @@
 
         this.$root.$emit('markerDown', this.annotationData)
         this.$root.$emit('UIDown', this.activeElName)
-        this.$store.commit('swimLaneSettings/setSelectedAnnotation', this.annotationData)
+        this.$store.commit('swimLane/setSelectedAnnotation', this.annotationData)
       },
       onDownHandleLeft () {
         this.checkUnselect()
@@ -251,7 +251,7 @@
       },
       select () {
         this.isSelected = true
-        this.$store.commit('swimLaneSettings/setSelectedAnnotation', this.annotationData)
+        this.$store.commit('swimLane/setSelectedAnnotation', this.annotationData)
       },
       onUnselect () {
         if (!this.isDragged && this.isSelected) {

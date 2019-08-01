@@ -37,9 +37,9 @@
     },
     computed: {
       ...mapGetters({
-        scrollPosition: 'swimLaneSettings/getScrollPosition',
-        laneMode: 'swimLaneSettings/getLaneMode',
-        expandedMode: 'swimLaneSettings/getExpandedMode'
+        scrollPosition: 'swimLane/getScrollPosition',
+        laneMode: 'swimLane/getLaneMode',
+        expandedMode: 'swimLane/getExpandedMode'
       }),
       y () {
         return this.expandedMode ? (this.index + this.annotationsBefore) * this.rowHeight : this.index * 2 * this.rowHeight

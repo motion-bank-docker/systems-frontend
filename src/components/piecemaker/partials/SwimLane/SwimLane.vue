@@ -297,16 +297,16 @@
     },
     computed: {
       ...mapGetters({
-        timecodeCurrent: 'swimLaneSettings/getTimecode',
-        scrollPosition: 'swimLaneSettings/getScrollPosition',
-        scaleFactor: 'swimLaneSettings/getScaleFactor',
-        groupAnnotationsBy: 'swimLaneSettings/getGroupAnnotationsBy',
-        selectedAnnotation: 'swimLaneSettings/getSelectedAnnotation',
-        detailsWidth: 'swimLaneSettings/getDetailsWidth',
-        timecodeLabelBreakpoint: 'swimLaneSettings/getTimecodeLabelBreakpoint',
-        expandedMode: 'swimLaneSettings/getExpandedMode',
-        cursorTop: 'swimLaneSettings/getCursorTop',
-        visibilityDetails: 'swimLaneSettings/getVisibilityDetails'
+        timecodeCurrent: 'swimLane/getTimecode',
+        scrollPosition: 'swimLane/getScrollPosition',
+        scaleFactor: 'swimLane/getScaleFactor',
+        groupAnnotationsBy: 'swimLane/getGroupAnnotationsBy',
+        selectedAnnotation: 'swimLane/getSelectedAnnotation',
+        detailsWidth: 'swimLane/getDetailsWidth',
+        timecodeLabelBreakpoint: 'swimLane/getTimecodeLabelBreakpoint',
+        expandedMode: 'swimLane/getExpandedMode',
+        cursorTop: 'swimLane/getCursorTop',
+        visibilityDetails: 'swimLane/getVisibilityDetails'
       }),
       cursorGlobalResize () {
         return this.isDragged(['navHandleRight', 'navHandleLeft']) ? 'global-ew-resize' : ''
@@ -430,31 +430,31 @@
       onDetailsResize (obj) {
         this.dimensions.details.width.currentPx = obj.width
         if (this.dimensions.details.width.currentPx < 280) {
-          this.$store.commit('swimLaneSettings/setTimecodeLabelBreakpoint', true)
+          this.$store.commit('swimLane/setTimecodeLabelBreakpoint', true)
         }
-        else this.$store.commit('swimLaneSettings/setTimecodeLabelBreakpoint', false)
+        else this.$store.commit('swimLane/setTimecodeLabelBreakpoint', false)
       },
       onResizerDown () {
         this.isResizing = true
       },
       handlerResizeY (obj) {
-        this.$store.commit('swimLaneSettings/setCursorTop', obj.position.top - 16 - 15)
+        this.$store.commit('swimLane/setCursorTop', obj.position.top - 16 - 15)
       },
       handlerResizeX (obj) {
         let
           clWidth = this.$refs.wrapper.clientWidth,
           cursorPosLeft = obj.position.left - 16 - 15
         this.dimensions.details.width.current = cursorPosLeft / clWidth * 100
-        this.$store.commit('swimLaneSettings/setDetailsWidth', this.dimensions.details.width.current)
+        this.$store.commit('swimLane/setDetailsWidth', this.dimensions.details.width.current)
       },
       handlerToggle (val) {
         switch (val) {
         case 'markerDetails':
-          this.$store.commit('swimLaneSettings/setVisibilityDetails')
+          this.$store.commit('swimLane/setVisibilityDetails')
           break
         case 'swimlanes':
           // this.$emit('emitHandler')
-          this.$store.commit('swimLaneSettings/setVisibilitySwimlanes')
+          this.$store.commit('swimLane/setVisibilitySwimlanes')
           break
         }
       },
@@ -561,13 +561,13 @@
         if (!isNaN(sp.y) && sp.y !== null && this.$refs.graph && this.el) {
           y = this.restrict(sp.y, 0, this.toRelGraphY(this.$refs.graph.height - this.el.height))
         }
-        this.$store.commit('swimLaneSettings/setScrollPosition', {x: x, y: y})
+        this.$store.commit('swimLane/setScrollPosition', {x: x, y: y})
       },
       setTimecode (tc) { // int ms
         this.$emit('timecodeChange', tc)
       },
       setScaleFactor (sf) {
-        this.$store.commit('swimLaneSettings/setScaleFactor', this.restrict(sf, 0, 1))
+        this.$store.commit('swimLane/setScaleFactor', this.restrict(sf, 0, 1))
       },
       onAnnotationChange (annotation) {
         this.dirtyAnnotation = annotation

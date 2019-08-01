@@ -44,8 +44,8 @@
   export default {
     data () {
       return {
-        groupAnnotationsBy: this.$store.state.swimLaneSettings.groupAnnotationsBy,
-        laneMode: this.$store.state.swimLaneSettings.laneMode
+        groupAnnotationsBy: this.$store.state.swimLane.groupAnnotationsBy,
+        laneMode: this.$store.state.swimLane.laneMode
       }
     },
     mounted () {
@@ -57,23 +57,23 @@
         // the viewport of the swim lane after it has been clicked
         this.$refs.expandBtn.$el.blur()
         // FIXME: prevent button from getting focused. Pressing space after click toggles it again. preventDefault does not work.
-        this.$store.commit('swimLaneSettings/setExpandedMode')
+        this.$store.commit('swimLane/setExpandedMode')
       }
     },
     watch: {
       groupAnnotationsBy (val) {
-        this.$store.commit('swimLaneSettings/setType', val)
+        this.$store.commit('swimLane/setType', val)
       },
       laneMode (val) {
-        this.$store.commit('swimLaneSettings/setLaneMode', val)
+        this.$store.commit('swimLane/setLaneMode', val)
         this.$root.$emit('laneModeChanged', val)
       }
     },
     computed: {
       ...mapGetters({
-        options: 'swimLaneSettings/getOptions',
-        optionsLaneMode: 'swimLaneSettings/getOptionsLaneMode',
-        expandedMode: 'swimLaneSettings/getExpandedMode'
+        options: 'swimLane/getOptions',
+        optionsLaneMode: 'swimLane/getOptionsLaneMode',
+        expandedMode: 'swimLane/getExpandedMode'
       })
     }
   }

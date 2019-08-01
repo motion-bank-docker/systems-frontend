@@ -27,7 +27,7 @@
     props: ['root', 'resizable'],
     data () {
       return {
-        annotationData: this.$store.state.swimLaneSettings.selectedAnnotation,
+        annotationData: this.$store.state.swimLane.selectedAnnotation,
         annotationText: undefined
       }
     },
@@ -36,7 +36,7 @@
         return -75
       },
       selectedAnnotation () {
-        return this.$store.state.swimLaneSettings.selectedAnnotation
+        return this.$store.state.swimLane.selectedAnnotation
       }
     },
     watch: {
@@ -47,7 +47,7 @@
     async mounted () {
       // this.$root.$on('markerUnselect', this.onMarkerUnselect)
       // this.$root.$on('markerDown', this.onMarkerDown)
-      this.getAnnotationText(this.$store.state.swimLaneSettings.selectedAnnotation)
+      this.getAnnotationText(this.$store.state.swimLane.selectedAnnotation)
     },
     beforeDestroy () {
       // EventHub.$off('markerUnselect', this.onMarkerUnselect)

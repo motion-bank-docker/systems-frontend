@@ -8,7 +8,7 @@ import conversions from './conversions'
 import metadata from './metadata'
 import tags from './tags'
 import files from './files'
-import swimLaneSettings from './swim-lane-settings'
+import swimLane from './swim-lane'
 import vocabularies from './vocabularies'
 
 export {
@@ -22,6 +22,6 @@ export {
   metadata,
   mosys,
   notifications,
-  swimLaneSettings,
+  swimLane,
   vocabularies
 }

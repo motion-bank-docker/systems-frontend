@@ -47,8 +47,8 @@
     },
     computed: {
       ...mapGetters({
-        timecodeCurrent: 'swimLaneSettings/getTimecode',
-        scaleFactor: 'swimLaneSettings/getScaleFactor'
+        timecodeCurrent: 'swimLane/getTimecode',
+        scaleFactor: 'swimLane/getScaleFactor'
       }),
       numSections () {
         let s = Math.ceil(this.root.el.width / this.sectionWidth) || 0

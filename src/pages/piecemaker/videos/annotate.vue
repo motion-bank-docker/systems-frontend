@@ -169,7 +169,7 @@
       this.setupScreen()
     },
     beforeDestroy () {
-      this.$store.commit('swimLaneSettings/setSelectedAnnotation')
+      this.$store.commit('swimLane/setSelectedAnnotation')
       AppFullscreen.exit()
     },
     data () {
@@ -208,14 +208,14 @@
     computed: {
       ...mapGetters({
         user: 'auth/getUserState',
-        selectedAnnotation: 'swimLaneSettings/getSelectedAnnotation',
-        visibilityDrawer: 'swimLaneSettings/getVisibilityDrawer',
-        visibilitySwimlanes: 'swimLaneSettings/getVisibilitySwimlanes',
-        visibilityDetails: 'swimLaneSettings/getVisibilityDetails',
+        selectedAnnotation: 'swimLane/getSelectedAnnotation',
+        visibilityDrawer: 'swimLane/getVisibilityDrawer',
+        visibilitySwimlanes: 'swimLane/getVisibilitySwimlanes',
+        visibilityDetails: 'swimLane/getVisibilityDetails',
         isMobile: 'globalSettings/getIsMobile'
       }),
       storeCursorTop () {
-        return this.$store.state.swimLaneSettings.cursorTop
+        return this.$store.state.swimLane.cursorTop
       },
       userHasSwimlane () {
         return userHasFeature(this.user, 'swimlane')
@@ -272,10 +272,10 @@
     },
     methods: {
       setupScreen () {
-        this.$store.commit('swimLaneSettings/setSelectedAnnotation', null)
-        if (this.$store.state.swimLaneSettings.cursorTop) {
-          this.videoHeight = this.$store.state.swimLaneSettings.cursorTop - this.headerHeight
-          this.swimlanesHeight = (this.viewport.height - this.$store.state.swimLaneSettings.cursorTop)
+        this.$store.commit('swimLane/setSelectedAnnotation', null)
+        if (this.$store.state.swimLane.cursorTop) {
+          this.videoHeight = this.$store.state.swimLane.cursorTop - this.headerHeight
+          this.swimlanesHeight = (this.viewport.height - this.$store.state.swimLane.cursorTop)
         }
         else {
           this.videoHeight = this.viewport.height / 2 - this.headerHeight
@@ -305,12 +305,12 @@
       handlerToggle (val) {
         switch (val) {
         case 'annotations':
-          this.$store.commit('swimLaneSettings/setVisibilityDrawer')
+          this.$store.commit('swimLane/setVisibilityDrawer')
           setTimeout(() => {
             this.onForceRenderer()
           }, 200)
           break
-        case 'swimlanes':this.$store.commit('swimLaneSettings/setVisibilitySwimlanes')
+        case 'swimlanes':this.$store.commit('swimLane/setVisibilitySwimlanes')
           break
         }
       },
@@ -422,7 +422,7 @@
           this.player.currentTime(targetMillis)
           // SwimLane
           // FIXME this is the second call when timecode change is triggered from inside SwimLane
-          this.$store.commit('swimLaneSettings/setTimecode', millis)
+          this.$store.commit('swimLane/setTimecode', millis)
         }
       },
       gotoSelector (selector, useDuration, annotation) {
@@ -441,7 +441,7 @@
         this.gotoMillis(millis)
 
         if (annotation) {
-          this.$store.commit('swimLaneSettings/setSelectedAnnotation', annotation)
+          this.$store.commit('swimLane/setSelectedAnnotation', annotation)
         }
         this.fRendererMarker = !this.fRendererMarker
       },
@@ -467,7 +467,7 @@
       },
       onPlayerTime (seconds) {
         this.playerTime = seconds
-        this.$store.commit('swimLaneSettings/setTimecode', seconds * 1000)
+        this.$store.commit('swimLane/setTimecode', seconds * 1000)
       },
       setEditIndex (i) {
         this.editAnnotationIndex = i
@@ -510,7 +510,7 @@
         // this.selectedMillis = annotation.target.selector._valueMillis
         this.gotoSelector(annotation.target.selector)
         // this.gotoMillis(annotation.target.selector._valueMillis - this.video.target.selector._valueMillis)
-        this.$store.commit('swimLaneSettings/setSelectedAnnotation', annotation)
+        this.$store.commit('swimLane/setSelectedAnnotation', annotation)
       }
     }
   }

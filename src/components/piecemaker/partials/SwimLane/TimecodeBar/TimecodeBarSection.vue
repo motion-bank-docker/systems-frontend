@@ -18,8 +18,8 @@
     },
     computed: {
       ...mapGetters({
-        scrollPosition: 'swimLaneSettings/getScrollPosition',
-        scaleFactor: 'swimLaneSettings/getScaleFactor'
+        scrollPosition: 'swimLane/getScrollPosition',
+        scaleFactor: 'swimLane/getScaleFactor'
       }),
       time () {
         let p = this.xMapped + this.root.toAbsGraphX(this.scrollPosition.x)

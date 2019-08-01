@@ -1,4 +1,4 @@
-const swimLaneSettings = {
+const swimLane = {
   namespaced: true,
   state: {
     groupAnnotationsBy: 'type',
@@ -84,4 +84,4 @@ const swimLaneSettings = {
   }
 }
 
-export default swimLaneSettings
+export default swimLane

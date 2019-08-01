@@ -63,7 +63,7 @@
     computed: {
       /*
       showDetails () {
-        return this.$store.state.swimLaneSettings.visibilityDetails
+        return this.$store.state.swimLane.visibilityDetails
       },
       */
       /*
