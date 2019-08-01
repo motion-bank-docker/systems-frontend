@@ -19,7 +19,7 @@ connect to [sockets service](https://gitlab.rlp.net/motionbank/microservices/soc
 - Annotations can have durations through target.selector.value
 - PBA vocabularies (titles for pieces)
 - Frontend can be built as an [Electron](https://electronjs.org/)
-app, including a local transcoder service
+app, including a local metadata service as store module `metadata-ffprobe`
 - Mobile device-friendliness
 - Breadcrumb navigation
 - Buttons now support right-click + open in new tab (still suffers from
@@ -56,6 +56,11 @@ for YouTube sources to be GDPR compliant
 - Sync screen
 - Timecode millisecond display
 - Video player scaling issue
+
+### Removed
+
+- Unused store modules `conversions` and `timecodes`
+- Routes `videos/ingest` and `timelines/timecode`
 
 
 ## [1.3.1] - 2019-04-06
