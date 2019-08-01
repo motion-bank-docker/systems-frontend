@@ -1,6 +1,5 @@
 import mosys from './mosys'
 import notifications from './notifications'
-import forms from './forms'
 import auth from './auth'
 import acl from './acl'
 import metadata from './metadata'
@@ -13,7 +12,6 @@ export {
   auth,
   acl,
   files,
-  forms,
   tags,
   metadata,
   mosys,
