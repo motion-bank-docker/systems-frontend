@@ -10,7 +10,6 @@ import tags from './tags'
 import files from './files'
 import swimLaneSettings from './swim-lane-settings'
 import vocabularies from './vocabularies'
-import globalSettings from './global-settings'
 
 export {
   auth,
@@ -24,6 +23,5 @@ export {
   mosys,
   notifications,
   swimLaneSettings,
-  vocabularies,
-  globalSettings
+  vocabularies
 }
