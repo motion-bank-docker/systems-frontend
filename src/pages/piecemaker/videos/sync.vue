@@ -158,7 +158,7 @@
     },
     methods: {
       handlerRefVideoTitle () {
-        if (this.isMobile) {
+        if (this.$q.platform.is.mobile) {
           this.modalVideos = true
           this.refVidMarkerSelector = undefined
           this.refVidMarkerTimecode = undefined

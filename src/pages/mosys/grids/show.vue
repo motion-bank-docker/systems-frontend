@@ -15,10 +15,7 @@
     computed: {
       ...mapGetters({
         scrollPositionCache: 'mosys/getScrollPositionCache'
-      }),
-      isMobile () {
-        return this.$q.platform.is.mobile
-      }
+      })
     },
     mounted () {
       this.$root.$on('mosys_saveScrollPosition', this.handleSaveGridScrollPosition)
