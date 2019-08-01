@@ -19,11 +19,9 @@ import {
 import {
   auth,
   acl,
-  conversions,
   files,
   forms,
   tags,
-  timecodes,
   metadata,
   mosys,
   notifications,
@@ -78,11 +76,9 @@ const store = new Vuex.Store({
     /** Custom stores */
     acl,
     auth,
-    conversions,
     files,
     forms,
     tags,
-    timecodes,
     metadata: Platform.is.electron ? require('./modules/metadata-local').default : metadata,
     mosys,
     notifications,
