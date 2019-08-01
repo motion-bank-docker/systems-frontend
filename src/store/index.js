@@ -79,7 +79,7 @@ const store = new Vuex.Store({
     files,
     forms,
     tags,
-    metadata: Platform.is.electron ? require('./modules/metadata-local').default : metadata,
+    metadata: Platform.is.electron ? require('./modules/metadata-ffprobe').default : metadata,
     mosys,
     notifications,
     swimLane,
