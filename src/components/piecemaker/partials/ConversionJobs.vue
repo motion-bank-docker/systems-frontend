@@ -68,7 +68,7 @@
                   id: job.result.video,
                   type: 'video/mp4'
                 },
-                type: 'Video',
+                type: 'Media',
                 purpose: detail.purpose || 'linking'
               },
               target
@@ -81,7 +81,7 @@
               await this.$store.dispatch('acl/set', {id: annotation.id, role: 'public', permissions: ['get']})
             }
             this.$store.commit('conversions/removeJobDetail', jobId)
-            this.$root.$emit('updateVideos')
+            this.$root.$emit('updateMedia')
             this.$root.$emit('jobResult', { annotation, jobId, detail })
             this.$store.commit('notifications/addMessage', {
               body: 'messages.conversion_successful',

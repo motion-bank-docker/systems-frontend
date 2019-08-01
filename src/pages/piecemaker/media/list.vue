@@ -3,13 +3,13 @@
     confirm-modal(ref="confirmModal", @confirm="handleConfirmModal")
 
     content-block(:position="'first'")
-      headline(v-if="timeline", :content="$t('routes.piecemaker.videos.list.title')")
+      headline(v-if="timeline", :content="$t('routes.piecemaker.media.list.title')")
         | {{ timeline.title }}
 
       content-paragraph(:position="'first'")
-        data-table(v-if="query", ref="listTable", :config="config", :title="'routes.piecemaker.videos.list.title'",
-        path="annotations", :query="query", base-path="videos", :request-transform="requestTransform",
-        :customTitleLink="'piecemaker.videos.annotate'")
+        data-table(v-if="query", ref="listTable", :config="config", :title="'routes.piecemaker.media.list.title'",
+        path="annotations", :query="query", base-path="media", :request-transform="requestTransform",
+        :customTitleLink="'piecemaker.media.annotate'")
 </template>
 
 <script>
@@ -110,19 +110,19 @@
               type: 'live-annotate',
               title: 'buttons.annotate',
               color: 'primary',
-              click: (item) => _this.$router.push({ name: 'piecemaker.videos.annotate', params: { uuid: item._uuid } })
+              click: (item) => _this.$router.push({ name: 'piecemaker.media.annotate', params: { uuid: item._uuid } })
             },
             {
               type: 'edit',
               title: 'buttons.edit',
-              click: (item) => _this.$router.push({ name: 'piecemaker.videos.edit', params: { uuid: item._uuid } })
+              click: (item) => _this.$router.push({ name: 'piecemaker.media.edit', params: { uuid: item._uuid } })
             },
             {
               type: 'sync',
               title: 'buttons.synchronize',
               click: (item) => {
                 _this.$router.push({
-                  name: 'piecemaker.videos.sync',
+                  name: 'piecemaker.media.sync',
                   params: { uuid: item._uuid }
                 })
               }

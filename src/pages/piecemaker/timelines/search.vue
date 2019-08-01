@@ -16,8 +16,8 @@
           // div
           markdown-display.markdown-display(:content="result.body.value", :options="mdOptions")
           .q-my-md
-            a.cursor-pointer(:href="`/piecemaker/videos/${getVideo(result).annotation._uuid}/annotate#${result._uuid}`")
-              | {{ getVideo(result).metadata.title }}
+            a.cursor-pointer(:href="`/piecemaker/media/${getMedia(result).annotation._uuid}/annotate#${result._uuid}`")
+              | {{ getMedia(result).metadata.title }}
             p.text-grey-8 {{ formatDate(result.target.selector._valueMillis) }}
 </template>
 
@@ -42,7 +42,7 @@
       return {
         query: undefined,
         map: undefined,
-        videos: [],
+        media: [],
         results: [],
         mdOptions: {
           target: '_blank'
@@ -53,16 +53,16 @@
       this.$root.$emit('setBackButton', '/piecemaker/timelines')
       this.$q.loading.show()
       this.map = await this.$store.dispatch('maps/get', this.$route.params.uuid)
-      const videos = await this.$store.dispatch('annotations/find', {
+      const media = await this.$store.dispatch('annotations/find', {
         'target.id': this.map.id,
-        'body.type': 'Video'
+        'body.type': 'Media'
       })
-      this.videos = videos.items.sort(this.$sort.onRef).map(annotation => { return { annotation } })
-      for (let i in this.videos) {
+      this.media = media.items.sort(this.$sort.onRef).map(annotation => { return { annotation } })
+      for (let i in this.media) {
         try {
-          this.videos[i].metadata = await this.$store.dispatch('metadata/get', this.videos[i].annotation)
+          this.media[i].metadata = await this.$store.dispatch('metadata/get', this.media[i].annotation)
         }
-        catch (e) { this.videos[i].metadata = {} }
+        catch (e) { this.media[i].metadata = {} }
       }
       this.$q.loading.hide()
     },
@@ -86,8 +86,8 @@
       formatDate (millis) {
         return DateTime.fromMillis(millis).toLocaleString(DateTime.DATETIME_FULL_WITH_SECONDS)
       },
-      getVideo (annotation) {
-        for (let video of this.videos) {
+      getMedia (annotation) {
+        for (let video of this.media) {
           const
             annoTime = DateTime.fromMillis(annotation.target.selector._valueMillis),
             videoStart = DateTime.fromMillis(video.annotation.target.selector._valueMillis),

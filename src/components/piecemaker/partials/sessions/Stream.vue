@@ -160,7 +160,7 @@
         const _this = this
         switch (type) {
         case 'annotate':
-          return _this.$router.push(`/piecemaker/videos/${data.row._uuid}/annotate`)
+          return _this.$router.push(`/piecemaker/media/${data.row._uuid}/annotate`)
         }
       }
     }

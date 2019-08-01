@@ -11,7 +11,7 @@
       // VIDEO PLAYER
       //
       div(:style="[fixDiagram ? styleActivePreview : styleActivePreviewDocked]")
-        video-player(v-if="video", :annotation="video.annotation",
+        media-player(v-if="video", :annotation="video.annotation",
           @ready="playerReady($event)", @time="onPlayerTime($event)")
 
       .absolute-top-left.q-mt-sm.q-ml-sm(@mousedown="resizeButtonDown")

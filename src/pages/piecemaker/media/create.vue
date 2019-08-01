@@ -2,13 +2,13 @@
   full-screen
 
     content-block(:position="'first'")
-      headline(:content="$t('routes.piecemaker.videos.create.title')")
+      headline(:content="$t('routes.piecemaker.media.create.title')")
 
       content-paragraph(:position="'first'")
         calendar-time-main(@update="onCalendarUpdate")
 
       content-paragraph(:position="'last'")
-        form-main(v-model="payload", :schema="schema", ref="videoForm")
+        form-main(v-model="payload", :schema="schema", ref="mediaForm")
           q-btn(label="Cancel", @click.native="$router.push({name: 'piecemaker.timelines.show', params: {uuid: $route.params.timelineUuid} })")
 
 </template>
@@ -51,7 +51,7 @@
             url: {
               fullWidth: true,
               type: 'text',
-              label: 'labels.video_url',
+              label: 'labels.media_url',
               errorLabel: 'errors.field_required',
               validators: {
                 required
@@ -92,7 +92,7 @@
               if (metadata) {
                 await titleHelper.create(_this.$store, annotation.id, metadata.title)
               }
-              _this.$router.push(`/piecemaker/videos/${annotation._uuid}/edit`)
+              _this.$router.push(`/piecemaker/media/${annotation._uuid}/edit`)
             }
           }
         }

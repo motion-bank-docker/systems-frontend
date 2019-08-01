@@ -60,20 +60,20 @@
   //   return annotation
   // }
   //
-  // const fetchMetaData = async (videos) => {
-  //   let videosMeta = []
+  // const fetchMetaData = async (media) => {
+  //   let mediaMeta = []
   //   const headers = {
   //     Authorization: `Bearer ${localStorage.getItem('access_token')}`
   //   }
-  //   for (let v of videos) {
+  //   for (let v of media) {
   //     try {
   //       const meta = await axios.get(`${process.env.TRANSCODER_HOST}/metadata/${v.annotation._uuid}`, {headers})
   //       Object.assign(v.meta, meta.data)
-  //       videosMeta.push(v)
+  //       mediaMeta.push(v)
   //     }
   //     catch (e) { console.log(e) }
   //   }
-  //   return videosMeta
+  //   return mediaMeta
   // }
 
   export default {
@@ -105,18 +105,18 @@
       .map(a => {
         return resurrectAnnotation(a)
       })
-      const videosBase = result.items.filter(a => { return a.body.type === 'Video' })
+      const mediaBase = result.items.filter(a => { return a.body.type === 'Media' })
         .map(video => {
           return {
             meta: {},
             annotation: video
           }
         })
-      const videos = await fetchMetaData(videosBase)
+      const media = await fetchMetaData(mediaBase)
 
       const millisDist = (3600 || constants.config.SESSION_DISTANCE_SECONDS) * 1000
       const sessions = []
-      const defaultSession = { start: undefined, end: undefined, duration: undefined, annotations: [], videos: [] }
+      const defaultSession = { start: undefined, end: undefined, duration: undefined, annotations: [], media: [] }
       let session = ObjectUtil.merge({}, defaultSession)
 
       for (let i = 0; i < annotations.length; i++) {
@@ -126,8 +126,8 @@
         let video
 
         // TODO: handle other annotations with a duration here
-        if (a.body.type === 'Video') {
-          video = videos.find(v => {
+        if (a.body.type === 'Media') {
+          video = media.find(v => {
             return a._uuid === v.annotation._uuid
           })
           if (video) {
@@ -163,7 +163,7 @@
             relativeTime: annotationStart - session.start,
             active: false
           })
-          if (video) session.videos.push(video)
+          if (video) session.media.push(video)
         }
         if (!annotationInside || isLastAnnotation) {
           // store current annotation
@@ -184,12 +184,12 @@
             relativeTime: 0,
             active: false
           })
-          if (video) session.videos.push(video)
+          if (video) session.media.push(video)
         }
 
-        // console.log(sessions.length, session.annotations.length, session.videos.length)
+        // console.log(sessions.length, session.annotations.length, session.media.length)
       }
-      this.grouped = {sessions, videos}
+      this.grouped = {sessions, media}
       // console.log(annotations, this.grouped)
       */
     },
@@ -201,7 +201,7 @@
           }
           return {
             annotations: [],
-            videos: [],
+            media: [],
             start: undefined,
             end: undefined
           }
@@ -226,7 +226,7 @@
             sessionEnd = lastRef
             session.end = sessionEnd
           }
-          if (annotation.body.type === 'Video') {
+          if (annotation.body.type === 'Media') {
             const metadata = await this.$store.dispatch('metadata/get', annotation)
             const video = {
               metadata,
@@ -236,7 +236,7 @@
               const videoEnd = annotation.target.selector._valueMillis + metadata.duration * 1000
               if (videoEnd > ref && videoEnd > sessionEnd) session.end = videoEnd
             }
-            session.videos.push(video)
+            session.media.push(video)
           }
           else if (annotation.body.type === 'TextualBody') {
             session.annotations.push(annotation)
@@ -260,7 +260,7 @@
       getTime (val) {
         return val.toLocaleString(this.timeFormat)
       },
-      checkVideoVisibility (videoStart, videoEnd, sessionStart, sessionEnd) {
+      checkMediaVisibility (videoStart, videoEnd, sessionStart, sessionEnd) {
         return (videoStart <= sessionStart && videoEnd >= sessionEnd) ||
           (videoStart >= sessionStart && videoEnd <= sessionEnd) ||
           (videoStart > sessionStart && videoStart < sessionEnd && videoEnd > sessionEnd)
@@ -280,14 +280,14 @@
         const _this = this
         switch (type) {
         case 'annotate':
-          return _this.$router.push(`/piecemaker/videos/${data.row._uuid}/annotate`)
+          return _this.$router.push(`/piecemaker/media/${data.row._uuid}/annotate`)
         }
       }
     },
     data () {
       return {
         activeSession: undefined,
-        grouped: { annotations: [], videos: [] },
+        grouped: { annotations: [], media: [] },
         sessions: undefined,
         map: undefined,
         previewLine: {

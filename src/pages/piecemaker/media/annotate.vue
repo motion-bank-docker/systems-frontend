@@ -11,11 +11,11 @@
 
     .bg-dark.relative-position(style="height: calc(100vh - 52px);")
 
-      // video player
+      // meta player
 
       div.relative(:style="{height: videoHeight + 'px', maxHeight: viewport.height - 52 - 250 + 'px'}",
       :class="[!visibilitySwimlanes ? 'fit' : '']")
-        video-player.full-height.relative-position(v-if="video", :annotation="video", :fine-controls="true",
+        media-player.full-height.relative-position(v-if="media", :annotation="media", :fine-controls="true",
         @ready="playerReady($event)", @time="onPlayerTime($event)")
 
       // swimlane content
@@ -32,10 +32,10 @@
           :timelineUuid="timeline._uuid",
           :markerDetails="false",
           :resizable="true",
-          :start="getVideoDate().toMillis()",
-          :duration="getVideoDuration()",
+          :start="getMediaDate().toMillis()",
+          :duration="getMediaDuration()",
           :annotations="annotations",
-          :video="video",
+          :media="media",
           :key="componentKey",
           :selectedMillis="selectedMillis",
           :focusedAnnotation="focusedAnnotation",
@@ -88,7 +88,7 @@
                 timecode-label(
                   @click.native="gotoSelector(annotation.target.selector, false, annotation)",
                   :millis="annotation.target.selector._valueMillis",
-                  :videoDate="getVideoDate()"
+                  :videoDate="getMediaDate()"
                   )
                 // annotation has duration
                 template(v-if="annotation.target.selector._valueDuration")
@@ -96,7 +96,7 @@
                   timecode-label(
                     @click.native="gotoSelector(annotation.target.selector, true, annotation)",
                     :millis="getAnnotationEndMillis(annotation)",
-                    :videoDate="getVideoDate()"
+                    :videoDate="getMediaDate()"
                     )
                 // add timecode button
                 template(v-else)
@@ -147,8 +147,6 @@
   import TimecodeLabel from '../../../components/piecemaker/partials/TimecodeLabel'
   import AnnotationIcon from '../../../components/piecemaker/partials/AnnotationIcon'
 
-  // import { EventHub } from '../../../components/piecemaker/partials/SwimLane/EventHub'
-
   const { getScrollTarget, setScrollPosition } = scroll
 
   export default {
@@ -161,7 +159,7 @@
     async mounted () {
       if (this.$route.params.uuid) {
         this.$q.loading.show()
-        await this.getVideo()
+        await this.getMedia()
         await this.getAnnotations()
         this.$q.loading.hide()
       }
@@ -187,7 +185,7 @@
         staging: process.env.IS_STAGING,
         timelineUuid: undefined,
         timeline: undefined,
-        video: undefined,
+        media: undefined,
         // detailsSize: 300,
         editAnnotationIndex: undefined,
         editAnnotationBuffer: undefined,
@@ -234,15 +232,15 @@
         return idx
       },
       baseSelector () {
-        if (!this.video) return DateTime.local().toISO()
+        if (!this.media) return DateTime.local().toISO()
         const
-          parsed = this.video.target.selector.parse(),
+          parsed = this.media.target.selector.parse(),
           start = Array.isArray(parsed['date-time:t']) ? parsed['date-time:t'][0] : parsed['date-time:t']
         return start.plus(this.playerTime * 1000).toISO()
       },
       baseMillis () {
-        if (!this.video) return DateTime.local().toMillis()
-        return this.video.target.selector._valueMillis + this.playerTime * 1000
+        if (!this.media) return DateTime.local().toMillis()
+        return this.media.target.selector._valueMillis + this.playerTime * 1000
       },
       isEditingAnnotations () {
         return typeof this.editAnnotationIndex === 'number'
@@ -254,7 +252,7 @@
     },
     watch: {
       storeCursorTop (val) {
-        this.videoHeight = val - this.headerHeight
+        this.mediaHeight = val - this.headerHeight
         this.swimlanesHeight = (this.viewport.height - val)
       },
       visibilityDrawer (val) {
@@ -274,11 +272,11 @@
       setupScreen () {
         this.$store.commit('swimLane/setSelectedAnnotation', null)
         if (this.$store.state.swimLane.cursorTop) {
-          this.videoHeight = this.$store.state.swimLane.cursorTop - this.headerHeight
+          this.mediaHeight = this.$store.state.swimLane.cursorTop - this.headerHeight
           this.swimlanesHeight = (this.viewport.height - this.$store.state.swimLane.cursorTop)
         }
         else {
-          this.videoHeight = this.viewport.height / 2 - this.headerHeight
+          this.mediaHeight = this.viewport.height / 2 - this.headerHeight
           this.swimlanesHeight = this.viewport.height / 2
         }
       },
@@ -293,14 +291,14 @@
       onEmitResize (val) {
         if (this.swimlanes) {
           this.swimlanesHeight = (this.viewport.height + this.headerHeight - val)
-          this.videoHeight = this.viewport.height - 52 - this.swimlanesHeight
+          this.mediaHeight = this.viewport.height - 52 - this.swimlanesHeight
         }
       },
       */
       onViewportResize (size) {
         this.viewport.height = size.height
         this.viewport.width = size.width
-        this.videoHeight = this.viewport.height - 52 - this.swimlanesHeight
+        this.mediaHeight = this.viewport.height - 52 - this.swimlanesHeight
       },
       handlerToggle (val) {
         switch (val) {
@@ -321,12 +319,12 @@
         AppFullscreen.toggle()
         this.fullscreen = !this.fullscreen
       },
-      async getVideo () {
-        this.video = await this.$store.dispatch('annotations/get', this.$route.params.uuid)
-        this.timeline = await this.$store.dispatch('maps/get', parseURI(this.video.target.id).uuid)
-        this.$root.$emit('setBackButton', '/piecemaker/timelines/' + parseURI(this.video.target.id).uuid + '/videos')
-        if (this.video) {
-          this.metadata = await this.$store.dispatch('metadata/getLocal', this.video)
+      async getMedia () {
+        this.media = await this.$store.dispatch('annotations/get', this.$route.params.uuid)
+        this.timeline = await this.$store.dispatch('maps/get', parseURI(this.media.target.id).uuid)
+        this.$root.$emit('setBackButton', '/piecemaker/timelines/' + parseURI(this.media.target.id).uuid + '/media')
+        if (this.media) {
+          this.metadata = await this.$store.dispatch('metadata/getLocal', this.media)
         }
       },
       async getAnnotations () {
@@ -335,12 +333,12 @@
           query = {
             'target.id': this.timeline.id,
             'target.type': constants.mapTypes.MAP_TYPE_TIMELINE,
-            'target.selector._valueMillis': { $gte: this.video.target.selector._valueMillis },
+            'target.selector._valueMillis': { $gte: this.media.target.selector._valueMillis },
             'body.type': { $in: ['TextualBody', 'VocabularyEntry'] }
           }
-        if (this.video.target.selector._valueDuration) {
-          query['target.selector._valueMillis']['$lte'] = this.video.target.selector._valueMillis +
-            this.video.target.selector._valueDuration
+        if (this.media.target.selector._valueDuration) {
+          query['target.selector._valueMillis']['$lte'] = this.media.target.selector._valueMillis +
+            this.media.target.selector._valueDuration
         }
         const results = await this.$store.dispatch('annotations/find', query)
         for (let item of results.items) {
@@ -430,7 +428,7 @@
           parsed = selector.parse(),
           start = Array.isArray(parsed['date-time:t']) ? parsed['date-time:t'][0] : parsed['date-time:t']
         this.$router.push({ query: { datetime: start } })
-        let millis = selector._valueMillis - this.video.target.selector._valueMillis
+        let millis = selector._valueMillis - this.media.target.selector._valueMillis
         if (useDuration) {
           millis += selector._valueDuration
           this.selectedMillis = selector._valueMillis + selector._valueDuration
@@ -460,7 +458,7 @@
       },
       formatSelectorForList (val) {
         const annotationDate = DateTime.fromMillis(val._valueMillis)
-        const videoDate = DateTime.fromMillis(this.video.target.selector._valueMillis)
+        const videoDate = DateTime.fromMillis(this.media.target.selector._valueMillis)
         return Interval.fromDateTimes(videoDate, annotationDate)
           .toDuration()
           .toFormat(constants.config.TIMECODE_FORMAT)
@@ -473,11 +471,11 @@
         this.editAnnotationIndex = i
         this.editAnnotationBuffer = this.annotations[i].body.value
       },
-      getVideoDate () {
-        return DateTime.fromMillis(this.video.target.selector._valueMillis)
+      getMediaDate () {
+        return DateTime.fromMillis(this.media.target.selector._valueMillis)
       },
-      getVideoDuration () {
-        const duration = this.video.target.selector.getDuration()
+      getMediaDuration () {
+        const duration = this.media.target.selector.getDuration()
         if (duration) {
           return duration.as('milliseconds')
         }
@@ -491,7 +489,7 @@
       addDurationToAnnotation (annotation) {
         if (annotation.target.selector) {
           const currentStart = annotation.target.selector._valueMillis
-          const newTimecode = Math.round(this.playerTime * 1000) + this.video.target.selector._valueMillis
+          const newTimecode = Math.round(this.playerTime * 1000) + this.media.target.selector._valueMillis
 
           if (newTimecode !== currentStart) {
             const d0 = DateTime.fromMillis(currentStart)
@@ -509,7 +507,7 @@
       selectAnnotation (annotation) {
         // this.selectedMillis = annotation.target.selector._valueMillis
         this.gotoSelector(annotation.target.selector)
-        // this.gotoMillis(annotation.target.selector._valueMillis - this.video.target.selector._valueMillis)
+        // this.gotoMillis(annotation.target.selector._valueMillis - this.media.target.selector._valueMillis)
         this.$store.commit('swimLane/setSelectedAnnotation', annotation)
       }
     }

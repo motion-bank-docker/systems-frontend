@@ -80,7 +80,7 @@
         }
       },
       pushToVideo (val) {
-        this.$router.push({name: 'piecemaker.videos.annotate', params: {id: val}})
+        this.$router.push({name: 'piecemaker.media.annotate', params: {id: val}})
       },
       onMarkerUnselect () {
         this.annotationData = null

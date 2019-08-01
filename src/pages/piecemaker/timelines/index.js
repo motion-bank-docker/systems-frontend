@@ -4,7 +4,6 @@ import exportTimeline from './export'
 import list from './list'
 import show from './sessions'
 import annotate from './annotate'
-import user from './user'
 
 export {
   create,
@@ -12,6 +11,5 @@ export {
   exportTimeline,
   list,
   show,
-  annotate,
-  user
+  annotate
 }

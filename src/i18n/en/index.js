@@ -7,7 +7,7 @@ export default {
     apply_synchronisation: 'Apply Synchronisation',
     annotate: 'Annotate',
     add_term: 'Add Term',
-    add_video: 'Add Video',
+    add_media: 'Add Media',
     add_vocabulary: 'Add Vocabulary',
     add_and_go: 'Add & Go',
     back: 'Back',
@@ -45,7 +45,7 @@ export default {
     search: 'Search',
     submit: 'Submit',
     synchronize: 'Sync',
-    videos: 'Videos',
+    media: 'Media',
     yes: 'Yes'
   },
   checkboxes: {
@@ -105,8 +105,8 @@ export default {
     access_control_add_group: 'Add to group',
     access_control_remove_group: 'Remove from group',
     associated_timeline: 'Associated timeline',
-    associated_timeline_warning: 'WARNING: If you already annotated this video, your annotations are linked to the original timeline. Changing the associated timeline will only reassign the video, not the existing annotations.',
-    recursive: 'Apply to all contained annotations and videos',
+    associated_timeline_warning: 'WARNING: If you already annotated this, your annotations are linked to the original timeline. Changing the associated timeline will only reassign this reference time, not the existing annotations.',
+    recursive: 'Apply to all contained annotations and media',
     add_group: 'Add Group',
     add_term: 'Add Term',
     annotations: 'Annotations',
@@ -160,10 +160,10 @@ export default {
     title_unknown: 'Unknown Title',
     timeline: 'Timeline',
     type: 'Type',
-    video_duration: 'Video duration',
-    video_title: 'Video title',
-    video_url: 'Video URL',
-    video: 'Videos',
+    media_duration: 'Media duration',
+    media_title: 'Media title',
+    media_url: 'Media URL',
+    media: 'Media',
     vocabulary_entry: 'Vocabularies'
   },
   links: {
@@ -192,14 +192,14 @@ export default {
     confirm_delete: 'Delete this item?',
     updated_annotation: 'Updated annotation',
     url_copied: 'URL copied to clipboard',
-    caution_video_time_override: 'Caution: Changing a video\'s time does not update existing annotations!',
+    caution_media_time_override: 'Caution: Changing media reference time does not update associated annotations!',
     browser_unsupported_warning: '<strong>Unsupported browser:</strong> For optimal performance please use ' +
       '<a href="https://www.google.com/chrome" target="_blank">Google Chrome</a> or ' +
       '<a href="http://www.chromium.org/Home" target="_blank">Chromium</a>.<br>' +
       '<small>While the site might work on your browser, more or less subtle problems can occur. You have been warned!</small>'
   },
   navigation: {
-    annotate_video: 'Annotate Video',
+    annotate_media: 'Annotate Media',
     maps: 'Maps',
     contact: 'Contact',
     imprint: 'Imprint',
@@ -212,10 +212,10 @@ export default {
       label: 'Piecemaker',
       piecemaker_timelines_list: 'Timelines',
       piecemaker_timelines_annotate: 'Live annotate',
-      piecemaker_videos_list: 'Videos',
-      piecemaker_videos_annotate: 'Annotate',
-      piecemaker_videos_edit: 'Edit',
-      piecemaker_videos_sync: 'Sync',
+      piecemaker_media_list: 'Media',
+      piecemaker_media_annotate: 'Annotate',
+      piecemaker_media_edit: 'Edit',
+      piecemaker_media_sync: 'Sync',
       piecemaker_timelines_search: 'Search',
       piecemaker_timelines_edit: 'Edit',
       piecemaker_timelines_create: 'Create timeline'
@@ -254,9 +254,9 @@ export default {
       }
     },
     annotate: {
-      video: {
-        title: 'Annotate Video',
-        caption: 'Select a map and enter a video URL to start annotating.'
+      media: {
+        title: 'Annotate Media',
+        caption: 'Select a map and enter a media URL to start annotating.'
       }
     },
     errors: {
@@ -367,27 +367,27 @@ export default {
           title: 'Users in this timeline',
           caption: '.'
         },
-        videos: {
-          title: 'Videos',
+        media: {
+          title: 'Media',
           caption: '.'
         }
       },
-      videos: {
+      media: {
         list: {
-          title: 'Videos',
-          caption: 'All your most wonderful videos are here.'
+          title: 'Media',
+          caption: 'All your most wonderful media are here.'
         },
         edit: {
-          title: 'Edit Video',
-          caption: 'Edit video details.'
+          title: 'Edit media',
+          caption: 'Edit media details.'
         },
         create: {
-          title: 'Add Video',
-          caption: 'Add a new video to your timeline.'
+          title: 'Add Media',
+          caption: 'Add a new media to your timeline.'
         },
         sync: {
-          title: 'Sync Video',
-          caption: 'Synchronize a video with others.'
+          title: 'Sync Media',
+          caption: 'Synchronize media reference time.'
         }
       }
     },

@@ -106,9 +106,9 @@
           actions: [
             {
               type: 'show',
-              title: 'Videos',
+              title: 'labels.media',
               color: 'primary',
-              click: (item) => _this.$router.push({ name: 'piecemaker.videos.list', params: { timelineUuid: item._uuid } })
+              click: (item) => _this.$router.push({ name: 'piecemaker.media.list', params: { timelineUuid: item._uuid } })
             },
             {
               type: 'live-annotate',
@@ -117,10 +117,10 @@
               click: (item) => _this.$router.push({ name: 'piecemaker.timelines.annotate', params: { uuid: item._uuid } })
             },
             // {
-            //   type: 'videos',
-            //   title: 'buttons.videos',
+            //   type: 'media',
+            //   title: 'buttons.media',
             //   color: 'primary',
-            //   click: (item) => _this.$router.push({ name: 'piecemaker.videos.list', params: { timelineUuid: item._uuid } })
+            //   click: (item) => _this.$router.push({ name: 'piecemaker.media.list', params: { timelineUuid: item._uuid } })
             // },
             {
               type: 'search',

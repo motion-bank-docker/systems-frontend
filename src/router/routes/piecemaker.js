@@ -4,9 +4,7 @@ export default {
   children: [
     {
       path: '/piecemaker',
-      component: () => import('pages/piecemaker/dashboard'),
-      name: 'piecemaker.dashboard',
-      meta: {private: true}
+      redirect: {name: 'piecemaker.timelines.list'}
     },
 
     {
@@ -19,12 +17,6 @@ export default {
       path: '/piecemaker/timelines/create',
       component: () => import('pages/piecemaker/timelines/create'),
       name: 'piecemaker.timelines.create',
-      meta: {private: true}
-    },
-    {
-      path: '/piecemaker/timelines/user',
-      component: () => import('pages/piecemaker/timelines/user'),
-      name: 'piecemaker.timelines.user',
       meta: {private: true}
     },
     {
@@ -53,18 +45,18 @@ export default {
     },
     {
       path: '/piecemaker/timelines/:timelineUuid',
-      redirect: { name: 'piecemaker.videos.list' }
+      redirect: { name: 'piecemaker.media.list' }
     },
     {
-      path: '/piecemaker/timelines/:timelineUuid/videos',
-      component: () => import('pages/piecemaker/videos/list'),
-      name: 'piecemaker.videos.list',
+      path: '/piecemaker/timelines/:timelineUuid/media',
+      component: () => import('pages/piecemaker/media/list'),
+      name: 'piecemaker.media.list',
       meta: {private: true}
     },
     {
-      path: '/piecemaker/timelines/:timelineUuid/videos/create',
-      component: () => import('pages/piecemaker/videos/create'),
-      name: 'piecemaker.videos.create',
+      path: '/piecemaker/timelines/:timelineUuid/media/create',
+      component: () => import('pages/piecemaker/media/create'),
+      name: 'piecemaker.media.create',
       meta: {private: true}
     },
     {
@@ -75,21 +67,21 @@ export default {
     },
 
     {
-      path: '/piecemaker/videos/:uuid/annotate',
-      component: () => import('pages/piecemaker/videos/annotate'),
-      name: 'piecemaker.videos.annotate',
+      path: '/piecemaker/media/:uuid/annotate',
+      component: () => import('pages/piecemaker/media/annotate'),
+      name: 'piecemaker.media.annotate',
       meta: {private: true}
     },
     {
-      path: '/piecemaker/videos/:uuid/edit',
-      component: () => import('pages/piecemaker/videos/edit'),
-      name: 'piecemaker.videos.edit',
+      path: '/piecemaker/media/:uuid/edit',
+      component: () => import('pages/piecemaker/media/edit'),
+      name: 'piecemaker.media.edit',
       meta: {private: true}
     },
     {
-      path: '/piecemaker/videos/:uuid/sync',
-      component: () => import('pages/piecemaker/videos/sync'),
-      name: 'piecemaker.videos.sync',
+      path: '/piecemaker/media/:uuid/sync',
+      component: () => import('pages/piecemaker/media/sync'),
+      name: 'piecemaker.media.sync',
       meta: {private: true}
     }
   ]

@@ -41,17 +41,17 @@
         :y2="`${((sessionTime / duration) * 100).toFixed(3)}%`")
 
       // SWIMLANES - vertical
-      // vertical visualization of the videos
+      // vertical visualization of the media
       //
       svg
         // @click="onClickVideo(vid)",
         svg.shadow-6(
-          v-if="session.videos",
-          v-for="(vid, i) in session.videos",
+          v-if="session.media",
+          v-for="(vid, i) in session.media",
           :id="vid.annotation._uuid",
           :width="20",
           :height="(((vid.metadata.duration * 1000) / duration) * 100).toFixed(3) + '%'",
-          :x="(session.videos.length * 10 + 15) * i + 20",
+          :x="(session.media.length * 10 + 15) * i + 20",
           :y="getSwimlaneY(vid.annotation)")
           rect.moba-swimlane(width="100%", height="100%", x="0", y="0", :title="vid.annotation._uuid")
 
@@ -95,8 +95,8 @@
       // VIDEO TIME
       // displays the actual time of the selected video
       //
-        svg(v-for="(vid, i) in session.videos")
-          svg(v-if="currentVideo === vid.annotation._uuid", :y="(sessionTime - 10)", :x="(session.videos.length * 10) + ((session.videos.length * 10 + 15) * i + 20) + 5")
+        svg(v-for="(vid, i) in session.media")
+          svg(v-if="currentVideo === vid.annotation._uuid", :y="(sessionTime - 10)", :x="(session.media.length * 10) + ((session.media.length * 10 + 15) * i + 20) + 5")
             polygon(points="10 0 0 10 10 20 60 20 60 0 10 0", fill="#749DFC")
             // rect(width="50", height="20", x="10", fill="#749DFC")
             text.q-caption(x="20", y="15", fill="white") {{ Math.floor(sessionTime / 60) }}:{{ Math.trunc(sessionTime - Math.floor(sessionTime / 60) * 60) }}

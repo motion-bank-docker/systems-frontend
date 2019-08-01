@@ -2,18 +2,18 @@
   full-screen
 
     content-block(:position="'first'")
-      headline(:content="$t('routes.piecemaker.videos.edit.title') + ':'")
+      headline(:content="$t('routes.piecemaker.media.edit.title') + ':'")
         | {{ payload.title }} ({{ duration }})
 
       content-paragraph(:position="'first'")
         calendar-time-main(:datetime="selectorValue", @update="onCalendarUpdate")
 
       content-paragraph
-        // p.q-mt-md {{ $t('labels.video_duration') }}: {{ duration }}
-        p(v-if="selectorOverride !== selectorValue") {{ $t('messages.caution_video_time_override') }}
+        // p.q-mt-md {{ $t('labels.media_duration') }}: {{ duration }}
+        p(v-if="selectorOverride !== selectorValue") {{ $t('messages.caution_media_time_override') }}
 
       content-paragraph
-        form-main(v-model.lazy="payload", :schema="schema", ref="videoForm")
+        form-main(v-model.lazy="payload", :schema="schema", ref="mediaForm")
 
       content-paragraph(:position="'last'")
         access-control
@@ -50,10 +50,10 @@
       onCalendarUpdate (val) {
         this.selectorOverride = val
       },
-      async getVideo () {
-        this.video = await this.$store.dispatch('annotations/get', this.$route.params.uuid)
-        this.timeline = await this.$store.dispatch('maps/get', parseURI(this.video.target.id).uuid)
-        this.$root.$emit('setBackButton', '/piecemaker/timelines/' + parseURI(this.video.target.id).uuid + '/videos')
+      async getMedia () {
+        this.media = await this.$store.dispatch('annotations/get', this.$route.params.uuid)
+        this.timeline = await this.$store.dispatch('maps/get', parseURI(this.media.target.id).uuid)
+        this.$root.$emit('setBackButton', '/piecemaker/timelines/' + parseURI(this.media.target.id).uuid + '/media')
       }
     },
     computed: {
@@ -95,7 +95,7 @@
           label: item.title
         }
       }).sort((a, b) => (a.label || '').localeCompare(b.label || ''))
-      await this.getVideo()
+      await this.getMedia()
       this.$q.loading.hide()
     },
     data () {
@@ -104,6 +104,7 @@
         apiPayload: undefined,
         selectorOverride: undefined,
         titlePayload: undefined,
+        media: undefined,
         meta: undefined,
         map: undefined,
         annotation: undefined,
@@ -135,7 +136,7 @@
             url: {
               fullWidth: true,
               type: 'text',
-              label: 'labels.video_url',
+              label: 'labels.media_url',
               errorLabel: 'errors.field_required',
               validators: {
                 required
@@ -144,7 +145,7 @@
             title: {
               fullWidth: true,
               type: 'text',
-              label: 'labels.video_title'
+              label: 'labels.media_title'
             },
             tags: {
               fullWidth: true,
@@ -197,7 +198,7 @@
               await context.$store.dispatch('tags/set', [context.payload, context.payload.tags])
 
               context.$router.push({
-                name: 'piecemaker.videos.list',
+                name: 'piecemaker.media.list',
                 params: { timelineUuid: parseURI(context.payload.gid).uuid }
               })
             }

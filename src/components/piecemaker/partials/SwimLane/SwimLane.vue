@@ -182,7 +182,7 @@
       'start',
       'duration',
       'annotations',
-      'video',
+      'media',
       'map',
       'selectedMillis'
     ],
@@ -406,7 +406,7 @@
         this.jumpToMarker(this.selectedAnnotation.target.selector, useDuration)
       },
       getVideoDate () {
-        return DateTime.fromMillis(this.video.target.selector._valueMillis)
+        return DateTime.fromMillis(this.media.target.selector._valueMillis)
       },
       setupScreen () {
         console.log(this.dimensions.details, 'details dimen')

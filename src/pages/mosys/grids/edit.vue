@@ -34,7 +34,7 @@
         q-select(v-model="acl.group_remove", :clearable="true", :clear-value="undefined",
         :float-label="$t('labels.access_control_remove_group')", :options="availableRoles", dark)
 
-      // apply to all contained annotations and videos
+      // apply to all contained annotations and media
       content-paragraph
         q-checkbox(v-model="acl.recursive", :label="$t('labels.recursive')", dark)
 

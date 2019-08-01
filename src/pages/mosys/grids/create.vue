@@ -53,7 +53,7 @@
           Authorization: `Bearer ${localStorage.getItem('access_token')}`
         },
         type: constants.mapTypes.MAP_TYPE_2DGRID,
-        payload: undefined,
+        payload: {},
         schema: {
           fields: {
             title: {

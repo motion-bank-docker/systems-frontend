@@ -25,7 +25,7 @@ app, including a local metadata service as store module `metadata-ffprobe`
 - Buttons now support right-click + open in new tab (still suffers from
 [#253](https://gitlab.rlp.net/motionbank/applications/systems-frontend/issues/253))
 - Audio annotations (supported types: `.m4a` and `.mp3`) can be added
-under `videos/create` (playback possible using forked
+under `media/create` (playback possible using forked
 [vue-video-player](https://github.com/dasantonym/vue-video-player))
 - Export timelines as CSV
 
@@ -37,12 +37,13 @@ under `videos/create` (playback possible using forked
 - VideoPlayer uses [privacy-enhanced mode](https://support.google.com/youtube/answer/171780)
 for YouTube sources to be GDPR compliant
 - VideoPlayer uses [dnt](https://github.com/vimeo/player.js/#embed-options)
-(do not track) option for showing Vimeo videos for GDPR compliance
+(do not track) option for showing Vimeo media for GDPR compliance
 - Basic colors, look & feel
 - New post annotator layout
 - Vocabulary menu layout and functionality
 - Navigation redesign
 - MoSys redesign
+- Renamed `Video` to `Media` throughout project
 
 ### Updated
 
@@ -60,7 +61,7 @@ for YouTube sources to be GDPR compliant
 ### Removed
 
 - Unused store modules `forms`, `conversions` and `timecodes`
-- Routes `videos/ingest` and `timelines/timecode`
+- Routes `media/ingest` and `timelines/timecode`
 
 
 ## [1.3.1] - 2019-04-06
