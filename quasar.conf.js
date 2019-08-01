@@ -38,6 +38,8 @@ module.exports = function (ctx) {
       extendWebpack (cfg) {
         cfg.externals = Object.assign({
           nedb: 'commonjs nedb',
+          'ffprobe-static': 'commonjs ffprobe-static',
+          'jwt-decode': 'commonjs jwt-decode',
           'fluent-ffmpeg': 'commonjs fluent-ffmpeg',
           'open-graph-scraper': 'commonjs open-graph-scraper',
           'mbjs-archive': 'commonjs mbjs-archive'
