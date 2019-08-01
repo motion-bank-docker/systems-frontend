@@ -11,6 +11,7 @@
 
 <script>
   import constants from 'mbjs-data-models/src/constants'
+  import { ObjectUtil } from 'mbjs-utils'
 
   import PageSubNav from '../../../components/shared/navigation/PageSubNav'
   import ContentBlock from '../../../components/shared/elements/ContentBlock'
@@ -40,10 +41,8 @@
     },
     methods: {
       async exportCSV () {
-        if (this.downloadURL) {
-          document.body.appendChild(this.downloadURL)
-          return this.downloadURL.click()
-        }
+        if (this.downloadURL) return this.downloadURL.click()
+
         this.$q.loading.show()
         const { items } = await this.$store.dispatch('annotations/find', {
           'target.id': this.timeline.id
@@ -80,9 +79,10 @@
         })
         const download = document.createElement('a')
         download.setAttribute('href', encodeURI(csvData))
-        download.setAttribute('download', `${this.timeline._uuid}.csv`)
+        download.setAttribute('download', `${ObjectUtil.slug()}${this.timeline._uuid}.csv`)
         this.exportLabel = this.$t('buttons.download_csv')
         this.downloadURL = download
+        document.body.appendChild(this.downloadURL)
         this.$q.loading.hide()
       }
     }
