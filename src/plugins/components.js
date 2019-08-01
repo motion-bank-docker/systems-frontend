@@ -7,8 +7,7 @@ import {
   MarkdownDisplay,
   Uploader,
   Username,
-  MediaPlayer,
-  MediaTitle
+  MediaPlayer
 } from '../components/shared'
 
 export default ({ Vue }) => {
@@ -19,7 +18,6 @@ export default ({ Vue }) => {
   Vue.component('uploader', Uploader)
   Vue.component('username', Username)
   Vue.component('media-player', MediaPlayer)
-  Vue.component('media-title', MediaTitle)
   Vue.component('browser-warning', BrowserWarning)
   Vue.component('markdown-display', MarkdownDisplay)
 }
