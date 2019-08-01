@@ -27,6 +27,7 @@ app, including a local transcoder service
 - Audio annotations (supported types: `.m4a` and `.mp3`) can be added
 under `videos/create` (playback possible using forked
 [vue-video-player](https://github.com/dasantonym/vue-video-player))
+- Export timelines as CSV
 
 ### Changed
 

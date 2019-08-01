@@ -23,12 +23,14 @@ export default {
     copy_url: 'Copy URL',
     delete: 'Delete',
     download_archive: 'Download Archive',
+    download_csv: 'Download CSV',
     download_package: 'Download Package',
     download: 'Download',
     done: 'Done',
     edit: 'Edit',
     export_grid: 'Export Grid',
     export_timeline: 'Export Timeline',
+    export_timeline_csv: 'Export Timeline as CSV',
     forgot_password: 'Forgot Password',
     live_annotate: 'Live Annotate',
     live_annotate_timeline: 'Live Annotate this timeline',
@@ -156,6 +158,7 @@ export default {
     textual_body: 'Annotations',
     title: 'Title',
     title_unknown: 'Unknown Title',
+    timeline: 'Timeline',
     type: 'Type',
     video_duration: 'Video duration',
     video_title: 'Video title',
@@ -343,6 +346,10 @@ export default {
         edit: {
           title: 'Edit Timeline',
           caption: 'Edit timeline details.'
+        },
+        export: {
+          title: 'Export Timeline',
+          caption: 'Export associated annotations.'
         },
         list: {
           title: 'All timelines',
