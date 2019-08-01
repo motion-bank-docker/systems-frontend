@@ -59,7 +59,7 @@ for YouTube sources to be GDPR compliant
 
 ### Removed
 
-- Unused store modules `conversions` and `timecodes`
+- Unused store modules `forms`, `conversions` and `timecodes`
 - Routes `videos/ingest` and `timelines/timecode`
 
 
