@@ -52,6 +52,12 @@ export default {
       meta: {private: true, feature: 'search'}
     },
     {
+      path: '/piecemaker/timelines/:id/export',
+      component: () => import('pages/piecemaker/timelines/export'),
+      name: 'piecemaker.timelines.export',
+      meta: {private: true, feature: 'export'}
+    },
+    {
       path: '/piecemaker/timelines/:timelineId/videos',
       component: () => import('pages/piecemaker/videos/list'),
       name: 'piecemaker.videos.list',
