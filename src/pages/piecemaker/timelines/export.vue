@@ -37,7 +37,6 @@
           'Value',
           'Purpose',
           'Start',
-          'Duration (s)',
           'Author',
           'Type',
           'Created',
@@ -49,8 +48,8 @@
             annotation.target.selector.value,
             annotation.author.name || 'Unknown',
             annotation.body.type,
-            annotation._created,
-            annotation._updated || ''
+            annotation.created,
+            annotation.updated || ''
           ]
         }))
         let csvData = 'data:text/csv;charset=utf-8,'
