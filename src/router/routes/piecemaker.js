@@ -32,12 +32,6 @@ export default {
       meta: {private: true}
     },
     {
-      path: '/piecemaker/timelines/:uuid/export',
-      component: () => import('pages/piecemaker/timelines/export'),
-      name: 'piecemaker.timelines.export',
-      meta: {private: true}
-    },
-    {
       path: '/piecemaker/timelines/:uuid/search',
       component: () => import('pages/piecemaker/timelines/search'),
       name: 'piecemaker.timelines.search',

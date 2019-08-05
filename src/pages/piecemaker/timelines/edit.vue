@@ -10,6 +10,8 @@
           div(slot="form-buttons-add", :class="{'full-width row q-mb-sm': isMobile}")
             q-btn.col(v-if="$route.params.uuid", slot="form-buttons-add", :label="exportLabel", @click="exportTimeline",
             color="grey", :class="[!isMobile ? 'q-mr-sm' : '']")
+            q-btn(v-if="$route.params.uuid", @click="exportCSV", color="grey",
+              :class="[!isMobile ? 'q-mr-sm' : '']", :label="exportLabelCSV")
 
     // -------------------------------------------------------------------------------------------------- access control
 
@@ -50,6 +52,8 @@
   import constants from 'mbjs-data-models/src/constants'
   import { aclHelper } from 'mbjs-quasar/src/lib'
   import { Map } from 'mbjs-data-models'
+  import { ObjectUtil } from 'mbjs-utils'
+  import exportCSV from '../../../lib/export/csv'
 
   import { openURL } from 'quasar'
   import { mapGetters } from 'vuex'
@@ -73,6 +77,8 @@
         env: process.env,
         downloadURL: undefined,
         exportLabel: this.$t('buttons.export_timeline'),
+        downloadUrlCSV: undefined,
+        exportLabelCSV: this.$t('buttons.export_timeline_csv'),
         type: constants.mapTypes.MAP_TYPE_TIMELINE,
         payload: this.$route.params.uuid ? _this.$store.dispatch('maps/get', _this.$route.params.uuid) : undefined,
         acl: {
@@ -144,6 +150,21 @@
         catch (err) {
           this.$handleError(this, err, 'errors.export_archive_failed')
         }
+        this.$q.loading.hide()
+      },
+      async exportCSV () {
+        if (this.downloadUrlCSV) return this.downloadUrlCSV.click()
+
+        this.$q.loading.show()
+        const { items } = await this.$store.dispatch('annotations/find', {
+          'target.id': this.timeline.id
+        })
+        this.downloadUrlCSV = exportCSV(
+          items.sort(this.$sort.onRef),
+          `${ObjectUtil.slug(this.timeline.title)}-${this.timeline._uuid}.csv`
+        )
+        document.body.appendChild(this.downloadUrlCSV)
+        this.exportLabelCSV = this.$t('buttons.download_csv')
         this.$q.loading.hide()
       },
       async updateACL () {
