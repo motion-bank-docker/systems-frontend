@@ -79,7 +79,7 @@
         })
         const download = document.createElement('a')
         download.setAttribute('href', encodeURI(csvData))
-        download.setAttribute('download', `${ObjectUtil.slug()}${this.timeline._uuid}.csv`)
+        download.setAttribute('download', `${ObjectUtil.slug(this.timeline.title)}-${this.timeline._uuid}.csv`)
         this.exportLabel = this.$t('buttons.download_csv')
         this.downloadURL = download
         document.body.appendChild(this.downloadURL)
