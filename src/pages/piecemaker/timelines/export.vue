@@ -1,6 +1,7 @@
 <template lang="pug">
   full-screen
-    q-btn(slot="backButton", @click="$router.push({ name: 'piecemaker.timelines.list' })", icon="keyboard_backspace", round, small)
+    q-btn(slot="backButton", @click="$router.push({ name: 'piecemaker.timelines.list' })",
+      icon="keyboard_backspace", round, small)
     .row
       .col-md-12
         q-btn(@click="exportCSV", :label="exportLabel")
@@ -16,13 +17,13 @@
         timeline: undefined,
         downloadURL: undefined,
         exportLabel: this.$t('buttons.export_timeline_csv'),
-        type: constants.mapTypes.MAP_TYPE_TIMELINE
+        type: constants.MAP_TYPE_TIMELINE
       }
     },
     async mounted () {
       this.$root.$emit('setBackButton', '/piecemaker/timelines')
       this.$q.loading.show()
-      this.timeline = await this.$store.dispatch('maps/get', this.$route.params.uuid)
+      this.timeline = await this.$store.dispatch('maps/get', this.$route.params.id)
       this.$q.loading.hide()
     },
     methods: {
@@ -37,6 +38,7 @@
           'Value',
           'Purpose',
           'Start',
+          'Duration (s)',
           'Author',
           'Type',
           'Created',
@@ -46,19 +48,26 @@
             annotation.body.source.id ? annotation.body.source.id : annotation.body.value,
             annotation.body.purpose,
             annotation.target.selector.value,
+            annotation.body.type === 'Video' ? annotation : '',
             annotation.author.name || 'Unknown',
             annotation.body.type,
             annotation.created,
             annotation.updated || ''
           ]
         }))
+        for (let entry of entries) {
+          if (entry[5] === 'Video') {
+            const { duration } = await this.$store.dispatch('metadata/get', entry[3])
+            entry[3] = duration || ''
+          }
+        }
         let csvData = 'data:text/csv;charset=utf-8,'
         entries.forEach(entry => {
           csvData += entry.map(v => `"${v.toString().replace('"', '\\"')}"`).join(';') + '\r\n'
         })
         const download = document.createElement('a')
         download.setAttribute('href', encodeURI(csvData))
-        download.setAttribute('download', `${ObjectUtil.slug()}${this.timeline._uuid}.csv`)
+        download.setAttribute('download', `${ObjectUtil.slug(this.timeline.title)}-${this.timeline.uuid}.csv`)
         this.exportLabel = this.$t('buttons.download_csv')
         this.downloadURL = download
         document.body.appendChild(this.downloadURL)
