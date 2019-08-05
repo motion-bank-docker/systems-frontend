@@ -1,11 +1,8 @@
 <template lang="pug">
   full-screen
-    content-block(:position="'first'")
-      headline(:content="$t('routes.piecemaker.timelines.export.title')")
-        | {{ $t('routes.piecemaker.timelines.export.caption') }}
-      content-paragraph(v-if="timeline")
-        p
-          strong {{ timeline.title }}
+    q-btn(slot="backButton", @click="$router.push({ name: 'piecemaker.timelines.list' })", icon="keyboard_backspace", round, small)
+    .row
+      .col-md-12
         q-btn(@click="exportCSV", :label="exportLabel")
 </template>
 
@@ -13,18 +10,7 @@
   import constants from 'mbjs-data-models/src/constants'
   import { ObjectUtil } from 'mbjs-utils'
 
-  import PageSubNav from '../../../components/shared/navigation/PageSubNav'
-  import ContentBlock from '../../../components/shared/elements/ContentBlock'
-  import ContentParagraph from '../../../components/shared/elements/ContentParagraph'
-  import Headline from '../../../components/shared/elements/Headline'
-
   export default {
-    components: {
-      PageSubNav,
-      ContentBlock,
-      ContentParagraph,
-      Headline
-    },
     data () {
       return {
         timeline: undefined,
