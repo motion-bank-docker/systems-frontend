@@ -27,7 +27,7 @@ const exportCSV = function (items, filename = undefined) {
   }))
   let csvData = 'data:text/csv;charset=utf-8,'
   entries.forEach(entry => {
-    csvData += entry.map(v => `"${v.toString().replace('"', '\\"')}"`).join(';') + '\r\n'
+    csvData += entry.map(v => `"${(v || '').toString().replace('"', '\\"')}"`).join(';') + '\r\n'
   })
   const download = document.createElement('a')
   download.setAttribute('href', encodeURI(csvData))
