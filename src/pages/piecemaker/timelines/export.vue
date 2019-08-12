@@ -10,6 +10,7 @@
 <script>
   import constants from 'mbjs-data-models/src/constants'
   import { ObjectUtil } from 'mbjs-utils'
+  import { DateTime, Interval } from 'luxon'
 
   export default {
     data () {
@@ -31,13 +32,17 @@
         if (this.downloadURL) return this.downloadURL.click()
 
         this.$q.loading.show()
-        const { items } = await this.$store.dispatch('annotations/find', {
-          'target.id': this.timeline.id
-        })
+        let lastRefDate
+        const
+          { items } = await this.$store.dispatch('annotations/find', {
+            'target.id': this.timeline.id
+          })
+
         const entries = [[
           'Value',
           'Purpose',
           'Start',
+          'Start (relative)',
           'Duration (s)',
           'Author',
           'Type',
@@ -48,6 +53,7 @@
             annotation.body.source.id ? annotation.body.source.id : annotation.body.value,
             annotation.body.purpose,
             annotation.target.selector.value,
+            '',
             annotation.body.type === 'Video' ? annotation : '',
             annotation.author.name || 'Unknown',
             annotation.body.type,
@@ -56,9 +62,16 @@
           ]
         }))
         for (let entry of entries) {
-          if (entry[5] === 'Video') {
-            const { duration } = await this.$store.dispatch('metadata/get', entry[3])
-            entry[3] = duration || ''
+          if (entry[6] === 'Video') {
+            lastRefDate = DateTime.fromISO(entry[2], { setZone: true })
+            const { duration } = await this.$store.dispatch('metadata/get', entry[4])
+            entry[4] = duration || ''
+          }
+          else if (lastRefDate) {
+            entry[3] = Interval.fromDateTimes(
+              lastRefDate,
+              DateTime.fromISO(entry[2], { setZone: true })
+            ).toDuration().toFormat(constants.TIMECODE_FORMAT)
           }
         }
         let csvData = 'data:text/csv;charset=utf-8,'
