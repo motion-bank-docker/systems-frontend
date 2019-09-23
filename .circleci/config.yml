@@ -8,7 +8,7 @@ jobs:
         AUTH0_REDIRECT_URL: https://dev.motionbank.org
         UI_HOST: https://dev.motionbank.org
         IS_STAGING: true
-        API_HOST: https://api-dev:motionbank.org
+        API_HOST: https://api-dev.motionbank.org
     steps:
       - checkout
       - setup_remote_docker
