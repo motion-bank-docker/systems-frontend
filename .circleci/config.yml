@@ -11,6 +11,9 @@ jobs:
           name: Install dependencies
           command: |
             apk add --update --no-cache nodejs-current
+            node --version
+            npm --version
+            npm i -g @quasar/cli
       - run:
           name: Build Branch Image
           environment:
@@ -20,7 +23,6 @@ jobs:
             API_HOST: https://api-dev.motionbank.org
           command: |
             set +o pipefail
-            npm i -g @quasar/cli
             npm install
             AUTH0_CLIENT_ID=${DEV_AUTH0_CLIENT_ID} SENTRY_DSN=${DEV_SENTRY_DSN} npm run build
             docker build --no-cache -t motionbank/systems-frontend:dev .
