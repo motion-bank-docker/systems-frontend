@@ -4,11 +4,6 @@ jobs:
     working_directory: /app
     docker:
       - image: docker:17.05.0-ce-git
-      environment:
-        AUTH0_REDIRECT_URL: https://dev.motionbank.org
-        UI_HOST: https://dev.motionbank.org
-        IS_STAGING: true
-        API_HOST: https://api-dev.motionbank.org
     steps:
       - checkout
       - setup_remote_docker
@@ -18,6 +13,11 @@ jobs:
             apk add --update --no-cache nodejs nodejs-npm
       - run:
           name: Build Branch Image
+          environment:
+            AUTH0_REDIRECT_URL: https://dev.motionbank.org
+            UI_HOST: https://dev.motionbank.org
+            IS_STAGING: true
+            API_HOST: https://api-dev.motionbank.org
           command: |
             set +o pipefail
             npm install
