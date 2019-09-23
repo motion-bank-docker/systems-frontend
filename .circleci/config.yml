@@ -1,0 +1,49 @@
+version: 2
+jobs:
+  build_dev:
+    working_directory: /app
+    docker:
+      - image: docker:17.05.0-ce-git
+      environment:
+        AUTH0_REDIRECT_URL: https://dev.motionbank.org
+        UI_HOST: https://dev.motionbank.org
+        IS_STAGING: true
+        API_HOST: https://api-dev:motionbank.org
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Install dependencies
+          command: |
+            apk add --update --no-cache nodejs nodejs-npm
+      - run:
+          name: Build Branch Image
+          command: |
+            set +o pipefail
+            npm install
+            AUTH0_CLIENT_ID=${DEV_AUTH0_CLIENT_ID} SENTRY_DSN=${DEV_SENTRY_DSN} npm run build
+            docker build --no-cache -t motionbank/systems-frontend:dev .
+      - run:
+          name: Push Docker Image
+          command: |
+            docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
+            docker push motionbank/systems-frontend:dev
+
+workflows:
+  version: 2
+  build_pipeline:
+    jobs:
+      - build_dev:
+          filters:
+            branches:
+              only: master
+  nightly:
+    triggers:
+      - schedule:
+          cron: "0 1 * * 1"
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - build_dev
