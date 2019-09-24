@@ -10,7 +10,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apk add --update --no-cache nodejs-current
+            apk add --update --no-cache nodejs-current nodejs-npm
             node --version
             npm --version
             npm i -g @quasar/cli
