@@ -1,5 +1,5 @@
 {
-  "name": "motionbank-systems-frontend",
+  "name": "systems-frontend",
   "version": "2.0.0",
   "description": "Combined frontend project for Motion Bank web services",
   "productName": "Motion Bank Systems Frontend",
@@ -35,7 +35,10 @@
   },
   "metapak": {
     "configs": [
-      "readme"
+      "readme",
+      "circleci",
+      "docker",
+      "travis"
     ]
   },
   "dependencies": {
@@ -99,8 +102,8 @@
     "eslint-plugin-standard": "^3.0.1",
     "eslint-plugin-vue": "^4.7.1",
     "flow-bin": "^0.79.1",
-    "metapak": "^1.0.3",
-    "metapak-motionbank": "^1.11.8",
+    "metapak": "1.0.3",
+    "metapak-motionbank": "1.16.0",
     "pug": "^2.0.3",
     "pug-plain-loader": "^1.0.0",
     "quasar-cli": "0.17.20",
