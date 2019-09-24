@@ -11,6 +11,7 @@ jobs:
           name: Install dependencies
           command: |
             apk add --update --no-cache nodejs nodejs-npm python make g++
+            npm config set unsafe-perm true
             npm i -g npm
             node --version
             npm --version
