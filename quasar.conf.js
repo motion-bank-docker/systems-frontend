@@ -65,7 +65,6 @@ module.exports = function (ctx) {
         STORAGE_HOST: JSON.stringify(process.env.STORAGE_HOST || 'https://storage.motionbank.org'),
         PACKAGER_HOST: JSON.stringify(process.env.PACKAGER_HOST || 'https://packager.motionbank.org'),
         TRANSCODER_HOST: JSON.stringify(process.env.TRANSCODER_HOST || 'https://transcoder.motionbank.org'),
-        UI_HOST: JSON.stringify(process.env.UI_HOST || 'https://app.motionbank.org'),
         //
         // Resources
         //
@@ -77,7 +76,7 @@ module.exports = function (ctx) {
         //
         AUTH0_DOMAIN: JSON.stringify(process.env.AUTH0_DOMAIN || 'auth.motionbank.org'),
         AUTH0_CLIENT_ID: JSON.stringify(process.env.AUTH0_CLIENT_ID || '80t5TRU9MVhGDVnZ522CvX4hutBxDB6U'),
-        AUTH0_REDIRECT_URL: JSON.stringify(process.env.AUTH0_REDIRECT_URL || 'https://app.motionbank.org/users/callback'),
+        AUTH0_REDIRECT_URL: JSON.stringify(process.env.AUTH0_REDIRECT_URL || null),
         AUTH0_AUDIENCE: JSON.stringify(process.env.AUTH0_AUDIENCE || 'https://api.motionbank.org'),
         //
         // API Keys
