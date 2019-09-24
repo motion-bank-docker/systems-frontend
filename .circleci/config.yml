@@ -10,7 +10,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apk add --update --no-cache nodejs nodejs-npm python make g++
+            apk add --update --no-cache nodejs nodejs-npm python make g++ pkgconfig
             npm config set unsafe-perm true
             npm i -g npm
             node --version
