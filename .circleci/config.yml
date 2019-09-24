@@ -10,8 +10,8 @@ jobs:
           name: "Pull Submodules"
           command: |
             ssh-keyscan gitlab.rlp.net >> ~/.ssh/known_hosts
-            git clone https://gitlab.rlp.net/motionbank/mbjs/quasar-components-mosys.git src/components/mosys
-            git clone https://gitlab.rlp.net/motionbank/mbjs/quasar-components-shared.git src/components/shared
+            git submodule init
+            git submodule update
       - setup_remote_docker
       - run:
           name: Install dependencies
