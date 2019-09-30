@@ -21,7 +21,7 @@ const mosys = {
   },
   mutations: {
     setEditMode (state, mode) {
-      state.editMode = mode
+      state.editMode === mode ? state.editMode = undefined : state.editMode = mode
     },
     setEditingCells (state, cells) {
       state.editingCells = cells
