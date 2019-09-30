@@ -12,8 +12,9 @@
     .desktop-only
       grid-editor-editing-cells.grid-editor-editing-cells(v-if="showEditingCells")
     //template(v-else)
-    q-modal.mobile-only(v-model="showEditingCells", @hide="closedModal()", position="bottom")
+    // q-modal.mobile-only(v-model="showEditingCells", @hide="closedModal()", position="bottom")
       grid-editor-editing-cells
+
     // grid-editor-add-cells.grid-editor-sources(v-if="$store.state.mosys.showAddCells")
 </template>
 
