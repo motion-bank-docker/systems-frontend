@@ -120,6 +120,7 @@ export default {
     updated: 'Updated',
     last_updated: 'Last updated',
     date: 'Date',
+    delete_cell: 'Delete cell?',
     description: 'Description',
     duration: 'Duration',
     edit_title: 'Edit title',
