@@ -17,6 +17,7 @@ module.exports = function (ctx) {
       'shortkey',
       'sort',
       'socket',
+      'touch',
       'vocabularies',
       'window'
     ],

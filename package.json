@@ -73,7 +73,8 @@
     "vue-shortkey": "3.1.6",
     "vue-socket.io": "^3.0.7",
     "vue-video-player": "git+https://github.com/dasantonym/vue-video-player.git",
-    "vuelidate": "0.7.4"
+    "vuelidate": "0.7.4",
+    "vuezingtouch": "^18.10.27"
   },
   "devDependencies": {
     "@babel/runtime": "^7.0.0-beta.54",
