@@ -8,11 +8,13 @@
     // -------------------------------------------------------------------------------------------------------- new cell
     grid-editor-sources.grid-editor-sources(v-if="$store.state.mosys.showSources")
     // ----------------------------------------------------------------------------------------------------- cell editor
-    template(v-if="!isMobile")
+    // template(v-if="!isMobile")
+    .desktop-only
       grid-editor-editing-cells.grid-editor-editing-cells(v-if="showEditingCells")
-    template(v-else)
-      q-modal(v-model="showEditingCells", @hide="closedModal()", position="bottom")
-        grid-editor-editing-cells
+    //template(v-else)
+    // q-modal.mobile-only(v-model="showEditingCells", @hide="closedModal()", position="bottom")
+      grid-editor-editing-cells
+
     // grid-editor-add-cells.grid-editor-sources(v-if="$store.state.mosys.showAddCells")
 </template>
 
@@ -91,9 +93,10 @@
     .grid-editor
       width calc(2*100%/3)
 
+  /*
   .grid-editor-editing-cells
   .grid-editor-sources
-    width calc(100%/3)
+    width calc(100%/3) */
 
   .grid-editor-shadow-right
     background: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.2));
