@@ -26,6 +26,8 @@
 
   import { parseURI } from 'mbjs-data-models/src/lib'
 
+  import { mapGetters } from 'vuex'
+
   export default {
     components: {
       AccessControl,
@@ -61,6 +63,9 @@
       }
     },
     computed: {
+      ...mapGetters({
+        user: 'auth/getUserState'
+      }),
       url () {
         if (this.payload) return this.payload.url
       }
@@ -107,6 +112,7 @@
             const tags = await context.$store.dispatch('tags/get', result)
 
             return {
+              author: result.author,
               gid: result.target.id,
               uuid: result.uuid,
               url: result.body.source.id,
@@ -148,30 +154,32 @@
           },
           submit: {
             async handler () {
-              if (!context.titlePayload && context.payload.title !== context.meta.title) {
-                await context.createTitle(context.payload.id, context.payload.title)
-              }
-              else if (context.titlePayload && context.payload.title === context.meta.originalTitle) {
-                await context.removeTitle(context.titlePayload.uuid)
-              }
-              else if (context.titlePayload && context.payload.title !== context.titlePayload.body.value) {
-                await context.updateTitle(context.titlePayload.uuid, context.payload.title)
-              }
-              context.apiPayload = {
-                target: {
-                  id: context.payload.timeline,
-                  selector: {
-                    value: context.selectorOverride || context.selectorValue
-                  }
-                },
-                body: {
-                  source: {
-                    id: context.payload.url,
-                    type: guessType(context.payload.url)
+              if (context.user.uuid === context.payload.author.id) {
+                if (!context.titlePayload && context.payload.title !== context.meta.title) {
+                  await context.createTitle(context.payload.id, context.payload.title)
+                }
+                else if (context.titlePayload && context.payload.title === context.meta.originalTitle) {
+                  await context.removeTitle(context.titlePayload.uuid)
+                }
+                else if (context.titlePayload && context.payload.title !== context.titlePayload.body.value) {
+                  await context.updateTitle(context.titlePayload.uuid, context.payload.title)
+                }
+                context.apiPayload = {
+                  target: {
+                    id: context.payload.timeline,
+                    selector: {
+                      value: context.selectorOverride || context.selectorValue
+                    }
+                  },
+                  body: {
+                    source: {
+                      id: context.payload.url,
+                      type: guessType(context.payload.url)
+                    }
                   }
                 }
+                await context.$store.dispatch('annotations/patch', [context.payload.uuid, context.apiPayload])
               }
-              await context.$store.dispatch('annotations/patch', [context.payload.uuid, context.apiPayload])
               await context.$store.dispatch('tags/set', [context.payload, context.payload.tags])
 
               context.$router.push({
