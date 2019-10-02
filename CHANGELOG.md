@@ -28,6 +28,7 @@ app, including a local metadata service as store module `metadata-ffprobe`
 under `media/create` (playback possible using forked
 [vue-video-player](https://github.com/dasantonym/vue-video-player))
 - Export timelines as CSV
+- Mobile compatiblity for MoSys Editor
 
 ### Changed
 
