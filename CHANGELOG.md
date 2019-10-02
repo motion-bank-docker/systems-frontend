@@ -8,6 +8,18 @@ The format is based on
 and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
+## [1.3.5] - 2019-10-02
+
+### Changed
+
+- Allow non-owner to tag videos
+
+### Updated
+
+- Update mbjs-quasar to v1.5.2
+
+
 ## [1.3.4] - 2019-05-07
 
 ### Changed
@@ -257,7 +269,8 @@ of a video cannot be retrieved
 - Start proper versioning at 1.0.0
 
 
-[Unreleased]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.4...master
+[Unreleased]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.5...master
+[1.3.5]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.4...v1.3.5
 [1.3.4]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.3...v1.3.4
 [1.3.3]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.2...v1.3.3
 [1.3.2]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.1...v1.3.2
