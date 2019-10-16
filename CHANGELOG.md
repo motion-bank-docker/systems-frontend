@@ -29,6 +29,8 @@ under `media/create` (playback possible using forked
 [vue-video-player](https://github.com/dasantonym/vue-video-player))
 - Export timelines as CSV
 - Mobile compatiblity for MoSys Editor
+- The file `statics/env.js` can be overwritten to configure
+the frontend at runtime
 
 ### Changed
 

@@ -8,10 +8,10 @@ export default ({ Vue }) => {
   }
   else {
     authService = new AuthService({
-      domain: process.env.AUTH0_DOMAIN,
-      clientID: process.env.AUTH0_CLIENT_ID,
-      redirectUri: process.env.AUTH0_REDIRECT_URL || `${document.location.origin}/users/callback`,
-      audience: process.env.AUTH0_AUDIENCE,
+      domain: window.AUTH0_DOMAIN || process.env.AUTH0_DOMAIN,
+      clientID: window.AUTH0_CLIENT_ID || process.env.AUTH0_CLIENT_ID,
+      redirectUri: `${document.location.origin}/users/callback`,
+      audience: window.AUTH0_AUDIENCE || process.env.AUTH0_AUDIENCE,
       scope: 'openid profile read write',
       responseType: 'token id_token'
     })
