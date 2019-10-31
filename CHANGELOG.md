@@ -31,6 +31,7 @@ under `media/create` (playback possible using forked
 - Mobile compatiblity for MoSys Editor
 - The file `statics/env.js` can be overwritten to configure
 the frontend at runtime
+- Authentication service attempts silent login when token expires
 
 ### Changed
 
