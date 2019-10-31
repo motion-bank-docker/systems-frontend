@@ -30,7 +30,7 @@ jobs:
       - run:
           name: Release Dev Image
           environment:
-            AUTH0_REDIRECT_URL: https://dev.motionbank.org
+            AUTH0_REDIRECT_URL: https://dev.motionbank.org/users/callback
             UI_HOST: https://dev.motionbank.org
             IS_STAGING: true
             API_HOST: https://api-dev.motionbank.org
@@ -53,7 +53,7 @@ jobs:
       - run:
           name: Release Production Image
           environment:
-            AUTH0_REDIRECT_URL: https://app.motionbank.org
+            AUTH0_REDIRECT_URL: https://app.motionbank.org/users/callback
             UI_HOST: https://app.motionbank.org
             API_HOST: https://api.motionbank.org
           command: |
@@ -75,7 +75,7 @@ jobs:
       - run:
           name: Release Staging Image
           environment:
-            AUTH0_REDIRECT_URL: https://staging.motionbank.org
+            AUTH0_REDIRECT_URL: https://staging.motionbank.org/users/callback
             IS_STAGING: true
             UI_HOST: https://staging.motionbank.org
             API_HOST: https://api-staging.motionbank.org
