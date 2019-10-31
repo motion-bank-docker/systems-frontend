@@ -45,17 +45,7 @@ const metadata = {
         }
       }
       if (payload.id) {
-        const titleQuery = {
-          'target.id': typeof payload === 'string' ? `${BASE_URI}/annotations/${payload}` : payload.id,
-          'body.purpose': 'describing',
-          'body.type': 'TextualBody'
-        }
-        const titleResult = await context.dispatch('annotations/find', titleQuery, {root: true})
-        if (titleResult && titleResult.items && titleResult.items.length) {
-          metadata.titleAnnotation = titleResult.items[0]
-          if (metadata.title) metadata.originalTitle = metadata.title
-          metadata.title = titleResult.items[0].body.value
-        }
+        metadata = await this.fetchTitle(metadata, payload)
       }
       console.debug('metadata', metadata)
       return metadata
@@ -69,6 +59,9 @@ const metadata = {
       }
       let metadata
       metadata = context.state.cache[payload.body.source.id] || {}
+      return this.fetchTitle(context, metadata, payload)
+    },
+    async fetchTitle (context, metadata, payload) {
       const titleQuery = {
         'target.id': typeof payload === 'string' ? `${BASE_URI}/annotations/${payload}` : payload.id,
         'body.purpose': 'describing',
