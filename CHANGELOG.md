@@ -55,6 +55,8 @@ for YouTube sources to be GDPR compliant
   to version 1.2.4
 - [mbjs-quasar](https://gitlab.rlp.net/motionbank/mbjs/quasar)
   to version 2.2.0
+- [mbjs-api-client](https://gitlab.rlp.net/motionbank/mbjs/api-client)
+  to version 2.1.1
 
 ### Fixed
 
