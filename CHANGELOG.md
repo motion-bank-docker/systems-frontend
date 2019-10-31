@@ -25,7 +25,7 @@ and this project adheres to
 
 ### Updated
 
-- Update mbjs-api-client to v2.1.2
+- Update mbjs-api-client to v2.1.3
 
 
 ## [1.3.5] - 2019-10-02
