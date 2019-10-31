@@ -8,6 +8,25 @@ The format is based on
 and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+- No changes
+
+## [1.3.6] - 2019-10-31
+
+### Changed
+
+- Auth service attempts silent login
+- Router checks session before each route change
+
+### Fixed
+
+- API client checks auth session before each request
+
+### Updated
+
+- Update mbjs-api-client to v2.1.1
+
 
 ## [1.3.5] - 2019-10-02
 
@@ -269,7 +288,8 @@ of a video cannot be retrieved
 - Start proper versioning at 1.0.0
 
 
-[Unreleased]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.5...master
+[Unreleased]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.6...master
+[1.3.5]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.5...v1.3.6
 [1.3.5]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.4...v1.3.5
 [1.3.4]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.3...v1.3.4
 [1.3.3]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.2...v1.3.3
