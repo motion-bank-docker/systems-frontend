@@ -8,7 +8,8 @@ export default ({ Vue }) => {
       redirectUri: process.env.AUTH0_REDIRECT_URL || `${document.location.origin}/users/callback`,
       audience: process.env.AUTH0_AUDIENCE,
       scope: 'openid profile read write',
-      responseType: 'token id_token'
+      responseType: 'token id_token',
+      prompt: 'none'
     },
     host: process.env.API_HOST
   })
