@@ -61,11 +61,11 @@ module.exports = function (ctx) {
         //
         // Hosts
         //
-        API_HOST: JSON.stringify(process.env.API_HOST || 'https://api.motionbank.org'),
-        SOCKETS_HOST: JSON.stringify(process.env.SOCKETS_HOST || 'https://sockets.motionbank.org'),
-        STORAGE_HOST: JSON.stringify(process.env.STORAGE_HOST || 'https://storage.motionbank.org'),
-        PACKAGER_HOST: JSON.stringify(process.env.PACKAGER_HOST || 'https://packager.motionbank.org'),
-        TRANSCODER_HOST: JSON.stringify(process.env.TRANSCODER_HOST || 'https://transcoder.motionbank.org'),
+        API_HOST: JSON.stringify(process.env.API_HOST),
+        SOCKETS_HOST: JSON.stringify(process.env.SOCKETS_HOST),
+        STORAGE_HOST: JSON.stringify(process.env.STORAGE_HOST),
+        PACKAGER_HOST: JSON.stringify(process.env.PACKAGER_HOST),
+        TRANSCODER_HOST: JSON.stringify(process.env.TRANSCODER_HOST),
         //
         // Resources
         //
@@ -75,16 +75,16 @@ module.exports = function (ctx) {
         //
         // Auth0
         //
-        AUTH0_DOMAIN: JSON.stringify(process.env.AUTH0_DOMAIN || 'auth.motionbank.org'),
-        AUTH0_CLIENT_ID: JSON.stringify(process.env.AUTH0_CLIENT_ID || '80t5TRU9MVhGDVnZ522CvX4hutBxDB6U'),
-        AUTH0_REDIRECT_URL: JSON.stringify(process.env.AUTH0_REDIRECT_URL || null),
-        AUTH0_AUDIENCE: JSON.stringify(process.env.AUTH0_AUDIENCE || 'https://api.motionbank.org'),
+        AUTH0_DOMAIN: JSON.stringify(process.env.AUTH0_DOMAIN),
+        AUTH0_CLIENT_ID: JSON.stringify(process.env.AUTH0_CLIENT_ID),
+        AUTH0_REDIRECT_URL: JSON.stringify(process.env.AUTH0_REDIRECT_URL),
+        AUTH0_AUDIENCE: JSON.stringify(process.env.AUTH0_AUDIENCE),
         //
         // API Keys
         //
-        SENTRY_DSN: JSON.stringify(process.env.SENTRY_DSN || null),
-        YOUTUBE_API_KEY: JSON.stringify(process.env.YOUTUBE_API_KEY || null),
-        VIMEO_ACCESS_TOKEN: JSON.stringify(process.env.VIMEO_ACCESS_TOKEN || null),
+        SENTRY_DSN: JSON.stringify(process.env.SENTRY_DSN),
+        YOUTUBE_API_KEY: JSON.stringify(process.env.YOUTUBE_API_KEYl),
+        VIMEO_ACCESS_TOKEN: JSON.stringify(process.env.VIMEO_ACCESS_TOKEN),
         //
         // App config
         //
