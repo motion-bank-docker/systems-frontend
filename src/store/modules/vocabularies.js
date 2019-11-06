@@ -27,8 +27,10 @@ const vocabularies = {
       let pieces = []
       try {
         const result = await axios.get(`${process.env.API_HOST}/pba/pieces`, {headers})
-        pieces = result.data.sort((a, b) => a.label.replace(/\W/g, '').localeCompare(b.label.replace(/\W/g, '')))
-        if (limit) pieces = pieces.splice(0, limit)
+        if (Array.isArray(result.data)) {
+          pieces = result.data.sort((a, b) => a.label.replace(/\W/g, '').localeCompare(b.label.replace(/\W/g, '')))
+          if (limit) pieces = pieces.splice(0, limit)
+        }
       }
       catch (err) {
         console.error('Failed to load PBA vocabularies:', err.message || err.code)
