@@ -1,6 +1,6 @@
 {
   "name": "motionbank-systems-frontend",
-  "version": "1.3.6",
+  "version": "1.3.7",
   "description": "Combined frontend project for Motion Bank web services",
   "productName": "Motion Bank Systems Frontend",
   "cordovaId": "org.motionbank.frontend",
@@ -33,6 +33,8 @@
     ]
   },
   "dependencies": {
+    "@sentry/browser": "^5.9.0",
+    "@sentry/integrations": "^5.8.0",
     "auth0-js": "9.8.2",
     "axios": "0.18.0",
     "bluebird": "3.5.3",
