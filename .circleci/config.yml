@@ -102,14 +102,3 @@ workflows:
           filters:
             branches:
               only: /^release_.+$/
-  nightly:
-    triggers:
-      - schedule:
-          cron: "0 1 * * 1"
-          filters:
-            branches:
-              only:
-                - master
-    jobs:
-      - release_dev
-      - release_staging
