@@ -42,6 +42,8 @@
     ]
   },
   "dependencies": {
+    "@sentry/browser": "^5.9.0",
+    "@sentry/integrations": "^5.8.0",
     "auth0-js": "9.8.2",
     "axios": "^0.18.1",
     "bluebird": "3.5.3",
