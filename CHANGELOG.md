@@ -12,6 +12,13 @@ and this project adheres to
 
 - No changes
 
+## [1.3.7] - 2019-11-15
+
+### Added
+
+- [Vue integration](https://docs.sentry.io/platforms/javascript/vue/)
+for sentry
+
 ## [1.3.6] - 2019-10-31
 
 ### Changed
@@ -288,8 +295,9 @@ of a video cannot be retrieved
 - Start proper versioning at 1.0.0
 
 
-[Unreleased]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.6...master
-[1.3.5]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.5...v1.3.6
+[Unreleased]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.7...master
+[1.3.7]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.6...v1.3.7
+[1.3.6]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.5...v1.3.6
 [1.3.5]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.4...v1.3.5
 [1.3.4]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.3...v1.3.4
 [1.3.3]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.2...v1.3.3
