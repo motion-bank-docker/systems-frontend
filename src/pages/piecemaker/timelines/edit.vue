@@ -79,7 +79,7 @@
         exportLabel: this.$t('buttons.export_timeline'),
         downloadUrlCSV: undefined,
         exportLabelCSV: this.$t('buttons.export_timeline_csv'),
-        type: constants.mapTypes.MAP_TYPE_TIMELINE,
+        type: constants.mapClasses.MAP_CLASS_TIMELINE,
         payload: this.$route.params.uuid ? _this.$store.dispatch('maps/get', _this.$route.params.uuid) : undefined,
         acl: {
           group: undefined,

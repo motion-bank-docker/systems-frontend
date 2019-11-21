@@ -52,7 +52,7 @@
         headers: {
           Authorization: `Bearer ${localStorage.getItem('access_token')}`
         },
-        type: constants.mapTypes.MAP_TYPE_2DGRID,
+        type: constants.mapClasses.MAP_CLASS_GRID,
         payload: {},
         schema: {
           fields: {
@@ -68,7 +68,7 @@
           },
           submit: {
             handler () {
-              _this.payload.type = [constants.mapTypes.MAP_TYPE_2DGRID]
+              _this.payload.type = [constants.mapClasses.MAP_CLASS_GRID]
               return _this.$store.dispatch('maps/post', _this.payload)
                 .then(() => _this.$router.push({ name: 'mosys.grids.list' }))
             }

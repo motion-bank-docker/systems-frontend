@@ -19,7 +19,7 @@ const exportCSV = function (items, filename = undefined) {
       annotation.body.purpose,
       start,
       duration ? duration.as('seconds') : '',
-      annotation.author.name || 'Unknown',
+      annotation.creator.name || 'Unknown',
       annotation.body.type,
       annotation._created,
       annotation._updated || ''

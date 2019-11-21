@@ -129,7 +129,7 @@
           // 'Created': DateTime.fromISO(annotationData.created).toFormat('yyyy LLL dd, HH:mm:ss.SSS'),
           'Start': this.root.millisToText(ms),
           'Duration': annotationData.target.selector._valueDuration ? this.root.millisToText(annotationData.target.selector._valueDuration) : '-',
-          'Author': annotationData.author.name,
+          'Author': annotationData.creator.name,
           // 'Purpose': annotationData.body.purpose,
           // 'Body Type': annotationData.body.type,
           'Body Value': annotationData.body.value

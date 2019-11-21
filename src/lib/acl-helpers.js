@@ -6,7 +6,7 @@ class ACLHelpers {
     if (recursive) {
       const results = await context.$store.dispatch('annotations/find', { 'target.id': payload.id })
       for (let item of results.items) {
-        if (item.author.id === context.$store.state.auth.user.uuid) {
+        if (item.creator.id === context.$store.state.auth.user.uuid) {
           const itemPayload = ObjectUtil.merge({}, payload)
           itemPayload._uuid = item._uuid
           await context.$store.dispatch(action, itemPayload)

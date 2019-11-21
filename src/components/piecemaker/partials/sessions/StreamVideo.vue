@@ -31,7 +31,7 @@
                 q-item-main {{ video.annotation.body.source.id }}
               q-item
                 q-item-side Author:
-                q-item-main {{ video.annotation.author.name }}
+                q-item-main {{ video.annotation.creator.name }}
               q-item
                 q-item-side Created:
                 q-item-main {{ video.annotation.created }}

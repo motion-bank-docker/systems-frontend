@@ -103,7 +103,7 @@
           group_remove: undefined,
           recursive: false
         },
-        type: constants.mapTypes.MAP_TYPE_2D_GRID,
+        type: constants.mapClasses.MAP_CLASS_GRID,
         payload: this.$route.params.uuid ? _this.$store.dispatch('maps/get', _this.$route.params.uuid) : undefined,
         schema: {
           fields: {

@@ -14,10 +14,10 @@
 
               // AUTHOR
               //
-              span.text-grey-9 {{ shortenName(annotation.author.name) }}&nbsp;&nbsp;
+              span.text-grey-9 {{ shortenName(annotation.creator.name) }}&nbsp;&nbsp;
                 q-tooltip.bg-dark.shadow-8.moba-border(anchor="center left",
                   self="center right", :offset="[10, 0]")
-                  | {{ annotation.author.name }}
+                  | {{ annotation.creator.name }}
 
               // TEXT
               //

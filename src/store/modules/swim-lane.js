@@ -4,7 +4,7 @@ const swimLane = {
     groupAnnotationsBy: 'type',
     options: [
       {label: 'Type', value: 'type'},
-      {label: 'Author', value: 'author'}
+      {label: 'Creator', value: 'creator'}
     ],
     laneMode: 'collapse',
     optionsLaneMode: [
