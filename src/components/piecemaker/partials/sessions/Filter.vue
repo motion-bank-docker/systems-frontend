@@ -14,10 +14,10 @@
 
         div(:class="{'text-grey-8': radioFilter == 'none'}")
           q-tabs(color="dark")
-            q-tab(:class="{'bg-green': filterAuthors.length > 0}", slot="title", name="authors") authors
-              q-tooltip.bg-dark.shadow-8.moba-border(v-if="filterAuthors.length > 0", anchor="bottom middle", self="top middle", :offset="[10, 0]")
+            q-tab(:class="{'bg-green': filterCreators.length > 0}", slot="title", name="creators") creators
+              q-tooltip.bg-dark.shadow-8.moba-border(v-if="filterCreators.length > 0", anchor="bottom middle", self="top middle", :offset="[10, 0]")
                 q-list.no-border.no-padding
-                  q-item.q-caption.q-pa-xs.no-margin(v-for="author in filterAuthors") {{ author }}
+                  q-item.q-caption.q-pa-xs.no-margin(v-for="creator in filterCreators") {{ creator }}
 
             q-tab(:class="{'bg-green': filterTags.length > 0}", slot="title", name="tags") tags
               q-tooltip.bg-dark.shadow-8.moba-border(v-if="filterTags.length > 0", anchor="bottom middle", self="top middle", :offset="[10, 0]")
@@ -32,13 +32,13 @@
             q-tab(slot="title", name="date") date
             q-tab(slot="title", name="search") search
 
-            q-tab-pane(name="authors")
+            q-tab-pane(name="creators")
               q-btn-group.row.full-width
                 q-btn.col-6 select all
-                q-btn.col-6(@click="filterAuthors = ['']") select none
+                q-btn.col-6(@click="filterCreators = ['']") select none
               q-list.no-border
-                q-item.no-padding(v-for="author in authors")
-                  q-checkbox.q-caption(v-model="filterAuthors", :val="author", :label="author", color="white")
+                q-item.no-padding(v-for="creator in creators")
+                  q-checkbox.q-caption(v-model="filterCreators", :val="creator", :label="creator", color="white")
 
             q-tab-pane(name="tags")
               q-btn-group.row.full-width

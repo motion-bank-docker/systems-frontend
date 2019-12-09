@@ -35,14 +35,14 @@
     data () {
       const _this = this
       return {
-        query: { type: constants.mapTypes.MAP_TYPE_2DGRID },
+        query: { type: constants.mapClasses.MAP_CLASS_GRID },
         requestTransform: async rows => {
           for (let i in rows) {
             const transformed = {}
             const row = rows[i]
             transformed.title = row.title
             transformed.last_updated = row.updated ? row.updated : row.created
-            transformed.author = row.author ? row.author.name : _this.$t('labels.unknown_author')
+            transformed.creator = row.creator ? row.creator.name : _this.$t('labels.unknown_creator')
             transformed._uuid = row._uuid
             transformed.id = row.id
             rows[i] = transformed
@@ -67,9 +67,9 @@
                 .toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS)
             },
             {
-              name: 'author',
-              label: _this.$t('labels.author'),
-              field: 'author',
+              name: 'creator',
+              label: _this.$t('labels.creator'),
+              field: 'creator',
               sortable: true,
               filter: true
             }

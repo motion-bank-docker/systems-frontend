@@ -45,19 +45,9 @@ const metadata = {
         }
       }
       if (payload.id) {
-        const titleQuery = {
-          'target.id': typeof payload === 'string' ? `${BASE_URI}/annotations/${payload}` : payload.id,
-          'body.purpose': 'describing',
-          'body.type': 'TextualBody'
-        }
-        const titleResult = await context.dispatch('annotations/find', titleQuery, {root: true})
-        if (titleResult && titleResult.items && titleResult.items.length) {
-          metadata.titleAnnotation = titleResult.items[0]
-          if (metadata.title) metadata.originalTitle = metadata.title
-          metadata.title = titleResult.items[0].body.value
-        }
+        metadata = await context.dispatch('fetchTitle', [metadata, payload])
       }
-      console.debug('metadata', metadata)
+      console.debug('metadata/get', metadata)
       return metadata
     },
     async getLocal (context, payload) {
@@ -67,8 +57,12 @@ const metadata = {
       if (typeof payload === 'string') {
         payload = await context.dispatch('annotations/get', payload, { root: true })
       }
-      let metadata
-      metadata = context.state.cache[payload.body.source.id] || {}
+      let metadata = context.state.cache[payload.body.source.id] || {}
+      metadata = await context.dispatch('fetchTitle', [metadata, payload])
+      console.debug('metadata/getLocal', metadata)
+      return metadata
+    },
+    async fetchTitle (context, [metadata, payload]) {
       const titleQuery = {
         'target.id': typeof payload === 'string' ? `${BASE_URI}/annotations/${payload}` : payload.id,
         'body.purpose': 'describing',
@@ -80,7 +74,7 @@ const metadata = {
         if (metadata.title) metadata.originalTitle = metadata.title
         metadata.title = titleResult.items[0].body.value
       }
-      console.debug('metadata', metadata)
+      console.debug('metadata/fetchTitle', metadata)
       return metadata
     }
   }

@@ -328,13 +328,13 @@
               filtered[group] = this.annotations.filter(annotation => annotation.body.type === group)
             }
           }
-          else if (this.groupAnnotationsBy === 'author') {
+          else if (this.groupAnnotationsBy === 'creator') {
             groups = this.annotations.reduce((sum, annotation) => {
-              if (sum.indexOf(annotation.author.name) === -1) sum.push(annotation.author.name)
+              if (sum.indexOf(annotation.creator.name) === -1) sum.push(annotation.creator.name)
               return sum
             }, [])
             for (let group of groups) {
-              filtered[group] = this.annotations.filter(annotation => annotation.author.name === group)
+              filtered[group] = this.annotations.filter(annotation => annotation.creator.name === group)
             }
           }
         }

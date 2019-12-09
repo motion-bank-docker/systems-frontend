@@ -6,7 +6,7 @@
       .col-10.offset-1(slot="form-title")
         h5.no-margin.text-center
           div {{ map.title }}
-          .text-grey-8 {{ map.author.name }}
+          .text-grey-8 {{ map.creator.name }}
 
     // btn: back
     q-btn.absolute-top-left(slot="backButton", @click="$router.push({ name: 'piecemaker.timelines.list' })", icon="keyboard_backspace", round, small, style="top: 66px; left: 16px;")

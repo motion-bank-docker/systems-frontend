@@ -13,11 +13,11 @@ const
   keytarAccount = os.userInfo().username
 
 function getAuthenticationURL () {
-  return 'https://' + process.env.AUTH0_DOMAIN + '/authorize?' +
-    'audience=' + process.env.AUTH0_AUDIENCE + '&' +
+  return 'https://' + (process.env.AUTH0_DOMAIN) + '/authorize?' +
+    'audience=' + (process.env.AUTH0_AUDIENCE) + '&' +
     'scope=openid profile offline_access&' +
     'response_type=code&' +
-    'client_id=' + process.env.AUTH0_CLIENT_ID + '&' +
+    'client_id=' + (process.env.AUTH0_CLIENT_ID) + '&' +
     'redirect_uri=' + redirectUri
 }
 

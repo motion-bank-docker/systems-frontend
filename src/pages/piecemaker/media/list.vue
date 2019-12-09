@@ -45,7 +45,7 @@
             const tags = await _this.$store.dispatch('tags/get', row)
             transformed.tags = tags.join(', ')
             transformed.type = row.body.type
-            transformed.author = row.author ? row.author.name : _this.$t('labels.unknown_author')
+            transformed.creator = row.creator ? row.creator.name : _this.$t('labels.unknown_creator')
             transformed._uuid = row._uuid
             transformed.id = row.id
             rows[i] = transformed
@@ -98,9 +98,9 @@
               field: 'tags'
             },
             {
-              name: 'author',
-              label: _this.$t('labels.author'),
-              field: 'author',
+              name: 'creator',
+              label: _this.$t('labels.creator'),
+              field: 'creator',
               sortable: true,
               filter: true
             }
