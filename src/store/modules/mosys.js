@@ -1,3 +1,5 @@
+import constants from 'mbjs-data-models/src/constants'
+
 const mosys = {
   namespaced: true,
   state: {
@@ -8,7 +10,9 @@ const mosys = {
     selectedCells: [],
     editingCells: [],
     scrollPositionCache: 0,
-    editMode: undefined
+    editMode: undefined,
+
+    dimensions: {}
   },
   getters: {
     getShowSources: state => state.showSources,
@@ -88,6 +92,35 @@ const mosys = {
     },
     setScrollPositionCache: (state, p) => {
       state.scrollPositionCache = p
+    }
+  },
+  actions: {
+    async getGrid (context, id) {
+      const grid = await context.dispatch('maps/get', id, { root: true })
+      if (!grid.configuration.value && !grid.configuration.id) {
+        grid.configuration.value = {
+          columns: 10,
+          rows: 6,
+          ratio: 16 / 9.0
+        }
+        console.debug('Grid configuration initialised with', grid.configuration._value)
+        await this.updateGridMetadataStore([id, grid.configuration])
+      }
+      const
+        query = {
+          'target.id': grid.id,
+          'body.purpose': 'linking',
+          'body.type': `${constants.BASE_URI_TERMS}Cell`
+        },
+        { items } = await context.dispatch('annotations/find', query, { root: true }),
+        annotations = items
+
+      console.debug('Grid loaded', id, grid)
+      return { grid, annotations, configuration: Object.assign({}, grid.configuration._value) }
+    },
+    async updateGridMetadataStore (context, [grid, configuration]) {
+      grid.configuration.value = configuration
+      await context.dispatch('maps/patch', [grid.id, { configuration: grid.configuration }])
     }
   }
 }
