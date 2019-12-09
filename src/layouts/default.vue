@@ -1,6 +1,6 @@
 <template lang="pug">
   q-layout(view='hHh LpR fFf')
-    q-layout-header
+    q-layout-header.no-shadow(style="border-bottom: 0;")
       user-nav
     q-page-container
       router-view
