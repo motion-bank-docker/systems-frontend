@@ -20,7 +20,8 @@ module.exports = function (ctx) {
       'socket',
       'touch',
       'vocabularies',
-      'window'
+      'window',
+      'intersection-observer'
     ],
     css: [
       'app.styl'
@@ -194,7 +195,10 @@ module.exports = function (ctx) {
         'QIcon',
         'QChip',
         'QUploader',
-        'QEditor'
+        'QEditor',
+        'QCarousel',
+        'QCarouselSlide',
+        'QCarouselControl'
       ],
       directives: [
         'Ripple',
@@ -209,7 +213,8 @@ module.exports = function (ctx) {
         'Dialog',
         'Loading',
         'ActionSheet',
-        'Screen'
+        'Screen',
+        'AppFullscreen'
       ]
     },
     animations: 'all',

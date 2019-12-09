@@ -10,22 +10,37 @@ const mosys = {
     selectedCells: [],
     editingCells: [],
     scrollPositionCache: 0,
-    editMode: undefined,
+    newCell: undefined,
+    editCellModal: false,
+    currentTimeline: undefined,
+    sourceCellInput: undefined,
 
     dimensions: {}
   },
   getters: {
+    getSourceCellInput: state => state.sourceCellInput,
+    getNewCell: state => state.newCell,
     getShowSources: state => state.showSources,
     getShowAddCells: state => state.showAddCells,
     getSelectedCells: state => state.selectedCells,
     getEditingCells: state => state.editingCells,
     getShowEditingCells: state => state.showEditingCells,
     getScrollPositionCache: state => state.scrollPositionCache,
-    getEditMode: state => state.editMode
+    getEditCellModal: state => state.editCellModal,
+    getCurrentTimeline: state => state.currentTimeline
   },
   mutations: {
-    setEditMode (state, mode) {
-      state.editMode === mode ? state.editMode = undefined : state.editMode = mode
+    setSourceCellInput (state, value) {
+      state.sourceCellInput = value
+    },
+    setCurrentTimeline (state, obj) {
+      state.currentTimeline = obj
+    },
+    setEditCellModal (state, visibility) {
+      state.editCellModal = visibility
+    },
+    cacheNewCell (state, cell) {
+      state.newCell = cell
     },
     setEditingCells (state, cells) {
       state.editingCells = cells
