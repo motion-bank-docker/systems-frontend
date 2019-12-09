@@ -1,4 +1,10 @@
 export default ({ Vue }) => {
+  Vue.config.errorHandler = (err, vm, info) => {
+    // err: error trace
+    // vm: component in which error occured
+    // info: Vue specific error information such as lifecycle hooks, events etc.
+    console.debug('errorHandler', err, vm, info)
+  }
   Vue.prototype.$handleError = function (context, err = {}, message = 'errors.unknown_error') {
     if (!context) {
       console.error('Unable to handle error, no vue context given', message, err)
