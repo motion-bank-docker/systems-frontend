@@ -12,6 +12,12 @@ and this project adheres to
 
 - No changes
 
+## [1.3.8] - 2019-12-15
+
+### Added
+
+- Table for viewing, editing and searching annotations
+
 ## [1.3.7] - 2019-11-15
 
 ### Added
@@ -295,7 +301,8 @@ of a video cannot be retrieved
 - Start proper versioning at 1.0.0
 
 
-[Unreleased]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.7...master
+[Unreleased]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.8...master
+[1.3.8]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.7...v1.3.8
 [1.3.7]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.6...v1.3.7
 [1.3.6]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.5...v1.3.6
 [1.3.5]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.4...v1.3.5
