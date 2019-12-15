@@ -89,6 +89,12 @@ export default {
       meta: {private: true}
     },
     {
+      path: '/piecemaker/videos/:id/table',
+      component: () => import('pages/piecemaker/videos/annotations-table'),
+      name: 'piecemaker.videos.table',
+      meta: {private: true}
+    },
+    {
       path: '/piecemaker/videos/:id/edit',
       component: () => import('pages/piecemaker/videos/edit'),
       name: 'piecemaker.videos.edit',

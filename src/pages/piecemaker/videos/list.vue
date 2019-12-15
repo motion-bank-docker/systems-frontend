@@ -92,6 +92,12 @@
               click: (item) => _this.$router.push({ name: 'piecemaker.videos.annotate', params: { id: item.uuid } })
             },
             {
+              type: 'annotations-table',
+              title: 'buttons.annotations_list',
+              color: 'primary',
+              click: (item) => _this.$router.push({ name: 'piecemaker.videos.table', params: { id: item.uuid } })
+            },
+            {
               type: 'edit',
               title: 'buttons.edit',
               // click: (item) => _this.$router.push({ name: 'piecemaker.videos.edit', params: { id: item.uuid } })
