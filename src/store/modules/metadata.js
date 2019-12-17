@@ -25,6 +25,7 @@ const metadata = {
         metadata = {}
         try {
           const result = await new Promise((resolve, reject) => {
+            if (!this.$router.app.$socket) throw new Error('Metadata: Socket is not available')
             this.$router.app.$socket.emit(
               'metadata:get',
               { url: payload.body.source.id, token: localStorage.getItem('access_token') },
