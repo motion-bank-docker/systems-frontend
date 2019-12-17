@@ -112,14 +112,16 @@ const mosys = {
   actions: {
     async getGrid (context, id) {
       const grid = await context.dispatch('maps/get', id, { root: true })
-      if (!grid.configuration.value && !grid.configuration.id) {
-        grid.configuration.value = {
-          columns: 10,
-          rows: 6,
-          ratio: 16 / 9.0
+      if (!grid.configuration || (!grid.configuration.value && !grid.configuration.id)) {
+        grid.configuration = {
+          value: {
+            columns: 10,
+            rows: 6,
+            ratio: 16 / 9.0
+          }
         }
         console.debug('Grid configuration initialised with', grid.configuration._value)
-        await context.dispatch('mosys/updateGridMetadataStore', [grid, grid.configuration])
+        await context.dispatch('updateGridMetadataStore', [grid, grid.configuration._value])
       }
       const
         query = {
@@ -130,12 +132,12 @@ const mosys = {
         { items } = await context.dispatch('annotations/find', query, { root: true }),
         annotations = items
 
-      console.debug('Grid loaded', id, grid)
+      console.debug('Grid loaded', id, grid, annotations)
       return { grid, annotations, configuration: Object.assign({}, grid.configuration._value) }
     },
     async updateGridMetadataStore (context, [grid, configuration]) {
       grid.configuration.value = configuration
-      await context.dispatch('maps/patch', [grid.id, { configuration: grid.configuration }])
+      await context.dispatch('maps/patch', [grid.id, { configuration: grid.configuration }], { root: true })
     }
   }
 }
