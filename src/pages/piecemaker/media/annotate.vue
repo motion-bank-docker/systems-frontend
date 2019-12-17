@@ -277,7 +277,7 @@
         }
         else {
           this.mediaHeight = this.viewport.height / 2 - this.headerHeight
-          this.swimlanesHeight = this.viewport.height / 2
+          this.swimlanesHeight = this.viewport.height / 4
         }
       },
       setHover (val) {
