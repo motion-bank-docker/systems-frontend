@@ -119,7 +119,7 @@ const mosys = {
           ratio: 16 / 9.0
         }
         console.debug('Grid configuration initialised with', grid.configuration._value)
-        await this.updateGridMetadataStore([id, grid.configuration])
+        await context.dispatch('mosys/updateGridMetadataStore', [grid, grid.configuration])
       }
       const
         query = {
