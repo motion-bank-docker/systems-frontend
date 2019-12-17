@@ -127,7 +127,7 @@ const mosys = {
         query = {
           'target.id': grid.id,
           'body.purpose': 'linking',
-          'body.type': `${constants.BASE_URI_TERMS}Cell`
+          'body.type': `${constants.BASE_URI_NS}cell.jsonld`
         },
         { items } = await context.dispatch('annotations/find', query, { root: true }),
         annotations = items
