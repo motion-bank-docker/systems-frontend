@@ -120,6 +120,12 @@
               click: (item) => _this.$router.push({ name: 'piecemaker.videos.list', params: { timelineId: item.uuid } })
             },
             {
+              type: 'index',
+              title: 'buttons.index',
+              color: 'primary',
+              click: (item) => _this.$router.push({ name: 'piecemaker.timelines.table', params: { id: item.uuid } })
+            },
+            {
               type: 'search',
               title: 'buttons.search',
               color: 'primary',

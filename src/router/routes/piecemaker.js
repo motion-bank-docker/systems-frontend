@@ -52,6 +52,12 @@ export default {
       meta: {private: true, feature: 'search'}
     },
     {
+      path: '/piecemaker/timelines/:id/table',
+      component: () => import('pages/piecemaker/timelines/annotations-table'),
+      name: 'piecemaker.timelines.table',
+      meta: {private: true}
+    },
+    {
       path: '/piecemaker/timelines/:id/export',
       component: () => import('pages/piecemaker/timelines/export'),
       name: 'piecemaker.timelines.export',
