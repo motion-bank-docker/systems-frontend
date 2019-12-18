@@ -10,6 +10,7 @@
 <script>
   import constants from 'mbjs-data-models/src/constants'
   import exportCSV from '../../../lib/export/csv'
+  import { ObjectUtil } from 'mbjs-utils'
 
   export default {
     data () {
@@ -35,7 +36,8 @@
           { items } = await this.$store.dispatch('annotations/find', {
             'target.id': this.timeline.id
           })
-        const download = await exportCSV(items)
+        const filename = `${ObjectUtil.slug(this.timeline.title)}-${this.timeline.uuid}`
+        const download = await exportCSV(items, filename)
         this.exportLabel = this.$t('buttons.download_csv')
         this.downloadURL = download
         document.body.appendChild(this.downloadURL)

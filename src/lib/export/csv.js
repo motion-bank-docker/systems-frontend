@@ -1,8 +1,7 @@
 import { DateTime, Interval } from 'luxon'
-import { ObjectUtil } from 'mbjs-utils'
 import constants from 'mbjs-data-models/src/constants'
 
-const exportCSV = async function (items) {
+const exportCSV = async function (items, filename) {
   let lastRefDate
 
   const entries = [[
@@ -47,7 +46,7 @@ const exportCSV = async function (items) {
   })
   const download = document.createElement('a')
   download.setAttribute('href', encodeURI(csvData))
-  download.setAttribute('download', `${ObjectUtil.slug(this.timeline.title)}-${this.timeline.uuid}.csv`)
+  download.setAttribute('download', `${filename}.csv`)
 
   return download
 }
