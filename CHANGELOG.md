@@ -12,6 +12,13 @@ and this project adheres to
 
 - No changes
 
+## [1.3.9] - 2019-12-18
+
+### Added
+
+- Annotation table allows export as CSV (including current
+search query)
+
 ## [1.3.8] - 2019-12-15
 
 ### Added
@@ -301,7 +308,8 @@ of a video cannot be retrieved
 - Start proper versioning at 1.0.0
 
 
-[Unreleased]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.8...master
+[Unreleased]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.9...master
+[1.3.9]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.7...v1.3.9
 [1.3.8]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.7...v1.3.8
 [1.3.7]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.6...v1.3.7
 [1.3.6]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.5...v1.3.6
