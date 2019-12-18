@@ -4,7 +4,7 @@
     template(slot="form-title")
       | {{ metadata.title }}
     template(slot="header-buttons")
-      // q-btn.text-grey-3(@click="", flat, style="border: 1px solid #333;") Export
+      q-btn.text-grey-3(@click="exportItems", :color="exportColor") {{ exportLabel }}
 
     .video-player-wrap.fixed-bottom-right.z-top
       .player.q-pa-md(:class="[{'opacity-1': ready}]")
@@ -17,13 +17,15 @@
 
     .annotations-table.q-mt-lg
       .q-pb-xl
-        data-table(v-if="query", :config="config", path="annotations", :query="query", @start="onStart")
+        data-table(v-if="query", :config="config", path="annotations", :query="query", @start="onStart", ref="annotationTable")
 </template>
 
 <script>
   import constants from 'mbjs-data-models/src/constants'
   import parseURI from 'mbjs-data-models/src/lib/parse-uri'
   import { DateTime } from 'luxon'
+  import { ObjectUtil } from 'mbjs-utils'
+  import exportCSV from '../../../lib/export/csv'
 
   export default {
     name: 'AnnotationsTable',
@@ -37,6 +39,9 @@
         player: undefined,
         timeline: undefined,
         metadata: undefined,
+        downloadURL: undefined,
+        exportLabel: _this.$t('buttons.export'),
+        exportColor: 'faded',
         config: {
           pagination: {
             sortBy: 'start',
@@ -100,6 +105,29 @@
           'target.selector.value': { $gte: this.video.target.selector.value },
           'body.type': { $in: ['TextualBody', 'VocabularyEntry'] }
         }
+      },
+      async exportItems () {
+        if (this.downloadURL) {
+          this.downloadURL.click()
+          this.exportLabel = this.$t('buttons.export')
+          this.exportColor = 'faded'
+          document.body.removeChild(this.downloadURL)
+          this.downloadURL = undefined
+          return
+        }
+
+        this.$q.loading.show()
+        const { items } = await this.$store.dispatch('annotations/find', this.query)
+        const filter = this.$refs.annotationTable.filter
+        let filename = `${ObjectUtil.slug(this.timeline.title)}-${this.metadata.title}`
+        if (filter) filename += `-${filter}`
+        const download = await exportCSV(items.filter(i => i.body.value.indexOf(filter) > -1), filename)
+        this.exportLabel = this.$t('buttons.download_csv')
+        this.downloadURL = download
+        document.body.appendChild(this.downloadURL)
+        this.exportLabel = this.$t('buttons.download')
+        this.exportColor = 'primary'
+        this.$q.loading.hide()
       }
     }
   }

@@ -28,6 +28,7 @@ export default {
     download: 'Download',
     done: 'Done',
     edit: 'Edit',
+    export: 'export',
     export_grid: 'Export Grid',
     export_timeline: 'Export Timeline',
     export_timeline_csv: 'Export Timeline as CSV',
