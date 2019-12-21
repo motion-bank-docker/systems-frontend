@@ -1,6 +1,7 @@
 export default {
   buttons: {
     update_access_control: 'Update access settings',
+    annotations_index: 'Index',
     arrow_next: '>',
     arrow_prev: '<',
     abort: 'Abort',

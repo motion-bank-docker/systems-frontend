@@ -113,6 +113,12 @@
               click: (item) => _this.$router.push({ name: 'piecemaker.media.annotate', params: { uuid: item._uuid } })
             },
             {
+              type: 'annotations-index',
+              title: 'buttons.annotations_index',
+              color: 'primary',
+              click: (item) => _this.$router.push({ name: 'piecemaker.media.index', params: { id: item._uuid } })
+            },
+            {
               type: 'edit',
               title: 'buttons.edit',
               click: (item) => _this.$router.push({ name: 'piecemaker.media.edit', params: { uuid: item._uuid } })
