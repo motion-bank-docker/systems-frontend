@@ -33,6 +33,7 @@ export default {
     export_timeline: 'Export Timeline',
     export_timeline_csv: 'Export Timeline as CSV',
     forgot_password: 'Forgot Password',
+    index: 'Index',
     live_annotate: 'Live Annotate',
     live_annotate_timeline: 'Live Annotate this timeline',
     login: 'Sign In',
