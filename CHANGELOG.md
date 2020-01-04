@@ -10,7 +10,9 @@ and this project adheres to
 
 ## [Unreleased]
 
-- No changes
+### Fixed
+
+- Missing i18n string for `Index` button
 
 ## [1.3.9] - 2019-12-18
 
