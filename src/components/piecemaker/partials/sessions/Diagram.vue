@@ -111,7 +111,7 @@
         this.$emit('select-session', { session, index })
       },
       sessionHover (hoverVal) {
-        console.debug('hover', hoverVal)
+        console.debug('Diagram: sessionHover', hoverVal)
         this.hoverVal = hoverVal
         if (this.hoverVal && this.hoverVal.start) this.barTooltip.visibility = true
         else { this.barTooltip.visibility = false }

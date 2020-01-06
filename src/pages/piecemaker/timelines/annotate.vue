@@ -94,7 +94,6 @@
         await this.createAnnotation(payload)
       },
       async onAnnotation (annotation) {
-        console.debug('received annotation...', annotation)
         if (annotation) await this.createAnnotation(annotation)
       },
       async createAnnotation (annotation = {}) {

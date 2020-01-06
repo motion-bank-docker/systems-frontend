@@ -83,7 +83,6 @@
       },
       async updateACL () {
         this.$q.loading.show()
-        console.debug('setting acl...', this.acl, this.resourceName)
         if (this.acl.public) {
           await this.setACL('acl/set', { role: 'public', id: this.resourceName, permissions: ['get'] }, this.acl.recursive)
         }

@@ -109,7 +109,6 @@
         const millis = DateTime.fromISO(selector, { setZone: true }).toMillis() -
           DateTime.fromISO(this.video.target.selector.value, { setZone: true }).toMillis()
          */
-        console.log('VIDEO', this.video)
         const millis = selector -
           DateTime.fromMillis(this.video.target.selector._valueMillis, { setZone: true })
         const targetMillis = millis * 0.001
@@ -117,7 +116,6 @@
       },
       async getVideo () {
         this.video = await this.$store.dispatch('annotations/get', this.$route.params.id)
-        console.log('video', this.video)
         this.timeline = await this.$store.dispatch('maps/get', parseURI(this.video.target.id).uuid)
         if (this.video) {
           this.metadata = await this.$store.dispatch('metadata/get', this.video)

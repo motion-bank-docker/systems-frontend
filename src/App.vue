@@ -9,10 +9,7 @@
 
 <script>
 export default {
-  name: 'App',
-  mounted () {
-    console.log(window.TRANSCODER_HOST)
-  }
+  name: 'App'
 }
 </script>
 

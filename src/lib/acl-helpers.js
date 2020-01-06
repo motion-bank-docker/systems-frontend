@@ -16,7 +16,6 @@ class ACLHelpers {
   }
 
   static async updateACL (context) {
-    console.debug('setting acl...', context.acl)
     if (this.acl.public) {
       await this.setACL('acl/set', { role: 'public', id: context.timeline.id, permissions: ['get'] }, context.acl.recursive)
     }

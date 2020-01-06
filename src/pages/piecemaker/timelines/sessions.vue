@@ -71,7 +71,7 @@
   //       Object.assign(v.meta, meta.data)
   //       mediaMeta.push(v)
   //     }
-  //     catch (e) { console.log(e) }
+  //     catch (e) { console.error(e) }
   //   }
   //   return mediaMeta
   // }
@@ -187,10 +187,10 @@
           if (video) session.media.push(video)
         }
 
-        // console.log(sessions.length, session.annotations.length, session.media.length)
+        // console.debug(sessions.length, session.annotations.length, session.media.length)
       }
       this.grouped = {sessions, media}
-      // console.log(annotations, this.grouped)
+      // console.debug(annotations, this.grouped)
       */
     },
     methods: {
@@ -215,7 +215,6 @@
         let lastRef, session
         for (let annotation of annotations) {
           const ref = annotation.target.selector._valueMillis
-          if (lastRef) console.debug('dist', ref - lastRef, maxDist)
           if (!lastRef || ref - lastRef >= maxDist) {
             session = storeSession(sessions, session)
             session.start = annotation.target.selector._valueMillis
@@ -244,7 +243,6 @@
           lastRef = ref
         }
         storeSession(sessions, session)
-        console.debug('generated session data', sessions)
         return sessions
       },
       selectSession (data) {

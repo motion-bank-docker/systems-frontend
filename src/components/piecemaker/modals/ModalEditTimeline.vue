@@ -94,7 +94,7 @@
         this.$emit('hide')
       },
       addUser () {
-        console.debug('add user to acl', this.user)
+        console.debug('Add user to acl', this.user)
       }
     }
   }

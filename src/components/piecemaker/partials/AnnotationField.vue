@@ -191,12 +191,12 @@
           }
         }
         else if (key === 'escape') {
-          console.debug('esc')
+          console.debug('onKeyDown: escape')
           this.blurInput()
           this.reset()
         }
         else if (key === 'backspace') {
-          console.log('bs', this.annotationText)
+          console.debug('onKeyDown: backspace', this.annotationText)
           if (this.annotationText !== undefined) {
             if (this.annotationText.length === 1) {
               this.blurInput()
@@ -241,7 +241,7 @@
           }
           this.reset()
           this.$emit('annotation', annotation)
-          console.debug('emit annotation', annotation)
+          console.debug('AnnotationField: createAnnotation', annotation)
         }
       }
     }

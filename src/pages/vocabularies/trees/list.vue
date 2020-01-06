@@ -107,7 +107,6 @@
         children.push({label: '', header: 'add'})
         this.trees.push([{newChild: '', _uuid: this.vocabularies[i]._uuid, label: this.vocabularies[i].title, children: children}])
       }
-      // console.log(this.trees)
     },
     methods: {
       addTerm (val, i) {
@@ -129,16 +128,14 @@
         this.newVocabulary = ''
       },
       defineShortcut (val, i) {
-        console.log(val, i)
+        console.debug('defineShortcut', val, i)
       },
       editTerm (val, i) {
-        console.log(val, i, this.editTermNewValue)
+        console.debug('editTerm', val, i, this.editTermNewValue)
         let target = this.trees[i][0].children
         let editIndex = target.map(function (item) { return item.id }).indexOf(val)
-        // console.log(editIndex, target[editIndex])
         target[editIndex].label = this.editTermNewValue
         target[editIndex].shortcut = this.editTermShortcut
-        console.log(target[editIndex])
         this.editTermId = ''
         this.editTermNewValue = ''
         this.editTermShortcut = ''
@@ -150,13 +147,12 @@
           .toUpperCase()
       },
       handlerDelete (val) {
-        console.log(val)
         this.cancelButton()
         this.deleteTermId = val.id
       },
       handlerEdit (val, focus) {
         // let targetFocus = 'input' + focus
-        console.log(val, focus)
+        console.debug('handlerEdit', val, focus)
         this.cancelButton()
         this.editTermId = val.id
         this.editTermNewValue = val.label

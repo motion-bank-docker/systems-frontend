@@ -29,9 +29,9 @@
         this.pollTimeout = undefined
         const jobIds = this.$store.state.timecodes.jobIds
         for (let jobId of jobIds) {
-          console.debug('checking timecode extraction job...', jobId)
+          console.debug('Checking timecode extraction job...', jobId)
           const job = await this.$store.dispatch('timecodes/get', jobId)
-          console.debug('job status', jobId, job)
+          console.debug('Job status', jobId, job)
           if (job.failed) {
             this.$store.commit('timecodes/removeJobId', jobId)
             this.$store.commit('timecodes/removeJobDetail', jobId)

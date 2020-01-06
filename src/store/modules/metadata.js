@@ -36,7 +36,6 @@ const metadata = {
             )
           })
           if (result) {
-            console.log('result', result)
             metadata = result
             context.commit('setCache', [payload.body.source.id, metadata])
           }

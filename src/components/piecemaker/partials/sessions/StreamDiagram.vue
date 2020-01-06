@@ -147,8 +147,8 @@
     },
     methods: {
       // changeSessionTimeDown () {
-      //   // console.log('changeSessionTime fired')
-      //   // console.log('--> ' + event.clientY)
+      //   // console.debug('changeSessionTime fired')
+      //   // console.debug('--> ' + event.clientY)
       //   this.setSessionTime(event.clientY)
       // },
       setSessionTime (val) {

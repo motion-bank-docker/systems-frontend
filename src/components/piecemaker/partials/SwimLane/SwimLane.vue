@@ -409,7 +409,7 @@
         return DateTime.fromMillis(this.media.target.selector._valueMillis)
       },
       setupScreen () {
-        console.log(this.dimensions.details, 'details dimen')
+        console.debug('SwimLane: setupScreen', this.dimensions.details)
         let selectedA = this.selectedAnnotation
         if (selectedA) {
           let ms = this.millisTotalToTimeline(DateTime.fromISO(selectedA.target.selector.value).toMillis())
