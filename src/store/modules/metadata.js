@@ -1,4 +1,4 @@
-import { BASE_URI } from 'mbjs-data-models/src/constants'
+// import { BASE_URI } from 'mbjs-data-models/src/constants'
 import { Assert } from 'mbjs-utils'
 
 const metadata = {
@@ -15,7 +15,7 @@ const metadata = {
   actions: {
     async get (context, payload) {
       Assert.ok(typeof payload === 'string' || typeof payload.body.source.id === 'string',
-        'Metadata request payload must be UUID string or annotation object')
+        'Metadata request payload must be ID string or annotation object')
       if (typeof payload === 'string') {
         payload = await context.dispatch('annotations/get', payload, { root: true })
       }
@@ -52,7 +52,7 @@ const metadata = {
     },
     async getLocal (context, payload) {
       Assert.ok(typeof payload === 'string' || typeof payload.body.source.id === 'string',
-        'Metadata request payload must be UUID string or annotation object')
+        'Metadata request payload must be ID string or annotation object')
 
       if (typeof payload === 'string') {
         payload = await context.dispatch('annotations/get', payload, { root: true })
@@ -64,7 +64,7 @@ const metadata = {
     },
     async fetchTitle (context, [metadata, payload]) {
       const titleQuery = {
-        'target.id': typeof payload === 'string' ? `${BASE_URI}/annotations/${payload}` : payload.id,
+        'target.id': typeof payload === 'string' ? payload : payload.id,
         'body.purpose': 'describing',
         'body.type': 'TextualBody'
       }
