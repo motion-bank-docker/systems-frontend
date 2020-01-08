@@ -21,7 +21,7 @@ jobs:
   release_dev:
     working_directory: /app
     docker:
-      - image: docker:stable-git
+      - image: docker:18-git
     steps:
       - checkout
       - run: *pull-submodules
@@ -42,7 +42,7 @@ jobs:
   release_production:
     working_directory: /app
     docker:
-      - image: docker:stable-git
+      - image: docker:18-git
     steps:
       - checkout
       - run: *pull-submodules
@@ -60,7 +60,7 @@ jobs:
   release_staging:
     working_directory: /app
     docker:
-      - image: docker:stable-git
+      - image: docker:18-git
     steps:
       - checkout
       - run: *pull-submodules
