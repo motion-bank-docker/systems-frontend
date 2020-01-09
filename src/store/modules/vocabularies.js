@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { ObjectUtil } from 'mbjs-utils'
 
 const vocabularies = {
   namespaced: true,
@@ -20,33 +21,21 @@ const vocabularies = {
     }
   },
   actions: {
-    async loadPBATitles (context, limit = 0) {
-      const headers = {
-        Authorization: `Bearer ${localStorage.getItem('access_token')}`
-      }
-      let pieces = []
-      try {
-        const result = await axios.get(`${process.env.API_HOST}/pba/pieces`, {headers})
-        if (Array.isArray(result.data)) {
-          pieces = result.data.sort((a, b) => a.label.replace(/\W/g, '').localeCompare(b.label.replace(/\W/g, '')))
-          if (limit) pieces = pieces.splice(0, limit)
+    async loadTitles (context, [video, metadata]) {
+      const response = await axios.get(`${process.env.PBA_API_HOST}videos/titles/`, {
+        headers: { Accept: 'application/json' },
+        params: { media_url: video.body.source.id },
+        auth: context.rootState.auth.pba
+      })
+      console.log('titles response', response)
+      const scope = ObjectUtil.slug(video.body.source.id, true)
+      context.commit('addTermsForScope', [scope, response.data.map(title => {
+        return {
+          value: title.label,
+          id: `https://dams-staging.pinabausch.org/resource/${title.identifier}`
         }
-      }
-      catch (err) {
-        console.error('Failed to load PBA vocabularies:', err.message || err.code)
-      }
-      for (let piece of pieces) {
-        const result = await axios.get(`${process.env.API_HOST}/pba/pieces/${piece.piece_id}/titles`, {headers})
-        context.commit('addTermsForScope', [piece.piece_id, result.data.map(title => {
-          return {
-            value: title.label,
-            id: title.title,
-            type: 'PBATitle'
-          }
-        })])
-        // .sort((a, b) => a.value.localeCompare(b.value))
-        context.commit('setScopeLabel', [piece.piece_id, piece.label])
-      }
+      })])
+      context.commit('setScopeLabel', [scope, (metadata.title || 'Unknown')])
     },
     get (context, id) {
       return context.state.scopedTerms[id]
