@@ -15,17 +15,20 @@
     name: 'TimecodeLabel',
     // TODO video should be accessed differently?
     // TODO define global video object?
-    props: ['timecode', 'videoDate', 'millis', 'text'],
+    props: ['timecode', 'videoDate', 'millis', 'text', 'mode'],
     // computed: {
     methods: {
       formatted (val) {
+        console.log('millis', this.millis)
         let annotationDate
         if (this.millis) {
-          annotationDate = DateTime.fromMillis(this.millis)
+          if (this.mode === 'global') annotationDate = DateTime.fromMillis(this.millis)
+          else if (this.mode === 'local') annotationDate = this.millis
         }
         else if (this.timecode) {
           annotationDate = DateTime.fromISO(this.timecode, { setZone: true })
         }
+        console.log('return mill', annotationDate, this.videoDate)
         if (annotationDate && this.videoDate) {
           // FIXME: the predefined format in constants.js isn't used with this solution
           // return Interval.fromDateTimes(this.videoDate, annotationDate)
@@ -43,6 +46,7 @@
           }
         }
         else if (annotationDate && !this.videoDate) {
+          if (this.mode === 'local') annotationDate = DateTime.fromMillis(this.millis)
           if (val === 'milliseconds') return annotationDate.toFormat('SSS')
           else return annotationDate.toFormat('HH:mm:ss')
         }

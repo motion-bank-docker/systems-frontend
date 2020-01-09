@@ -64,7 +64,7 @@
         type: Number,
         default: 2
       },
-      selectorValue: String,
+      selectorValue: Object,
       hasTransparency: Boolean
     },
     data () {
@@ -137,7 +137,7 @@
         this.annotationText = undefined
       },
       getSelectorValue () {
-        return this.currentSelectorValue || this.selectorValue || DateTime.local().toISO()
+        return this.currentSelectorValue || this.selectorValue || { key: 'datetime-t', value: DateTime.local().toISO() }
       },
       focusInput () {
         if (this.$refs.textInput) this.$refs.textInput.focus()
@@ -228,7 +228,7 @@
             target: {
               selector: {
                 value: {
-                  'date-time:t': this.currentSelectorValue
+                  [this.currentSelectorValue.key]: this.currentSelectorValue.value
                 }
               }
             }

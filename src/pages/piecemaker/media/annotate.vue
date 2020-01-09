@@ -88,7 +88,8 @@
                 timecode-label(
                   @click.native="gotoSelector(annotation.target.selector, false, annotation)",
                   :millis="annotation.target.selector._valueMillis",
-                  :videoDate="getMediaDate()"
+                  :videoDate="mode === 'global' ? getMediaDate() : undefined",
+                  :mode="mode"
                   )
                 // annotation has duration
                 template(v-if="annotation.target.selector._valueDuration")
@@ -96,7 +97,8 @@
                   timecode-label(
                     @click.native="gotoSelector(annotation.target.selector, true, annotation)",
                     :millis="getAnnotationEndMillis(annotation)",
-                    :videoDate="getMediaDate()"
+                    :videoDate="mode === 'global' ? getMediaDate() : undefined",
+                    :mode="mode"
                     )
                 // add timecode button
                 template(v-else)
@@ -141,6 +143,7 @@
   import { userHasFeature } from 'mbjs-quasar/src/lib'
   import constants from 'mbjs-data-models/src/constants'
   import parseURI from 'mbjs-data-models/src/lib/parse-uri'
+  import { Annotation } from 'mbjs-data-models'
 
   import AnnotationField from '../../../components/piecemaker/partials/AnnotationField'
   import SwimLane from '../../../components/piecemaker/partials/SwimLane/SwimLane'
@@ -157,6 +160,7 @@
       TimecodeLabel
     },
     async mounted () {
+      console.debug('Mode', this.mode)
       if (this.$route.params.uuid) {
         this.$q.loading.show()
         await this.getMedia()
@@ -165,6 +169,9 @@
       }
       this.drawer = this.visibilityDrawer
       this.setupScreen()
+
+      const titles = await this.$store.dispatch('vocabularies/loadTitles', [this.media, this.metadata])
+      console.debug('titles', titles)
     },
     beforeDestroy () {
       this.$store.commit('swimLane/setSelectedAnnotation')
@@ -212,6 +219,9 @@
         visibilityDetails: 'swimLane/getVisibilityDetails',
         isMobile: 'globalSettings/getIsMobile'
       }),
+      mode () {
+        return this.$route.params.mode || 'global'
+      },
       storeCursorTop () {
         return this.$store.state.swimLane.cursorTop
       },
@@ -232,13 +242,19 @@
         return idx
       },
       baseSelector () {
-        if (!this.media) return DateTime.local().toISO()
-        const
-          parsed = this.media.target.selector.parse(),
-          start = Array.isArray(parsed['date-time:t']) ? parsed['date-time:t'][0] : parsed['date-time:t']
-        return start.plus(this.playerTime * 1000).toISO()
+        if (this.mode === 'local') {
+          return { key: 't', value: this.playerTime }
+        }
+        else {
+          if (!this.media) return { key: 'date-time:t', value: DateTime.local().toISO() }
+          const
+            parsed = this.media.target.selector.parse(),
+            start = Array.isArray(parsed['date-time:t']) ? parsed['date-time:t'][0] : parsed['date-time:t']
+          return { key: 'date-time:t', value: start.plus(this.playerTime * 1000).toISO() }
+        }
       },
       baseMillis () {
+        if (this.mode === 'local') return this.playerTime * 1000
         if (!this.media) return DateTime.local().toMillis()
         return this.media.target.selector._valueMillis + this.playerTime * 1000
       },
@@ -321,7 +337,7 @@
       },
       async getMedia () {
         this.media = await this.$store.dispatch('annotations/get', this.$route.params.uuid)
-        this.timeline = await this.$store.dispatch('maps/get', parseURI(this.media.target.id).uuid)
+        if (this.mode === 'global') this.timeline = await this.$store.dispatch('maps/get', parseURI(this.media.target.id).uuid)
         this.$root.$emit('setBackButton', '/piecemaker/timelines/' + parseURI(this.media.target.id).uuid + '/media')
         if (this.media) {
           this.metadata = await this.$store.dispatch('metadata/getLocal', this.media)
@@ -329,16 +345,26 @@
       },
       async getAnnotations () {
         const
-          _this = this,
+          _this = this
+        let query
+        if (this.mode === 'local') {
+          query = {
+            'target.id': this.media.body.source.id,
+            'target.type': 'Video',
+            'body.type': {$in: ['TextualBody', 'VocabularyEntry']}
+          }
+        }
+        else {
           query = {
             'target.id': this.timeline.id,
             'target.type': constants.mapTypes.MAP_TYPE_TIMELINE,
             'target.selector._valueMillis': { $gte: this.media.target.selector._valueMillis },
-            'body.type': { $in: ['TextualBody', 'VocabularyEntry'] }
+            'body.type': {$in: ['TextualBody', 'VocabularyEntry']}
           }
-        if (this.media.target.selector._valueDuration) {
-          query['target.selector._valueMillis']['$lte'] = this.media.target.selector._valueMillis +
-            this.media.target.selector._valueDuration
+          if (this.media.target.selector._valueDuration) {
+            query['target.selector._valueMillis']['$lte'] = this.media.target.selector._valueMillis +
+              this.media.target.selector._valueDuration
+          }
         }
         const results = await this.$store.dispatch('annotations/find', query)
         for (let item of results.items) {
@@ -356,8 +382,35 @@
       },
       async createAnnotation (annotation = {}) {
         try {
-          const target = this.timeline.getInterval(annotation.target.selector.value['date-time:t'])
-          const payload = ObjectUtil.merge(annotation, { target })
+          let target = {}
+          if (this.mode === 'local') {
+            target = Object.assign({}, annotation.target)
+            target.selector.type = 'FragmentSelector'
+          }
+          else target = this.timeline.getInterval(annotation.target.selector.value['date-time:t'])
+          target.type = 'Video'
+          target.id = this.media.body.source.id
+          console.log('target', target)
+          const payload = new Annotation(ObjectUtil.merge(annotation, target ? { target } : {}))
+          console.debug('createAnnotation', payload.toObject())
+          // const pbares = await this.$axios.post(
+          //   `${process.env.PBA_API_HOST}videos/annotations/?media_url=https:%2F%2Fdams-staging.pinabausch.org%2Fmedia%2Fvideos%2Fvideo.mp4&format=json-ld`,
+          //   payload.toObject(),
+          //   {
+          //     headers: {
+          //       'Accept': 'application/ld+json',
+          //       'Content-Type': 'application/ld+json'
+          //     },
+          //     // params: {
+          //     //   media_url: video.body.source.id
+          //     // },
+          //     auth: {
+          //       username: process.env.PBA_API_USER,
+          //       password: process.env.PBA_API_PASS
+          //     }
+          //   }
+          // )
+          // console.log('pba res', pbares)
           const result = await this.$store.dispatch('annotations/post', payload)
           if (result.body.type === 'VocabularyEntry' && !result.body.value) {
             const entry = await this.$vocabularies.getEntry(result.body.source.id)
@@ -422,14 +475,21 @@
         }
       },
       gotoSelector (selector, useDuration, annotation) {
-        const
-          parsed = selector.parse(),
+        const parsed = selector.parse()
+        let start, millis
+        if (parsed['date-time:t']) {
           start = Array.isArray(parsed['date-time:t']) ? parsed['date-time:t'][0] : parsed['date-time:t']
-        this.$router.push({ query: { datetime: start } })
-        let millis = selector._valueMillis - this.media.target.selector._valueMillis
+          millis = selector._valueMillis - this.media.target.selector._valueMillis
+          this.$router.push({ query: { datetime: start } })
+        }
+        else if (parsed.t) {
+          start = Array.isArray(parsed.t) ? parsed.t[0] : parsed.t
+          millis = start * 1000
+          this.$router.push({ query: { t: start } })
+        }
         if (useDuration) {
-          millis += selector._valueDuration
-          this.selectedMillis = selector._valueMillis + selector._valueDuration
+          millis += selector._valueDuration || 0
+          this.selectedMillis = (this.mode === 'local' ? 0 : selector._valueMillis) + selector._valueDuration
         }
         else {
           this.selectedMillis = selector._valueMillis
