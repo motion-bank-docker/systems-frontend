@@ -386,6 +386,7 @@
           if (this.mode === 'local') {
             target = Object.assign({}, annotation.target)
             target.selector.type = 'FragmentSelector'
+            target.selector.value = { t: [target.selector.value.t, target.selector.value.t] }
           }
           else target = this.timeline.getInterval(annotation.target.selector.value['date-time:t'])
           target.type = 'Video'
@@ -393,24 +394,21 @@
           console.log('target', target)
           const payload = new Annotation(ObjectUtil.merge(annotation, target ? { target } : {}))
           console.debug('createAnnotation', payload.toObject())
-          // const pbares = await this.$axios.post(
-          //   `${process.env.PBA_API_HOST}videos/annotations/?media_url=https:%2F%2Fdams-staging.pinabausch.org%2Fmedia%2Fvideos%2Fvideo.mp4&format=json-ld`,
-          //   payload.toObject(),
-          //   {
-          //     headers: {
-          //       'Accept': 'application/ld+json',
-          //       'Content-Type': 'application/ld+json'
-          //     },
-          //     // params: {
-          //     //   media_url: video.body.source.id
-          //     // },
-          //     auth: {
-          //       username: process.env.PBA_API_USER,
-          //       password: process.env.PBA_API_PASS
-          //     }
-          //   }
-          // )
-          // console.log('pba res', pbares)
+          const pbares = await this.$axios.post(
+            `${process.env.PBA_API_HOST}videos/annotations/?format=json-ld&media_url=https:%2F%2Fdams-staging.pinabausch.org%2Fmedia%2Fvideos%2Fvideo.mp4`,
+            payload.toObject(),
+            {
+              // headers: {
+              //   'Accept-Type': 'application/ld+json',
+              //   'Content-Type': 'application/ld+json'
+              // },
+              // params: {
+              //   media_url: video.body.source.id
+              // },
+              auth: this.$store.state.auth.pba
+            }
+          )
+          console.log('pba res', pbares)
           const result = await this.$store.dispatch('annotations/post', payload)
           if (result.body.type === 'VocabularyEntry' && !result.body.value) {
             const entry = await this.$vocabularies.getEntry(result.body.source.id)
