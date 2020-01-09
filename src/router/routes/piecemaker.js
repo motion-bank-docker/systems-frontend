@@ -67,6 +67,12 @@ export default {
       meta: {private: true}
     },
     {
+      path: '/piecemaker/media/:uuid/annotate/:mode',
+      component: () => import('pages/piecemaker/media/annotate'),
+      name: 'piecemaker.media.annotate',
+      meta: {private: true}
+    },
+    {
       path: '/piecemaker/media/:id/annotations-index',
       component: () => import('pages/piecemaker/media/annotations-index'),
       name: 'piecemaker.media.index',
