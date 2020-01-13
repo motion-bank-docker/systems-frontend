@@ -73,7 +73,7 @@ const metadata = {
     //     }
     //   }
     //
-    //   console.log('annotation', payload, annotation)
+    //   console.debug('annotation', payload, annotation)
     //
     //   const metadata = await getMetaData(annotation, async query => {
     //     const results = await context.dispatch('annotations/find', query, { root: true })
@@ -85,7 +85,7 @@ const metadata = {
     //     ffprobePath: getGlobal('FFPROBE_PATH')
     //   })
     //
-    //   console.log('metadata', metadata)
+    //   console.debug('metadata', metadata)
     //
     //   const titleQuery = {
     //     'target.id': typeof payload === 'string' ? `${BASE_URI}/annotations/${payload}` : annotation.id,
@@ -98,7 +98,7 @@ const metadata = {
     //     if (metadata.title) metadata.originalTitle = metadata.title
     //     metadata.title = titleResult.items[0].body.value
     //   }
-    //   console.log('final md', metadata)
+    //   console.debug('final md', metadata)
     //   return metadata
     // },
     async getLocal (context, payload) {
@@ -121,7 +121,6 @@ const metadata = {
         if (metadata.title) metadata.originalTitle = metadata.title
         metadata.title = titleResult.items[0].body.value
       }
-      console.debug('metadata', metadata)
       return metadata
     }
   }

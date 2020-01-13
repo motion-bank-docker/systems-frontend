@@ -286,7 +286,9 @@
         }
       },
       onMarkerContextAction (action) {
-        if (this.isSelected) console.log(action)
+        if (this.isSelected) {
+          console.debug('GraphMarker: onMarkerContextAction', action)
+        }
       },
       onContext (event) {
         event.preventDefault()

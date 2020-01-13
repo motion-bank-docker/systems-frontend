@@ -352,14 +352,12 @@
         }
       },
       onAnnotation (annotation) {
-        console.debug('received annotation...', annotation)
         if (annotation) this.createAnnotation(annotation)
       },
       async createAnnotation (annotation = {}) {
         try {
           const target = this.timeline.getInterval(annotation.target.selector.value['date-time:t'])
           const payload = ObjectUtil.merge(annotation, { target })
-          console.debug('create annotation', target, payload)
           const result = await this.$store.dispatch('annotations/post', payload)
           if (result.body.type === 'VocabularyEntry' && !result.body.value) {
             const entry = await this.$vocabularies.getEntry(result.body.source.id)

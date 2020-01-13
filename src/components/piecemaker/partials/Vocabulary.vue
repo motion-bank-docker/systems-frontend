@@ -279,19 +279,12 @@
             this.loadedVocabularies.push(vocab[k])
           }
         }
-        // console.log(this.activeVocabularies)
       },
       */
       async setVocabularyVisibility (vocabs) {
         this.activeVocabularies = []
         for (let i = 0; i < vocabs.length; i++) {
           let vocab = await this.$store.dispatch('vocabularies/get', vocabs[i].id)
-          /*
-          console.log(this.checkedVocabularies)
-          console.log(vocabs[i])
-          console.log(this.checkedVocabularies.includes(vocabs[i]))
-          console.log('----------')
-          */
           if (this.checkedVocabularies.includes(vocabs[i])) {
             this.activeVocabularies.push({label: vocabs[i].label, items: vocab})
           }
@@ -344,13 +337,13 @@
       },
       onKeyPress (event) {
         const key = event.key.toLowerCase().replace(/\s/g, '')
+        console.debug('Vocabulary: onKeyPress', key)
         if (this.isSetShortcut) {
           // FIXME: delete does not get captured
           if (key === 'delete' && this.newShortcut.length) this.newShortcut.pop()
           else if (this.keyBlacklist.indexOf(key) === -1) this.newShortcut.push(key)
         }
         else if (key === 'arrowdown') {
-          console.debug('arrowdown')
           // TODO: cycle through selected vocabulary values
         }
         else if (key === '#') {

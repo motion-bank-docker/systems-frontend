@@ -151,11 +151,6 @@
         isMobile: 'globalSettings/getIsMobile'
       })
     },
-    watch: {
-      refIndex () {
-        // console.log(this.refMedia[this.refIndex])
-      }
-    },
     methods: {
       handlerRefMediaTitle () {
         if (this.$q.platform.is.mobile) {
@@ -249,7 +244,7 @@
         }
         await this.$store.dispatch('annotations/patch', [_this.media._uuid, update])
           .then(() => {
-            // console.log(
+            // console.debug(
             //   'sync updated',
             //   _this.refVidMarkerSelector.toMillis(),
             //   _this.vidMarkerSelector.toMillis(),

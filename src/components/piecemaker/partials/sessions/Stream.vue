@@ -106,7 +106,6 @@
         this.setSessionTime(val)
       },
       checkVideoVisibility (videoStart, videoEnd, sessionStart, sessionEnd) {
-        // console.log(videoStart, videoEnd, sessionStart, sessionEnd)
         if ((videoStart <= sessionStart && videoEnd >= sessionEnd) || (videoStart >= sessionStart && videoEnd <= sessionEnd) || (videoStart > sessionStart && videoStart < sessionEnd && videoEnd > sessionEnd)) return true
         else return false
       },
@@ -140,11 +139,9 @@
         this.fixDiagram = bounds.top < 50 && (bounds.height + bounds.top) >= window.innerHeight
       },
       setSessionTime (seconds) {
-        console.debug('set session time', seconds, this.player, this.sessionTime)
         if (this.player) {
           const time = SessionHelpers.sessionToAnnotationTime(seconds, this.video.annotation, this.session)
           this.player.currentTime(time)
-          console.log('new time', time)
         }
         else this.sessionTime = seconds
       },
