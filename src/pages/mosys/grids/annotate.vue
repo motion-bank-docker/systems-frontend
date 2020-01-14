@@ -20,7 +20,7 @@
     .desktop-only(v-if="showEditingCells")
       // .grid-editor-border-left.z-top.bg-grey-4
 
-      .full-height
+      .full-height.fixed-top-right.z-max
         cell-editor.grid-editor-editing-cells.bg-white
 
 </template>
