@@ -89,6 +89,6 @@ The application listens on port `3030`.
 
 ## License
 
-:copyright: 2019 Mainz University of Applied Sciences (Motion Bank Project) – 
+:copyright: 2020 Mainz University of Applied Sciences (Motion Bank Project) – 
 Released under the [MIT](https://github.com/motionbank-js/systems-frontend/blob/master/LICENSE) license
 
