@@ -46,18 +46,20 @@ if (process.env.USE_NEDB) {
 }
 else {
   /** Instantiate Motion Bank API Client */
-  apiClient = new WebAuth({
-    auth: {
-      domain: process.env.AUTH0_DOMAIN || window.AUTH0_DOMAIN,
-      clientID: process.env.AUTH0_CLIENT_ID || window.AUTH0_CLIENT_ID,
-      redirectUri: process.env.AUTH0_REDIRECT_URL || `${document.location.origin}/users/callback`,
-      audience: process.env.AUTH0_AUDIENCE || window.AUTH0_AUDIENCE,
-      scope: 'openid profile read write',
-      responseType: 'token id_token',
-      prompt: 'none'
-    },
-    host: process.env.API_HOST || window.API_HOST
-  })
+  if (!process.env.OAUTH_CLIENT_ID) {
+    apiClient = new WebAuth({
+      auth: {
+        domain: process.env.AUTH0_DOMAIN || window.AUTH0_DOMAIN,
+        clientID: process.env.AUTH0_CLIENT_ID || window.AUTH0_CLIENT_ID,
+        redirectUri: process.env.AUTH0_REDIRECT_URL || `${document.location.origin}/users/callback`,
+        audience: process.env.AUTH0_AUDIENCE || window.AUTH0_AUDIENCE,
+        scope: 'openid profile read write',
+        responseType: 'token id_token',
+        prompt: 'none'
+      },
+      host: process.env.API_HOST || window.API_HOST
+    })
+  }
 }
 
 /**

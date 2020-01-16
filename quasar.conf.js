@@ -85,6 +85,14 @@ module.exports = function (ctx) {
         AUTH0_REDIRECT_URL: JSON.stringify(process.env.AUTH0_REDIRECT_URL),
         AUTH0_AUDIENCE: JSON.stringify(process.env.AUTH0_AUDIENCE),
         //
+        // General OAuth2
+        //
+        OAUTH_CLIENT_ID: JSON.stringify(process.env.OAUTH_CLIENT_ID),
+        OAUTH_CLIENT_SECRET: JSON.stringify(process.env.OAUTH_CLIENT_SECRET),
+        OAUTH_REDIRECT_URL: JSON.stringify(process.env.OAUTH_REDIRECT_URL),
+        OAUTH_AUTH_URL: JSON.stringify(process.env.OAUTH_AUTH_URL),
+        OAUTH_TOKEN_URL: JSON.stringify(process.env.OAUTH_TOKEN_URL),
+        //
         // API Keys
         //
         SENTRY_DSN: JSON.stringify(process.env.SENTRY_DSN),
