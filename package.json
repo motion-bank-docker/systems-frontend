@@ -60,7 +60,7 @@
     "mbjs-data-models": "^2.0.9",
     "mbjs-filesystem": "^1.0.0",
     "mbjs-media": "0.2.0",
-    "mbjs-quasar": "2.3.1",
+    "mbjs-quasar": "2.3.2",
     "mbjs-utils": "0.0.6",
     "nedb": "^1.8.0",
     "qs": "^6.6.0",

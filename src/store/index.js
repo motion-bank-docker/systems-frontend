@@ -65,27 +65,40 @@ else {
 /**
  * Set up VueX store
  */
+const mobaApiModules = {
+  /** Basic resources using API Client */
+  annotations: makeResourceModule(apiClient, Annotation, 'annotation'),
+  maps: makeResourceModule(apiClient, Map, 'map'),
+  cells: makeResourceModule(apiClient, Cell, 'cell'),
+  documents: makeResourceModule(apiClient, Document, 'document'),
+  profiles: makeResourceModule(apiClient, undefined, 'profile'),
+  sessions: makeResourceModule(apiClient, undefined, 'session')
+}
+const modules = {
+  /** Custom stores */
+  auth,
+  mosys,
+  notifications,
+  swimLane,
+  vocabularies
+}
+for (let key in mobaApiModules) {
+  if (mobaApiModules[key]) modules[key] = mobaApiModules[key]
+}
+if (process.env.USE_ACL) {
+  modules.acl = acl
+}
+if (process.env.USE_FILES) {
+  modules.files = files
+}
+if (process.env.USE_TAGS) {
+  modules.tags = tags
+}
+if (process.env.USE_METADATA) {
+  modules.metadata = Platform.is.electron ? require('./modules/metadata-ffprobe').default : metadata
+}
 const store = new Vuex.Store({
-  modules: {
-    /** Basic resources using API Client */
-    annotations: makeResourceModule(apiClient, Annotation, 'annotation'),
-    maps: makeResourceModule(apiClient, Map, 'map'),
-    cells: makeResourceModule(apiClient, Cell, 'cell'),
-    documents: makeResourceModule(apiClient, Document, 'document'),
-    profiles: makeResourceModule(apiClient, undefined, 'profile'),
-    sessions: makeResourceModule(apiClient, undefined, 'session'),
-
-    /** Custom stores */
-    acl,
-    auth,
-    files,
-    tags,
-    metadata: Platform.is.electron ? require('./modules/metadata-ffprobe').default : metadata,
-    mosys,
-    notifications,
-    swimLane,
-    vocabularies
-  }
+  modules
 })
 
 export default store

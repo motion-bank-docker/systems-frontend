@@ -106,7 +106,14 @@ module.exports = function (ctx) {
         BUILD_NAME_EXT: JSON.stringify(process.env.BUILD_NAME_EXT || null),
         USE_RESOURCE_CACHE: JSON.stringify(process.env.USE_RESOURCE_CACHE || false),
         UI_VERSION: JSON.stringify(process.env.UI_VERSION || require('./package.json').version),
-        FLUENTFFMPEG_COV: JSON.stringify(false)
+        FLUENTFFMPEG_COV: JSON.stringify(false),
+        //
+        // Features
+        //
+        USE_ACL: JSON.stringify(process.env.USE_ACL || true),
+        USE_FILES: JSON.stringify(process.env.USE_FILES || true),
+        USE_TAGS: JSON.stringify(process.env.USE_TAGS || true),
+        USE_METADATA: JSON.stringify(process.env.USE_TAGS || true)
       }
     },
     devServer: {
