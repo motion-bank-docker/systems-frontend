@@ -5,11 +5,7 @@ export default {
   namespaced: true,
   state: {
     user: undefined,
-    redirectTo: localStorage.getItem('redirectTo') ? localStorage.getItem('redirectTo') : undefined,
-    pba: {
-      username: process.env.PBA_API_USER,
-      password: process.env.PBA_API_PASS
-    }
+    redirectTo: localStorage.getItem('redirectTo') ? localStorage.getItem('redirectTo') : undefined
   },
   getters: {
     getUserState: state => state.user

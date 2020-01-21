@@ -68,9 +68,6 @@ module.exports = function (ctx) {
         STORAGE_HOST: JSON.stringify(process.env.STORAGE_HOST),
         PACKAGER_HOST: JSON.stringify(process.env.PACKAGER_HOST),
         TRANSCODER_HOST: JSON.stringify(process.env.TRANSCODER_HOST),
-        PBA_API_HOST: JSON.stringify(process.env.PBA_API_HOST),
-        PBA_API_USER: JSON.stringify(process.env.PBA_API_USER),
-        PBA_API_PASS: JSON.stringify(process.env.PBA_API_PASS),
         //
         // Resources
         //
