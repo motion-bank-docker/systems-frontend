@@ -5,6 +5,7 @@ import { Platform } from 'quasar'
 Vue.use(Vuex)
 
 import WebAuth from 'mbjs-api-client/src/web'
+import AuthServiceOauth2 from 'mbjs-auth-service/src/auth-service-oauth2'
 import { makeResourceModule } from 'mbjs-quasar/src/lib'
 
 /** Import resource Data Models */
@@ -27,6 +28,8 @@ import {
   swimLane,
   vocabularies
 } from './modules'
+
+import mediaFactory from './modules/media'
 
 /** Instantiate Motion Bank API Client */
 let apiClient
@@ -60,6 +63,17 @@ else {
       host: process.env.API_HOST || window.API_HOST
     })
   }
+  else if (process.env.OAUTH_CLIENT_ID) {
+    apiClient = new AuthServiceOauth2({
+      client_id: process.env.OAUTH_CLIENT_ID,
+      client_secret: process.env.OAUTH_CLIENT_SECRET,
+      redirectUri: process.env.OAUTH_REDIRECT_URL || `${document.location.origin}/users/callback`,
+      authorization: process.env.OAUTH_AUTH_URL,
+      token: process.env.OAUTH_TOKEN_URL,
+      profileEndpoint: `${process.env.API_HOST}user_profile/`,
+      response_type: 'token'
+    })
+  }
 }
 
 /**
@@ -74,6 +88,9 @@ const mobaApiModules = {
   profiles: makeResourceModule(apiClient, undefined, 'profile'),
   sessions: makeResourceModule(apiClient, undefined, 'session')
 }
+const pbaModules = {
+  media: mediaFactory(apiClient)
+}
 const modules = {
   /** Custom stores */
   auth,
@@ -84,6 +101,9 @@ const modules = {
 }
 for (let key in mobaApiModules) {
   if (mobaApiModules[key]) modules[key] = mobaApiModules[key]
+}
+for (let key in pbaModules) {
+  if (pbaModules[key]) modules[key] = pbaModules[key]
 }
 if (process.env.USE_ACL) {
   modules.acl = acl

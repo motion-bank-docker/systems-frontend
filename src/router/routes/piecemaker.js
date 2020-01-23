@@ -79,6 +79,12 @@ export default {
       meta: {private: true}
     },
     {
+      path: '/piecemaker/media',
+      component: () => import('pages/piecemaker/media/list_generic'),
+      name: 'piecemaker.media.list_generic',
+      meta: {private: true}
+    },
+    {
       path: '/piecemaker/media/:uuid/edit',
       component: () => import('pages/piecemaker/media/edit'),
       name: 'piecemaker.media.edit',
