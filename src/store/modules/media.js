@@ -19,7 +19,10 @@ const mediaFactory = function (auth) {
         const items = response.data.data ? response.data.data.map(item => {
           return {
             title: item.label,
-            id: item.identifier
+            id: item.identifier,
+            target: {
+              id: item.urls.length ? item.urls[0] : undefined
+            }
           }
         }) : []
         context.commit('setEntries', items)
