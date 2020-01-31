@@ -20,8 +20,15 @@ const mediaFactory = function (auth) {
           return {
             title: item.label,
             id: item.identifier,
+            body: {
+              type: 'Video',
+              source: {
+                id: item.urls.length ? item.urls[0] : undefined,
+                type: 'video/mp4'
+              }
+            },
             target: {
-              id: item.urls.length ? item.urls[0] : undefined
+              id: item.id
             }
           }
         }) : []
@@ -29,7 +36,7 @@ const mediaFactory = function (auth) {
         return items
       },
       async get (context, id) {
-        if (!context.state.entries.length) await context.commit('find')
+        if (!context.state.entries.length) await context.dispatch('find')
         return context.state.entries.find(entry => entry.id === id)
       }
     },

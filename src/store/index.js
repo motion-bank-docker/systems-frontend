@@ -30,6 +30,8 @@ import {
 } from './modules'
 
 import mediaFactory from './modules/media'
+import annotationsFactory from './modules/annotations'
+import autosuggestFactory from './modules/autosuggest'
 
 /** Instantiate Motion Bank API Client */
 let apiClient
@@ -89,7 +91,9 @@ const mobaApiModules = {
   sessions: makeResourceModule(apiClient, undefined, 'session')
 }
 const pbaModules = {
-  media: mediaFactory(apiClient)
+  annotations: annotationsFactory(apiClient),
+  media: mediaFactory(apiClient),
+  autosuggest: autosuggestFactory(apiClient)
 }
 const modules = {
   /** Custom stores */

@@ -4,7 +4,7 @@ export default {
   children: [
     {
       path: '/piecemaker',
-      redirect: {name: 'piecemaker.timelines.list'}
+      redirect: {name: 'piecemaker.media.list_generic'}
     },
 
     {
@@ -59,16 +59,9 @@ export default {
       name: 'piecemaker.timelines.edit',
       meta: {private: true}
     },
-
     {
-      path: '/piecemaker/media/:uuid/annotate',
-      component: () => import('pages/piecemaker/media/annotate'),
-      name: 'piecemaker.media.annotate',
-      meta: {private: true}
-    },
-    {
-      path: '/piecemaker/media/:uuid/annotate/:mode',
-      component: () => import('pages/piecemaker/media/annotate'),
+      path: '/piecemaker/media/:id/annotate/:mode',
+      component: () => import('pages/piecemaker/media/annotate_generic'),
       name: 'piecemaker.media.annotate',
       meta: {private: true}
     },

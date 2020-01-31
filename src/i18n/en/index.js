@@ -94,6 +94,7 @@ export default {
     create_annotation_failed: 'Failed to create annotation: {error}',
     update_annotation_failed: 'Failed to update annotation: {error}',
     delete_annotation_failed: 'Failed to remove annotation: {error}',
+    list_annotations_failed: 'Failed to create annotation: {error}',
     export_archive_failed: 'Failed to export timeline archive: {error}',
     packaging_failed: 'Packaging failed: {error}',
     unauthorized: 'Unauthorized',
