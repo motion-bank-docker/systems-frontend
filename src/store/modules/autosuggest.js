@@ -14,7 +14,10 @@ const factory = function (auth) {
   const autosuggest = {
     namespaced: true,
     state: {
-      entries: []
+      types: []
+    },
+    getters: {
+      getTypes: state => state.types || []
     },
     actions: {
       async find (context, [id, query]) {
@@ -23,7 +26,7 @@ const factory = function (auth) {
         config.params = { media_url: id, query }
         config.headers['Accept'] = 'application/ld+json'
         console.log(config)
-        const data = await axios.get(`${process.env.API_HOST}autosuggest/annotations/`, config)
+        const { data } = await axios.get(`${process.env.API_HOST}autosuggest/annotations/`, config)
         // for (let item of data) {
         //   const ld = await jsonld.compact(item, 'http://www.w3.org/ns/anno.jsonld')
         //   console.debug('ld', item, ld)
@@ -37,6 +40,12 @@ const factory = function (auth) {
         // context.commit('setEntries', items)
         // return items
         return data
+      }
+    },
+    mutations: {
+      setTypes (state, types) {
+        console.debug('setTypes', types)
+        state.types = types
       }
     }
   }

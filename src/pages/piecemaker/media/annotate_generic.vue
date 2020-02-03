@@ -49,6 +49,7 @@
       q-page-sticky(position="top")
         annotation-field(
         @annotation="onAnnotation",
+        :media="media",
         ref="annotationField",
         :submit-on-num-enters="1",
         :selector-value="baseSelector",
@@ -144,7 +145,7 @@
   import constants from 'mbjs-data-models/src/constants'
   import { Annotation } from 'mbjs-data-models'
 
-  import AnnotationField from '../../../components/piecemaker/partials/AnnotationField'
+  import AnnotationField from '../../../components/piecemaker/partials/AnnotationFieldGeneric'
   import SwimLane from '../../../components/piecemaker/partials/SwimLane/SwimLane'
   import TimecodeLabel from '../../../components/piecemaker/partials/TimecodeLabel'
   import AnnotationIcon from '../../../components/piecemaker/partials/AnnotationIcon'
@@ -177,8 +178,17 @@
       this.drawer = this.visibilityDrawer
       this.setupScreen()
 
-      // const titles = await this.$store.dispatch('vocabularies/loadTitles', [this.media, this.metadata])
-      // console.debug('titles', titles)
+      const objects = await this.$store.dispatch('autosuggest/find', [this.media.body.source.id, '*'])
+      console.debug('objects', objects)
+
+      const types = objects.reduce((types, object) => {
+        if (object.type && types.indexOf(object.type) === -1) types.push(object.type)
+        return types
+      }, []).map(t => {
+        return { id: t, label: t }
+      })
+      console.debug('types', types)
+      this.$store.commit('autosuggest/setTypes', types)
     },
     beforeDestroy () {
       this.$store.commit('swimLane/setSelectedAnnotation')
