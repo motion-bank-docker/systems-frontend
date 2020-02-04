@@ -123,6 +123,11 @@
           this.objectList = objectList
           console.debug('filterValue', this.objectList)
         }, 500)
+      },
+      objectTypes (val) {
+        if (!this.checkedTypes.length && val.length) {
+          this.checkedTypes.push(val[0])
+        }
       }
     },
     async mounted () {
