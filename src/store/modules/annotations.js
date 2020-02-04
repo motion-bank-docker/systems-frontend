@@ -5,9 +5,7 @@ import { Annotation } from 'mbjs-data-models'
 const annotationsFactory = function (getRequestConfig) {
   const annotations = {
     namespaced: true,
-    state: {
-      entries: []
-    },
+    state: {},
     actions: {
       async find (context, id) {
         const config = getRequestConfig()
@@ -26,14 +24,13 @@ const annotationsFactory = function (getRequestConfig) {
           '@context': 'http://www.w3.org/ns/anno.jsonld',
           '@type': 'Annotation'
         })
-        console.debug('annotations/find', ld)
         data = ld['@graph']
         const items = Array.isArray(data) ? data.map(item => {
           // FIXME: remove creator hack
           if (item['dc:creator']) item['creator'] = item['dc:creator']
           return new Annotation(item)
         }) : []
-        context.commit('setEntries', items)
+        console.debug('annotations/find', items)
         return items
       },
       async get (context, id) {
@@ -59,12 +56,6 @@ const annotationsFactory = function (getRequestConfig) {
         const response = await axios.delete(`${process.env.API_HOST}videos/annotations/${id}`, config)
         console.debug('annotations/delete', response)
         return response.data
-      }
-    },
-    mutations: {
-      setEntries (state, entries) {
-        console.debug('setEntries', entries)
-        state.entries = entries
       }
     }
   }

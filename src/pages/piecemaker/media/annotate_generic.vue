@@ -164,6 +164,7 @@
         this.$q.loading.show()
         const media = await this.$store.dispatch('media/get', this.$route.params.id)
         this.media = new Annotation(media)
+        await this.$store.dispatch('autosuggest/loadTypes', this.media.body.source.id)
         try {
           this.annotations = await this.$store.dispatch('annotations/find', this.media.body.source.id)
         }
@@ -174,16 +175,6 @@
       }
       this.drawer = this.visibilityDrawer
       this.setupScreen()
-
-      const objects = await this.$store.dispatch('autosuggest/find', [this.media.body.source.id, '*'])
-      const types = objects.reduce((types, object) => {
-        if (object.type && types.indexOf(object.type) === -1) types.push(object.type)
-        return types
-      }, []).map(t => {
-        return { id: t, label: t }
-      })
-      console.debug('types', types)
-      this.$store.commit('autosuggest/setTypes', types)
     },
     beforeDestroy () {
       this.$store.commit('swimLane/setSelectedAnnotation')
@@ -360,7 +351,6 @@
       },
       async createAnnotation (annotation = {}) {
         try {
-          annotation.type = 'Annotation'
           let target = {}
           if (this.mode === 'local') {
             target = Object.assign({}, annotation.target)
@@ -370,15 +360,9 @@
           else target = this.timeline.getInterval(annotation.target.selector.value['date-time:t'])
           target.type = 'Video'
           target.id = this.media.body.source.id
-          console.log('target', target)
           const payload = new Annotation(ObjectUtil.merge(annotation, target ? { target } : {}))
           console.debug('createAnnotation', payload.toObject())
           const result = this.$store.dispatch('annotations/post', payload)
-          // const result = await this.$store.dispatch('annotations/post', payload)
-          // if (result.body.type === 'VocabularyEntry' && !result.body.value) {
-          //   const entry = await this.$vocabularies.getEntry(result.body.source.id)
-          //   result.body.value = entry.value
-          // }
           this.annotations.push(result)
           this.annotations = this.annotations.sort(this.$sort.onRef)
           setTimeout(() => this.scrollToAnnotation(result.id), 500)

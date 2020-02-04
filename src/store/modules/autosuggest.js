@@ -16,6 +16,16 @@ const factory = function (getRequestConfig) {
         config.headers['Accept'] = 'application/ld+json'
         const { data } = await axios.get(`${process.env.API_HOST}autosuggest/annotations/`, config)
         return data
+      },
+      async loadTypes (context, mediaUrl) {
+        const objects = await context.dispatch('find', [mediaUrl, '*'])
+        const types = objects.reduce((types, object) => {
+          if (object.type && types.indexOf(object.type) === -1) types.push(object.type)
+          return types
+        }, []).map(t => {
+          return { id: t, label: t }
+        })
+        context.commit('setTypes', types)
       }
     },
     mutations: {
