@@ -11,6 +11,8 @@ const factory = function (getRequestConfig) {
     },
     actions: {
       async find (context, [id, query]) {
+        if (!query || !query.length) return []
+
         const config = getRequestConfig()
         config.params = { media_url: id, query }
         config.headers['Accept'] = 'application/ld+json'
