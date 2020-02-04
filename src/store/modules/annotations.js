@@ -1,8 +1,6 @@
 import axios from 'axios'
-// import * as jsonld from 'jsonld'
+import * as jsonld from 'jsonld'
 import { Annotation } from 'mbjs-data-models'
-
-const jsonld = require('jsonld')
 
 const annotationsFactory = function (auth) {
   const getRequestConfig = auth => {
@@ -21,18 +19,26 @@ const annotationsFactory = function (auth) {
       async find (context, id) {
         const config = getRequestConfig(auth)
         config.params = { media_url: id }
-        // config.headers['Accept-Type'] = 'application/ld+json'
         config.headers['Accept'] = 'application/ld+json'
-        const { data } = await axios.get(`${process.env.API_HOST}videos/annotations/`, config)
-        for (let item of data) {
-          const ld = await jsonld.compact(item, 'http://www.w3.org/ns/anno.jsonld')
-          console.debug('ld', item, ld)
-        }
+        let { data } = await axios.get(`${process.env.API_HOST}videos/annotations/`, config)
+        // FIXME: remove annotation type hack!
+        data = data.map(item => {
+          if (item['http://www.w3.org/ns/oa#hasBody']) item['@type'] = ['Annotation']
+          return item
+        })
+        const ld = await jsonld.frame({
+          '@context': 'http://www.w3.org/ns/anno.jsonld',
+          '@graph': data
+        }, {
+          '@context': 'http://www.w3.org/ns/anno.jsonld',
+          '@type': 'Annotation'
+        })
+        console.debug('annotations/find', ld)
+        data = ld['@graph']
         const items = Array.isArray(data) ? data.map(item => {
-          const annotation = new Annotation({
-            id: `${process.env.API_HOST}videos/annotations/${item.identifier}`
-          })
-          return annotation
+          // FIXME: remove creator hack
+          if (item['dc:creator']) item['creator'] = item['dc:creator']
+          return new Annotation(item)
         }) : []
         context.commit('setEntries', items)
         return items
@@ -46,12 +52,13 @@ const annotationsFactory = function (auth) {
         config.params = { media_url: payload.target.id, format: 'json-ld' }
         const response = await axios.post(`${process.env.API_HOST}videos/annotations/`,
           payload.toObject(), config)
-        console.log('res', response)
+        console.debug('annotations/post', response)
         return response.data
       }
     },
     mutations: {
       setEntries (state, entries) {
+        console.debug('setEntries', entries)
         state.entries = entries
       }
     }
