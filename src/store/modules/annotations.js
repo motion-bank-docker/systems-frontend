@@ -47,6 +47,18 @@ const annotationsFactory = function (getRequestConfig) {
           payload.toObject(), config)
         console.debug('annotations/post', response)
         return response.data
+      },
+      async delete (context, id) {
+        const config = getRequestConfig()
+        try {
+          const url = new URL(id)
+          const parts = url.pathname.split('/')
+          id = parts.pop()
+        }
+        catch (err) { /* id isn't a URI */ }
+        const response = await axios.delete(`${process.env.API_HOST}videos/annotations/${id}`, config)
+        console.debug('annotations/delete', response)
+        return response.data
       }
     },
     mutations: {
