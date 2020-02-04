@@ -2,14 +2,7 @@ import axios from 'axios'
 import * as jsonld from 'jsonld'
 import { Annotation } from 'mbjs-data-models'
 
-const annotationsFactory = function (auth) {
-  const getRequestConfig = auth => {
-    return {
-      headers: {
-        Authorization: `${auth.tokenType} ${auth.token}`
-      }
-    }
-  }
+const annotationsFactory = function (getRequestConfig) {
   const annotations = {
     namespaced: true,
     state: {
@@ -17,7 +10,7 @@ const annotationsFactory = function (auth) {
     },
     actions: {
       async find (context, id) {
-        const config = getRequestConfig(auth)
+        const config = getRequestConfig()
         config.params = { media_url: id }
         config.headers['Accept'] = 'application/ld+json'
         let { data } = await axios.get(`${process.env.API_HOST}videos/annotations/`, config)
@@ -48,7 +41,7 @@ const annotationsFactory = function (auth) {
         return context.state.entries.find(entry => entry.id === id)
       },
       async post (context, payload) {
-        const config = getRequestConfig(auth)
+        const config = getRequestConfig()
         config.params = { media_url: payload.target.id, format: 'json-ld' }
         const response = await axios.post(`${process.env.API_HOST}videos/annotations/`,
           payload.toObject(), config)

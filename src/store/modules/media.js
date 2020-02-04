@@ -1,13 +1,6 @@
 const axios = require('axios')
 
-const mediaFactory = function (auth) {
-  const getRequestConfig = auth => {
-    return {
-      headers: {
-        Authorization: `${auth.tokenType} ${auth.token}`
-      }
-    }
-  }
+const mediaFactory = function (getRequestConfig) {
   const media = {
     namespaced: true,
     state: {
@@ -15,7 +8,7 @@ const mediaFactory = function (auth) {
     },
     actions: {
       async find (context) {
-        const response = await axios.get(`${process.env.API_HOST}videos/`, getRequestConfig(auth))
+        const response = await axios.get(`${process.env.API_HOST}videos/`, getRequestConfig())
         const items = response.data.data ? response.data.data.map(item => {
           return {
             title: item.label,

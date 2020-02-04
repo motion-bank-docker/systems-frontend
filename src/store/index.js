@@ -90,10 +90,17 @@ const mobaApiModules = {
   profiles: makeResourceModule(apiClient, undefined, 'profile'),
   sessions: makeResourceModule(apiClient, undefined, 'session')
 }
+const getRequestConfig = () => {
+  return {
+    headers: {
+      Authorization: `${apiClient.tokenType} ${apiClient.token}`
+    }
+  }
+}
 const pbaModules = {
-  annotations: annotationsFactory(apiClient),
-  media: mediaFactory(apiClient),
-  autosuggest: autosuggestFactory(apiClient)
+  annotations: annotationsFactory(getRequestConfig),
+  media: mediaFactory(getRequestConfig),
+  autosuggest: autosuggestFactory(getRequestConfig)
 }
 const modules = {
   /** Custom stores */
