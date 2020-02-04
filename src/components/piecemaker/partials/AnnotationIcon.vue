@@ -1,5 +1,5 @@
 <template lang="pug">
-  .annotation-icon(:class="classes")
+  .annotation-icon(:class="classes", :style="styles")
 </template>
 
 <script>
@@ -9,23 +9,25 @@
     data () {
       return {
         colors: {
+          'SpecificResource': 'grey',
           'TextualBody': '#57aeff',
           'Video': 'tomato',
           'VocabularyEntry': 'black'
         }
       }
     },
-    mounted () {
-    },
-    watch: {
-    },
     computed: {
       classes () {
         let c = []
         if (this.isSelected) c.push('is-selected')
         if (this.annotation.target.selector._valueDuration) c.push('has-duration')
-        c.push('annotation-type-' + this.annotation.body.type)
+        c.push('annotation-type-' + (this.annotation.body.type || 'SpecificResource'))
         return c
+      },
+      styles () {
+        return {
+          'background-color': this.colors[this.annotation.body.type || 'SpecificResource']
+        }
       }
     },
     methods: {
