@@ -20,7 +20,7 @@
     methods: {
       formatted (val) {
         let annotationDate
-        if (this.millis) {
+        if (typeof this.millis === 'number') {
           if (this.mode === 'global') annotationDate = DateTime.fromMillis(this.millis)
           else if (this.mode === 'local') annotationDate = this.millis
         }
@@ -43,7 +43,7 @@
             return time.toFormat('HH:mm:ss')
           }
         }
-        else if (annotationDate && !this.videoDate) {
+        else if (typeof annotationDate !== 'undefined' && !this.videoDate) {
           if (this.mode === 'local') annotationDate = DateTime.fromMillis(this.millis)
           if (val === 'milliseconds') return annotationDate.toFormat('SSS')
           else return annotationDate.toFormat('HH:mm:ss')
