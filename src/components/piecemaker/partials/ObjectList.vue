@@ -114,14 +114,11 @@
           this.filterTimeout = undefined
           const objects = await this.$store.dispatch('autosuggest/find',
             [this.media.body.source.id, this.filterValue])
-          console.log('objects', objects)
           const objectList = {}
           for (let type of this.activeTypesModel) {
             objectList[type.id] = this.filteredItems(objects, type)
-            console.log('filter', type, objectList[type.id])
           }
           this.objectList = objectList
-          console.debug('filterValue', this.objectList)
         }, 500)
       },
       objectTypes (val) {

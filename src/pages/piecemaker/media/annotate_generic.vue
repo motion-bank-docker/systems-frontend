@@ -165,12 +165,7 @@
         const media = await this.$store.dispatch('media/get', this.$route.params.id)
         this.media = new Annotation(media)
         await this.$store.dispatch('autosuggest/loadTypes', this.media.body.source.id)
-        try {
-          this.annotations = await this.$store.dispatch('annotations/find', this.media.body.source.id)
-        }
-        catch (err) {
-          this.$handleError(this, err, 'errors.list_annotations_failed')
-        }
+        await this.getAnnotations()
         this.$q.loading.hide()
       }
       this.drawer = this.visibilityDrawer
@@ -290,6 +285,14 @@
       this.$root.$on('annotationEndMillis', this.getAnnotationEndMillis)
     },
     methods: {
+      async getAnnotations () {
+        try {
+          this.annotations = await this.$store.dispatch('annotations/find', this.media.body.source.id)
+        }
+        catch (err) {
+          this.$handleError(this, err, 'errors.list_annotations_failed')
+        }
+      },
       getAnnotationContent (annotation) {
         if (annotation.body['rdf:label']) {
           return `${annotation.body['rdf:label']}`
@@ -352,6 +355,9 @@
       async createAnnotation (annotation = {}) {
         try {
           let target = {}
+          if (annotation.body) {
+            annotation.body.type = annotation.body.type || 'SpecificResource'
+          }
           if (this.mode === 'local') {
             target = Object.assign({}, annotation.target)
             target.selector.type = 'FragmentSelector'
@@ -361,8 +367,8 @@
           target.type = 'Video'
           target.id = this.media.body.source.id
           const payload = new Annotation(ObjectUtil.merge(annotation, target ? { target } : {}))
-          console.debug('createAnnotation', payload.toObject())
-          const result = this.$store.dispatch('annotations/post', payload)
+          const result = await this.$store.dispatch('annotations/post', payload)
+          console.debug('createAnnotation', payload.toObject(), result)
           this.annotations.push(result)
           this.annotations = this.annotations.sort(this.$sort.onRef)
           setTimeout(() => this.scrollToAnnotation(result.id), 500)
