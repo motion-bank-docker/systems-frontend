@@ -29,7 +29,6 @@
           v-if="media",
           ref="swimLane",
           :map="timeline",
-          :timelineUuid="timeline._uuid",
           :markerDetails="false",
           :resizable="true",
           :start="0",
@@ -72,10 +71,10 @@
         q-item.annotation-list-item.q-pb-lg(
           dark,
           v-for="(annotation, i) in annotations",
-          :key="annotation._uuid",
-          :ref="annotation._uuid",
+          :key="annotation.id",
+          :ref="annotation.id",
           :class="{'is-selected' : currentIndex === i || editAnnotationIndex === i, 'is-being-edited': editAnnotationIndex === i}",
-          @mouseover.native="setHover(annotation._uuid)"
+          @mouseover.native="setHover(annotation.id)"
           )
           q-item-main
             q-item-tile.relative-position
@@ -83,7 +82,7 @@
               .row.items-center.q-mt-sm
                 annotation-icon.q-mr-sm.cursor-pointer(
                   :annotation="annotation",
-                  :isSelected="selectedAnnotation ? selectedAnnotation._uuid === annotation._uuid : false",
+                  :isSelected="selectedAnnotation ? selectedAnnotation.id === annotation.id : false",
                   @click.native="gotoSelector(annotation.target.selector, false, annotation)"
                   )
                 timecode-label(
@@ -137,10 +136,9 @@
 <script>
   import { mapGetters } from 'vuex'
   import { scroll, AppFullscreen } from 'quasar'
-  import uuidValidate from 'uuid-validate'
   import { DateTime, Interval } from 'luxon'
 
-  import { ObjectUtil, Assert, uuid } from 'mbjs-utils'
+  import { ObjectUtil, Assert } from 'mbjs-utils'
   import { userHasFeature } from 'mbjs-quasar/src/lib'
   import constants from 'mbjs-data-models/src/constants'
   import { Annotation } from 'mbjs-data-models'
@@ -172,15 +170,12 @@
         catch (err) {
           this.$handleError(this, err, 'errors.list_annotations_failed')
         }
-        console.log(this.annotations)
         this.$q.loading.hide()
       }
       this.drawer = this.visibilityDrawer
       this.setupScreen()
 
       const objects = await this.$store.dispatch('autosuggest/find', [this.media.body.source.id, '*'])
-      console.debug('objects', objects)
-
       const types = objects.reduce((types, object) => {
         if (object.type && types.indexOf(object.type) === -1) types.push(object.type)
         return types
@@ -296,7 +291,7 @@
       },
       currentIndex (val) {
         if (typeof this.editAnnotationIndex === 'number') return
-        if (this.annotations[val]) this.scrollToAnnotation(this.annotations[val]._uuid)
+        if (this.annotations[val]) this.scrollToAnnotation(this.annotations[val].id)
       }
     },
     created () {
@@ -348,7 +343,7 @@
         }
       },
       async handleConfirmModal (annotation) {
-        await this.deleteAnnotation(annotation._uuid)
+        await this.deleteAnnotation(annotation.id)
       },
       toggleFullscreen () {
         AppFullscreen.toggle()
@@ -359,6 +354,7 @@
       },
       async createAnnotation (annotation = {}) {
         try {
+          annotation.type = 'Annotation'
           let target = {}
           if (this.mode === 'local') {
             target = Object.assign({}, annotation.target)
@@ -379,14 +375,14 @@
           // }
           this.annotations.push(result)
           this.annotations = this.annotations.sort(this.$sort.onRef)
-          setTimeout(() => this.scrollToAnnotation(result._uuid), 500)
+          setTimeout(() => this.scrollToAnnotation(result.id), 500)
         }
         catch (err) {
           this.$handleError(this, err, 'errors.create_annotation_failed')
         }
       },
-      scrollToAnnotation (uuid, duration = 100) {
-        const el = this.$refs[uuid] ? this.$refs[uuid].$el || this.$refs[uuid][0].$el : undefined
+      scrollToAnnotation (id, duration = 100) {
+        const el = this.$refs[id] ? this.$refs[id].$el || this.$refs[id][0].$el : undefined
         if (el) {
           setScrollPosition(getScrollTarget(el), el.offsetTop - el.scrollHeight, duration)
         }
@@ -395,19 +391,9 @@
         if (annotation.body.value !== this.editAnnotationBuffer) {
           try {
             Assert.isType(annotation, 'object')
-            Assert.ok(uuidValidate(annotation._uuid))
             Assert.isType(annotation.body.value, 'string')
             await this.$store.dispatch('annotations/patch', [annotation.id, annotation])
             await this.getAnnotations()
-            // this.$store.commit('notifications/addMessage', {
-            //   body: 'messages.updated_annotation',
-            //   mode: 'alert',
-            //   type: 'success',
-            //   options: {
-            //     position: 'top',
-            //     timeout: 200
-            //   }
-            // })
           }
           catch (err) {
             this.$handleError(this, err, 'errors.update_annotation_failed')
@@ -416,10 +402,9 @@
         this.editAnnotationBuffer = undefined
         this.editAnnotationIndex = undefined
       },
-      async deleteAnnotation (uuid) {
+      async deleteAnnotation (id) {
         try {
-          Assert.ok(uuidValidate(uuid))
-          await this.$store.dispatch('annotations/delete', uuid)
+          await this.$store.dispatch('annotations/delete', id)
           await this.getAnnotations()
         }
         catch (err) {
@@ -463,8 +448,8 @@
         this.fRendererMarker = !this.fRendererMarker
       },
       gotoHashvalue () {
-        if (this.hashValue && uuid.isUUID(this.hashValue)) {
-          const result = this.annotations.filter(annotation => annotation._uuid === this.hashValue)
+        if (this.hashValue) {
+          const result = this.annotations.filter(annotation => annotation.id === this.hashValue)
           if (result.length) {
             this.scrollToAnnotation(this.hashValue)
             this.gotoSelector(result[0].target.selector)
