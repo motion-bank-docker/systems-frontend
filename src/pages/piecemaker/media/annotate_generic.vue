@@ -116,7 +116,7 @@
                 size="xs", flat, icon="delete", round)
 
                 q-btn.q-mr-sm(
-                v-if="(!isEditingAnnotations && annotation.body.type === 'TextualBody' || editAnnotationIndex !== i && annotation.body.type !== 'VocabularyEntry')",
+                v-if="!isEditingAnnotations && annotation.body.type === 'TextualBody'",
                 @click="setEditIndex(i)", size="xs", icon="edit", round, flat)
 
                 q-btn.float-right.q-mr-sm(v-if="annotation.body.type === 'TextualBody' && editAnnotationIndex === i",
@@ -127,7 +127,7 @@
 
             q-item-tile
               markdown-display.markdown-display.q-mt-sm(v-if="!isEditingAnnotations || editAnnotationIndex !== i",
-              :content="annotation.body.value", :options="mdOptions")
+              :content="getAnnotationContent(annotation)", :options="mdOptions")
               q-input.q-mt-sm.q-mb-sm(v-if="annotation.body.type === 'TextualBody' && editAnnotationIndex === i", color="white",
               type="textarea", v-model="annotation.body.value", dark)
 
@@ -299,6 +299,12 @@
       this.$root.$on('annotationEndMillis', this.getAnnotationEndMillis)
     },
     methods: {
+      getAnnotationContent (annotation) {
+        if (annotation.body['rdf:label']) {
+          return `${annotation.body['rdf:label']}`
+        }
+        return annotation.body.value
+      },
       setupScreen () {
         this.$store.commit('swimLane/setSelectedAnnotation', null)
         if (this.$store.state.swimLane.cursorTop) {
