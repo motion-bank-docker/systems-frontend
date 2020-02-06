@@ -1,6 +1,7 @@
 import axios from 'axios'
 import * as jsonld from 'jsonld'
 import { Annotation } from 'mbjs-data-models'
+import parseURI from 'mbjs-data-models/src/lib/parse-uri'
 
 const annotationsFactory = function (getRequestConfig) {
   const parseResponse = async response => {
@@ -24,15 +25,6 @@ const annotationsFactory = function (getRequestConfig) {
       return new Annotation(item)
     }) : []
     return items
-  }
-  const parseURI = id => {
-    try {
-      const url = new URL(id)
-      const parts = url.pathname.split('/')
-      id = parts.pop()
-    }
-    catch (err) { /* id isn't a URI */ }
-    return id
   }
   const annotations = {
     namespaced: true,
@@ -63,7 +55,7 @@ const annotationsFactory = function (getRequestConfig) {
         return items.length ? items[0] : undefined
       },
       async delete (context, id) {
-        await axios.delete(`${process.env.API_HOST}videos/annotations/${parseURI(id)}`, getRequestConfig())
+        await axios.delete(`${process.env.API_HOST}videos/annotations/${parseURI(id).id}`, getRequestConfig())
       }
     }
   }

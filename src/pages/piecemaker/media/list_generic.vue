@@ -14,6 +14,7 @@
   import Headline from '../../../components/shared/elements/Headline'
   import ContentBlock from '../../../components/shared/elements/ContentBlock'
   import ContentParagraph from '../../../components/shared/elements/ContentParagraph'
+  import parseURI from 'mbjs-data-models/src/lib/parse-uri'
 
   export default {
     components: {
@@ -48,7 +49,7 @@
               title: 'buttons.annotate',
               color: 'primary',
               click: (item) => _this.$router.push({ name: 'piecemaker.media.annotate',
-                params: { id: item.id, mode: 'local' } })
+                params: { id: parseURI(item.id).id, mode: 'local' } })
             }
           ]
         }

@@ -1,4 +1,5 @@
 const axios = require('axios')
+const parseURI = require('mbjs-data-models/src/lib/parse-uri')
 
 const mediaFactory = function (getRequestConfig) {
   const media = {
@@ -7,21 +8,20 @@ const mediaFactory = function (getRequestConfig) {
       entries: []
     },
     actions: {
-      async find (context) {
-        const response = await axios.get(`${process.env.API_HOST}videos/`, getRequestConfig())
-        const items = response.data.data ? response.data.data.map(item => {
+      async find (context, query = undefined) {
+        const requestConfig = getRequestConfig()
+        requestConfig.params = { query }
+        const response = await axios.get(`${process.env.API_HOST}videos/`, requestConfig)
+        const items = response.data.hits ? response.data.hits.map(item => {
           return {
             title: item.label,
-            id: item.identifier,
+            id: item.url,
             body: {
               type: 'Video',
               source: {
-                id: item.urls.length ? item.urls[0] : undefined,
+                id: item.data.length ? item.data[0].url : undefined,
                 type: 'video/mp4'
               }
-            },
-            target: {
-              id: item.id
             }
           }
         }) : []
@@ -29,8 +29,18 @@ const mediaFactory = function (getRequestConfig) {
         return items
       },
       async get (context, id) {
-        if (!context.state.entries.length) await context.dispatch('find')
-        return context.state.entries.find(entry => entry.id === id)
+        const { data } = await axios.get(`${process.env.API_HOST}videos/${parseURI(id).id}`, getRequestConfig())
+        return {
+          title: data.label,
+          id: data.url,
+          body: {
+            type: 'Video',
+            source: {
+              id: data.data.length ? data.data[0].url : undefined,
+              type: 'video/mp4'
+            }
+          }
+        }
       }
     },
     mutations: {
