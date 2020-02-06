@@ -162,8 +162,7 @@
       this.$root.$emit('setBackButton', '/piecemaker/media')
       if (this.$route.params.id) {
         this.$q.loading.show()
-        const media = await this.$store.dispatch('media/get', this.$route.params.id)
-        this.media = new Annotation(media)
+        this.media = await this.$store.dispatch('media/get', this.$route.params.id)
         await this.$store.dispatch('autosuggest/loadTypes', this.media.body.source.id)
         await this.getAnnotations()
         this.$q.loading.hide()
