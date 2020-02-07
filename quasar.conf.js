@@ -89,7 +89,7 @@ module.exports = function (ctx) {
         OAUTH_REDIRECT_URL: JSON.stringify(process.env.OAUTH_REDIRECT_URL),
         OAUTH_AUTH_URL: JSON.stringify(process.env.OAUTH_AUTH_URL),
         OAUTH_TOKEN_URL: JSON.stringify(process.env.OAUTH_TOKEN_URL),
-        OAUTH_EDIT_PROFILE_URL: JSON.stringify(process.env.OAUTH_EDIT_PROFILE_URL || 'https://dams-staging.pinabausch.org/me'),
+        OAUTH_EDIT_PROFILE_URL: JSON.stringify(process.env.OAUTH_EDIT_PROFILE_URL),
         //
         // API Keys
         //
