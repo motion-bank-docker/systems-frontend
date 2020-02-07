@@ -16,7 +16,7 @@
             q-list
               q-item.q-py-sm.q-px-xs.moba-tag-hover-dark(v-for="type in objectTypes")
                 q-checkbox.full-width(v-model="checkedTypes", :val="type", :label="type.label",
-                :key="type.id", checked-icon="check", unchecked-icon="xxxxxx",
+                :key="type.value", checked-icon="check", unchecked-icon="xxxxxx",
                 @input="handlerActivity(type)")
 
         q-item-side.text-right
@@ -31,7 +31,7 @@
           tag="label")
 
             q-item-side(style="min-width: auto;")
-              q-checkbox(v-model="activeTypesModel", :val="type", :key="type.id",
+              q-checkbox(v-model="activeTypesModel", :val="type", :key="type.value",
               size="sm", round, flat, checked-icon="remove_red_eye", unchecked-icon="none")
 
             q-item-main.text-grey-7
@@ -55,14 +55,15 @@
 
       // results
       q-list.q-py-sm(v-for="(type, i) in listTypes",
-      :key="type.id", :class="{'ui-border-bottom': i < listTypes.length - 1}")
+      :key="type.value", :class="{'ui-border-bottom': i < listTypes.length - 1}")
 
         // vocabulary label
-        q-item.q-py-xs(:class="{'q-mb-xs': objectList[type] && objectList[type].length > 0}")
-          q-item-main.text-grey-7 {{ type.label }} ({{ objectList[type].length }})
+        q-item.q-py-xs(:class="{'q-mb-xs': objectList[type.value] && objectList[type.value].length > 0}")
+          q-item-main.text-grey-7 {{ type.label }} ({{ objectList[type.value].length }})
 
         // vocabulary items
-        q-item.moba-tag-hover.cursor-pointer.q-pa-none(v-if="objectList[type]", v-for="item in objectList[type]", :key="item.identifier")
+        q-item.moba-tag-hover.cursor-pointer.q-pa-none(v-if="objectList[type.value]",
+          v-for="item in objectList[type.value]", :key="item.identifier")
           q-item-main
             div.q-px-md.q-py-xs(@click="selectEntry(item)") {{ item.label }}
 </template>
@@ -82,6 +83,7 @@
         loading: false,
 
         objectList: {},
+        listTypes: [],
         selectedTypeId: undefined,
         selectedTypeLabel: 'select a type',
         selectedType: undefined,
@@ -99,10 +101,7 @@
       ...mapGetters({
         user: 'auth/getUserState',
         objectTypes: 'autosuggest/getTypes'
-      }),
-      listTypes () {
-        return Object.keys(this.objectList).filter(type => Array.isArray(this.objectList[type]) && this.objectList[type].length)
-      }
+      })
     },
     watch: {
       async filterValue () {
@@ -116,20 +115,29 @@
             [this.media.body.source.id, this.filterValue])
           const objectList = {}
           for (let type of this.activeTypesModel) {
-            objectList[type.id] = this.filteredItems(objects, type)
+            objectList[type.value] = this.filteredItems(objects, type)
           }
           this.objectList = objectList
+          this.listTypes = this.activeTypesModel.filter(type => {
+            return Array.isArray(this.objectList[type.value]) && this.objectList[type.value].length
+          })
         }, 500)
       },
       objectTypes (val) {
         if (!this.checkedTypes.length && val.length) {
           this.checkedTypes.push(val[0])
         }
+      },
+      activeTypesModel (val) {
+        this.listTypes = val.filter(type => {
+          return Array.isArray(this.objectList[type.value]) && this.objectList[type.value].length
+        })
       }
     },
     async mounted () {
       this.loading = true
-      if (this.objectTypes.length) this.selectObjectType(this.objectTypes[0])
+      await this.$store.dispatch('autosuggest/getFilters')
+      if (this.objectTypes.length) this.handlerActivity(this.objectTypes[0])
       this.loading = false
     },
     methods: {
@@ -158,7 +166,7 @@
       },
       filteredItems (objects, type) {
         if (type && objects) {
-          return objects.filter(object => object.type === type.id)
+          return objects.filter(object => object.type === type.value)
         }
         return []
       },
