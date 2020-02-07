@@ -5,7 +5,7 @@
 
     // button toggles vocabulary
 
-    <!--q-btn.text-primary.q-mr-sm.q-mt-sm(v-if="!vocabularyVisible && staging", round, flat, icon="local_offer",-->
+    <!--q-btn.text-primary.q-mr-sm.q-mt-sm(v-if="!vocabularyVisible", round, flat, icon="local_offer",-->
       <!--v-shortkey="shortcuts.showVocabulary", @shortkey.native="toggleVocabulary()", @click="toggleVocabulary()")-->
 
     // input area
@@ -13,7 +13,7 @@
 
       q-item.q-pa-none.q-pa-sm(multiline)
         q-item-side(style="min-width: auto;")
-          q-btn.q-mt-xs(v-if="!vocabularyVisible && staging", round, flat,
+          q-btn.q-mt-xs(v-if="!vocabularyVisible", round, flat,
           icon="local_offer", @click="toggleVocabulary()", size="sm",
           :class="[isVisible ? 'bg-primary text-white' : '']")
 
@@ -22,12 +22,12 @@
             v-model="annotationText", ref="textInput", type="textarea", dark
             :class="[vocabularyVisible ? 'q-pl-xl text-primary' : 'text-white']")
 
-        q-item-side(v-if="isVisible && staging", style="min-width: auto;")
+        q-item-side(v-if="isVisible", style="min-width: auto;")
           q-btn(@click="clearInputField", icon="clear", size="sm", round, flat, :disabled="!annotationText")
 
       // CLOSE BUTTON (unused?)
 
-      .absolute-top.q-mt-sm(v-if="staging", style="width: 3rem;")
+      .absolute-top.q-mt-sm(style="width: 3rem;")
         <!--q-btn.q-ml-sm.q-mt-xs.q-mr-none.text-primary(round, flat, icon="clear", size="sm",-->
           <!--v-if="vocabularyVisible", v-shortkey="shortcuts.showVocabulary",-->
           <!--@shortkey.native="toggleVocabulary()", @click="toggleVocabulary()")-->
@@ -95,7 +95,6 @@
         },
         enterDown: 0,
         selectedEntry: undefined,
-        staging: process.env.IS_STAGING,
         isFocused: false,
         isVisible: false
       }
