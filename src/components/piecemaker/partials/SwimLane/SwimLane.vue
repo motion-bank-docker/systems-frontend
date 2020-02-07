@@ -176,7 +176,6 @@
       TimecodeLabel
     },
     props: [
-      'timelineUuid',
       'markerDetails',
       'resizable',
       'start',

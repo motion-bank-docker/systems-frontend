@@ -336,9 +336,17 @@
       },
       save () {
         if (this.annotationData.target.selector) {
-          const target = this.root.map.getInterval(
-            DateTime.fromMillis(this.millis),
-            this.duration ? DateTime.fromMillis(this.millis + this.duration) : undefined)
+          let target = this.annotationData.target
+          if (this.root.map) {
+            target = this.root.map.getInterval(
+              DateTime.fromMillis(this.millis),
+              this.duration ? DateTime.fromMillis(this.millis + this.duration) : undefined)
+          }
+          else {
+            const t = [this.millis * 0.001]
+            if (this.duration) t.push((this.millis + this.duration) * 0.001)
+            target.selector.value = { t }
+          }
           this.annotationData.target.selector = target.selector
           this.$root.$emit('annotationChange', this.annotationData)
         }
