@@ -431,7 +431,7 @@ export default {
     }
   },
   site: {
-    copyright: 'Copyright 2020 Motion Bank',
+    copyright: 'Copyright 2020',
     license: 'License',
     tagline: 'Digital Research and Annotation Platform for Contemporary Dance.',
     title: 'Web Systems',
