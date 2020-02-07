@@ -54,6 +54,15 @@ const annotationsFactory = function (getRequestConfig) {
         console.debug('annotations/post', items)
         return items.length ? items[0] : undefined
       },
+      async put (context, [id, payload]) {
+        const config = getRequestConfig()
+        config.headers['Accept'] = 'application/ld+json'
+        config.headers['Content-Type'] = 'application/ld+json'
+        const url = `${process.env.API_HOST}videos/annotations/${parseURI(id).id}/`
+        const response = await axios.post(url, payload, config)
+        console.debug('PUT', response)
+        return response.data
+      },
       async delete (context, id) {
         await axios.delete(`${process.env.API_HOST}videos/annotations/${parseURI(id).id}`, getRequestConfig())
       }
