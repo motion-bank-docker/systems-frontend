@@ -28,7 +28,6 @@
         swim-lane(
           v-if="media",
           ref="swimLane",
-          :map="timeline",
           :markerDetails="false",
           :resizable="true",
           :start="0",
@@ -186,11 +185,6 @@
         player: undefined,
         playerTime: 0.0,
         selector: undefined,
-        staging: process.env.IS_STAGING,
-        timelineUuid: 'asdf',
-        timeline: {
-          title: 'Annotate Generic'
-        },
         media: undefined,
         // detailsSize: 300,
         editAnnotationIndex: undefined,
@@ -357,12 +351,9 @@
           if (annotation.body) {
             annotation.body.type = annotation.body.type || 'SpecificResource'
           }
-          if (this.mode === 'local') {
-            target = Object.assign({}, annotation.target)
-            target.selector.type = 'FragmentSelector'
-            target.selector.value = { t: [target.selector.value.t, target.selector.value.t] }
-          }
-          else target = this.timeline.getInterval(annotation.target.selector.value['date-time:t'])
+          target = Object.assign({}, annotation.target)
+          target.selector.type = 'FragmentSelector'
+          target.selector.value = { t: [target.selector.value.t, target.selector.value.t] }
           target.type = 'Video'
           target.id = this.media.body.source.id
           const payload = new Annotation(ObjectUtil.merge(annotation, target ? { target } : {}))
@@ -383,16 +374,17 @@
         }
       },
       async updateAnnotation (annotation) {
-        if (annotation.body.value !== this.editAnnotationBuffer) {
-          try {
-            Assert.isType(annotation, 'object')
-            Assert.isType(annotation.body.value, 'string')
-            await this.$store.dispatch('annotations/patch', [annotation.id, annotation])
-            await this.getAnnotations()
-          }
-          catch (err) {
-            this.$handleError(this, err, 'errors.update_annotation_failed')
-          }
+        try {
+          Assert.isType(annotation, 'object')
+          // const payload = {
+          //   body: annotation.body.toObject(),
+          //   target: annotation.target.toObject()
+          // }
+          await this.$store.dispatch('annotations/put', [annotation.id, annotation])
+          await this.getAnnotations()
+        }
+        catch (err) {
+          this.$handleError(this, err, 'errors.update_annotation_failed')
         }
         this.editAnnotationBuffer = undefined
         this.editAnnotationIndex = undefined
@@ -487,17 +479,15 @@
       },
       addDurationToAnnotation (annotation) {
         if (annotation.target.selector) {
-          const currentStart = annotation.target.selector._valueMillis
-          const newTimecode = Math.round(this.playerTime * 1000) + this.media.target.selector._valueMillis
+          const currentStart = annotation.target.selector._valueMillis * 0.001
+          const newTimecode = this.playerTime + this.media.target.selector._valueMillis * 0.001
 
           if (newTimecode !== currentStart) {
-            const d0 = DateTime.fromMillis(currentStart)
-            const d1 = DateTime.fromMillis(newTimecode)
             if (newTimecode > currentStart) {
-              annotation.target.selector = this.timeline.getInterval(d0, d1).selector
+              annotation.target.selector.value = { t: [currentStart, newTimecode] }
             }
             else {
-              annotation.target.selector = this.timeline.getInterval(d1, d0).selector
+              annotation.target.selector.value = { t: [newTimecode, currentStart] }
             }
             this.updateAnnotation(annotation)
           }
