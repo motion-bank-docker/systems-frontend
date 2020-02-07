@@ -12,10 +12,10 @@ const annotationsFactory = function (getRequestConfig) {
       return item
     })
     const ld = await jsonld.frame({
-      '@context': 'http://www.w3.org/ns/anno.jsonld',
+      '@context': 'https://www.w3.org/ns/anno.jsonld',
       '@graph': data
     }, {
-      '@context': 'http://www.w3.org/ns/anno.jsonld',
+      '@context': 'https://www.w3.org/ns/anno.jsonld',
       '@type': 'Annotation'
     })
     data = ld['@graph']
