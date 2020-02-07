@@ -4,10 +4,11 @@ const factory = function (getRequestConfig) {
   const autosuggest = {
     namespaced: true,
     state: {
-      types: []
+      filters: {}
     },
     getters: {
-      getTypes: state => state.types || []
+      getTypes: state => state.filters.type ? state.filters.type.options : [],
+      getKeys: state => Object.keys(state.filters)
     },
     actions: {
       async find (context, [id, query]) {
@@ -19,21 +20,21 @@ const factory = function (getRequestConfig) {
         const { data } = await axios.get(`${process.env.API_HOST}autosuggest/annotations/`, config)
         return data
       },
-      async loadTypes (context, mediaUrl) {
-        const objects = await context.dispatch('find', [mediaUrl, '*'])
-        const types = objects.reduce((types, object) => {
-          if (object.type && types.indexOf(object.type) === -1) types.push(object.type)
-          return types
-        }, []).map(t => {
-          return { id: t, label: t }
-        })
-        context.commit('setTypes', types)
+      async getFilters (context) {
+        if (!Object.keys(context.state.filters).length) {
+          const { data } = await axios.get(`${process.env.API_HOST}autosuggest/annotations/filters/`, getRequestConfig())
+          const filters = {}
+          for (let item of data) {
+            filters[item.key] = item
+          }
+          context.commit('setFilters', filters)
+        }
+        return context.state.filters
       }
     },
     mutations: {
-      setTypes (state, types) {
-        console.debug('setTypes', types)
-        state.types = types
+      setFilters (state, filters) {
+        state.filters = filters
       }
     }
   }
