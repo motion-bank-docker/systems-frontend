@@ -89,6 +89,7 @@ module.exports = function (ctx) {
         OAUTH_REDIRECT_URL: JSON.stringify(process.env.OAUTH_REDIRECT_URL),
         OAUTH_AUTH_URL: JSON.stringify(process.env.OAUTH_AUTH_URL),
         OAUTH_TOKEN_URL: JSON.stringify(process.env.OAUTH_TOKEN_URL),
+        OAUTH_EDIT_PROFILE_URL: JSON.stringify(process.env.OAUTH_EDIT_PROFILE_URL || 'https://dams-staging.pinabausch.org/me'),
         //
         // API Keys
         //
@@ -110,7 +111,9 @@ module.exports = function (ctx) {
         USE_ACL: JSON.stringify(process.env.USE_ACL || true),
         USE_FILES: JSON.stringify(process.env.USE_FILES || true),
         USE_TAGS: JSON.stringify(process.env.USE_TAGS || true),
-        USE_METADATA: JSON.stringify(process.env.USE_TAGS || true)
+        USE_METADATA: JSON.stringify(process.env.USE_TAGS || true),
+        UI_HIDE_MOSYS: JSON.stringify(process.env.UI_HIDE_MOSYS || false),
+        UI_HIDE_DOCUMENTS: JSON.stringify(process.env.UI_HIDE_DOCUMENTS || false)
       }
     },
     devServer: {
