@@ -29,7 +29,7 @@
     components: {
       GraphMarker
     },
-    props: ['annotations', 'type', 'index', 'root', 'annotationsBefore'],
+    props: ['annotations', 'type', 'index', 'root', 'annotationsBefore', 'useLabels'],
     data () {
       return {
         rowHeight: 20
@@ -58,8 +58,13 @@
       getLabel (val) {
         let valMatch = val.match(/[A-Z][a-z]+|[0-9]+/g)
         if (valMatch !== null) {
-          let valNew = valMatch.join(' ').replace(/\s+/g, '_').toLowerCase()
-          return this.$t('labels.' + valNew)
+          if (this.useLabels) {
+            let valNew = valMatch.join(' ').replace(/\s+/g, '_').toLowerCase()
+            return this.$t('labels.' + valNew)
+          }
+          else {
+            return val.split('#').pop()
+          }
         }
         else {
           return val
