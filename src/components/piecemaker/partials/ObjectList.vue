@@ -125,7 +125,7 @@
       },
       objectTypes (val) {
         if (!this.checkedTypes.length && val.length) {
-          this.checkedTypes.push(val[0])
+          this.checkedTypes = [].concat(val)
         }
       },
       activeTypesModel (val) {
@@ -137,7 +137,11 @@
     async mounted () {
       this.loading = true
       await this.$store.dispatch('autosuggest/getFilters')
-      if (this.objectTypes.length) this.handlerActivity(this.objectTypes[0])
+      if (this.objectTypes.length) {
+        for (let type of this.objectTypes) {
+          this.handlerActivity(type)
+        }
+      }
       this.loading = false
     },
     methods: {
