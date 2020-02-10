@@ -12,7 +12,7 @@ const factory = function (getRequestConfig) {
     },
     actions: {
       async find (context, [id, query]) {
-        if (!query || !query.length) return []
+        if (!query || !query.length) query = '*'
 
         const config = getRequestConfig()
         config.params = { media_url: id, query }
