@@ -142,6 +142,7 @@
           this.handlerActivity(type)
         }
       }
+      this.filterValue = ''
       this.loading = false
     },
     methods: {
