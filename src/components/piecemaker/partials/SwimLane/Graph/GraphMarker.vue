@@ -54,6 +54,7 @@
   import { EventHub } from '../EventHub'
   import { mapGetters } from 'vuex'
   import { DateTime } from 'luxon'
+  import Selector from 'mbjs-data-models/src/models/annotation/sub-models/selector'
 
   export default {
     props: ['annotationData', 'index', 'root'],
@@ -336,7 +337,7 @@
       },
       save () {
         if (this.annotationData.target.selector) {
-          let target = this.annotationData.target
+          let selector, target = this.annotationData.target
           if (this.root.map) {
             target = this.root.map.getInterval(
               DateTime.fromMillis(this.millis),
@@ -345,9 +346,13 @@
           else {
             const t = [this.millis * 0.001]
             if (this.duration) t.push((this.millis + this.duration) * 0.001)
-            target.selector.value = { t }
+            selector = new Selector({
+              type: 'FragmentSelector',
+              value: { t },
+              conformsTo: this.annotationData.target.selector.conformsTo
+            })
           }
-          this.annotationData.target.selector = target.selector
+          this.annotationData.target.selector = selector || target.selector
           this.$root.$emit('annotationChange', this.annotationData)
         }
       }
