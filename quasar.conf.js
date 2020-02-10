@@ -112,6 +112,7 @@ module.exports = function (ctx) {
         USE_FILES: JSON.stringify(process.env.USE_FILES || true),
         USE_TAGS: JSON.stringify(process.env.USE_TAGS || true),
         USE_METADATA: JSON.stringify(process.env.USE_TAGS || true),
+        USE_CUSTOM_MEDIA_STORE: JSON.stringify(process.env.USE_CUSTOM_MEDIA_STORE || false),
         UI_HIDE_MOSYS: JSON.stringify(process.env.UI_HIDE_MOSYS || false),
         UI_HIDE_DOCUMENTS: JSON.stringify(process.env.UI_HIDE_DOCUMENTS || false)
       }
