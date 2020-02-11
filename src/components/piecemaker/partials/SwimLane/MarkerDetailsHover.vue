@@ -131,7 +131,6 @@
         this.viewportHeight = obj.height
       },
       onMarkerEnter (annotationData) {
-        console.log('enter', annotationData)
         this.hoveredAnnotation = annotationData
         let ms = this.$parent.millisTotalToTimeline(annotationData.target.selector._valueMillis)
         this.annotationData = {
