@@ -110,6 +110,11 @@
           this.filterTimeout = undefined
         }
         this.filterTimeout = setTimeout(async () => {
+          if (!this.media) {
+            console.warn('ObjectList: No media object')
+            return
+          }
+
           this.filterTimeout = undefined
           const objects = await this.$store.dispatch('autosuggest/find',
             [this.media.body.source.id, this.filterValue])
