@@ -3,9 +3,11 @@
 </template>
 
 <script>
+  import { getAnnotationColor } from '../../../lib/color-helpers'
+
   export default {
     name: 'annotation-icon',
-    props: ['annotation', 'isSelected'],
+    props: ['annotation', 'isSelected', 'type'],
     data () {
       return {
         colors: {
@@ -25,8 +27,9 @@
         return c
       },
       styles () {
+        const { backgroundColor } = getAnnotationColor(this.annotation)
         return {
-          'background-color': this.colors[this.annotation.body.type || 'SpecificResource']
+          'background-color': backgroundColor
         }
       }
     },

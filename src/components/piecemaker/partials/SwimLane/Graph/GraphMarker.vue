@@ -15,7 +15,8 @@
       @mousedown.left="onDownBackground ($event)",
       width="100%", height="100%",
       :opacity="opacity",
-      :class="typeClass"
+      :class="typeClass",
+      :style="typeStyle"
       )
     <!--rect.no-event.no-select(v-if="isHovered", fill="rgba(0,0,0,0.3)", width="100%", height="100%")-->
     rect.sl-marker-handle-left.ew-resize(
@@ -45,7 +46,8 @@
     circle.sl-marker.pointer(
       :cx="circleR", :cy="circleR" :r="circleR",
       :opacity="opacity",
-      :class="typeClass"
+      :class="typeClass",
+      :style="typeStyle"
       )
     <!--circle.no-event.no-select(v-if="isHovered", :cx="8", :cy="8", fill="rgba(0,0,0,0.3)", r="8")-->
 </template>
@@ -55,6 +57,7 @@
   import { mapGetters } from 'vuex'
   import { DateTime } from 'luxon'
   import Selector from 'mbjs-data-models/src/models/annotation/sub-models/selector'
+  import { getAnnotationColor } from '../../../../../lib/color-helpers'
 
   export default {
     props: ['annotationData', 'index', 'root'],
@@ -85,6 +88,12 @@
       },
       typeClass () {
         return 'annotation-type-' + this.annotationData.body.type
+      },
+      typeStyle () {
+        const { backgroundColor } = getAnnotationColor(this.annotationData)
+        return {
+          'fill': backgroundColor
+        }
       },
       opacity () {
         return this.isHovered || this.isSelected ? 1 : 0.4
