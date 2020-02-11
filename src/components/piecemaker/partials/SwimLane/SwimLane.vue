@@ -183,7 +183,8 @@
       'annotations',
       'media',
       'map',
-      'selectedMillis'
+      'selectedMillis',
+      'mode'
     ],
     data () {
       return {

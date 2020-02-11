@@ -28,6 +28,7 @@
         swim-lane(
           v-if="media",
           ref="swimLane",
+          :mode="mode",
           :markerDetails="false",
           :resizable="true",
           :start="0",
