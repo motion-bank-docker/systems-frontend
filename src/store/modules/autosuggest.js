@@ -1,6 +1,15 @@
 import axios from 'axios'
 
-const factory = function (getRequestConfig) {
+const factory = function (env = {}) {
+  const checkAuth = async context => {
+    if (!env.auth.isAuthenticated) {
+      await env.auth.authenticate(true, {
+        dispatch: (name, args) => {
+          context.dispatch(name, args, { root: true })
+        }
+      })
+    }
+  }
   const autosuggest = {
     namespaced: true,
     state: {
@@ -13,8 +22,8 @@ const factory = function (getRequestConfig) {
     actions: {
       async find (context, [id, query]) {
         if (!query || !query.length) query = '*'
-
-        const config = getRequestConfig()
+        await checkAuth(context)
+        const config = env.getRequestConfig()
         config.params = { media_url: id, query }
         config.headers['Accept'] = 'application/ld+json'
         const { data } = await axios.get(`${process.env.API_HOST}autosuggest/annotations/`, config)
@@ -22,7 +31,8 @@ const factory = function (getRequestConfig) {
       },
       async getFilters (context) {
         if (!Object.keys(context.state.filters).length) {
-          const { data } = await axios.get(`${process.env.API_HOST}autosuggest/annotations/filters/`, getRequestConfig())
+          await checkAuth(context)
+          const { data } = await axios.get(`${process.env.API_HOST}autosuggest/annotations/filters/`, env.getRequestConfig())
           const filters = {}
           for (let item of data) {
             filters[item.key] = item

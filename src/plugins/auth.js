@@ -11,6 +11,7 @@ export default ({ Vue }) => {
       client_id: process.env.OAUTH_CLIENT_ID,
       client_secret: process.env.OAUTH_CLIENT_SECRET,
       redirectUri: process.env.OAUTH_REDIRECT_URL || `${document.location.origin}/users/callback`,
+      redirectUriPassive: process.env.OAUTH_REDIRECT_URL_PASSIVE || `${document.location.origin}/users/callback_passive`,
       authorization: process.env.OAUTH_AUTH_URL,
       token: process.env.OAUTH_TOKEN_URL,
       profileEndpoint: `${process.env.API_HOST}user_profile/`,

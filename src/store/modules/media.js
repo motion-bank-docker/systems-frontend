@@ -2,7 +2,16 @@ const axios = require('axios')
 const parseURI = require('mbjs-data-models/src/lib/parse-uri')
 const { Annotation } = require('mbjs-data-models')
 
-const mediaFactory = function (getRequestConfig) {
+const mediaFactory = function (env = {}) {
+  const checkAuth = async context => {
+    if (!env.auth.isAuthenticated) {
+      await env.auth.authenticate(true, {
+        dispatch: (name, args) => {
+          context.dispatch(name, args, { root: true })
+        }
+      })
+    }
+  }
   const createMediaAnnotation = item => {
     return new Annotation({
       title: item.label,
@@ -30,7 +39,8 @@ const mediaFactory = function (getRequestConfig) {
     state: {},
     actions: {
       async find (context, query = undefined) {
-        const requestConfig = getRequestConfig()
+        await checkAuth(context)
+        const requestConfig = env.getRequestConfig()
         requestConfig.params = { query }
         const response = await axios.get(`${process.env.API_HOST}videos/`, requestConfig)
         const items = response.data.hits ? response.data.hits.map(item => {
@@ -39,7 +49,8 @@ const mediaFactory = function (getRequestConfig) {
         return items
       },
       async get (context, id) {
-        const { data } = await axios.get(`${process.env.API_HOST}videos/${parseURI(id).id}/`, getRequestConfig())
+        await checkAuth(context)
+        const { data } = await axios.get(`${process.env.API_HOST}videos/${parseURI(id).id}/`, env.getRequestConfig())
         return createMediaAnnotation(data)
       }
     }

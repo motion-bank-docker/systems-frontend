@@ -70,6 +70,7 @@ else {
       client_id: process.env.OAUTH_CLIENT_ID,
       client_secret: process.env.OAUTH_CLIENT_SECRET,
       redirectUri: process.env.OAUTH_REDIRECT_URL || `${document.location.origin}/users/callback`,
+      redirectUriPassive: process.env.OAUTH_REDIRECT_URL_PASSIVE || `${document.location.origin}/users/callback_passive`,
       authorization: process.env.OAUTH_AUTH_URL,
       token: process.env.OAUTH_TOKEN_URL,
       profileEndpoint: `${process.env.API_HOST}user_profile/`,
@@ -98,9 +99,9 @@ const getRequestConfig = () => {
   }
 }
 const pbaModules = {
-  annotations: annotationsFactory(getRequestConfig),
-  media: mediaFactory(getRequestConfig),
-  autosuggest: autosuggestFactory(getRequestConfig)
+  annotations: annotationsFactory({ getRequestConfig, auth: apiClient }),
+  media: mediaFactory({ getRequestConfig, auth: apiClient }),
+  autosuggest: autosuggestFactory({ getRequestConfig, auth: apiClient })
 }
 const modules = {
   /** Custom stores */
