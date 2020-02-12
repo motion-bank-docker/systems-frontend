@@ -49,7 +49,7 @@
     "qs": "^6.6.0",
     "raven-js": "3.27.0",
     "sanitize-html": "1.19.2",
-    "sift": "^7.0.1",
+    "sift": "^11.1.6",
     "tiny-emitter": "2.0.2",
     "uuid-validate": "0.0.2",
     "videojs-framebyframe": "git+https://github.com/fjenett/videojs-framebyframe.git#fa81d657c50067bb5af07c9cf5e42924b353a70e",

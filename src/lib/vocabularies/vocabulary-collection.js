@@ -17,7 +17,7 @@ class VocabularyCollection {
 
   find (query = {}) {
     const _this = this
-    return new Promise(resolve => resolve(sift(query, _this._vocabularies)))
+    return new Promise(resolve => resolve(_this._vocabularies.filter(sift(query))))
   }
 
   get (id) {
