@@ -10,7 +10,9 @@ and this project adheres to
 
 ## [Unreleased]
 
-- No changes
+### Fixed
+
+- Replace newlines in CSV export
 
 ## [1.3.10] - 2020-02-14
 
