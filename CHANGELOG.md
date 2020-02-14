@@ -14,6 +14,10 @@ and this project adheres to
 
 - sift module
 
+### Fixed
+
+- Escape semicolons in CSV export
+
 ## [1.3.9] - 2019-12-18
 
 ### Added
