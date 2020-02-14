@@ -10,6 +10,14 @@ and this project adheres to
 
 ## [Unreleased]
 
+- No changes
+
+## [1.3.10] - 2020-02-14
+
+### Added
+
+- Searchable global Piecemaker index
+
 ### Updated
 
 - sift module
@@ -314,8 +322,9 @@ of a video cannot be retrieved
 - Start proper versioning at 1.0.0
 
 
-[Unreleased]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.9...master
-[1.3.9]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.7...v1.3.9
+[Unreleased]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.10...master
+[1.3.10]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.9...v1.3.10
+[1.3.9]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.8...v1.3.9
 [1.3.8]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.7...v1.3.8
 [1.3.7]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.6...v1.3.7
 [1.3.6]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.5...v1.3.6
