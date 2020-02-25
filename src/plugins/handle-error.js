@@ -20,7 +20,12 @@ export default ({ Vue }) => {
         errMessage = context.$t('errors.forbidden')
         break
       default:
-        errMessage = context.$t('errors.http_server_error', { code: err.response.status, message: err.response.data })
+        if (err.response.data) {
+          errMessage = context.$t('errors.http_server_error', { code: err.response.data.code, message: err.response.data.message })
+        }
+        else {
+          errMessage = context.$t('errors.http_server_error', { code: err.response.status, message: err.response.data })
+        }
       }
     }
     context.$store.commit('notifications/addMessage', {
