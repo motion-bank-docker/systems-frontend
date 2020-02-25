@@ -281,7 +281,8 @@
     methods: {
       async getAnnotations () {
         try {
-          this.annotations = await this.$store.dispatch('annotations/find', this.media.body.source.id)
+          this.annotations = await this.$store.dispatch('queue/enqueue',
+            this.$store.dispatch('annotations/find', this.media.body.source.id))
         }
         catch (err) {
           this.$handleError(this, err, 'errors.list_annotations_failed')
@@ -358,7 +359,8 @@
           target.type = 'Video'
           target.id = this.media.body.source.id
           const payload = new Annotation(ObjectUtil.merge(annotation, target ? { target } : {}))
-          const result = await this.$store.dispatch('annotations/post', payload)
+          const result = await this.$store.dispatch('queue/enqueue',
+            this.$store.dispatch('annotations/post', payload))
           console.debug('createAnnotation', payload.toObject(), result)
           this.annotations.push(result)
           this.annotations = this.annotations.sort(this.$sort.onRef)
@@ -381,18 +383,20 @@
           //   body: annotation.body.toObject(),
           //   target: annotation.target.toObject()
           // }
-          await this.$store.dispatch('annotations/put', [annotation.id, annotation])
+          await this.$store.dispatch('queue/enqueue',
+            this.$store.dispatch('annotations/put', [annotation.id, annotation]))
           await this.getAnnotations()
         }
         catch (err) {
-          this.$handleError(this, err, 'errors.update_annotation_failed')
+          this.$handleError(this, err)
         }
         this.editAnnotationBuffer = undefined
         this.editAnnotationIndex = undefined
       },
       async deleteAnnotation (id) {
         try {
-          await this.$store.dispatch('annotations/delete', id)
+          await this.$store.dispatch('queue/enqueue',
+            this.$store.dispatch('annotations/delete', id))
           await this.getAnnotations()
         }
         catch (err) {
