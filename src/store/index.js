@@ -25,6 +25,7 @@ import {
   metadata,
   mosys,
   notifications,
+  queue,
   swimLane,
   vocabularies
 } from './modules'
@@ -108,6 +109,7 @@ const modules = {
   auth,
   mosys,
   notifications,
+  queue,
   swimLane,
   vocabularies
 }
