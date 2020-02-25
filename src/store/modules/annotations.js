@@ -50,7 +50,7 @@ const annotationsFactory = function (env = {}) {
         config.headers['Content-Type'] = 'application/ld+json'
         const url = `${process.env.API_HOST}videos/annotations/${parseURI(id).id}/`
         const response = await axios.post(url, payload.toObject(), config)
-        console.debug('annotations/put', response)
+        console.debug('annotations/patch', response)
         return response.data
       },
       async delete (context, id) {
