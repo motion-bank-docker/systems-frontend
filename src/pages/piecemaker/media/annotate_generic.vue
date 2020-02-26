@@ -142,6 +142,7 @@
   import { userHasFeature } from 'mbjs-quasar/src/lib'
   import constants from 'mbjs-data-models/src/constants'
   import { Annotation } from 'mbjs-data-models'
+  import Selector from 'mbjs-data-models/src/models/annotation/sub-models/selector'
 
   import AnnotationField from '../../../components/piecemaker/partials/AnnotationFieldGeneric'
   import SwimLane from '../../../components/piecemaker/partials/SwimLane/SwimLane'
@@ -281,8 +282,9 @@
     methods: {
       async getAnnotations () {
         try {
-          this.annotations = await this.$store.dispatch('queue/enqueue',
-            this.$store.dispatch('annotations/find', this.media.body.source.id))
+          // this.annotations = await this.$store.dispatch('queue/enqueue',
+          //   this.$store.dispatch('annotations/find', this.media.body.source.id))
+          this.annotations = await this.$store.dispatch('annotations/find', this.media.body.source.id)
         }
         catch (err) {
           this.$handleError(this, err, 'errors.list_annotations_failed')
@@ -359,8 +361,9 @@
           target.type = 'Video'
           target.id = this.media.body.source.id
           const payload = new Annotation(ObjectUtil.merge(annotation, target ? { target } : {}))
-          const result = await this.$store.dispatch('queue/enqueue',
-            this.$store.dispatch('annotations/post', payload))
+          // const result = await this.$store.dispatch('queue/enqueue',
+          //   this.$store.dispatch('annotations/post', payload))
+          const result = await this.$store.dispatch('annotations/post', payload)
           console.debug('createAnnotation', payload.toObject(), result)
           this.annotations.push(result)
           this.annotations = this.annotations.sort(this.$sort.onRef)
@@ -383,9 +386,14 @@
           //   body: annotation.body.toObject(),
           //   target: annotation.target.toObject()
           // }
-          await this.$store.dispatch('queue/enqueue',
-            this.$store.dispatch('annotations/put', [annotation.id, annotation]))
-          await this.getAnnotations()
+          // await this.$store.dispatch('queue/enqueue',
+          //   this.$store.dispatch('annotations/patch', [annotation.id, annotation]))
+          const updated = await this.$store.dispatch('annotations/patch', [annotation.id, annotation])
+          if (updated) {
+            const index = this.annotations.findIndex(a => a.id === updated.id)
+            this.annotations.splice(index, 1, updated)
+          }
+          // await this.getAnnotations()
         }
         catch (err) {
           this.$handleError(this, err)
@@ -395,9 +403,12 @@
       },
       async deleteAnnotation (id) {
         try {
-          await this.$store.dispatch('queue/enqueue',
-            this.$store.dispatch('annotations/delete', id))
-          await this.getAnnotations()
+          // await this.$store.dispatch('queue/enqueue',
+          //   this.$store.dispatch('annotations/delete', id))
+          const index = this.annotations.findIndex(a => a.id === id)
+          await this.$store.dispatch('annotations/delete', id)
+          this.annotations.splice(index, 1)
+          // await this.getAnnotations()
         }
         catch (err) {
           this.$handleError(this, err, 'errors.delete_annotation_failed')
@@ -487,13 +498,19 @@
           const currentStart = annotation.target.selector._valueMillis * 0.001
           const newTimecode = this.playerTime + this.media.target.selector._valueMillis * 0.001
 
+          let value
           if (newTimecode !== currentStart) {
             if (newTimecode > currentStart) {
-              annotation.target.selector.value = { t: [currentStart, newTimecode] }
+              value = { t: [currentStart, newTimecode] }
             }
             else {
-              annotation.target.selector.value = { t: [newTimecode, currentStart] }
+              value = { t: [newTimecode, currentStart] }
             }
+            annotation.target.selector = new Selector({
+              type: 'FragmentSelector',
+              value,
+              conformsTo: annotation.target.selector.conformsTo
+            })
             this.updateAnnotation(annotation)
           }
         }
