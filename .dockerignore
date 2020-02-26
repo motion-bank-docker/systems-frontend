@@ -1,0 +1,15 @@
+# ignore .git and .cache folders
+.git
+.cache
+
+# ignore src files
+src
+src-electron
+node_modules
+
+# ignore electron builds
+dist/electron-*
+
+# misc
+Dockerfile
+.DS_Store
