@@ -399,6 +399,8 @@
           if (updated) {
             const index = this.annotations.findIndex(a => a.id === updated.id)
             this.annotations.splice(index, 1, updated)
+            this.annotations = this.annotations.sort(this.$sort.onRef)
+            setTimeout(() => this.scrollToAnnotation(updated.id), 500)
           }
           // await this.getAnnotations()
         }
