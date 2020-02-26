@@ -64,6 +64,8 @@
       v-if="annotations && drawer !== undefined",
       v-model="drawer",
       side="right",
+      :breakpoint="0",
+      behavior="desktop",
       :width="400")
       .absolute.fit.bg-dark(style="")
       q-list.bg-dark.q-py-none(dark, @mouseleave.native="currentHover === undefined")
