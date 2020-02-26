@@ -16,7 +16,7 @@
       div.relative(:style="{height: videoHeight + 'px', maxHeight: viewport.height - 52 - 250 + 'px'}",
       :class="[!visibilitySwimlanes ? 'fit' : '']")
         media-player.full-height.relative-position(v-if="media", :annotation="media", :fine-controls="true",
-        @ready="playerReady($event)", @time="onPlayerTime($event)")
+        @ready="playerReady($event)", @time="onPlayerTime($event)", :auth="playerAuth")
 
       // swimlane content
 
@@ -259,6 +259,13 @@
       isAnnotationDirty () {
         return this.isEditingAnnotations &&
           this.annotations[this.editAnnotationIndex].body.value !== this.editAnnotationBuffer
+      },
+      playerAuth () {
+        const auth = { query: {} }
+        if (this.$auth.token) {
+          auth.query[this.$auth.tokenType.toLowerCase()] = this.$auth.token
+        }
+        return auth
       }
     },
     watch: {
