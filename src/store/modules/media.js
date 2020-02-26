@@ -51,7 +51,10 @@ const mediaFactory = function (env = {}) {
       async get (context, id) {
         await checkAuth(context)
         const { data } = await axios.get(`${process.env.API_HOST}videos/${parseURI(id).id}/`, env.getRequestConfig())
-        return createMediaAnnotation(data)
+        return {
+          annotation: createMediaAnnotation(data),
+          metadata: Array.isArray(data.data) && data.data.length ? data.data[0] : {}
+        }
       }
     }
   }

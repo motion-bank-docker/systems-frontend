@@ -13,10 +13,10 @@
 
       // meta player
 
-      div.relative(:style="{height: videoHeight + 'px', maxHeight: viewport.height - 52 - 250 + 'px'}",
+      div.relative(:style="{maxHeight: viewport.height - 52 - 250 + 'px'}",
       :class="[!visibilitySwimlanes ? 'fit' : '']")
         media-player.full-height.relative-position(v-if="media", :annotation="media", :fine-controls="true",
-        @ready="playerReady($event)", @time="onPlayerTime($event)", :auth="playerAuth")
+        @ready="playerReady($event)", @time="onPlayerTime($event)", :auth="playerAuth", :ratio="ratio")
 
       // swimlane content
 
@@ -24,7 +24,7 @@
         v-if="visibilitySwimlanes",
         :style="{height: swimlanesHeight + 'px', minHeight: '250px'}",
         ref="swimlaneWrap"
-        )
+      )
         swim-lane(
           v-if="media",
           ref="swimLane",
@@ -163,7 +163,10 @@
       this.$root.$emit('setBackButton', '/piecemaker/media')
       if (this.$route.params.id) {
         this.$q.loading.show()
-        this.media = await this.$store.dispatch('media/get', this.$route.params.id)
+        const { annotation, metadata } = await this.$store.dispatch('media/get', this.$route.params.id)
+        this.media = annotation
+        this.metadata = metadata
+        console.debug('Media metadata', metadata)
         await this.$store.dispatch('autosuggest/loadTypes', this.media.body.source.id)
         await this.getAnnotations()
         this.$q.loading.hide()
@@ -179,11 +182,11 @@
       return {
         backupId: undefined,
         annotations: [],
+        metadata: {},
         currentHover: undefined,
         fullscreen: false,
         headerHeight: 52,
         inputStyle: true,
-        metadata: undefined,
         player: undefined,
         playerTime: 0.0,
         selector: undefined,
@@ -266,6 +269,9 @@
           auth.query[this.$auth.tokenType.toLowerCase()] = this.$auth.token
         }
         return auth
+      },
+      ratio () {
+        if (this.metadata && this.metadata.aspect_ratio) return this.metadata.aspect_ratio
       }
     },
     watch: {
