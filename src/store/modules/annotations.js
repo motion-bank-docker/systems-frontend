@@ -37,21 +37,23 @@ const annotationsFactory = function (env = {}) {
         await checkAuth(context)
         const config = env.getRequestConfig()
         config.params = { media_url: payload.target.id, format: 'json-ld' }
-        const response = await axios.post(`${process.env.API_HOST}videos/annotations/`,
-          payload.toObject(), config)
+        if (typeof payload.toObject === 'function') payload = payload.toObject()
+        const response = await axios.post(`${process.env.API_HOST}videos/annotations/`, payload, config)
         const items = await AnnotationFactory.fromFlatJsonLd(response.data)
         console.debug('annotations/post', items)
         return items.length ? items[0] : undefined
       },
-      async put (context, [id, payload]) {
+      async patch (context, [id, payload]) {
         await checkAuth(context)
         const config = env.getRequestConfig()
         config.headers['Accept'] = 'application/ld+json'
         config.headers['Content-Type'] = 'application/ld+json'
         const url = `${process.env.API_HOST}videos/annotations/${parseURI(id).id}/`
-        const response = await axios.post(url, payload.toObject(), config)
-        console.debug('annotations/patch', response)
-        return response.data
+        if (typeof payload.toObject === 'function') payload = payload.toObject()
+        const response = await axios.patch(url, payload, config)
+        const items = await AnnotationFactory.fromFlatJsonLd(response.data)
+        console.debug('annotations/patch', items)
+        return items.length ? items[0] : undefined
       },
       async delete (context, id) {
         await checkAuth(context)
