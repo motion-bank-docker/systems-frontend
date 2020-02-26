@@ -99,7 +99,8 @@ export default {
     packaging_failed: 'Packaging failed: {error}',
     unauthorized: 'Unauthorized',
     forbidden: 'Forbidden',
-    http_server_error: 'HTTP error {code}: {message}'
+    http_server_error: 'HTTP error {code}: {message}',
+    generic_error: '{code} {message}'
   },
   labels: {
     access_control: 'Access Control',

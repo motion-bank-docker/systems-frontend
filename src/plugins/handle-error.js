@@ -11,8 +11,8 @@ export default ({ Vue }) => {
       return
     }
     let errMessage
-    if (err.response && err.response.data && err.response.data.code >= 400) {
-      errMessage = context.$t('errors.http_server_error', { code: err.response.data.code, message: err.response.data.message })
+    if (err.response && err.response.data && err.response.data.status >= 400) {
+      errMessage = context.$t('errors.generic_error', { code: err.response.data.code, message: err.response.data.message })
     }
     else if (err.response && err.response.status) {
       switch (err.response.status) {
