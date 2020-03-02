@@ -13,7 +13,7 @@
 
       // meta player
 
-      div.relative(:style="{height: videoHeight + 'px', maxHeight: viewport.height - 52 - 250 + 'px'}",
+      div.relative-position(:style="{height: videoHeight + 'px', maxHeight: viewport.height - 52 - 250 + 'px'}",
       :class="[!visibilitySwimlanes ? 'fit' : '']")
         media-player.full-height.relative-position(v-if="media", :annotation="media", :fine-controls="true",
         @ready="playerReady($event)", @time="onPlayerTime($event)", :auth="playerAuth", :ratio="ratio")
@@ -589,4 +589,14 @@
         display: block
     &.is-selected
       background-color $darker
+</style>
+
+<style lang="stylus">
+  .video-js
+    background-color transparent
+    .vjs-tech
+      max-width 100%
+      max-height 100%
+      top 50%
+      transform translateY(-50%)
 </style>
