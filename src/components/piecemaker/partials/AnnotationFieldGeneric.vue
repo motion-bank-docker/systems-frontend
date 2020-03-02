@@ -1,7 +1,7 @@
 <template lang="pug">
 
-  .row.q-mt-sm.round-borders(v-shortkey="shortcuts.focusInput", @shortkey="focusInput()",
-  :class="[hasTransparency && !isFocused && !isVisible ? 'bg-with-transparency' : 'bg-dark']")
+  .row.q-mt-sm.round-borders.shadow-6(v-shortkey="shortcuts.focusInput", @shortkey="focusInput()",
+  :class="[hasTransparency && !isFocused && !isVisible ? 'bg-with-transparency' : 'bg-grey-9']")
 
     // button toggles vocabulary
 

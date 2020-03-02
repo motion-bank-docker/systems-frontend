@@ -213,7 +213,7 @@
 
   .moba-tag-hover
     &:hover
-      background-color: $grey-9
+      background-color: $grey-8
 
   .moba-tag-hover-dark
     &:hover
