@@ -192,7 +192,7 @@
           // await this.selectedVocabulary.addTerm(value)
         }
       },
-      async selectEntry (entry, createImmediatly = false) {
+      async selectEntry (entry, createImmediatly = true) {
         this.$emit('select-entry', entry, createImmediatly)
       },
       updateFilter (value) {
