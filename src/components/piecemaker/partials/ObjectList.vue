@@ -3,8 +3,8 @@
 
     // ----------------------------------------------------------------------------------------------- select vocabulary
 
-    q-list.q-py-sm.ui-border-top(v-if="visible && !loading",
-    :class="{'q-pb-none': checkedTypes.length > 0 && typesVisibility, 'ui-border-bottom': checkedTypes.length > 0}")
+    q-list.ui-border-top(v-if="visible && !loading",
+    :class="[{'ui-border-bottom': checkedTypes.length > 0}, checkedTypes.length > 0 && typesVisibility ? 'q-py-sm' : 'q-py-none']")
 
       // add-button
       q-item.q-pa-none
