@@ -33,23 +33,23 @@
           //   .toFormat(constants.config.TIMECODE_FORMAT)
           let dur = Interval.fromDateTimes(this.videoDate, annotationDate)
             .toDuration(['hours', 'minutes', 'seconds', 'milliseconds']).toObject()
+          const parts = dur.toFormat('hh:mm:ss.SSS').split('.')
           switch (val) {
           case 'milliseconds':
-            let ms = DateTime.fromObject({milliseconds: dur.milliseconds}, { setZone: true })
-            return ms.toFormat('SSS')
+            return parts.pop()
           default:
-            let time = DateTime.fromObject({hour: dur.hours, minutes: dur.minutes, seconds: dur.seconds}, { setZone: true })
-            return time.toFormat('HH:mm:ss')
+            return parts.splice(0, parts.length - 1).join('.')
           }
         }
         else if (typeof annotationDate !== 'undefined' && !this.videoDate) {
           if (this.mode === 'local') {
             let dur = Duration.fromMillis(this.millis)
-            if (val === 'milliseconds') return dur.toFormat('SSS')
-            else return dur.toFormat('hh:mm:ss')
+            const parts = dur.toFormat('hh:mm:ss.SSS').split('.')
+            if (val === 'milliseconds') return parts.pop()
+            else return parts.splice(0, parts.length - 1).join('.')
           }
           if (val === 'milliseconds') return annotationDate.toFormat('SSS')
-          else return annotationDate.toFormat('HH:mm:ss')
+          else return annotationDate.toFormat('HH:mm:ss.SSS')
         }
         return annotationDate ? annotationDate.toFormat(constants.config.TIMECODE_FORMAT) : ''
       }
