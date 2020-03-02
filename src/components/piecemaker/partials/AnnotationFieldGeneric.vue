@@ -127,6 +127,7 @@
         if (entry) {
           this.currentSelectorValue = this.getSelectorValue()
           this.annotationText = entry.label
+          this.createAnnotation()
         }
         else this.annotationText = undefined
       }
@@ -151,17 +152,19 @@
         this.isVisible = this.$refs.vocabulary.visible
         this.focusInput()
       },
-      selectEntry (entry, andCreate = false) {
+      selectEntry (entry) {
         this.selectedEntry = entry
         this.currentBody = ObjectUtil.merge({}, this.defaultBodyVocabulary, {
           source: { id: entry.url, type: entry.type }
         })
+        /*
         if (andCreate) {
           this.createAnnotation()
         }
         else {
           this.focusInput()
         }
+        */
       },
       addToVocabulary (annotation) {
         this.$refs.vocabulary.addEntry(annotation.body.value)
