@@ -4,13 +4,13 @@
     // ----------------------------------------------------------------------------------------------- select vocabulary
 
     q-list.q-py-none.ui-border-top(v-if="visible && !loading",
-    :class="{'q-pb-sm': checkedTypes.length > 0 && typesVisibility, 'ui-border-bottom': checkedTypes.length > 0}")
+    :class="{'q-pb-none': checkedTypes.length > 0 && typesVisibility, 'ui-border-bottom': checkedTypes.length > 0}")
 
       // add-button
       q-item.q-pa-none
 
         q-item-main.q-pa-sm.moba-tag-hover-dark
-          q-icon.q-mr-md(name="add", size="sm", round, flat)
+          q-icon.q-mr-sm.q-ml-xs(name="add", size="sm", round, flat)
           | Select object type
           q-popover
             q-list
@@ -21,24 +21,23 @@
 
         q-item-side.moba-tag-hover-dark(style="margin-left: 0;")
           q-btn.bg-transparent(@click="handlerTypesVisibility()", flat, size="sm", no-ripple, style="height: 35px;")
-            q-icon(name="keyboard_arrow_down", :class="{'rotate-180': typesVisibility}")
+            q-icon(name="keyboard_arrow_down", :class="{'rotate-180': typesVisibility}", size="20px")
 
       // selected vocabularies
       template(v-if="typesVisibility")
         template(v-if="checkedTypes.length > 0")
 
-          q-item.q-pl-md.q-pr-sm.q-py-none.moba-tag-hover-dark.cursor-pointer(v-for="type in checkedTypes",
+          q-item.q-pa-none.cursor-pointer(v-for="type in checkedTypes",
           tag="label")
 
-            q-item-side(style="min-width: auto;")
-              q-checkbox(v-model="activeTypesModel", :val="type", :key="type.value",
+            q-item-main.q-pa-sm.moba-tag-hover-dark.text-grey-7(style="height: 35px;")
+              q-checkbox.q-mr-sm(v-model="activeTypesModel", :val="type", :key="type.value",
               size="sm", round, flat, checked-icon="remove_red_eye", unchecked-icon="none")
+              span.ellipsis(label) {{ type.label }}
 
-            q-item-main.text-grey-7
-              q-item-tile.ellipsis(label) {{ type.label }}
-
-            q-item-side.text-right.buttons
-              q-btn(@click="handlerRemoveType(type)", icon="clear", size="sm", round, flat)
+            q-item-side.moba-tag-hover-dark.buttons(style="margin-left: 0;")
+              q-btn.bg-transparent(@click="handlerRemoveType(type)", flat, size="sm", no-ripple, style="height: 35px;")
+                q-icon(name="clear", size="18px")
 
     // --------------------------------------------------------------------------------------- no selection notification
 
