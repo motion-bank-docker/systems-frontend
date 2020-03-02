@@ -200,7 +200,7 @@ export default {
     url_copied: 'URL copied to clipboard',
     caution_media_time_override: 'Caution: Changing media reference time does not update associated annotations!',
     browser_unsupported_warning: '<strong>Unsupported browser:</strong> For optimal performance please use ' +
-      '<a href="https://www.google.com/chrome" target="_blank">Google Chrome</a> or ' +
+      '<a href="https://www.mozilla.org/firefox/" target="_blank">Firefox</a> or ' +
       '<a href="http://www.chromium.org/Home" target="_blank">Chromium</a>.<br>' +
       '<small>While the site might work on your browser, more or less subtle problems can occur. You have been warned!</small>'
   },
