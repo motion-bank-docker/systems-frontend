@@ -36,7 +36,7 @@
               span.ellipsis(label) {{ type.label }}
 
             q-item-side.moba-tag-hover-dark.buttons(style="margin-left: 0;")
-              q-btn.bg-transparent(@click="handlerRemoveType(type)", flat, size="sm", no-ripple, style="height: 35px;")
+              q-btn.bg-transparent(@click="handlerRemoveType(type)", flat, size="sm", no-ripple, style="height: 35px; width: 52px;")
                 q-icon(name="clear", size="18px")
 
     // --------------------------------------------------------------------------------------- no selection notification
