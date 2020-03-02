@@ -13,7 +13,7 @@
 
       // meta player
 
-      div.relative(:style="{maxHeight: viewport.height - 52 - 250 + 'px'}",
+      div.relative(:style="{height: videoHeight + 'px', maxHeight: viewport.height - 52 - 250 + 'px'}",
       :class="[!visibilitySwimlanes ? 'fit' : '']")
         media-player.full-height.relative-position(v-if="media", :annotation="media", :fine-controls="true",
         @ready="playerReady($event)", @time="onPlayerTime($event)", :auth="playerAuth", :ratio="ratio")
@@ -175,6 +175,7 @@
       }
       this.drawer = this.visibilityDrawer
       this.setupScreen()
+      this.videoHeight = this.viewport.height - this.swimlanesHeight - this.headerHeight
     },
     beforeDestroy () {
       this.$store.commit('swimLane/setSelectedAnnotation')
@@ -280,6 +281,7 @@
       storeCursorTop (val) {
         this.mediaHeight = val - this.headerHeight
         this.swimlanesHeight = (this.viewport.height - val)
+        this.videoHeight = this.viewport.height - this.swimlanesHeight - this.headerHeight
       },
       visibilityDrawer (val) {
         this.drawer = val
@@ -341,6 +343,7 @@
         this.viewport.height = size.height
         this.viewport.width = size.width
         this.mediaHeight = this.viewport.height - 52 - this.swimlanesHeight
+        this.videoHeight = this.viewport.height - this.swimlanesHeight - this.headerHeight
       },
       handlerToggle (val) {
         switch (val) {
