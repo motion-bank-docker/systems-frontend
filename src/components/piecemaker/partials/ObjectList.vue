@@ -7,21 +7,21 @@
     :class="{'q-pb-sm': checkedTypes.length > 0 && typesVisibility, 'ui-border-bottom': checkedTypes.length > 0}")
 
       // add-button
-      q-item.q-pr-sm.q-py-xs.moba-tag-hover-dark
+      q-item.q-pa-none
 
-        q-item-main
+        q-item-main.q-pa-sm.moba-tag-hover-dark
           q-icon.q-mr-md(name="add", size="sm", round, flat)
           | Select object type
           q-popover
             q-list
-              q-item.q-py-sm.q-px-xs.moba-tag-hover-dark(v-for="type in objectTypes")
+              q-item.q-py-sm.q-pl-sm.q-pr-md.moba-tag-hover-dark(v-for="type in objectTypes")
                 q-checkbox.full-width(v-model="checkedTypes", :val="type", :label="type.label",
                 :key="type.value", checked-icon="check", unchecked-icon="xxxxxx",
                 @input="handlerActivity(type)")
 
-        q-item-side.text-right
-          q-btn(@click="handlerTypesVisibility()", :class="{'rotate-180': typesVisibility}",
-          icon="keyboard_arrow_down", size="sm", flat, round)
+        q-item-side.moba-tag-hover-dark(style="margin-left: 0;")
+          q-btn.bg-transparent(@click="handlerTypesVisibility()", flat, size="sm", no-ripple, style="height: 35px;")
+            q-icon(name="keyboard_arrow_down", :class="{'rotate-180': typesVisibility}")
 
       // selected vocabularies
       template(v-if="typesVisibility")
