@@ -46,6 +46,7 @@
           @focus="focusInput",
           @clear-input-field="clearInputField",
           @highlighted="highlighted",
+          @itemsLength="handlerItemsLength",
           :highlight="selectedEntry",
           :highlightIndex="highlightIndex")
 
@@ -100,7 +101,8 @@
         isFocused: false,
         isVisible: false,
         highlightIndex: null,
-        highlightItem: undefined
+        highlightItem: undefined,
+        itemsLength: Number
       }
     },
     mounted () {
@@ -138,6 +140,9 @@
       }
     },
     methods: {
+      handlerItemsLength (val) {
+        this.itemsLength = val
+      },
       highlighted (obj) {
         // console.log(obj)
         this.highlightItem = obj
@@ -215,14 +220,14 @@
         else if (key === 'arrowup') {
           event.preventDefault()
           console.debug('onKeyDown: arrowup')
-          this.highlightIndex -= 1
-          console.log(this.highlightIndex)
+          if (this.highlightIndex > 0) this.highlightIndex -= 1
+          else this.highlightIndex = this.itemsLength - 1
         }
         else if (key === 'arrowdown') {
           event.preventDefault()
           console.debug('onKeyDown: arrowdown')
-          this.highlightIndex += 1
-          console.log(this.highlightIndex)
+          if (this.highlightIndex < this.itemsLength - 1) this.highlightIndex += 1
+          else this.highlightIndex = 0
         }
         else if (key === 'escape') {
           console.debug('onKeyDown: escape')

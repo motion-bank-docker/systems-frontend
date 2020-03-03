@@ -134,6 +134,7 @@
             items.forEach(item => this.allItems.push(item))
             objectList[type.value] = items
           }
+          this.$emit('itemsLength', this.allItems.length)
           this.objectList = objectList
           this.listTypes = this.activeTypesModel.filter(type => {
             return Array.isArray(this.objectList[type.value]) && this.objectList[type.value].length
