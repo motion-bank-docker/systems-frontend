@@ -193,13 +193,22 @@
       onKeyDown (event) {
         const key = event.key.toLowerCase().replace(/\s/g, '')
         if (key === 'enter') {
-          if (this.enterDown === this.$props.submitOnNumEnters - 1) {
-            event.preventDefault()
+          if (this.highlightIndex) {
+            this.highlightIndex = null
+            this.selectEntry(this.highlightItem)
             this.createAnnotation()
             this.blurInput()
+            this.highlightItem = undefined
           }
           else {
-            this.enterDown += 1
+            if (this.enterDown === this.$props.submitOnNumEnters - 1) {
+              event.preventDefault()
+              this.createAnnotation()
+              this.blurInput()
+            }
+            else {
+              this.enterDown += 1
+            }
           }
           this.highlightIndex = null
         }
@@ -214,14 +223,6 @@
           console.debug('onKeyDown: arrowdown')
           this.highlightIndex += 1
           console.log(this.highlightIndex)
-        }
-        else if (key === 'arrowright') {
-          event.preventDefault()
-          console.debug('onKeyDown: arrowright')
-          this.highlightIndex = null
-          this.selectEntry(this.highlightItem)
-          this.createAnnotation()
-          this.highlightItem = undefined
         }
         else if (key === 'escape') {
           console.debug('onKeyDown: escape')
