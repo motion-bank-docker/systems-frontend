@@ -128,6 +128,7 @@
           this.currentSelectorValue = this.getSelectorValue()
           this.annotationText = entry.label
           this.createAnnotation()
+          this.focusInput()
         }
         else this.annotationText = undefined
       }
@@ -172,7 +173,7 @@
       reset () {
         if (this.selectedEntry && this.$refs.vocabulary) {
           this.$refs.vocabulary.updateFilter()
-          this.toggleVocabulary()
+          // this.toggleVocabulary()
         }
         this.enterDown = 0
         this.selectedEntry = undefined
