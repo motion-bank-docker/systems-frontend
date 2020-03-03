@@ -5,7 +5,7 @@
 
     q-list.ui-border-top(v-if="visible && !loading",
     :class="[{'ui-border-bottom': checkedTypes.length > 0}, checkedTypes.length > 0 && typesVisibility ? 'q-py-sm' : 'q-py-none']")
-      | {{ highlightIndex }} // {{ objectList.scene.length }}
+
       // add-button
       q-item.q-pa-none
 
@@ -66,8 +66,8 @@
           q-item-main
             div.q-px-md.q-py-xs(
               @click="selectEntry(item)",
-              :class="{'bg-primary text-white': (i + index) === highlightIndex}")
-              | {{ i }} - {{ index }} - {{ item.label }}
+              :class="{'bg-primary text-white': checkHighlight(item, i, index)}")
+              | {{ item.label }}
 </template>
 
 <script>
@@ -98,7 +98,7 @@
         activeTypes: [], // type list to be rendered
 
         typesVisibility: false, // show/hide checked types list,
-        rawList: []
+        allItems: []
       }
     },
     computed: {
@@ -109,8 +109,7 @@
     },
     watch: {
       highlightIndex (val) {
-        // console.log(this.rawList[val - 1].label)
-        this.$emit('highlighted', this.rawList[val - 1])
+        this.$emit('highlighted', this.allItems[val])
       },
       async filterValue () {
         if (this.filterTimeout) {
@@ -127,12 +126,13 @@
           const objects = await this.$store.dispatch('autosuggest/find',
             [this.media.body.source.id, this.filterValue])
 
-          // console.log('######', objects)
-          this.rawList = objects
+          this.allItems = []
 
           const objectList = {}
           for (let type of this.activeTypesModel) {
-            objectList[type.value] = this.filteredItems(objects, type)
+            let items = this.filteredItems(objects, type)
+            items.forEach(item => this.allItems.push(item))
+            objectList[type.value] = items
           }
           this.objectList = objectList
           this.listTypes = this.activeTypesModel.filter(type => {
@@ -163,6 +163,10 @@
       this.loading = false
     },
     methods: {
+      checkHighlight (item) {
+        if (!this.highlightIndex) return
+        return item.label === this.allItems[this.highlightIndex].label
+      },
       handlerActivity (type) {
         console.debug('handlerActivity', type, this.checkedTypes, this.activeTypesModel)
         if (!this.activeTypesModel.includes(type)) {
