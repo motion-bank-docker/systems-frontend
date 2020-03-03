@@ -194,6 +194,14 @@
             this.enterDown += 1
           }
         }
+        else if (key === 'arrowup') {
+          event.preventDefault()
+          console.debug('onKeyDown: arrowup')
+        }
+        else if (key === 'arrowdown') {
+          event.preventDefault()
+          console.debug('onKeyDown: arrowdown')
+        }
         else if (key === 'escape') {
           console.debug('onKeyDown: escape')
           this.blurInput()
