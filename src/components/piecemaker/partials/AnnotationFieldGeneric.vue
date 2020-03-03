@@ -237,6 +237,8 @@
               this.reset()
             }
           }
+          this.highlightItem = undefined
+          this.highlightIndex = null
         }
         else if (this.annotationText === undefined && !this.shortcuts.preventStartAnnotationOnKeys.includes(key) && event.code !== 'Space') {
           this.enterDown = 0
@@ -244,6 +246,10 @@
             // only set focus if not already in a textfield
             this.focusInput()
           }
+        }
+        else {
+          this.highlightItem = undefined
+          this.highlightIndex = null
         }
       },
       onInputFocus () {
