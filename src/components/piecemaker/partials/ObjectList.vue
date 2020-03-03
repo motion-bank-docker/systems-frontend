@@ -165,7 +165,7 @@
     },
     methods: {
       checkHighlight (item) {
-        if (!this.highlightIndex) return
+        if (isNaN(this.highlightIndex)) return
         return item.label === this.allItems[this.highlightIndex].label
       },
       handlerActivity (type) {

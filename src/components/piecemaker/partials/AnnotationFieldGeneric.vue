@@ -100,7 +100,7 @@
         selectedEntry: undefined,
         isFocused: false,
         isVisible: false,
-        highlightIndex: null,
+        highlightIndex: undefined,
         highlightItem: undefined,
         itemsLength: Number
       }
@@ -146,6 +146,7 @@
       highlighted (obj) {
         // console.log(obj)
         this.highlightItem = obj
+        console.log(this.highlightItem)
       },
       clearInputField () {
         // alert('bla')
@@ -193,13 +194,13 @@
         this.annotationText = undefined
         this.currentBody = ObjectUtil.merge({}, this.defaultBodyText)
         this.currentSelectorValue = undefined
-        this.highlightIndex = null
+        this.highlightIndex = undefined
       },
       onKeyDown (event) {
         const key = event.key.toLowerCase().replace(/\s/g, '')
         if (key === 'enter') {
           if (this.highlightIndex) {
-            this.highlightIndex = null
+            this.highlightIndex = undefined
             this.selectEntry(this.highlightItem)
             this.createAnnotation()
             this.blurInput()
@@ -215,17 +216,19 @@
               this.enterDown += 1
             }
           }
-          this.highlightIndex = null
+          this.highlightIndex = undefined
         }
         else if (key === 'arrowup') {
           event.preventDefault()
           console.debug('onKeyDown: arrowup')
-          if (this.highlightIndex > 0) this.highlightIndex -= 1
+          if (this.highlightIndex === 'undefined') this.highlightIndex = this.itemsLength - 1
+          else if (this.highlightIndex > 0) this.highlightIndex -= 1
           else this.highlightIndex = this.itemsLength - 1
         }
         else if (key === 'arrowdown') {
           event.preventDefault()
           console.debug('onKeyDown: arrowdown')
+          if (this.highlightIndex === 'undefined') this.highlightIndex = 0
           if (this.highlightIndex < this.itemsLength - 1) this.highlightIndex += 1
           else this.highlightIndex = 0
         }
@@ -243,7 +246,7 @@
             }
           }
           this.highlightItem = undefined
-          this.highlightIndex = null
+          this.highlightIndex = undefined
         }
         else if (this.annotationText === undefined && !this.shortcuts.preventStartAnnotationOnKeys.includes(key) && event.code !== 'Space') {
           this.enterDown = 0
@@ -254,7 +257,7 @@
         }
         else {
           this.highlightItem = undefined
-          this.highlightIndex = null
+          this.highlightIndex = undefined
         }
       },
       onInputFocus () {
