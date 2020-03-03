@@ -53,7 +53,7 @@
         span Loading types...
 
       // results
-      q-list.q-py-sm(v-for="(type, i) in listTypes",
+      q-list.q-py-sm(v-for="(type, i) in listTypes", v-if="filterValue",
       :key="type.value", :class="{'ui-border-bottom': i < listTypes.length - 1}")
 
         // vocabulary label
