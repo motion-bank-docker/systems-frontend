@@ -12,7 +12,7 @@
     .bg-dark.relative-position(style="height: calc(100vh - 52px);")
 
       // time
-      .absolute-top-left.q-ma-md.bg-dark.z-max.shadow-6.q-pa-xs {{ getSeconds() }}
+      .absolute-top-left.q-ma-md.bg-dark.z-max.shadow-6.q-pa-xs {{ getPlayerTime() }}
 
       // meta player
 
@@ -300,7 +300,7 @@
       this.$root.$on('annotationEndMillis', this.getAnnotationEndMillis)
     },
     methods: {
-      getSeconds () {
+      getPlayerTime () {
         if (this.playerTime) {
           return DateTime.fromSeconds(this.playerTime).hour + ':' + DateTime.fromSeconds(this.playerTime).minute + ':' + DateTime.fromSeconds(this.playerTime).second
         }
