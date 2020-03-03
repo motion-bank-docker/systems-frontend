@@ -5,7 +5,7 @@
 
     q-list.ui-border-top(v-if="visible && !loading",
     :class="[{'ui-border-bottom': checkedTypes.length > 0}, checkedTypes.length > 0 && typesVisibility ? 'q-py-sm' : 'q-py-none']")
-
+      | {{ highlightIndex }} // {{ objectList.scene.length }}
       // add-button
       q-item.q-pa-none
 
@@ -62,9 +62,12 @@
 
         // vocabulary items
         q-item.moba-tag-hover.cursor-pointer.q-pa-none(v-if="objectList[type.value]",
-          v-for="item in objectList[type.value]", :key="item.identifier")
+          v-for="(item, index) in objectList[type.value]", :key="item.identifier")
           q-item-main
-            div.q-px-md.q-py-xs(@click="selectEntry(item)") {{ item.label }}
+            div.q-px-md.q-py-xs(
+              @click="selectEntry(item)",
+              :class="{'bg-primary text-white': (i + index) === highlightIndex}")
+              | {{ i }} - {{ index }} - {{ item.label }}
 </template>
 
 <script>
@@ -74,7 +77,8 @@
   export default {
     props: {
       highlight: Object,
-      media: Object
+      media: Object,
+      highlightIndex: Number
     },
     data () {
       return {
@@ -93,7 +97,8 @@
         activeTypesModel: [], // checkbox model to be watched
         activeTypes: [], // type list to be rendered
 
-        typesVisibility: false // show/hide checked types list
+        typesVisibility: false, // show/hide checked types list,
+        rawList: []
       }
     },
     computed: {
@@ -103,6 +108,10 @@
       })
     },
     watch: {
+      highlightIndex (val) {
+        // console.log(this.rawList[val - 1].label)
+        this.$emit('highlighted', this.rawList[val - 1])
+      },
       async filterValue () {
         if (this.filterTimeout) {
           clearTimeout(this.filterTimeout)
@@ -117,6 +126,10 @@
           this.filterTimeout = undefined
           const objects = await this.$store.dispatch('autosuggest/find',
             [this.media.body.source.id, this.filterValue])
+
+          // console.log('######', objects)
+          this.rawList = objects
+
           const objectList = {}
           for (let type of this.activeTypesModel) {
             objectList[type.value] = this.filteredItems(objects, type)

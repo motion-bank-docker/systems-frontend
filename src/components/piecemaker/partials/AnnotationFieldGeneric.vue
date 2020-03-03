@@ -45,7 +45,9 @@
           @select-entry="selectEntry",
           @focus="focusInput",
           @clear-input-field="clearInputField",
-          :highlight="selectedEntry")
+          @highlighted="highlighted",
+          :highlight="selectedEntry",
+          :highlightIndex="highlightIndex")
 
 </template>
 
@@ -96,7 +98,9 @@
         enterDown: 0,
         selectedEntry: undefined,
         isFocused: false,
-        isVisible: false
+        isVisible: false,
+        highlightIndex: null,
+        highlightItem: undefined
       }
     },
     mounted () {
@@ -134,6 +138,10 @@
       }
     },
     methods: {
+      highlighted (obj) {
+        // console.log(obj)
+        this.highlightItem = obj
+      },
       clearInputField () {
         // alert('bla')
         this.annotationText = undefined
@@ -180,10 +188,10 @@
         this.annotationText = undefined
         this.currentBody = ObjectUtil.merge({}, this.defaultBodyText)
         this.currentSelectorValue = undefined
+        this.highlightIndex = null
       },
       onKeyDown (event) {
         const key = event.key.toLowerCase().replace(/\s/g, '')
-
         if (key === 'enter') {
           if (this.enterDown === this.$props.submitOnNumEnters - 1) {
             event.preventDefault()
@@ -193,14 +201,27 @@
           else {
             this.enterDown += 1
           }
+          this.highlightIndex = null
         }
         else if (key === 'arrowup') {
           event.preventDefault()
           console.debug('onKeyDown: arrowup')
+          this.highlightIndex -= 1
+          console.log(this.highlightIndex)
         }
         else if (key === 'arrowdown') {
           event.preventDefault()
           console.debug('onKeyDown: arrowdown')
+          this.highlightIndex += 1
+          console.log(this.highlightIndex)
+        }
+        else if (key === 'arrowright') {
+          event.preventDefault()
+          console.debug('onKeyDown: arrowright')
+          this.highlightIndex = null
+          this.selectEntry(this.highlightItem)
+          this.createAnnotation()
+          this.highlightItem = undefined
         }
         else if (key === 'escape') {
           console.debug('onKeyDown: escape')
