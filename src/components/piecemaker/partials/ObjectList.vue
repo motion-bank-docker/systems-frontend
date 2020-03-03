@@ -11,7 +11,7 @@
 
         q-item-main.q-pa-sm.moba-tag-hover-dark
           q-icon.q-mr-sm.q-ml-xs(name="add", size="sm", round, flat)
-          | Select object type
+          | Select object type ({{ activeTypesModel.length }})
           q-popover
             q-list
               q-item.q-py-sm.q-pl-sm.q-pr-md.moba-tag-hover-dark(v-for="type in objectTypes")
@@ -93,7 +93,7 @@
         activeTypesModel: [], // checkbox model to be watched
         activeTypes: [], // type list to be rendered
 
-        typesVisibility: true // show/hide checked types list
+        typesVisibility: false // show/hide checked types list
       }
     },
     computed: {
