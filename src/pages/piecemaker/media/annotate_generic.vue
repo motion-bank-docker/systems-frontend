@@ -11,6 +11,9 @@
 
     .bg-dark.relative-position(style="height: calc(100vh - 52px);")
 
+      // time
+      .absolute-top-left.q-ma-md.bg-dark.z-max.shadow-6.q-pa-xs {{ getSeconds() }}
+
       // meta player
 
       div.relative-position(:style="{height: videoHeight + 'px', maxHeight: viewport.height - 52 - 250 + 'px'}",
@@ -297,6 +300,11 @@
       this.$root.$on('annotationEndMillis', this.getAnnotationEndMillis)
     },
     methods: {
+      getSeconds () {
+        if (this.playerTime) {
+          return DateTime.fromSeconds(this.playerTime).hour + ':' + DateTime.fromSeconds(this.playerTime).minute + ':' + DateTime.fromSeconds(this.playerTime).second
+        }
+      },
       async getAnnotations () {
         try {
           // this.annotations = await this.$store.dispatch('queue/enqueue',
