@@ -11,8 +11,10 @@
 
     .bg-dark.relative-position(style="height: calc(100vh - 52px);")
 
-      // time
-      .absolute-top-left.q-ma-sm.bg-dark.z-max.shadow-6.q-pa-xs.round-borders {{ getPlayerTime() }}
+      // player time
+      .absolute-top-left.q-mt-md.q-ml-sm.bg-with-transparency.text-white.z-max.shadow-3.q-pa-xs.round-borders.q-caption {{ getPlayerTime() }}
+      // .absolute-top-left.z-max.q-ma-md.q-caption(style="text-shadow: 0 0 10px rgba(0, 0, 0, .5);")
+        span {{ getPlayerTime() }}
 
       // meta player
 
@@ -53,6 +55,7 @@
         @annotation="onAnnotation",
         :media="media",
         ref="annotationField",
+        :playerTime="getPlayerTime()",
         :submit-on-num-enters="1",
         :selector-value="baseSelector",
         :hasTransparency="true")
