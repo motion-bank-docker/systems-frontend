@@ -68,9 +68,13 @@
               @click="selectEntry(item)",
               :class="{'bg-primary text-white': checkHighlight(item, i, index)}")
               | {{ item.label }}
+
               // preview image
-              q-tooltip(v-if="item.src")
-                img(:src="item.src", style="max-width: 150px; max-height: 150px;")
+              //
+                q-tooltip(v-if="item.src", anchor="top right", self="top left", :offset="[10, 0]")
+                  img(:src="item.src", style="max-width: 150px; max-height: 150px;")
+              q-tooltip.q-pa-none(anchor="top right", self="top left", :offset="[10, 0]")
+                img.tooltip-img(src="http://placekitten.com/300/300")
 </template>
 
 <script>
@@ -253,4 +257,9 @@
     &:hover
       .buttons
         opacity 1
+  .q-tooltip
+    .tooltip-img
+      max-width 150px
+      max-height 150px
+      vertical-align bottom
 </style>
