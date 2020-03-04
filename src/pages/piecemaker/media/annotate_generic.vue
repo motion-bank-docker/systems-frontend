@@ -12,7 +12,7 @@
     .bg-dark.relative-position(style="height: calc(100vh - 52px);")
 
       // time
-      .absolute-top-left.q-ma-md.bg-dark.z-max.shadow-6.q-pa-xs {{ getPlayerTime() }}
+      .absolute-top-left.q-ma-sm.bg-dark.z-max.shadow-6.q-pa-xs.round-borders {{ getPlayerTime() }}
 
       // meta player
 
@@ -302,7 +302,14 @@
     methods: {
       getPlayerTime () {
         if (this.playerTime) {
-          return DateTime.fromSeconds(this.playerTime).hour + ':' + DateTime.fromSeconds(this.playerTime).minute + ':' + DateTime.fromSeconds(this.playerTime).second
+          let
+            hour = DateTime.fromSeconds(this.playerTime).hour,
+            minute = DateTime.fromSeconds(this.playerTime).minute,
+            second = DateTime.fromSeconds(this.playerTime).second
+          if (hour < 10) hour = '0' + hour
+          if (minute < 10) minute = '0' + minute
+          if (second < 10) second = '0' + second
+          return hour + ':' + minute + ':' + second
         }
       },
       async getAnnotations () {
