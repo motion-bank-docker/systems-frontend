@@ -70,10 +70,11 @@
               | {{ item.label }}
 
               // preview image
+
               //
-                q-tooltip(v-if="item.src", anchor="top right", self="top left", :offset="[10, 0]")
-                  img(:src="item.src", style="max-width: 150px; max-height: 150px;")
-              q-tooltip.q-pa-none(anchor="top right", self="top left", :offset="[10, 0]")
+                q-tooltip.q-pa-none.bg-dark.shadow-6(v-if="item.src", anchor="top right", self="top left", :offset="[10, 0]")
+                  img.tooltip-img(:src="item.src")
+              q-tooltip.q-pa-none.bg-dark.shadow-6(anchor="top right", self="top left", :offset="[10, 0]")
                 img.tooltip-img(src="http://placekitten.com/300/300")
 </template>
 
