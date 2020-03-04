@@ -68,6 +68,9 @@
               @click="selectEntry(item)",
               :class="{'bg-primary text-white': checkHighlight(item, i, index)}")
               | {{ item.label }}
+              // preview image
+              q-tooltip(v-if="item.src")
+                img(:src="item.src", style="max-width: 150px; max-height: 150px;")
 </template>
 
 <script>
