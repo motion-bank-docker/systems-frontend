@@ -12,7 +12,7 @@
     .bg-dark.relative-position(style="height: calc(100vh - 52px);")
 
       // player time
-      .absolute-top-left.q-mt-md.q-ml-sm.bg-with-transparency.text-white.z-max.shadow-3.q-pa-xs.round-borders.q-caption {{ getPlayerTime() }}
+      .absolute-top-right.q-mt-md.q-mr-sm.bg-with-transparency.text-white.z-max.shadow-3.q-pa-xs.round-borders.q-caption {{ getPlayerTime() }}
       // .absolute-top-left.z-max.q-ma-md.q-caption(style="text-shadow: 0 0 10px rgba(0, 0, 0, .5);")
         span {{ getPlayerTime() }}
 
