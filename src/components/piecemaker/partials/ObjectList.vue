@@ -71,11 +71,8 @@
 
               // preview image
 
-              //
-                q-tooltip.q-pa-none.bg-dark.shadow-6(v-if="item.src", anchor="top right", self="top left", :offset="[10, 0]")
-                  img.tooltip-img(:src="item.src")
-              q-tooltip.q-pa-none.bg-dark.shadow-6(anchor="top right", self="top left", :offset="[10, 0]")
-                img.tooltip-img(src="http://placekitten.com/300/300")
+              q-tooltip.q-pa-none.bg-dark.shadow-6(v-if="item.thumbnail", anchor="top right", self="top left", :offset="[10, 0]")
+                img.tooltip-img(:src="item.thumbnail")
 </template>
 
 <script>
