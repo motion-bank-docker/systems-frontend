@@ -101,7 +101,8 @@
         activeTypes: [], // type list to be rendered
 
         typesVisibility: false, // show/hide checked types list,
-        allItems: []
+        allItems: [],
+        objects: []
       }
     },
     computed: {
@@ -111,6 +112,13 @@
       })
     },
     watch: {
+      listTypes () {
+        this.allItems = []
+        for (let type of this.activeTypesModel) {
+          let items = this.filteredItems(this.objects, type)
+          items.forEach(item => this.allItems.push(item))
+        }
+      },
       highlightIndex (val) {
         this.$emit('highlighted', this.allItems[val])
       },
@@ -126,14 +134,14 @@
           }
 
           this.filterTimeout = undefined
-          const objects = await this.$store.dispatch('autosuggest/find',
+          this.objects = await this.$store.dispatch('autosuggest/find',
             [this.media.body.source.id, this.filterValue])
 
           this.allItems = []
 
           const objectList = {}
           for (let type of this.activeTypesModel) {
-            let items = this.filteredItems(objects, type)
+            let items = this.filteredItems(this.objects, type)
             items.forEach(item => this.allItems.push(item))
             objectList[type.value] = items
           }
