@@ -1,6 +1,6 @@
 <template lang="pug">
 
-  .row.q-mt-sm.round-borders.shadow-6(v-shortkey="shortcuts.focusInput", @shortkey="focusInput()",
+  .row.q-mt-sm.round-borders.shadow-6.relative-position(v-shortkey="shortcuts.focusInput", @shortkey="focusInput()",
   :class="[hasTransparency && !isFocused && !isVisible ? 'bg-with-transparency' : 'bg-grey-9']")
 
     // button toggles vocabulary
@@ -49,7 +49,10 @@
           @itemsLength="handlerItemsLength",
           :highlight="selectedEntry",
           :highlightIndex="highlightIndex")
-
+    //
+      .absolute-top-left.text-white.full-height.q-px-md.row.items-center(v-if="playerTime",
+      style="transform: translateX(-100%); text-shadow: 0 0 10px rgba(0, 0, 0, .5);")
+        span {{ playerTime }}
 </template>
 
 <script>
@@ -70,7 +73,8 @@
       },
       selectorValue: Object,
       hasTransparency: Boolean,
-      media: Object
+      media: Object,
+      playerTime: undefined
     },
     data () {
       const defaultBodyText = {
