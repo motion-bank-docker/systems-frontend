@@ -148,12 +148,9 @@
         this.itemsLength = val
       },
       highlighted (obj) {
-        // console.log(obj)
         this.highlightItem = obj
-        console.log(this.highlightItem)
       },
       clearInputField () {
-        // alert('bla')
         this.annotationText = undefined
       },
       getSelectorValue () {
@@ -203,9 +200,9 @@
       onKeyDown (event) {
         const key = event.key.toLowerCase().replace(/\s/g, '')
         if (key === 'enter') {
-          if (this.highlightIndex) {
+          if (this.highlightIndex || this.highlightIndex === 0) {
             this.highlightIndex = undefined
-            this.selectEntry(this.highlightItem)
+            this.selectEntry(this.highlightItem, true)
             this.createAnnotation()
             this.blurInput()
             this.highlightItem = undefined
