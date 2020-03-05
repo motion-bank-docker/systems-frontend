@@ -224,17 +224,17 @@
         }
         else if (key === 'arrowup') {
           event.preventDefault()
-          console.debug('onKeyDown: arrowup')
           if (this.highlightIndex === 'undefined') this.highlightIndex = this.itemsLength - 1
           else if (this.highlightIndex > 0) this.highlightIndex -= 1
           else this.highlightIndex = this.itemsLength - 1
+          console.debug('onKeyDown: arrowup', this.highlightIndex)
         }
         else if (key === 'arrowdown') {
           event.preventDefault()
-          console.debug('onKeyDown: arrowdown')
           if (this.highlightIndex === 'undefined') this.highlightIndex = 0
           if (this.highlightIndex < this.itemsLength - 1) this.highlightIndex += 1
           else this.highlightIndex = 0
+          console.debug('onKeyDown: arrowdown', this.highlightIndex)
         }
         else if (key === 'escape') {
           console.debug('onKeyDown: escape')
