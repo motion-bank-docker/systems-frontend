@@ -19,8 +19,8 @@
 
         q-item-main
           q-input(v-on:keydown="onKeyDown", @focus="onInputFocus", @blur="onInputBlur",
-            v-model="annotationText", ref="textInput", type="textarea", dark
-            :class="[vocabularyVisible ? 'q-pl-xl text-primary' : 'text-white']")
+            v-model="annotationText", ref="textInput", type="textarea", dark,
+            :class="[vocabularyVisible ? 'q-pl-xl text-primary' : 'text-white', {'opacity-03': highlightItem}]")
 
         q-item-side(v-if="isVisible", style="min-width: auto;")
           q-btn(@click="clearInputField", icon="clear", size="sm", round, flat, :disabled="!annotationText")
@@ -308,4 +308,8 @@
 
   .bg-with-transparency:hover
     background-color $dark
+  .opacity-05
+    opacity .5
+  .opacity-03
+    opacity .3
 </style>
