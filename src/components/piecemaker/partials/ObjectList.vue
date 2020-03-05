@@ -179,7 +179,7 @@
     methods: {
       checkHighlight (item) {
         if (isNaN(this.highlightIndex)) return
-        return item.label === this.allItems[this.highlightIndex].label
+        return item.identifier === this.allItems[this.highlightIndex].identifier
       },
       handlerActivity (type) {
         console.debug('handlerActivity', type, this.checkedTypes, this.activeTypesModel)
