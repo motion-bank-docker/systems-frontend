@@ -6,7 +6,6 @@ module.exports = function (ctx) {
     // app plugins (/src/plugins)
     plugins: [
       'sentry',
-      'raven',
       'api',
       'auth',
       'axios',
