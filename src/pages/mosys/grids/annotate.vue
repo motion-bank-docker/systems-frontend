@@ -1,6 +1,6 @@
 <template lang="pug">
 
-  .grid-editor-container
+  .grid-editor-container(:class="{'edit-mode': $store.state.mosys.showSources && !isMobile || showEditingCells && !isMobile}")
 
     // ------------------------------------------------------------------------------------------------------------ grid
     grid-editor.grid-editor(ref="gridEditor", :gridUuid="$route.params.uuid", :tabsAreOpen="tabsAreOpen")
@@ -9,7 +9,7 @@
     .desktop-only(v-if="$store.state.mosys.showSources")
       // .grid-editor-border-left.z-top.bg-grey-4
 
-      .full-height
+      .full-height.fixed-top-right.z-max
         source-editor.source-editor.bg-white.overflow-hidden
 
     q-modal.mobile-only.z-max(v-model="$store.state.mosys.showSources", minimized, content-css="border-radius: .5rem;",
@@ -39,7 +39,8 @@
     },
     data () {
       return {
-        triggerScrollPositionReset: 0
+        triggerScrollPositionReset: 0,
+        isMobile: this.$q.platform.is.mobile
       }
     },
     mounted () {
@@ -77,6 +78,9 @@
     height calc(100% - 59px) // FIXME: quick fix for issue #13, can we do without calc()?
     position absolute
     flex-direction row
+
+    &.edit-mode
+      width 75%
 
     .grid-editor
       overflow auto
