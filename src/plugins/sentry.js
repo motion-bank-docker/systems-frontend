@@ -8,4 +8,11 @@ export default ({ Vue }) => {
       integrations: [new Integrations.Vue({Vue, attachProps: true})]
     })
   }
+  Vue.prototype.$captureException = function (err) {
+    if (process.env.SENTRY_DSN) Sentry.captureException(err)
+    else {
+      console.error(`Exception: ${err.message}`)
+      console.debug('Stack:', err.stack)
+    }
+  }
 }
