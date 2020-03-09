@@ -1,5 +1,6 @@
 // Configuration for your app
 const pkg = require('./package.json')
+const SentryWebpackPlugin = require('@sentry/webpack-plugin')
 
 module.exports = function (ctx) {
   return {
@@ -38,6 +39,23 @@ module.exports = function (ctx) {
       // extractCSS: false,
       // useNotifier: false,
       extendWebpack (cfg) {
+        if (process.env.SENTRY_AUTH_TOKEN) {
+          cfg.plugins.push(
+            new SentryWebpackPlugin({
+              include: '.',
+              ignoreFile: '.sentrycliignore',
+              ignore: [
+                'dist',
+                'node_modules',
+                'webpack.config.js',
+                'quasar.conf.js',
+                '.eslintrc.js',
+                '.postcssrc.js'
+              ],
+              configFile: 'sentry.properties'
+            })
+          )
+        }
         cfg.externals = Object.assign({
           nedb: 'commonjs nedb',
           'ffprobe-static': 'commonjs ffprobe-static',
