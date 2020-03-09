@@ -9,7 +9,7 @@
     .desktop-only(v-if="$store.state.mosys.showSources")
       // .grid-editor-border-left.z-top.bg-grey-4
 
-      .full-height.fixed-top-right.z-max
+      .full-height.fixed-top-right.z-max.custom-shadow
         source-editor.source-editor.bg-white.overflow-hidden
 
     q-modal.mobile-only.z-max(v-model="$store.state.mosys.showSources", minimized, content-css="border-radius: .5rem;",
@@ -20,7 +20,7 @@
     .desktop-only(v-if="showEditingCells")
       // .grid-editor-border-left.z-top.bg-grey-4
 
-      .full-height.fixed-top-right.z-max
+      .full-height.fixed-top-right.z-max.custom-shadow
         cell-editor.grid-editor-editing-cells.bg-white
 
 </template>
@@ -102,5 +102,6 @@
       top 0
       width 1px
       height 100%
-
+  .custom-shadow
+    box-shadow 0 0 20px 0 rgba(0, 0, 0, .1)
 </style>
