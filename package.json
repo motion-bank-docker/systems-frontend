@@ -59,7 +59,7 @@
     "mbjs-api-client": "2.1.3",
     "mbjs-archive": "1.0.0",
     "mbjs-auth-service": "^1.0.3",
-    "mbjs-data-models": "^2.0.11",
+    "mbjs-data-models": "^2.0.13",
     "mbjs-filesystem": "^1.0.0",
     "mbjs-media": "0.2.0",
     "mbjs-quasar": "2.3.2",
