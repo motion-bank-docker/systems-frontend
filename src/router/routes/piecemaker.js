@@ -60,9 +60,15 @@ export default {
       meta: {private: true}
     },
     {
+      path: '/piecemaker/media/:uuid/annotate',
+      component: () => import('pages/piecemaker/media/annotate'),
+      name: 'piecemaker.media.annotate',
+      meta: {private: true}
+    },
+    {
       path: '/piecemaker/media/:id/annotate/:mode',
       component: () => import('pages/piecemaker/media/annotate_generic'),
-      name: 'piecemaker.media.annotate',
+      name: 'piecemaker.media.annotate_generic',
       meta: {private: true}
     },
     {
