@@ -123,6 +123,10 @@ module.exports = function (ctx) {
         UI_VERSION: JSON.stringify(process.env.UI_VERSION || require('./package.json').version),
         FLUENTFFMPEG_COV: JSON.stringify(false),
         //
+        // Build flags
+        //
+        FLAG_DISABLE_FRAGMENT_ENCODING: JSON.stringify(process.env.FLAG_DISABLE_FRAGMENT_ENCODING || false),
+        //
         // Features
         //
         USE_ACL: JSON.stringify(process.env.USE_ACL || true),
@@ -131,7 +135,8 @@ module.exports = function (ctx) {
         USE_METADATA: JSON.stringify(process.env.USE_TAGS || true),
         USE_CUSTOM_MEDIA_STORE: JSON.stringify(process.env.USE_CUSTOM_MEDIA_STORE || false),
         UI_HIDE_MOSYS: JSON.stringify(process.env.UI_HIDE_MOSYS || false),
-        UI_HIDE_DOCUMENTS: JSON.stringify(process.env.UI_HIDE_DOCUMENTS || false)
+        UI_HIDE_DOCUMENTS: JSON.stringify(process.env.UI_HIDE_DOCUMENTS || false),
+        MODULE_PROVIDER: JSON.stringify(process.env.MODULE_PROVIDER || null)
       }
     },
     devServer: {
