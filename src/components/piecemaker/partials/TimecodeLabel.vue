@@ -20,8 +20,8 @@
       formatted (val) {
         let annotationDate
         if (typeof this.millis === 'number') {
-          if (this.mode === 'global') annotationDate = DateTime.fromMillis(this.millis, { setZone: true })
-          else if (this.mode === 'local') annotationDate = this.millis
+          if (this.mode === 'local') annotationDate = this.millis
+          else annotationDate = DateTime.fromMillis(this.millis, { setZone: true })
         }
         else if (this.timecode) {
           annotationDate = DateTime.fromISO(this.timecode, { setZone: true })
@@ -32,7 +32,7 @@
           //   .toDuration().toObject()
           //   .toFormat(constants.config.TIMECODE_FORMAT)
           let dur = Interval.fromDateTimes(this.videoDate, annotationDate)
-            .toDuration(['hours', 'minutes', 'seconds', 'milliseconds']).toObject()
+            .toDuration(['hours', 'minutes', 'seconds', 'milliseconds'])
           const parts = dur.toFormat('hh:mm:ss.SSS').split('.')
           switch (val) {
           case 'milliseconds':
