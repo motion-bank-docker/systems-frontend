@@ -99,11 +99,7 @@ const getRequestConfig = () => {
     }
   }
 }
-const pbaModules = {
-  annotations: annotationsFactory({ getRequestConfig, auth: apiClient }),
-  media: mediaFactory({ getRequestConfig, auth: apiClient }),
-  autosuggest: autosuggestFactory({ getRequestConfig, auth: apiClient })
-}
+
 const modules = {
   /** Custom stores */
   auth,
@@ -116,9 +112,23 @@ const modules = {
 for (let key in mobaApiModules) {
   if (mobaApiModules[key]) modules[key] = mobaApiModules[key]
 }
-for (let key in pbaModules) {
-  if (pbaModules[key]) modules[key] = pbaModules[key]
+
+const moduleProviders = {
+  modules_pba: () => {
+    return {
+      annotations: annotationsFactory({ getRequestConfig, auth: apiClient }),
+      media: mediaFactory({ getRequestConfig, auth: apiClient }),
+      autosuggest: autosuggestFactory({ getRequestConfig, auth: apiClient })
+    }
+  }
 }
+if (typeof moduleProviders[`modules_${process.env.MODULE_PROVIDER}`] === 'function') {
+  const extModules = moduleProviders[`modules_${process.env.MODULE_PROVIDER}`]()
+  for (let key in extModules) {
+    if (extModules[key]) modules[key] = extModules[key]
+  }
+}
+
 if (process.env.USE_ACL) {
   modules.acl = acl
 }
