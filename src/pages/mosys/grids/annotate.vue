@@ -78,6 +78,7 @@
     height calc(100% - 59px) // FIXME: quick fix for issue #13, can we do without calc()?
     position absolute
     flex-direction row
+    transition width ease 300ms
 
     &.edit-mode
       width 75%
