@@ -122,9 +122,11 @@ const moduleProviders = {
     }
   }
 }
-if (typeof moduleProviders[`modules_${process.env.MODULE_PROVIDER}`] === 'function') {
-  const extModules = moduleProviders[`modules_${process.env.MODULE_PROVIDER}`]()
+const providerName = `modules_${process.env.MODULE_PROVIDER}`
+if (typeof moduleProviders[providerName] === 'function') {
+  const extModules = moduleProviders[providerName]()
   for (let key in extModules) {
+    console.debug('Registering', providerName, key)
     if (extModules[key]) modules[key] = extModules[key]
   }
 }
