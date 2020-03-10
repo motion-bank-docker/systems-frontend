@@ -1,31 +1,36 @@
 <template lang="pug">
-  .annotation-icon(:class="classes")
+  .annotation-icon(:class="classes", :style="styles")
 </template>
 
 <script>
+  import { getAnnotationColor } from '../../../lib/color-helpers'
+
   export default {
     name: 'annotation-icon',
-    props: ['annotation', 'isSelected'],
+    props: ['annotation', 'isSelected', 'type'],
     data () {
       return {
         colors: {
+          'SpecificResource': 'grey',
           'TextualBody': '#57aeff',
           'Video': 'tomato',
           'VocabularyEntry': 'black'
         }
       }
     },
-    mounted () {
-    },
-    watch: {
-    },
     computed: {
       classes () {
         let c = []
         if (this.isSelected) c.push('is-selected')
         if (this.annotation.target.selector._valueDuration) c.push('has-duration')
-        c.push('annotation-type-' + this.annotation.body.type)
+        c.push('annotation-type-' + (this.annotation.body.type || 'SpecificResource'))
         return c
+      },
+      styles () {
+        const { backgroundColor } = getAnnotationColor(this.annotation)
+        return {
+          'background-color': backgroundColor
+        }
       }
     },
     methods: {

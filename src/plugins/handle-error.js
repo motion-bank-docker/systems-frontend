@@ -11,7 +11,10 @@ export default ({ Vue }) => {
       return
     }
     let errMessage
-    if (err.response && err.response.status) {
+    if (err.response && err.response.data && err.response.data.status >= 400) {
+      errMessage = context.$t('errors.generic_error', { code: err.response.data.code, message: err.response.data.message })
+    }
+    else if (err.response && err.response.status) {
       switch (err.response.status) {
       case 401:
         errMessage = context.$t('errors.unauthorized')
@@ -24,7 +27,7 @@ export default ({ Vue }) => {
       }
     }
     context.$store.commit('notifications/addMessage', {
-      body: message,
+      body: errMessage || message,
       params: { error: errMessage || err.message },
       mode: 'alert',
       type: 'error'

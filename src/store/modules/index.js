@@ -5,6 +5,7 @@ import acl from './acl'
 import metadata from './metadata'
 import tags from './tags'
 import files from './files'
+import queue from './queue'
 import swimLane from './swim-lane'
 import vocabularies from './vocabularies'
 
@@ -16,6 +17,7 @@ export {
   metadata,
   mosys,
   notifications,
+  queue,
   swimLane,
   vocabularies
 }

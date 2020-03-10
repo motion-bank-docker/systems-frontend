@@ -14,6 +14,7 @@
         :annotation="hoveredAnnotation"
         )
       timecode-label(
+      :mode="root.mode",
       :millis="hoveredAnnotation.target.selector._valueMillis",
       :videoDate="videoDate"
       )
@@ -21,12 +22,13 @@
       template(v-if="hoveredAnnotation.target.selector._valueDuration")
         .timecode-label-duration-spacer
         timecode-label(
+        :mode="root.mode",
         :millis="annotationEnd",
         :videoDate="videoDate"
         )
 
     .q-my-md.ellipsis-3-lines.md-content
-      | {{ hoveredAnnotation.body.value }}
+      | {{ getAnnotationContent(hoveredAnnotation) }}
 
     //
       q-item.q-pa-none.items-start.q-caption.q-pb-md(v-if="showDetails && annotationData")
@@ -116,6 +118,12 @@
       this.$root.$off('globalUp', this.onMarkerLeave)
     },
     methods: {
+      getAnnotationContent (annotation) {
+        if (annotation.body['rdf:label']) {
+          return `${annotation.body['rdf:label']}`
+        }
+        return annotation.body.value
+      },
       elementResize (obj) {
         this.hoverboxWidth = obj.width
       },

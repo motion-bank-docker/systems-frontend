@@ -8,20 +8,20 @@
 </template>
 
 <script>
-  import { DateTime, Interval } from 'luxon'
+  import { DateTime, Interval, Duration } from 'luxon'
   import constants from 'mbjs-data-models/src/constants'
 
   export default {
     name: 'TimecodeLabel',
     // TODO video should be accessed differently?
     // TODO define global video object?
-    props: ['timecode', 'videoDate', 'millis', 'text'],
-    // computed: {
+    props: ['timecode', 'videoDate', 'millis', 'text', 'mode'],
     methods: {
       formatted (val) {
         let annotationDate
-        if (this.millis) {
-          annotationDate = DateTime.fromMillis(this.millis)
+        if (typeof this.millis === 'number') {
+          if (this.mode === 'local') annotationDate = this.millis
+          else annotationDate = DateTime.fromMillis(this.millis, { setZone: true })
         }
         else if (this.timecode) {
           annotationDate = DateTime.fromISO(this.timecode, { setZone: true })
@@ -32,19 +32,24 @@
           //   .toDuration().toObject()
           //   .toFormat(constants.config.TIMECODE_FORMAT)
           let dur = Interval.fromDateTimes(this.videoDate, annotationDate)
-            .toDuration(['hours', 'minutes', 'seconds', 'milliseconds']).toObject()
+            .toDuration(['hours', 'minutes', 'seconds', 'milliseconds'])
+          const parts = dur.toFormat('hh:mm:ss.SSS').split('.')
           switch (val) {
           case 'milliseconds':
-            let ms = DateTime.fromObject({milliseconds: dur.milliseconds})
-            return ms.toFormat('SSS')
+            return parts.pop()
           default:
-            let time = DateTime.fromObject({hour: dur.hours, minutes: dur.minutes, seconds: dur.seconds})
-            return time.toFormat('HH:mm:ss')
+            return parts.splice(0, parts.length - 1).join('.')
           }
         }
-        else if (annotationDate && !this.videoDate) {
+        else if (typeof annotationDate !== 'undefined' && !this.videoDate) {
+          if (this.mode === 'local') {
+            let dur = Duration.fromMillis(this.millis)
+            const parts = dur.toFormat('hh:mm:ss.SSS').split('.')
+            if (val === 'milliseconds') return parts.pop()
+            else return parts.splice(0, parts.length - 1).join('.')
+          }
           if (val === 'milliseconds') return annotationDate.toFormat('SSS')
-          else return annotationDate.toFormat('HH:mm:ss')
+          else return annotationDate.toFormat('HH:mm:ss.SSS')
         }
         return annotationDate ? annotationDate.toFormat(constants.config.TIMECODE_FORMAT) : ''
       }

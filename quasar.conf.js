@@ -1,12 +1,12 @@
 // Configuration for your app
 const pkg = require('./package.json')
+const SentryWebpackPlugin = require('@sentry/webpack-plugin')
 
 module.exports = function (ctx) {
   return {
     // app plugins (/src/plugins)
     plugins: [
       'sentry',
-      'raven',
       'api',
       'auth',
       'axios',
@@ -39,6 +39,23 @@ module.exports = function (ctx) {
       // extractCSS: false,
       // useNotifier: false,
       extendWebpack (cfg) {
+        if (process.env.SENTRY_AUTH_TOKEN) {
+          cfg.plugins.push(
+            new SentryWebpackPlugin({
+              include: '.',
+              ignoreFile: '.sentrycliignore',
+              ignore: [
+                'dist',
+                'node_modules',
+                'webpack.config.js',
+                'quasar.conf.js',
+                '.eslintrc.js',
+                '.postcssrc.js'
+              ],
+              configFile: 'sentry.properties'
+            })
+          )
+        }
         cfg.externals = Object.assign({
           nedb: 'commonjs nedb',
           'ffprobe-static': 'commonjs ffprobe-static',
@@ -82,6 +99,15 @@ module.exports = function (ctx) {
         AUTH0_REDIRECT_URL: JSON.stringify(process.env.AUTH0_REDIRECT_URL),
         AUTH0_AUDIENCE: JSON.stringify(process.env.AUTH0_AUDIENCE),
         //
+        // General OAuth2
+        //
+        OAUTH_CLIENT_ID: JSON.stringify(process.env.OAUTH_CLIENT_ID),
+        OAUTH_CLIENT_SECRET: JSON.stringify(process.env.OAUTH_CLIENT_SECRET),
+        OAUTH_REDIRECT_URL: JSON.stringify(process.env.OAUTH_REDIRECT_URL),
+        OAUTH_AUTH_URL: JSON.stringify(process.env.OAUTH_AUTH_URL),
+        OAUTH_TOKEN_URL: JSON.stringify(process.env.OAUTH_TOKEN_URL),
+        OAUTH_EDIT_PROFILE_URL: JSON.stringify(process.env.OAUTH_EDIT_PROFILE_URL),
+        //
         // API Keys
         //
         SENTRY_DSN: JSON.stringify(process.env.SENTRY_DSN),
@@ -95,7 +121,22 @@ module.exports = function (ctx) {
         BUILD_NAME_EXT: JSON.stringify(process.env.BUILD_NAME_EXT || null),
         USE_RESOURCE_CACHE: JSON.stringify(process.env.USE_RESOURCE_CACHE || false),
         UI_VERSION: JSON.stringify(process.env.UI_VERSION || require('./package.json').version),
-        FLUENTFFMPEG_COV: JSON.stringify(false)
+        FLUENTFFMPEG_COV: JSON.stringify(false),
+        //
+        // Build flags
+        //
+        FLAG_DISABLE_FRAGMENT_ENCODING: JSON.stringify(process.env.FLAG_DISABLE_FRAGMENT_ENCODING || false),
+        //
+        // Features
+        //
+        USE_ACL: JSON.stringify(process.env.USE_ACL || true),
+        USE_FILES: JSON.stringify(process.env.USE_FILES || true),
+        USE_TAGS: JSON.stringify(process.env.USE_TAGS || true),
+        USE_METADATA: JSON.stringify(process.env.USE_TAGS || true),
+        USE_CUSTOM_MEDIA_STORE: JSON.stringify(process.env.USE_CUSTOM_MEDIA_STORE || false),
+        UI_HIDE_MOSYS: JSON.stringify(process.env.UI_HIDE_MOSYS || false),
+        UI_HIDE_DOCUMENTS: JSON.stringify(process.env.UI_HIDE_DOCUMENTS || false),
+        MODULE_PROVIDER: JSON.stringify(process.env.MODULE_PROVIDER || null)
       }
     },
     devServer: {

@@ -38,6 +38,7 @@
             transformed.title = meta && meta.title ? meta.title : _this.$t('labels.title_unknown')
             if (row.target.selector) {
               const parsed = row.target.selector.parse()
+              console.log(parsed)
               if (Array.isArray(parsed['date-time:t'])) transformed.date = parsed['date-time:t'][0]
               else transformed.date = parsed['date-time:t']
             }

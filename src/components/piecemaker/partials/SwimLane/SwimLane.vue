@@ -176,7 +176,6 @@
       TimecodeLabel
     },
     props: [
-      'timelineUuid',
       'markerDetails',
       'resizable',
       'start',
@@ -184,7 +183,8 @@
       'annotations',
       'media',
       'map',
-      'selectedMillis'
+      'selectedMillis',
+      'mode'
     ],
     data () {
       return {
@@ -321,11 +321,13 @@
         if (this.annotations) {
           if (this.groupAnnotationsBy === 'type') {
             groups = this.annotations.reduce((sum, annotation) => {
-              if (sum.indexOf(annotation.body.type) === -1) sum.push(annotation.body.type)
+              const type = annotation.body.type || annotation.body.source.type
+              if (sum.indexOf(type) === -1) sum.push(type)
               return sum
             }, [])
             for (let group of groups) {
-              filtered[group] = this.annotations.filter(annotation => annotation.body.type === group)
+              filtered[group] = this.annotations.filter(annotation => annotation.body.type === group ||
+                annotation.body.source.type === group)
             }
           }
           else if (this.groupAnnotationsBy === 'creator') {
@@ -406,7 +408,7 @@
         this.jumpToMarker(this.selectedAnnotation.target.selector, useDuration)
       },
       getVideoDate () {
-        return DateTime.fromMillis(this.media.target.selector._valueMillis)
+        if (this.mode === 'global') return DateTime.fromMillis(this.media.target.selector._valueMillis)
       },
       setupScreen () {
         console.debug('SwimLane: setupScreen', this.dimensions.details)

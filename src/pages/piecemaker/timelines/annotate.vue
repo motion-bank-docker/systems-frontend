@@ -43,7 +43,8 @@
         ref="annotationField",
         :submit-on-num-enters="1",
         :selector-value="baseSelector",
-        :hasTransparency="false")
+        :hasTransparency="false",
+        :mode="'global'")
 
 </template>
 

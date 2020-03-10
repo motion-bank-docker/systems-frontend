@@ -143,7 +143,7 @@
 
 <script>
   import { mapGetters } from 'vuex'
-  import { userHasFeature } from 'mbjs-quasar/src/lib'
+  // import { userHasFeature } from 'mbjs-quasar/src/lib'
   import ModalConfirm from '../../shared/dialogs/ModalConfirm'
 
   export default {
@@ -216,7 +216,7 @@
 
       this.loading = true
 
-      if (userHasFeature(this.user, 'pba')) await this.$store.dispatch('vocabularies/loadPBATitles')
+      // if (userHasFeature(this.user, 'pba')) await this.$store.dispatch('vocabularies/loadTitles')
       if (this.vocabularyLabels.length) this.selectVocabulary(this.vocabularyLabels[0])
 
       for (let key of Object.keys(this.shortcuts)) {

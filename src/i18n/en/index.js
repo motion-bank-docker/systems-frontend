@@ -94,11 +94,13 @@ export default {
     create_annotation_failed: 'Failed to create annotation: {error}',
     update_annotation_failed: 'Failed to update annotation: {error}',
     delete_annotation_failed: 'Failed to remove annotation: {error}',
+    list_annotations_failed: 'Failed to create annotation: {error}',
     export_archive_failed: 'Failed to export timeline archive: {error}',
     packaging_failed: 'Packaging failed: {error}',
     unauthorized: 'Unauthorized',
     forbidden: 'Forbidden',
-    http_server_error: 'HTTP error {code}: {message}'
+    http_server_error: 'HTTP error {code}: {message}',
+    generic_error: '{code} {message}'
   },
   labels: {
     access_control: 'Access Control',
@@ -198,7 +200,7 @@ export default {
     url_copied: 'URL copied to clipboard',
     caution_media_time_override: 'Caution: Changing media reference time does not update associated annotations!',
     browser_unsupported_warning: '<strong>Unsupported browser:</strong> For optimal performance please use ' +
-      '<a href="https://www.google.com/chrome" target="_blank">Google Chrome</a> or ' +
+      '<a href="https://www.mozilla.org/firefox/" target="_blank">Firefox</a> or ' +
       '<a href="http://www.chromium.org/Home" target="_blank">Chromium</a>.<br>' +
       '<small>While the site might work on your browser, more or less subtle problems can occur. You have been warned!</small>'
   },
@@ -430,7 +432,7 @@ export default {
     }
   },
   site: {
-    copyright: 'Copyright 2018 Motion Bank',
+    copyright: 'Copyright 2020',
     license: 'License',
     tagline: 'Digital Research and Annotation Platform for Contemporary Dance.',
     title: 'Web Systems',
