@@ -48,7 +48,7 @@
               type: 'live-annotate',
               title: 'buttons.annotate',
               color: 'primary',
-              click: (item) => _this.$router.push({ name: 'piecemaker.media.annotate',
+              click: (item) => _this.$router.push({ name: 'piecemaker.media.annotate_generic',
                 params: { id: parseURI(item.id).id, mode: 'local' } })
             }
           ]
