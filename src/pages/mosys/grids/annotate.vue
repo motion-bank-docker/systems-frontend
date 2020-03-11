@@ -21,7 +21,7 @@
       // .grid-editor-border-left.z-top.bg-grey-4
 
       .full-height.fixed-top-right.z-max.custom-shadow
-        cell-editor.grid-editor-editing-cells.bg-white
+        cell-editor.grid-editor-editing-cells.bg-white(@closePanel="closePanelHandler")
 
 </template>
 
@@ -60,6 +60,10 @@
       }
     },
     methods: {
+      closePanelHandler () {
+        console.log('test')
+        this.$store.commit('mosys/setEditingCells', '')
+      },
       closedModal () {
         this.$store.commit('mosys/hideEditingCells')
       },
