@@ -61,7 +61,6 @@
     },
     methods: {
       closePanelHandler () {
-        console.log('test')
         this.$store.commit('mosys/setEditingCells', '')
       },
       closedModal () {
