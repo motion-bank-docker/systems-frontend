@@ -21,7 +21,7 @@
       // .grid-editor-border-left.z-top.bg-grey-4
 
       .full-height.fixed-top-right.z-max.custom-shadow
-        cell-editor.grid-editor-editing-cells.bg-white(@closePanel="closePanelHandler")
+        cell-editor.grid-editor-editing-cells.bg-white(@closePanel="closePanelHandler", @removeCell="removeCellHandler")
 
 </template>
 
@@ -60,6 +60,9 @@
       }
     },
     methods: {
+      removeCellHandler (annotation) {
+        this.$refs.gridEditor.deleteCell('', annotation)
+      },
       closePanelHandler () {
         this.$store.commit('mosys/setEditingCells', '')
       },
