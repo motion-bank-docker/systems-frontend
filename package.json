@@ -58,7 +58,7 @@
     "material-color-hash": "^0.1.6",
     "mbjs-api-client": "2.2.0",
     "mbjs-archive": "1.0.0",
-    "mbjs-auth-service": "^1.0.5",
+    "mbjs-auth-service": "^1.0.6",
     "mbjs-data-models": "^2.0.13",
     "mbjs-filesystem": "^1.0.0",
     "mbjs-media": "0.2.0",
