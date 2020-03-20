@@ -27,7 +27,7 @@
       return {
         uploadFields: [],
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('access_token')}`
+          Authorization: `Bearer ${this.$auth.token}`
         }
       }
     },

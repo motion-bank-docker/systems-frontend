@@ -44,7 +44,7 @@
           }
           else if (job.finished) {
             const headers = {
-              Authorization: `Bearer ${localStorage.getItem('access_token')}`
+              Authorization: `Bearer ${this.$auth.token}`
             }
             this.$store.commit('conversions/removeJobId', jobId)
             const detail = this.$store.state.conversions.jobDetails[jobId]

@@ -28,7 +28,7 @@ const metadata = {
             if (!this.$router.app.$socket) throw new Error('Metadata: Socket is not available')
             this.$router.app.$socket.emit(
               'metadata:get',
-              { url: payload.body.source.id, token: localStorage.getItem('access_token') },
+              { url: payload.body.source.id, token: this.$router.app.$auth.token },
               (err, data) => {
                 if (err) reject(err)
                 else resolve(data)
@@ -41,6 +41,7 @@ const metadata = {
           }
         }
         catch (err) {
+          console.error('metadta', err)
           if (!err.response || err.response.status > 404) console.error(err.message)
         }
       }

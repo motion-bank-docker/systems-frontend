@@ -50,7 +50,7 @@
         overrideAuthor: false,
         skipAcl: false,
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('access_token')}`
+          Authorization: `Bearer ${_this.$auth.token}`
         },
         type: constants.mapClasses.MAP_CLASS_GRID,
         payload: {},

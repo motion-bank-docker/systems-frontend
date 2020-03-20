@@ -63,7 +63,7 @@
   // const fetchMetaData = async (media) => {
   //   let mediaMeta = []
   //   const headers = {
-  //     Authorization: `Bearer ${localStorage.getItem('access_token')}`
+  //     Authorization: `Bearer ${this.$auth.token}`
   //   }
   //   for (let v of media) {
   //     try {

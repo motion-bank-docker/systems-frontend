@@ -8,14 +8,14 @@ const acl = {
   actions: {
     async set (context, { role, id, permissions }) {
       const headers = {
-        Authorization: `Bearer ${localStorage.getItem('access_token')}`
+        Authorization: `${this.$router.app.$auth.tokenType} ${this.$router.app.$auth.token}`
       }
       const query = `?role=${encodeURIComponent(role)}&resource=${encodeURIComponent(id)}`
       await axios.put(`${process.env.API_HOST}/acl${query}`, permissions, { headers })
     },
     async remove (context, { role, id, permission }) {
       const headers = {
-        Authorization: `Bearer ${localStorage.getItem('access_token')}`
+        Authorization: `${this.$router.app.$auth.tokenType} ${this.$router.app.$auth.token}`
       }
       const query = `?role=${encodeURIComponent(role)}&resource=${encodeURIComponent(id)}` +
         `&permission=${encodeURIComponent(permission)}`
@@ -23,7 +23,7 @@ const acl = {
     },
     async isRoleAllowed (context, { role, id, permission }) {
       const headers = {
-        Authorization: `Bearer ${localStorage.getItem('access_token')}`
+        Authorization: `${this.$router.app.$auth.tokenType} ${this.$router.app.$auth.token}`
       }
       let permissions
       const query = `?role=${encodeURIComponent(role)}&resource=${encodeURIComponent(id)}` +

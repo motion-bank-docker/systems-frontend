@@ -71,6 +71,7 @@
       },
       duration () {
         if (this.annotation && this.annotation.target.selector) {
+          console.log(this.annotation.target.selector)
           return this.annotation.target.selector.getDuration().toFormat(constants.config.TIMECODE_FORMAT_DURATION)
         }
       }

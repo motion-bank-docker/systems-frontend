@@ -7,6 +7,7 @@ export default ({ Vue }) => {
     debug: true,
     connection: `${process.env.SOCKETS_HOST || window.SOCKETS_HOST}`,
     query: {
+      // FIXME: token key is dynamic
       token: localStorage.getItem('access_token')
     }
   }))
