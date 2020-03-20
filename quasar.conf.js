@@ -62,8 +62,7 @@ module.exports = function (ctx) {
           'jwt-decode': 'commonjs jwt-decode',
           'fluent-ffmpeg': 'commonjs fluent-ffmpeg',
           'open-graph-scraper': 'commonjs open-graph-scraper',
-          'mbjs-archive': 'commonjs mbjs-archive',
-          'mbjs-auth-service': 'commonjs mbjs-auth-service'
+          'mbjs-archive': 'commonjs mbjs-archive'
         }, cfg.externals)
         cfg.module.rules.push({
           enforce: 'pre',
