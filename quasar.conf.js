@@ -166,6 +166,7 @@ module.exports = function (ctx) {
         'QBtn',
         // 'QBtnToggle',
         'QBtnDropdown',
+        'QBtnGroup',
         //
         // Navigation
         //

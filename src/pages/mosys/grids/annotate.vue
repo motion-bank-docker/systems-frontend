@@ -1,6 +1,6 @@
 <template lang="pug">
 
-  .grid-editor-container
+  .grid-editor-container(:class="{'edit-mode': $store.state.mosys.showSources && !isMobile || showEditingCells && !isMobile}")
 
     // ------------------------------------------------------------------------------------------------------------ grid
     grid-editor.grid-editor(ref="gridEditor", :gridUuid="$route.params.uuid", :tabsAreOpen="tabsAreOpen")
@@ -9,7 +9,7 @@
     .desktop-only(v-if="$store.state.mosys.showSources")
       // .grid-editor-border-left.z-top.bg-grey-4
 
-      .full-height
+      .full-height.fixed-top-right.z-max.custom-shadow
         source-editor.source-editor.bg-white.overflow-hidden
 
     q-modal.mobile-only.z-max(v-model="$store.state.mosys.showSources", minimized, content-css="border-radius: .5rem;",
@@ -20,8 +20,8 @@
     .desktop-only(v-if="showEditingCells")
       // .grid-editor-border-left.z-top.bg-grey-4
 
-      .full-height
-        cell-editor.grid-editor-editing-cells.bg-white
+      .full-height.fixed-top-right.z-max.custom-shadow
+        cell-editor.grid-editor-editing-cells.bg-white(@closePanel="closePanelHandler", @removeCell="removeCellHandler")
 
 </template>
 
@@ -39,7 +39,8 @@
     },
     data () {
       return {
-        triggerScrollPositionReset: 0
+        triggerScrollPositionReset: 0,
+        isMobile: this.$q.platform.is.mobile
       }
     },
     mounted () {
@@ -59,6 +60,12 @@
       }
     },
     methods: {
+      removeCellHandler (annotation) {
+        this.$refs.gridEditor.deleteCell('', annotation)
+      },
+      closePanelHandler () {
+        this.$store.commit('mosys/setEditingCells', '')
+      },
       closedModal () {
         this.$store.commit('mosys/hideEditingCells')
       },
@@ -77,6 +84,10 @@
     height calc(100% - 59px) // FIXME: quick fix for issue #13, can we do without calc()?
     position absolute
     flex-direction row
+    transition width ease 300ms
+
+    &.edit-mode
+      width 75%
 
     .grid-editor
       overflow auto
@@ -98,5 +109,6 @@
       top 0
       width 1px
       height 100%
-
+  .custom-shadow
+    box-shadow 0 0 20px 0 rgba(0, 0, 0, .1)
 </style>
