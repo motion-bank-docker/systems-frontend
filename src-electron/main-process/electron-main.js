@@ -1,7 +1,7 @@
 import { app, BrowserWindow, ipcMain, Menu } from 'electron'
 // import ffprobeHandler from './ipc-handlers/ffprobe'
 
-const authService = require('./auth-service-electron')
+import * as authService from 'mbjs-auth-service/src/auth-service-electron'
 const { createAuthWindow } = require('./auth-process')
 
 /**

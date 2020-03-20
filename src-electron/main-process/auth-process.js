@@ -1,5 +1,5 @@
 import {BrowserWindow} from 'electron'
-import * as authService from './auth-service-electron'
+import * as authService from 'mbjs-auth-service/src/auth-service-electron'
 import createWindow from './electron-main'
 
 let win = null
