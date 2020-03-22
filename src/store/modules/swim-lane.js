@@ -20,7 +20,7 @@ const swimLane = {
     selectedAnnotation: undefined,
     visibilityDrawer: true,
     cursorTop: undefined,
-    visibilitySwimlanes: true,
+    visibilitySwimlanes: false,
     expandedMode: false
   },
   getters: {
