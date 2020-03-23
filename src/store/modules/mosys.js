@@ -5,7 +5,7 @@ const mosys = {
   state: {
     sourcesTabName: '',
     showSources: false,
-    showAddCells: false,
+    // showAddCells: false,
     showEditingCells: false,
     selectedCells: [],
     editingCells: [],
@@ -15,13 +15,15 @@ const mosys = {
     currentTimeline: undefined,
     sourceCellInput: undefined,
 
+    editGrid: false,
     dimensions: {}
   },
   getters: {
+    getEditGrid: state => state.editGrid,
     getSourceCellInput: state => state.sourceCellInput,
     getNewCell: state => state.newCell,
     getShowSources: state => state.showSources,
-    getShowAddCells: state => state.showAddCells,
+    // getShowAddCells: state => state.showAddCells,
     getSelectedCells: state => state.selectedCells,
     getEditingCells: state => state.editingCells,
     getShowEditingCells: state => state.showEditingCells,
@@ -30,6 +32,9 @@ const mosys = {
     getCurrentTimeline: state => state.currentTimeline
   },
   mutations: {
+    toggleGridEdit (state) {
+      state.editGrid = !state.editGrid
+    },
     setSourceCellInput (state, value) {
       state.sourceCellInput = value
     },
@@ -71,6 +76,7 @@ const mosys = {
     hideSources: (state) => {
       state.showSources = false
     },
+    /*
     showAddCells: (state) => {
       state.showAddCells = true
       if (state.showAddCells) {
@@ -85,7 +91,7 @@ const mosys = {
     },
     hideAddCells: (state) => {
       state.showAddCells = false
-    },
+    }, */
     showEditingCells: (state) => {
       state.showEditingCells = true
       if (state.showEditingCells) {
