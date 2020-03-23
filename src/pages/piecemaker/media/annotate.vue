@@ -1,8 +1,5 @@
 <template lang="pug">
 
-  // POST ANNOTATION
-  //
-  //
   .bg-dark(style="height: calc(100vh - 52px); overflow: hidden;")
 
     q-window-resize-observable(@resize="onViewportResize")
@@ -11,48 +8,49 @@
 
     .bg-dark.relative-position(style="height: calc(100vh - 52px);")
 
-      // meta player
+      // media player
 
       div.relative(:style="{height: videoHeight + 'px', maxHeight: viewport.height - 52 - 250 + 'px'}",
-        :class="[!visibilitySwimlanes ? 'fit' : '']")
+      :class="[!visibilitySwimlanes ? 'fit' : '']")
+
         media-player.full-height.relative-position(v-if="media", :annotation="media", :fine-controls="true",
-          @ready="playerReady($event)", @time="onPlayerTime($event)")
+        @ready="playerReady($event)", @time="onPlayerTime($event)")
 
       // swimlane content
 
       .absolute-bottom-right.bg-dark.full-width.ui-border-top(
-        v-if="visibilitySwimlanes",
-        :style="{height: swimlanesHeight + 'px', minHeight: '250px'}",
-        ref="swimlaneWrap"
-      )
+      v-if="visibilitySwimlanes",
+      :style="{height: swimlanesHeight + 'px', minHeight: '250px'}",
+      ref="swimlaneWrap")
+
         swim-lane(
-          v-if="timeline",
-          ref="swimLane",
-          :map="timeline",
-          :timelineUuid="timeline._uuid",
-          :markerDetails="false",
-          :resizable="true",
-          :start="getMediaDate().toMillis()",
-          :duration="getMediaDuration()",
-          :annotations="annotations",
-          :media="media",
-          :key="componentKey",
-          :selectedMillis="selectedMillis",
-          :focusedAnnotation="focusedAnnotation",
-          @emitHandler="handlerToggle('swimlanes')",
-          @timecodeChange="gotoMillis",
-          @updateAnnotation="updateAnnotation"
-        )
+        v-if="timeline",
+        ref="swimLane",
+        :map="timeline",
+        :timelineUuid="timeline._uuid",
+        :markerDetails="false",
+        :resizable="true",
+        :start="getMediaDate().toMillis()",
+        :duration="getMediaDuration()",
+        :annotations="annotations",
+        :media="media",
+        :key="componentKey",
+        :selectedMillis="selectedMillis",
+        :focusedAnnotation="focusedAnnotation",
+        @emitHandler="handlerToggle('swimlanes')",
+        @timecodeChange="gotoMillis",
+        @updateAnnotation="updateAnnotation")
 
       // input field for new annotations
 
       q-page-sticky(position="top")
+
         annotation-field(
-          @annotation="onAnnotation",
-          ref="annotationField",
-          :submit-on-num-enters="1",
-          :selector-value="baseSelector",
-          :hasTransparency="true")
+        @annotation="onAnnotation",
+        ref="annotationField",
+        :submit-on-num-enters="1",
+        :selector-value="baseSelector",
+        :hasTransparency="true")
 
     // anntoation list filters, settings, etc.
 
@@ -60,74 +58,81 @@
       q-input(float-label="Filter", value="")
 
     // annotations list
-    q-layout-drawer.bg-dark(
-      v-if="annotations && drawer !== undefined",
-      v-model="drawer",
-      side="right",
-      :width="400")
-      .absolute.fit.bg-dark(style="")
-      q-list.bg-dark.q-py-none(dark, @mouseleave.native="currentHover === undefined")
 
+    q-layout-drawer.bg-dark(
+    v-if="annotations && drawer !== undefined",
+    v-model="drawer",
+    side="right",
+    :width="400")
+
+      .absolute.fit.bg-dark(style="")
+
+      q-list.bg-dark.q-py-none(dark, @mouseleave.native="currentHover === undefined")
         q-item.annotation-list-item.q-pb-lg(
-          dark,
-          v-for="(annotation, i) in annotations",
-          :key="annotation._uuid",
-          :ref="annotation._uuid",
-          :class="{'is-selected' : currentIndex === i || editAnnotationIndex === i, 'is-being-edited': editAnnotationIndex === i}",
-          @mouseover.native="setHover(annotation._uuid)"
-        )
+        dark,
+        v-for="(annotation, i) in annotations",
+        :key="annotation._uuid",
+        :ref="annotation._uuid",
+        :class="{'is-selected' : currentIndex === i || editAnnotationIndex === i, 'is-being-edited': editAnnotationIndex === i}",
+        @mouseover.native="setHover(annotation._uuid)")
+
           q-item-main
             q-item-tile.relative-position
 
               .row.items-center.q-mt-sm
                 annotation-icon.q-mr-sm.cursor-pointer(
-                  :annotation="annotation",
-                  :isSelected="selectedAnnotation ? selectedAnnotation._uuid === annotation._uuid : false",
-                  @click.native="gotoSelector(annotation.target.selector, false, annotation)"
-                )
+                :annotation="annotation",
+                :isSelected="selectedAnnotation ? selectedAnnotation._uuid === annotation._uuid : false",
+                @click.native="gotoSelector(annotation.target.selector, false, annotation)")
+
                 timecode-label(
-                  @click.native="gotoSelector(annotation.target.selector, false, annotation)",
-                  :millis="annotation.target.selector._valueMillis",
-                  :videoDate="getMediaDate()"
-                )
+                @click.native="gotoSelector(annotation.target.selector, false, annotation)",
+                :millis="annotation.target.selector._valueMillis",
+                :videoDate="getMediaDate()")
+
                 // annotation has duration
+
                 template(v-if="annotation.target.selector._valueDuration")
                   .timecode-label-duration-spacer
+
                   timecode-label(
-                    @click.native="gotoSelector(annotation.target.selector, true, annotation)",
-                    :millis="getAnnotationEndMillis(annotation)",
-                    :videoDate="getMediaDate()"
-                  )
+                  @click.native="gotoSelector(annotation.target.selector, true, annotation)",
+                  :millis="getAnnotationEndMillis(annotation)",
+                  :videoDate="getMediaDate()")
+
                 // add timecode button
+
                 template(v-else)
                   .timecode-label-duration-spacer.show-on-hover
+
                   timecode-label.show-on-hover(
-                    @click.native="addDurationToAnnotation(annotation)",
-                    :text="'Add current timecode'"
-                  )
+                  @click.native="addDurationToAnnotation(annotation)",
+                  :text="'Add current timecode'")
 
               // buttons
 
               <!--div.float-right(v-if="currentHover === annotation.uuid")-->
               .absolute-top-right.annotation-list-item-buttons.show-on-hover.show-on-edit(style="margin-top: -4px;")
+
                 q-btn.float-right(@click="$refs.confirmModal.show('messages.confirm_delete', annotation, 'buttons.delete')",
-                  size="xs", flat, icon="delete", round)
+                size="xs", flat, icon="delete", round)
 
                 q-btn.q-mr-sm(
-                  v-if="(!isEditingAnnotations && annotation.body.type === 'TextualBody' || editAnnotationIndex !== i && annotation.body.type !== 'VocabularyEntry')",
-                  @click="setEditIndex(i)", size="xs", icon="edit", round, flat)
+                v-if="(!isEditingAnnotations && annotation.body.type === 'TextualBody' || editAnnotationIndex !== i && annotation.body.type !== 'VocabularyEntry')",
+                @click="setEditIndex(i)", size="xs", icon="edit", round, flat)
 
                 q-btn.float-right.q-mr-sm(v-if="annotation.body.type === 'TextualBody' && editAnnotationIndex === i",
-                  @click="updateAnnotation(annotation)", size="xs", :color="isAnnotationDirty ? 'primary' : undefined",
-                  icon="save", round, flat)
+                @click="updateAnnotation(annotation)", size="xs", :color="isAnnotationDirty ? 'primary' : undefined",
+                icon="save", round, flat)
 
             // text content
 
             q-item-tile
               markdown-display.markdown-display.q-mt-sm(v-if="!isEditingAnnotations || editAnnotationIndex !== i",
-                :content="annotation.body.value", :options="mdOptions")
+              :content="annotation.body.value", :options="mdOptions")
+
               q-input.q-mt-sm.q-mb-sm(v-if="annotation.body.type === 'TextualBody' && editAnnotationIndex === i", color="white",
-                type="textarea", v-model="annotation.body.value", dark)
+              type="textarea", v-model="annotation.body.value", dark)
 
 </template>
 
@@ -165,6 +170,7 @@
       }
       this.drawer = this.visibilityDrawer
       this.setupScreen()
+      this.setVideoHeight()
     },
     beforeDestroy () {
       this.$store.commit('swimLane/setSelectedAnnotation')
@@ -252,8 +258,9 @@
     },
     watch: {
       storeCursorTop (val) {
-        this.mediaHeight = val - this.headerHeight
+        // this.mediaHeight = val - this.headerHeight
         this.swimlanesHeight = (this.viewport.height - val)
+        this.setVideoHeight()
       },
       visibilityDrawer (val) {
         this.drawer = val
@@ -269,14 +276,17 @@
       this.$root.$on('annotationEndMillis', this.getAnnotationEndMillis)
     },
     methods: {
+      setVideoHeight () {
+        this.videoHeight = this.viewport.height - this.swimlanesHeight - this.headerHeight
+      },
       setupScreen () {
         this.$store.commit('swimLane/setSelectedAnnotation', null)
         if (this.$store.state.swimLane.cursorTop) {
-          this.mediaHeight = this.$store.state.swimLane.cursorTop - this.headerHeight
+          // this.mediaHeight = this.$store.state.swimLane.cursorTop - this.headerHeight
           this.swimlanesHeight = (this.viewport.height - this.$store.state.swimLane.cursorTop)
         }
         else {
-          this.mediaHeight = this.viewport.height / 2 - this.headerHeight
+          // this.mediaHeight = this.viewport.height / 2 - this.headerHeight
           this.swimlanesHeight = this.viewport.height / 4
         }
       },
@@ -291,14 +301,15 @@
       onEmitResize (val) {
         if (this.swimlanes) {
           this.swimlanesHeight = (this.viewport.height + this.headerHeight - val)
-          this.mediaHeight = this.viewport.height - 52 - this.swimlanesHeight
+          // this.mediaHeight = this.viewport.height - 52 - this.swimlanesHeight
         }
       },
       */
       onViewportResize (size) {
         this.viewport.height = size.height
         this.viewport.width = size.width
-        this.mediaHeight = this.viewport.height - 52 - this.swimlanesHeight
+        // this.mediaHeight = this.viewport.height - 52 - this.swimlanesHeight
+        this.setVideoHeight()
       },
       handlerToggle (val) {
         switch (val) {
