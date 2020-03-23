@@ -1,12 +1,12 @@
 const swimLane = {
   namespaced: true,
   state: {
-    groupAnnotationsBy: 'type',
+    groupAnnotationsBy: localStorage.getItem('mb_sl_groupAnnotationsBy') || 'type',
     options: [
       {label: 'Type', value: 'type'},
       {label: 'Creator', value: 'creator'}
     ],
-    laneMode: 'collapse',
+    laneMode: localStorage.getItem('mb_sl_laneMode') || 'collapse',
     optionsLaneMode: [
       {label: 'Collapse', value: 'collapse'},
       {label: 'Expand', value: 'expand'}
@@ -14,14 +14,14 @@ const swimLane = {
     timecode: 0,
     scaleFactor: 1,
     scrollPosition: {x: 0, y: 0},
-    visibilityDetails: false,
-    detailsWidth: 20,
+    visibilityDetails: JSON.parse(localStorage.getItem('mb_sl_visibilityDetails') || 'false'),
+    detailsWidth: JSON.parse(localStorage.getItem('mb_sl_detailsWidth') || '20'),
     timecodeLabelBreakpoint: false,
     selectedAnnotation: undefined,
-    visibilityDrawer: true,
+    visibilityDrawer: JSON.parse(localStorage.getItem('mb_sl_visibilityDrawer') || 'true'),
     cursorTop: undefined,
-    visibilitySwimlanes: false,
-    expandedMode: false
+    visibilitySwimlanes: JSON.parse(localStorage.getItem('mb_sl_visibilitySwimlanes') || 'false'),
+    expandedMode: JSON.parse(localStorage.getItem('mb_sl_expandedMode') || 'false')
   },
   getters: {
     getOptions: state => state.options,
@@ -43,33 +43,40 @@ const swimLane = {
   mutations: {
     setExpandedMode (state) {
       state.expandedMode = !state.expandedMode
+      localStorage.setItem('mb_sl_visibilitySwimlanes', JSON.stringify(state.expandedMode))
     },
     setVisibilitySwimlanes (state) {
       state.visibilitySwimlanes = !state.visibilitySwimlanes
+      localStorage.setItem('mb_sl_visibilitySwimlanes', JSON.stringify(state.visibilitySwimlanes))
     },
     setCursorTop (state, val) {
       state.cursorTop = val
     },
     setVisibilityDrawer (state) {
       state.visibilityDrawer = !state.visibilityDrawer
+      localStorage.setItem('mb_sl_visibilityDrawer', JSON.stringify(state.visibilityDrawer))
     },
     setSelectedAnnotation (state, val) {
       state.selectedAnnotation = val
     },
     setDetailsWidth (state, val) {
       state.detailsWidth = val
+      localStorage.setItem('mb_sl_detailsWidth', JSON.stringify(state.detailsWidth))
     },
     setTimecodeLabelBreakpoint (state, val) {
       state.timecodeLabelBreakpoint = val
     },
     setVisibilityDetails (state) {
       state.visibilityDetails = !state.visibilityDetails
+      localStorage.setItem('mb_sl_visibilityDetails', JSON.stringify(state.visibilityDetails))
     },
     setType (state, type) {
       state.groupAnnotationsBy = type
+      localStorage.setItem('mb_sl_groupAnnotationsBy', JSON.stringify(state.groupAnnotationsBy))
     },
     setLaneMode (state, mode) {
       state.laneMode = mode
+      localStorage.setItem('mb_sl_laneMode', JSON.stringify(state.laneMode))
     },
     setTimecode (state, v) {
       state.timecode = v
