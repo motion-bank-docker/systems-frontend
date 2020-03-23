@@ -607,9 +607,7 @@
         display: block
     &.is-selected
       background-color $darker
-</style>
 
-<style lang="stylus">
   .video-js
     background-color transparent
     .vjs-tech
