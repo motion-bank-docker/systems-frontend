@@ -21,7 +21,7 @@ class Vocabulary {
 
   find (query = {}) {
     const _this = this
-    return new Promise(resolve => resolve(sift(query, _this._entries)))
+    return new Promise(resolve => resolve(_this._entries.filter(sift(query))))
   }
 
   get (id) {

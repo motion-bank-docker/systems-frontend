@@ -10,6 +10,13 @@ export default {
     },
 
     {
+      path: '/piecemaker/index',
+      component: () => import('pages/piecemaker/annotations/table'),
+      name: 'piecemaker.index',
+      meta: {private: true}
+    },
+
+    {
       path: '/piecemaker/timelines',
       component: () => import('pages/piecemaker/timelines/list'),
       name: 'piecemaker.timelines.list',

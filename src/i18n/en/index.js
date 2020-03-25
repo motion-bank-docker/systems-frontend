@@ -158,7 +158,8 @@ export default {
     title_unknown: 'Unknown Title',
     type: 'Type',
     video_title: 'Video title',
-    video_url: 'Video URL'
+    video_url: 'Video URL',
+    video: 'Video'
   },
   links: {
     click_to_register: 'Click here to create an account.'

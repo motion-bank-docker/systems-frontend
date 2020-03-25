@@ -12,6 +12,21 @@ and this project adheres to
 
 ### Fixed
 
+- Replace newlines in CSV export
+
+## [1.3.10] - 2020-02-14
+
+### Added
+
+- Searchable global Piecemaker index
+
+### Updated
+
+- sift module
+
+### Fixed
+
+- Escape semicolons in CSV export
 - Missing i18n string for `Index` button
 
 ## [1.3.9] - 2019-12-18
