@@ -34,7 +34,7 @@ jobs:
             API_HOST: https://api-dev.motionbank.org
           command: |
             set +o pipefail
-            AUTH0_CLIENT_ID=${DEV_AUTH0_CLIENT_ID} SENTRY_DSN=${DEV_SENTRY_DSN} npm run build
+            AUTH0_CLIENT_ID=${DEV_AUTH0_CLIENT_ID} SENTRY_DSN=${DEV_SENTRY_DSN} npm run build-dev
             docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
             docker build --no-cache -t motionbank/systems-frontend:dev .
             docker push motionbank/systems-frontend:dev

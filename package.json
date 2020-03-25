@@ -17,6 +17,7 @@
     "build": "cross-env NODE_ENV=production npx quasar build",
     "build-electron": "NODE_ENV=production IS_ELECTRON=true IS_STAGING=true quasar build -m electron -t mat -v 4.2.5",
     "build-staging": "cross-env NODE_ENV=production npx quasar build -d",
+    "build-dev": "cross-env NODE_ENV=production npx quasar build -d",
     "clean": "quasar clean",
     "dev": "cross-env NODE_ENV=production npx quasar dev",
     "dev-electron": "cross-env NODE_ENV=production IS_ELECTRON=true IS_STAGING=true npx quasar dev -m electron -t mat",
