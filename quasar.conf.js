@@ -56,12 +56,12 @@ module.exports = function (ctx) {
         STORAGE_HOST: JSON.stringify(process.env.STORAGE_HOST || 'https://storage.motionbank.org'),
         PACKAGER_HOST: JSON.stringify(process.env.PACKAGER_HOST || 'https://packager-legacy.motionbank.org'),
         TRANSCODER_HOST: JSON.stringify(process.env.TRANSCODER_HOST || 'https://transcoder.motionbank.org'),
-        UI_HOST: JSON.stringify(process.env.UI_HOST || 'https://leagcy.motionbank.org'),
+        UI_HOST: JSON.stringify(process.env.UI_HOST || 'https://legacy.motionbank.org'),
         //
         // Resources
         //
         VOCABULARY_BASE_URI: JSON.stringify(process.env.VOCABULARY_BASE_URI || 'http://id.motionbank.org/vocabularies/'),
-        AUTH0_APP_METADATA_PREFIX: JSON.stringify(process.env.AUTH0_APP_METADATA_PREFIX || 'https://leagcy.motionbank.org/app_metadata/'),
+        AUTH0_APP_METADATA_PREFIX: JSON.stringify(process.env.AUTH0_APP_METADATA_PREFIX || 'https://app.motionbank.org/app_metadata/'),
         ID_FIELD: JSON.stringify(process.env.ID_FIELD || 'uuid'),
         //
         // Auth0
