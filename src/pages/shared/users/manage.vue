@@ -75,19 +75,16 @@
             }
           },
           submit: {
-            handler () {
-              return context.$store.dispatch('profiles/patch', [context.$store.state.auth.user.uuid, context.payload]).then(() => {
-                return context.$store.dispatch('profiles/get', context.$store.state.auth.user.uuid)
-              }).then(profile => {
-                const user = context.$store.state.auth.user
-                user.profile = profile
-                context.$store.commit('auth/setUser', user)
-                localStorage.setItem('user', JSON.stringify(user))
-              }).then(() => {
-                if (context.$route.params.isFirst && context.$route.params.redirect) {
-                  context.$router.push(context.$route.params.redirect.fullPath)
-                }
-              })
+            async handler () {
+              const profile = await context.$store.dispatch('profiles/patch', [context.$store.state.auth.user.uuid, context.payload])
+              if (profile) {
+                const user = Object.assign({}, context.$store.state.auth.user)
+                user.profile = Object.assign({}, user.profile, profile)
+                context.$auth._setUser(user, context.$store)
+              }
+              if (context.$route.params.isFirst && context.$route.params.redirect) {
+                context.$router.push(context.$route.params.redirect.fullPath)
+              }
             },
             label: 'buttons.save',
             message: 'messages.update_success'
