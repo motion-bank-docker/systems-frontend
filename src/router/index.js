@@ -24,7 +24,7 @@ const Router = new VueRouter({
 
 Router.beforeEach((to, from, next) => {
   const waitForStore = (app, cb) => {
-    if (app.$store === undefined) setTimeout(() => waitForStore(app, cb), 0)
+    if (typeof app.$store === 'undefined') setTimeout(() => waitForStore(app, cb), 0)
     else cb()
   }
   waitForStore(Router.app, () => {
