@@ -9,7 +9,7 @@
     async mounted () {
       try {
         const { user, first } = await this.$auth.handleAuthentication(this.$store)
-        console.debug('Authenticated user', user)
+        console.debug('Authenticated user', user, first)
         this.$store.commit('notifications/addMessage', {
           body: this.$t('messages.login_success'),
           type: 'success'
