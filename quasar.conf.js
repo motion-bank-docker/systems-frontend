@@ -129,6 +129,8 @@ module.exports = function (ctx) {
         //
         // Features
         //
+        MIGRATION_PREVIOUS_URL: JSON.stringify(process.env.MIGRATION_PREVIOUS_URL || null),
+        MIGRATION_PREVIOUS_INFO_URL: JSON.stringify(process.env.MIGRATION_PREVIOUS_INFO_URL || null),
         USE_ACL: JSON.stringify(process.env.USE_ACL || true),
         USE_FILES: JSON.stringify(process.env.USE_FILES || true),
         USE_TAGS: JSON.stringify(process.env.USE_TAGS || true),
@@ -240,7 +242,8 @@ module.exports = function (ctx) {
         'QEditor',
         'QCarousel',
         'QCarouselSlide',
-        'QCarouselControl'
+        'QCarouselControl',
+        'QAlert'
       ],
       directives: [
         'Ripple',

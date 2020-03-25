@@ -47,7 +47,8 @@ export default {
     submit: 'Submit',
     synchronize: 'Sync',
     media: 'Media',
-    yes: 'Yes'
+    yes: 'Yes',
+    do_not_show_again: 'Do not show again'
   },
   checkboxes: {
     delete: 'delete',
@@ -202,7 +203,8 @@ export default {
     browser_unsupported_warning: '<strong>Unsupported browser:</strong> For optimal performance please use ' +
       '<a href="https://www.mozilla.org/firefox/" target="_blank">Firefox</a> or ' +
       '<a href="http://www.chromium.org/Home" target="_blank">Chromium</a>.<br>' +
-      '<small>While the site might work on your browser, more or less subtle problems can occur. You have been warned!</small>'
+      '<small>While the site might work on your browser, more or less subtle problems can occur. You have been warned!</small>',
+    legacy_site_migration: 'Looking for the previous version and your data? It’s still there:'
   },
   navigation: {
     annotate_media: 'Annotate Media',

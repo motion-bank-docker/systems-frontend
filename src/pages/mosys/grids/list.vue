@@ -2,6 +2,8 @@
   full-screen
     confirm-modal(ref="confirmModal", @confirm="handleConfirmModal")
 
+    migration-warning
+
     content-block(:position="'first'")
       headline(:content="$t('routes.mosys.grids.list.title')")
 
@@ -25,12 +27,14 @@
   import Headline from '../../../components/shared/elements/Headline'
   import ContentBlock from '../../../components/shared/elements/ContentBlock'
   import ContentParagraph from '../../../components/shared/elements/ContentParagraph'
+  import MigrationWarning from '../../../components/shared/partials/MigrationWarning'
 
   export default {
     components: {
       Headline,
       ContentBlock,
-      ContentParagraph
+      ContentParagraph,
+      MigrationWarning
     },
     data () {
       const _this = this
