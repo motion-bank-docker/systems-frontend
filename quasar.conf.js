@@ -52,24 +52,24 @@ module.exports = function (ctx) {
         //
         // Hosts
         //
-        API_HOST: JSON.stringify(process.env.API_HOST || 'https://api.motionbank.org'),
+        API_HOST: JSON.stringify(process.env.API_HOST || 'https://api-legacy.motionbank.org'),
         STORAGE_HOST: JSON.stringify(process.env.STORAGE_HOST || 'https://storage.motionbank.org'),
-        PACKAGER_HOST: JSON.stringify(process.env.PACKAGER_HOST || 'https://packager.motionbank.org'),
+        PACKAGER_HOST: JSON.stringify(process.env.PACKAGER_HOST || 'https://packager-legacy.motionbank.org'),
         TRANSCODER_HOST: JSON.stringify(process.env.TRANSCODER_HOST || 'https://transcoder.motionbank.org'),
-        UI_HOST: JSON.stringify(process.env.UI_HOST || 'https://app.motionbank.org'),
+        UI_HOST: JSON.stringify(process.env.UI_HOST || 'https://leagcy.motionbank.org'),
         //
         // Resources
         //
         VOCABULARY_BASE_URI: JSON.stringify(process.env.VOCABULARY_BASE_URI || 'http://id.motionbank.org/vocabularies/'),
-        AUTH0_APP_METADATA_PREFIX: JSON.stringify(process.env.AUTH0_APP_METADATA_PREFIX || 'https://app.motionbank.org/app_metadata/'),
+        AUTH0_APP_METADATA_PREFIX: JSON.stringify(process.env.AUTH0_APP_METADATA_PREFIX || 'https://leagcy.motionbank.org/app_metadata/'),
         ID_FIELD: JSON.stringify(process.env.ID_FIELD || 'uuid'),
         //
         // Auth0
         //
         AUTH0_DOMAIN: JSON.stringify(process.env.AUTH0_DOMAIN || 'auth.motionbank.org'),
         AUTH0_CLIENT_ID: JSON.stringify(process.env.AUTH0_CLIENT_ID || '80t5TRU9MVhGDVnZ522CvX4hutBxDB6U'),
-        AUTH0_REDIRECT_URL: JSON.stringify(process.env.AUTH0_REDIRECT_URL || 'https://app.motionbank.org/users/callback'),
-        AUTH0_AUDIENCE: JSON.stringify(process.env.AUTH0_AUDIENCE || 'https://api.motionbank.org'),
+        AUTH0_REDIRECT_URL: JSON.stringify(process.env.AUTH0_REDIRECT_URL || 'https://legacy.motionbank.org/users/callback'),
+        AUTH0_AUDIENCE: JSON.stringify(process.env.AUTH0_AUDIENCE || 'https://api-legacy.motionbank.org'),
         //
         // Sentry
         //
