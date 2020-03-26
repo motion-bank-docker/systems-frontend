@@ -88,7 +88,8 @@
               label: _this.$t('labels.title'),
               field: 'title',
               filter: true,
-              sortable: true
+              sortable: true,
+              style: 'white-space: normal'
             },
             {
               name: 'last_updated',
@@ -97,7 +98,7 @@
               sort: _this.$sort.onDateValue,
               field: 'last_updated',
               format: val => DateTime.fromISO(val)
-                .toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS)
+                .toLocaleString(DateTime.DATETIME_SHORT)
             },
             {
               name: 'creator',

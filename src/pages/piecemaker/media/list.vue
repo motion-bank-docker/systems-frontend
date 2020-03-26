@@ -37,8 +37,7 @@
             const meta = await _this.$store.dispatch('metadata/getLocal', row)
             transformed.title = meta && meta.title ? meta.title : _this.$t('labels.title_unknown')
             if (row.target.selector) {
-              const parsed = row.target.selector.parse()
-              console.log(parsed)
+              const parsed = row.target.selector._value
               if (Array.isArray(parsed['date-time:t'])) transformed.date = parsed['date-time:t'][0]
               else transformed.date = parsed['date-time:t']
             }
@@ -64,7 +63,8 @@
               label: _this.$t('labels.title'),
               field: 'title',
               sortable: true,
-              filter: true
+              filter: true,
+              style: 'white-space: normal'
             },
             {
               name: 'type',
@@ -89,14 +89,15 @@
               sort: _this.$sort.onDateValue,
               field: 'last_updated',
               format: val => DateTime.fromISO(val)
-                  .toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS)
+                  .toLocaleString(DateTime.DATETIME_SHORT)
             },
             {
               name: 'tags',
               label: _this.$t('labels.tags'),
               filter: true,
               sortable: false,
-              field: 'tags'
+              field: 'tags',
+              style: 'white-space: normal'
             },
             {
               name: 'creator',
