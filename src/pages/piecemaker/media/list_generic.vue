@@ -40,7 +40,8 @@
               label: _this.$t('labels.title'),
               field: 'title',
               sortable: true,
-              filter: true
+              filter: true,
+              style: 'white-space: normal'
             }
           ],
           actions: [
