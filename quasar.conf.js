@@ -125,7 +125,7 @@ module.exports = function (ctx) {
         //
         // Build flags
         //
-        FLAG_DISABLE_FRAGMENT_ENCODING: JSON.stringify(process.env.FLAG_DISABLE_FRAGMENT_ENCODING || false),
+        FLAG_ENABLE_FRAGMENT_ENCODING: JSON.stringify(process.env.FLAG_ENABLE_FRAGMENT_ENCODING || false),
         //
         // Features
         //
