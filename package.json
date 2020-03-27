@@ -60,7 +60,7 @@
     "mbjs-api-client": "2.2.1",
     "mbjs-archive": "1.0.0",
     "mbjs-auth-service": "^1.0.8",
-    "mbjs-data-models": "^2.0.15",
+    "mbjs-data-models": "^2.0.16",
     "mbjs-filesystem": "^1.0.0",
     "mbjs-media": "0.2.0",
     "mbjs-quasar": "^2.3.3",
