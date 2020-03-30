@@ -113,7 +113,7 @@ export default {
     recursive: 'Apply to all contained annotations and media',
     add_group: 'Add Group',
     add_term: 'Add Term',
-    annotations: 'Annotations',
+    annotations: 'Index',
     annotation_body: 'Annotation text',
     accept_terms: 'I accept the Terms and Conditions',
     author: 'Author',
