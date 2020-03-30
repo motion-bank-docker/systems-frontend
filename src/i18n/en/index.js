@@ -231,7 +231,7 @@ export default {
     mosys: {
       label: 'Mosys',
       mosys_grids_list: 'All Grids',
-      mosys_grids_annotate: 'Fill',
+      mosys_grids_annotate: 'Grid Editor',
       mosys_grids_show: 'View',
       mosys_grids_edit: 'Edit',
       mosys_grids_create: 'Create Grid'
