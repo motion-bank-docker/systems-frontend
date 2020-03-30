@@ -72,11 +72,11 @@ const swimLane = {
     },
     setType (state, type) {
       state.groupAnnotationsBy = type
-      localStorage.setItem('mb_sl_groupAnnotationsBy', JSON.stringify(state.groupAnnotationsBy))
+      localStorage.setItem('mb_sl_groupAnnotationsBy', state.groupAnnotationsBy)
     },
     setLaneMode (state, mode) {
       state.laneMode = mode
-      localStorage.setItem('mb_sl_laneMode', JSON.stringify(state.laneMode))
+      localStorage.setItem('mb_sl_laneMode', state.laneMode)
     },
     setTimecode (state, v) {
       state.timecode = v
