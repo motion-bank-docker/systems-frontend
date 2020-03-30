@@ -140,7 +140,7 @@
             {uuid: this.timeline._uuid},
             {
               headers: {
-                Authorization: `Bearer ${localStorage.access_token}`
+                Authorization: `Bearer ${this.$auth.token}`
               }
             }
           )
