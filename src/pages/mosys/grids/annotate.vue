@@ -9,19 +9,19 @@
     .desktop-only(v-if="$store.state.mosys.showSources")
       // .grid-editor-border-left.z-top.bg-grey-4
 
-      .full-height.fixed-top-right.z-max.custom-shadow
-        source-editor.source-editor.bg-white.overflow-hidden
+      .full-height.fixed-top-right.z-max(style="border-left: 1px solid rgba(255,255,255,0.2);")
+        source-editor.source-editor.overflow-hidden.bg-dark
 
     q-modal.mobile-only.z-max(v-model="$store.state.mosys.showSources", minimized, content-css="border-radius: .5rem;",
     content-classes="full-modal")
-      source-editor
+      source-editor.bg-dark(style="border: 1px solid rgba(255,255,255,0.2);")
 
     // ----------------------------------------------------------------------------------------------------- cell editor
     .desktop-only(v-if="showEditingCells")
       // .grid-editor-border-left.z-top.bg-grey-4
 
-      .full-height.fixed-top-right.z-max.custom-shadow
-        cell-editor.grid-editor-editing-cells.bg-white(@closePanel="closePanelHandler", @removeCell="removeCellHandler")
+      .full-height.fixed-top-right.z-max(style="border-left: 1px solid rgba(255,255,255,0.2);")
+        cell-editor.grid-editor-editing-cells.bg-dark(@closePanel="closePanelHandler", @removeCell="removeCellHandler")
 
 </template>
 
