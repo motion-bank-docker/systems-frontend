@@ -127,13 +127,13 @@
             //   color: 'primary',
             //   click: (item) => _this.$router.push({ name: 'piecemaker.media.list', params: { timelineUuid: item._uuid } })
             // },
-            {
-              type: 'search',
-              title: 'buttons.search',
-              color: 'primary',
-              feature: 'search',
-              click: (item) => _this.$router.push({ name: 'piecemaker.timelines.search', params: { uuid: item._uuid } })
-            },
+            // {
+            //   type: 'search',
+            //   title: 'buttons.search',
+            //   color: 'primary',
+            //   feature: 'search',
+            //   click: (item) => _this.$router.push({ name: 'piecemaker.timelines.search', params: { uuid: item._uuid } })
+            // },
             {
               type: 'edit',
               title: 'buttons.edit',
