@@ -52,7 +52,7 @@ jobs:
           name: Release Production Image
           command: |
             set +o pipefail
-            AUTH0_CLIENT_ID=${PROD_AUTH0_CLIENT_ID} SENTRY_DSN=${PROD_SENTRY_DSN} npm run build
+            MIGRATION_PREVIOUS_URL=https://legacy.motionbank.org MIGRATION_PREVIOUS_INFO_URL=https://medium.com/motion-bank/supporting-dance-practice-and-education-during-covid-19-ca43e71eb93 AUTH0_CLIENT_ID=${PROD_AUTH0_CLIENT_ID} SENTRY_DSN=${PROD_SENTRY_DSN} npm run build
             docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
             docker build --no-cache -t motionbank/systems-frontend:${CIRCLE_BRANCH} .
             docker push motionbank/systems-frontend:${CIRCLE_BRANCH}
