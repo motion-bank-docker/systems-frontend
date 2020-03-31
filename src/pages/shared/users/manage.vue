@@ -14,7 +14,7 @@
 
       content-paragraph
         form-main(v-model="payload", :schema="schema")
-          q-btn.q-mr-md.bg-grey-9(v-if="!isFirst", slot="form-buttons-add", :label="$t('buttons.close_account')")
+          // q-btn.q-mr-md.bg-grey-9(v-if="!isFirst", slot="form-buttons-add", :label="$t('buttons.close_account')")
 
     //
       h5.no-margin(slot="form-title")

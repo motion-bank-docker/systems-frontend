@@ -7,36 +7,38 @@
       headline(:content="$t('routes.piecemaker.timelines.edit.title')")
       content-paragraph
         form-main(v-model="payload", :schema="schema")
-          div(slot="form-buttons-add", :class="{'full-width row q-mb-sm': isMobile}")
-            q-btn.col(v-if="$route.params.uuid", slot="form-buttons-add", :label="exportLabel", @click="exportTimeline",
-            color="grey", :class="[!isMobile ? 'q-mr-sm' : '']")
-            q-btn(v-if="$route.params.uuid", @click="exportCSV", color="grey",
-              :class="[!isMobile ? 'q-mr-sm' : '']", :label="exportLabelCSV")
+          //
+            div(slot="form-buttons-add", :class="{'full-width row q-mb-sm': isMobile}")
+              q-btn.col(v-if="$route.params.uuid", slot="form-buttons-add", :label="exportLabel", @click="exportTimeline",
+              color="grey", :class="[!isMobile ? 'q-mr-sm' : '']")
+              q-btn(v-if="$route.params.uuid", @click="exportCSV", color="grey",
+              // :class="[!isMobile ? 'q-mr-sm' : '']", :label="exportLabelCSV")
 
     // -------------------------------------------------------------------------------------------------- access control
 
-    content-block(v-if="availableRoles.length", :position="'last'")
-      headline.q-mt-lg(:content="$t('labels.access_control')")
-        | {{ $t('descriptions.access_control') }}
+    //
+      content-block(v-if="availableRoles.length", :position="'last'")
+        headline.q-mt-lg(:content="$t('labels.access_control')")
+          | {{ $t('descriptions.access_control') }}
 
-      // 'add to group'
-      content-paragraph
-        q-select(v-model="acl.group", :clearable="true", :clear-value="undefined",
-        :float-label="$t('labels.access_control_add_group')", :options="availableRoles", dark)
+        // 'add to group'
+        content-paragraph
+          q-select(v-model="acl.group", :clearable="true", :clear-value="undefined",
+          // :float-label="$t('labels.access_control_add_group')", :options="availableRoles", dark)
 
-      // 'remove from group'
-      content-paragraph
-        q-select(v-model="acl.group_remove", :clearable="true", :clear-value="undefined",
-        :float-label="$t('labels.access_control_remove_group')", :options="availableRoles", dark)
+        // 'remove from group'
+        content-paragraph
+          q-select(v-model="acl.group_remove", :clearable="true", :clear-value="undefined",
+          // :float-label="$t('labels.access_control_remove_group')", :options="availableRoles", dark)
 
-      // 'apply to all contained annotations and media'
-      content-paragraph
-        q-checkbox(v-model="acl.recursive", :label="$t('labels.recursive')", dark)
+        // 'apply to all contained annotations and media'
+        content-paragraph
+          q-checkbox(v-model="acl.recursive", :label="$t('labels.recursive')", dark)
 
-      // update button
-      content-paragraph
-        q-btn(:label="$t('buttons.update_access_control')", @click="updateACL", color="primary",
-        slot="buttons", :class="{'full-width': isMobile}")
+        // update button
+        content-paragraph
+          q-btn(:label="$t('buttons.update_access_control')", @click="updateACL", color="primary",
+          slot="buttons", :class="{'full-width': isMobile}")
 </template>
 
 <script>
