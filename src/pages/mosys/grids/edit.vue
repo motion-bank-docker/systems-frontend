@@ -190,8 +190,8 @@
         this.$q.loading.show()
         try {
           const result = await this.$axios.post(
-            `${process.env.API_HOST}/archives/maps`,
-            {uuid: this.grid._uuid},
+            `${process.env.API_HOST}/archives/maps/${this.grid._uuid}`,
+            {},
             {
               headers: {
                 Authorization: `Bearer ${this.$auth.token}`
