@@ -33,7 +33,7 @@
         path="maps",
         :query="query",
         base-path="timelines",
-        :has-show="isStaging",
+        :has-show="true",
         :request-transform="requestTransform"
         )
 </template>
@@ -58,7 +58,6 @@
     data () {
       const _this = this
       return {
-        isStaging: process.env.IS_STAGING,
         testWidth: 40,
         diagramDimensions: {
           activeId: null,
