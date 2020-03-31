@@ -179,7 +179,7 @@
         }
         const apiPayload = Object.assign({}, this.payload, stylesheet)
         let result
-        result = await this.$store.dispatch('maps/patch', [this.payload._uuid, apiPayload])
+        result = await this.$store.dispatch('maps/patch', [this.payload.id, apiPayload])
         if (message) {
           this.$store.commit('notifications/addMessage', {
             type: 'success',
