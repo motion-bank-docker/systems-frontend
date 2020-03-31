@@ -9,58 +9,61 @@
 
       content-paragraph
         form-main(v-model="payload", :schema="schema")
-          div(slot="form-buttons-add", :class="{'full-width row q-mb-sm': isMobile}")
-            q-btn.bg-grey-9.col(q-if="$route.params.uuid", :label="exportLabel",
-            @click="exportGrid",
-            :class="[!isMobile ? '' : '']")
-            q-btn.bg-grey-9.col(q-if="$route.params.uuid && userHasPackager", :label="packageLabel",
-            @click="createPackage",
-            :class="[!isMobile ? 'q-mx-sm' : 'q-ml-sm']")
+          //
+            div(slot="form-buttons-add", :class="{'full-width row q-mb-sm': isMobile}")
+              q-btn.bg-grey-9.col(q-if="$route.params.uuid", :label="exportLabel",
+              @click="exportGrid",
+              // :class="[!isMobile ? '' : '']")
+              q-btn.bg-grey-9.col(q-if="$route.params.uuid && userHasPackager", :label="packageLabel",
+              @click="createPackage",
+              // :class="[!isMobile ? 'q-mx-sm' : 'q-ml-sm']")
 
     // -------------------------------------------------------------------------------------------------- access control
 
-    content-block(v-if="availableRoles.length")
+    //
+      content-block(v-if="availableRoles.length")
 
-      headline(:content="$t('labels.access_control')")
-        | {{ $t('descriptions.access_control') }}
+        headline(:content="$t('labels.access_control')")
+          | {{ $t('descriptions.access_control') }}
 
-      // add to group
-      content-paragraph(:position="'first'")
-        q-select(v-model="acl.group", :clearable="true", :clear-value="undefined",
-        :float-label="$t('labels.access_control_add_group')", :options="availableRoles", dark)
+        // add to group
+        content-paragraph(:position="'first'")
+          q-select(v-model="acl.group", :clearable="true", :clear-value="undefined",
+          // :float-label="$t('labels.access_control_add_group')", :options="availableRoles", dark)
 
-      // remove from group
-      content-paragraph
-        q-select(v-model="acl.group_remove", :clearable="true", :clear-value="undefined",
-        :float-label="$t('labels.access_control_remove_group')", :options="availableRoles", dark)
+        // remove from group
+        content-paragraph
+          q-select(v-model="acl.group_remove", :clearable="true", :clear-value="undefined",
+          // :float-label="$t('labels.access_control_remove_group')", :options="availableRoles", dark)
 
-      // apply to all contained annotations and media
-      content-paragraph
-        q-checkbox(v-model="acl.recursive", :label="$t('labels.recursive')", dark)
+        // apply to all contained annotations and media
+        content-paragraph
+          q-checkbox(v-model="acl.recursive", :label="$t('labels.recursive')", dark)
 
-      // button "update access settings"
-      content-paragraph
-        q-btn(:label="$t('buttons.update_access_control')", @click="updateACL", color="primary",
-        :class="[isMobile ? 'full-width' : '']", slot="buttons")
+        // button "update access settings"
+        content-paragraph
+          q-btn(:label="$t('buttons.update_access_control')", @click="updateACL", color="primary",
+          // :class="[isMobile ? 'full-width' : '']", slot="buttons")
 
     // -------------------------------------------------------------------------------------------------- css stylesheet
 
-    content-block(v-if="userHasCSSEditing", :position="'last'")
-      headline(:content="$t('labels.css_stylesheet')")
-        | {{ $t('descriptions.css_stylesheet') }}
+    //
+      content-block(v-if="userHasCSSEditing", :position="'last'")
+        headline(:content="$t('labels.css_stylesheet')")
+          | {{ $t('descriptions.css_stylesheet') }}
 
-      // external css stylesheet url
-      content-paragraph(:position="'first'")
-        q-input(v-model="stylesheetUrl", dark, type="text", float-label="External CSS Stylesheet URL")
+        // external css stylesheet url
+        content-paragraph(:position="'first'")
+          q-input(v-model="stylesheetUrl", dark, type="text", float-label="External CSS Stylesheet URL")
 
-      // embedded css stylesheet
-      content-paragraph
-        q-input(v-model="stylesheet", dark, type="textarea", float-label="Embedded CSS Stylesheet", rows="4")
+        // embedded css stylesheet
+        content-paragraph
+          q-input(v-model="stylesheet", dark, type="textarea", float-label="Embedded CSS Stylesheet", rows="4")
 
-      // button "submit"
-      content-paragraph(:position="'last'")
-        q-btn(q-if="$route.params.uuid", color="primary", label="Submit", @click="submit",
-        :class="[isMobile ? 'full-width' : '']", slot="buttons")
+        // button "submit"
+        content-paragraph(:position="'last'")
+          q-btn(q-if="$route.params.uuid", color="primary", label="Submit", @click="submit",
+          // :class="[isMobile ? 'full-width' : '']", slot="buttons")
 
 </template>
 
