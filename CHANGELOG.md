@@ -10,6 +10,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+No changes.
+
+## [2.0.0] - 2020-03-31
+
 ### Added
 
 - [cote](https://cote.js.org) Sockend client integration to
@@ -68,6 +72,90 @@ for YouTube sources to be GDPR compliant
 
 - Unused store modules `forms`, `conversions` and `timecodes`
 - Routes `media/ingest` and `timelines/timecode`
+
+
+## [1.3.10] - 2020-02-14
+
+### Added
+
+- Searchable global Piecemaker index
+
+### Updated
+
+- sift module
+
+### Fixed
+
+- Escape semicolons in CSV export
+- Missing i18n string for `Index` button
+
+## [1.3.9] - 2019-12-18
+
+### Added
+
+- Annotation table allows export as CSV (including current
+search query)
+
+## [1.3.8] - 2019-12-15
+
+### Added
+
+- Table for viewing, editing and searching annotations
+
+## [1.3.7] - 2019-11-15
+
+### Added
+
+- [Vue integration](https://docs.sentry.io/platforms/javascript/vue/)
+for sentry
+
+## [1.3.6] - 2019-10-31
+
+### Changed
+
+- Auth service attempts silent login
+- Router checks session before each route change
+
+### Fixed
+
+- API client checks auth session before each request
+
+### Updated
+
+- Update mbjs-api-client to v2.1.3
+
+
+## [1.3.5] - 2019-10-02
+
+### Changed
+
+- Allow non-owner to tag videos
+
+### Updated
+
+- Update mbjs-quasar to v1.5.2
+
+
+## [1.3.4] - 2019-05-07
+
+### Changed
+
+- CellVideo shows volume panel for videos
+
+
+## [1.3.3] - 2019-05-04
+
+### Fixed
+
+- Scaling issues in YouTube player in MoSys grids
+
+
+## [1.3.2] - 2019-04-15
+
+### Fixed
+
+- Removed CSS updates from VideoPlayer component to
+temporarily fix scaling issue on sync page
 
 
 ## [1.3.1] - 2019-04-06
@@ -297,7 +385,17 @@ of a video cannot be retrieved
 - Start proper versioning at 1.0.0
 
 
-[Unreleased]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.1...master
+[Unreleased]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.10...master
+[2.0.0]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.10...v2.0.0
+[1.3.10]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.9...v1.3.10
+[1.3.9]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.8...v1.3.9
+[1.3.8]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.7...v1.3.8
+[1.3.7]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.6...v1.3.7
+[1.3.6]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.5...v1.3.6
+[1.3.5]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.4...v1.3.5
+[1.3.4]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.3...v1.3.4
+[1.3.3]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.2...v1.3.3
+[1.3.2]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.1...v1.3.2
 [1.3.1]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.0...v1.3.1
 [1.3.0]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.2.1...v1.3.0
 [1.2.1]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.2.0...v1.2.1
