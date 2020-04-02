@@ -18,6 +18,7 @@ import {
 
 /** Import custom modules */
 import {
+  auth0,
   auth,
   acl,
   files,
@@ -102,6 +103,7 @@ const getRequestConfig = () => {
 
 const modules = {
   /** Custom stores */
+  auth0,
   auth,
   mosys,
   notifications,

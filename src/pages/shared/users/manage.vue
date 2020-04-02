@@ -50,8 +50,10 @@
       ContentBlock,
       ContentParagraph
     },
-    mounted () {
+    async mounted () {
       this.isFirst = this.$route.params.isFirst
+      const userInfo = await this.$store.dispatch('auth0/getUser')
+      console.log(userInfo)
     },
     data () {
       const context = this

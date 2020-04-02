@@ -1,3 +1,4 @@
+import auth0 from './auth0'
 import mosys from './mosys'
 import notifications from './notifications'
 import auth from './auth'
@@ -10,6 +11,7 @@ import swimLane from './swim-lane'
 import vocabularies from './vocabularies'
 
 export {
+  auth0,
   auth,
   acl,
   files,
