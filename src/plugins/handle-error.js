@@ -10,17 +10,23 @@ export default ({ Vue }) => {
       console.error('Unable to handle error, no vue context given', message, err)
       return
     }
-    let errMessage
-    if (err.response && err.response.data && err.response.data.status >= 400) {
+    let errMessage, captureError = true
+    if (err.response && err.response.data && err.response.data.code >= 400) {
       errMessage = context.$t('errors.generic_error', { code: err.response.data.code, message: err.response.data.message })
     }
-    else if (err.response && err.response.status) {
+    if (err.response && err.response.status) {
       switch (err.response.status) {
       case 401:
+        captureError = false
         errMessage = context.$t('errors.unauthorized')
         break
       case 403:
+        captureError = false
         errMessage = context.$t('errors.forbidden')
+        break
+      case 404:
+        captureError = false
+        errMessage = context.$t('errors.not_found')
         break
       default:
         errMessage = context.$t('errors.http_server_error', { code: err.response.status, message: err.response.data })
@@ -32,6 +38,6 @@ export default ({ Vue }) => {
       mode: 'alert',
       type: 'error'
     })
-    context.$captureException(err)
+    if (captureError) context.$captureException(err)
   }
 }
