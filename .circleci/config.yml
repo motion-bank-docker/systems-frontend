@@ -86,9 +86,6 @@ jobs:
       - run: *install-dependencies
       - run:
           name: Release Staging Image
-          environment:
-            IS_STAGING: true
-            API_HOST: https://api-staging.motionbank.org
           command: |
             set +o pipefail
             AUTH0_CLIENT_ID=${STAGING_AUTH0_CLIENT_ID} SENTRY_DSN=${STAGING_SENTRY_DSN} npm run build
