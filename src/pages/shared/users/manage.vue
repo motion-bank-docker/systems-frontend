@@ -89,6 +89,16 @@
         sort: false
         // format: makeFormatter('actions')
       })
+
+      const userInfo = this.$store.dispatch('manage/getUser')
+      if (userInfo.app_metadata) {
+        const { roles } = userInfo.app_metadata
+        if (Array.isArray(roles)) {
+          for (let role of roles) {
+            console.log(role)
+          }
+        }
+      }
     },
     data () {
       const context = this
@@ -154,6 +164,7 @@
         },
         isFirst: false,
         state: 'manage-profile',
+        roles: [],
         schema: {
           fields: {
             name: {
