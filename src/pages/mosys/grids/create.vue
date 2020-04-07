@@ -1,27 +1,34 @@
 <template lang="pug">
   full-screen
-    .q-pa-xl(style="min-width: 50vw;")
-      h5.caption(dark) {{ $t('routes.mosys.grids.create.title') }}
-      .row
-        .col-md-12
-          form-main(v-model="payload", :schema="schema")
-      .row
-        .col-12
-          h5.caption(dark) {{ $t('forms.grids.import.title') }}
-      .column
-        .col-12.q-pa-md
-          q-input(dark, :placeholder="$t('forms.grids.import.fields.title')", v-model="uploadTitle")
-        .col-12.q-pa-md
+
+    content-block(:position="'first'")
+      headline(:content="$t('routes.mosys.grids.create.title')")
+
+      content-paragraph(:position="'last'")
+        form-main(v-model="payload", :schema="schema")
+
+    //
+      content-block(:position="'last'")
+        headline(:content="$t('forms.grids.import.title')")
+
+        content-paragraph
+          q-input(dark, :float-label="$t('forms.grids.import.fields.title')", v-model="uploadTitle")
+
+        content-paragraph
           q-checkbox(dark, :label="$t('forms.grids.import.fields.override_author')", v-model="overrideAuthor")
-        <!--.col-12.q-pa-md-->
-          <!--q-checkbox(dark, :label="$t('forms.grids.import.fields.skip_acl')", v-model="skipAcl")-->
-        .col-12.q-pa-md
+
+        content-paragraph(:position="'last'")
           uploader(dark, :url="url", @finish="onFinish", allowed=".zip", :headers="headers", :fields="uploadFields")
+
 </template>
 
 <script>
+  import { mapGetters } from 'vuex'
   import Tags from '../../../components/shared/partials/Tags'
   import FormMain from '../../../components/shared/forms/FormMain'
+  import Headline from '../../../components/shared/elements/Headline'
+  import ContentBlock from '../../../components/shared/elements/ContentBlock'
+  import ContentParagraph from '../../../components/shared/elements/ContentParagraph'
 
   import { required } from 'vuelidate/lib/validators'
   import constants from 'mbjs-data-models/src/constants'
@@ -29,7 +36,10 @@
   export default {
     components: {
       FormMain,
-      Tags
+      Tags,
+      Headline,
+      ContentBlock,
+      ContentParagraph
     },
     data () {
       const _this = this
@@ -41,10 +51,10 @@
         overrideAuthor: false,
         skipAcl: false,
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('access_token')}`
+          Authorization: `Bearer ${_this.$auth.token}`
         },
-        type: constants.MAP_TYPE_2D_GRID,
-        payload: undefined,
+        type: constants.mapClasses.MAP_CLASS_GRID,
+        payload: {},
         schema: {
           fields: {
             title: {
@@ -59,13 +69,21 @@
           },
           submit: {
             handler () {
-              _this.payload.type = [constants.MAP_TYPE_2D_GRID]
+              _this.payload.type = [constants.mapClasses.MAP_CLASS_GRID]
               return _this.$store.dispatch('maps/post', _this.payload)
                 .then(() => _this.$router.push({ name: 'mosys.grids.list' }))
             }
           }
         }
       }
+    },
+    computed: {
+      ...mapGetters({
+        isMobile: 'globalSettings/getIsMobile'
+      })
+    },
+    mounted () {
+      this.$root.$emit('setBackButton', '/mosys/grids')
     },
     watch: {
       uploadTitle () {

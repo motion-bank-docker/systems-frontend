@@ -1,50 +1,79 @@
 <template lang="pug">
   full-screen
-    .q-px-xl(style="min-width: 50vw;")
-      h5.caption(dark) {{ $t('routes.mosys.grids.edit.title') }}
 
-      .row
-        .col-md-12
-          form-main(v-model="payload", :schema="schema")
-            q-btn.q-mr-md.bg-grey-9(q-if="$route.params.id", slot="form-buttons-add",
-              :label="exportLabel", @click="exportGrid")
-            q-btn.q-mr-md.bg-grey-9(q-if="$route.params.id && userHasPackager", slot="form-buttons-add",
-              :label="packageLabel", @click="createPackage")
+    // ------------------------------------------------------------------------------------------------------- edit grid
 
-      .row.q-mb-lg(v-if="availableRoles.length")
-        .col-md-12
-          h5.caption.text-light {{ $t('labels.access_control') }}
-          p {{ $t('descriptions.access_control') }}
-        .col-md-12.q-mb-md
-          q-field(orientation="vertical", dark)
-            q-select(v-model="acl.group", :clearable="true", :clear-value="undefined",
-            :float-label="$t('labels.access_control_add_group')", :options="availableRoles", dark)
-        .col-md-12.q-mb-md
-          q-field(orientation="vertical", dark)
-            q-select(v-model="acl.group_remove", :clearable="true", :clear-value="undefined",
-            :float-label="$t('labels.access_control_remove_group')", :options="availableRoles", dark)
-        .col-md-12.q-mb-md
-          q-field(dark)
-            q-checkbox(v-model="acl.recursive", :label="$t('labels.recursive')", dark)
-        .row.xs-gutter.full-width.justify-end.items-end
-          q-btn(:label="$t('buttons.update_access_control')", @click="updateACL", color="grey")
+    content-block(:position="'first'")
+      headline(:content="$t('routes.mosys.grids.edit.title')")
+        // | {{ payload.title }}
 
-      .row.q-mb-lg(v-if="userHasCSSEditing")
-        .col-md-12.q-mb-md
-          h5.caption.text-light {{ $t('labels.css_stylesheet') }}
-          p {{ $t('descriptions.css_stylesheet') }}
-        .col-md-12.q-mb-md
+      content-paragraph
+        form-main(v-model="payload", :schema="schema")
+          //
+            div(slot="form-buttons-add", :class="{'full-width row q-mb-sm': isMobile}")
+              q-btn.bg-grey-9.col(q-if="$route.params.uuid", :label="exportLabel",
+              @click="exportGrid",
+              // :class="[!isMobile ? '' : '']")
+              q-btn.bg-grey-9.col(q-if="$route.params.uuid && userHasPackager", :label="packageLabel",
+              @click="createPackage",
+              // :class="[!isMobile ? 'q-mx-sm' : 'q-ml-sm']")
+
+    // -------------------------------------------------------------------------------------------------- access control
+
+    //
+      content-block(v-if="availableRoles.length")
+
+        headline(:content="$t('labels.access_control')")
+          | {{ $t('descriptions.access_control') }}
+
+        // add to group
+        content-paragraph(:position="'first'")
+          q-select(v-model="acl.group", :clearable="true", :clear-value="undefined",
+          // :float-label="$t('labels.access_control_add_group')", :options="availableRoles", dark)
+
+        // remove from group
+        content-paragraph
+          q-select(v-model="acl.group_remove", :clearable="true", :clear-value="undefined",
+          // :float-label="$t('labels.access_control_remove_group')", :options="availableRoles", dark)
+
+        // apply to all contained annotations and media
+        content-paragraph
+          q-checkbox(v-model="acl.recursive", :label="$t('labels.recursive')", dark)
+
+        // button "update access settings"
+        content-paragraph
+          q-btn(:label="$t('buttons.update_access_control')", @click="updateACL", color="primary",
+          // :class="[isMobile ? 'full-width' : '']", slot="buttons")
+
+    // -------------------------------------------------------------------------------------------------- css stylesheet
+
+    //
+      content-block(v-if="userHasCSSEditing", :position="'last'")
+        headline(:content="$t('labels.css_stylesheet')")
+          | {{ $t('descriptions.css_stylesheet') }}
+
+        // external css stylesheet url
+        content-paragraph(:position="'first'")
           q-input(v-model="stylesheetUrl", dark, type="text", float-label="External CSS Stylesheet URL")
-        .col-md-12.q-mb-md
+
+        // embedded css stylesheet
+        content-paragraph
           q-input(v-model="stylesheet", dark, type="textarea", float-label="Embedded CSS Stylesheet", rows="4")
-        .col-md-12
-          q-btn.float-right(q-if="$route.params.id", color="primary", label="Submit", @click="submit")
+
+        // button "submit"
+        content-paragraph(:position="'last'")
+          q-btn(q-if="$route.params.uuid", color="primary", label="Submit", @click="submit",
+          // :class="[isMobile ? 'full-width' : '']", slot="buttons")
+
 </template>
 
 <script>
   import AccessControl from '../../../components/shared/forms/AccessControl'
   import Tags from '../../../components/shared/partials/Tags'
   import FormMain from '../../../components/shared/forms/FormMain'
+  import Headline from '../../../components/shared/elements/Headline'
+  import ContentBlock from '../../../components/shared/elements/ContentBlock'
+  import ContentParagraph from '../../../components/shared/elements/ContentParagraph'
 
   import { required } from 'vuelidate/lib/validators'
   import constants from 'mbjs-data-models/src/constants'
@@ -56,7 +85,10 @@
     components: {
       AccessControl,
       FormMain,
-      Tags
+      Tags,
+      Headline,
+      ContentBlock,
+      ContentParagraph
     },
     data () {
       const _this = this
@@ -74,8 +106,8 @@
           group_remove: undefined,
           recursive: false
         },
-        type: constants.MAP_TYPE_2D_GRID,
-        payload: this.$route.params.id ? _this.$store.dispatch('maps/get', _this.$route.params.id) : undefined,
+        type: constants.mapClasses.MAP_CLASS_GRID,
+        payload: this.$route.params.uuid ? _this.$store.dispatch('maps/get', _this.$route.params.uuid) : undefined,
         schema: {
           fields: {
             title: {
@@ -98,7 +130,7 @@
     },
     async mounted () {
       this.$q.loading.show()
-      this.grid = await this.$store.dispatch('maps/get', this.$route.params.id)
+      this.grid = await this.$store.dispatch('maps/get', this.$route.params.uuid)
 
       if (this.userHasCSSEditing) {
         this.stylesheet = this.grid.stylesheet ? this.grid.stylesheet.value : undefined
@@ -114,7 +146,8 @@
     },
     computed: {
       ...mapGetters({
-        user: 'auth/getUserState'
+        user: 'auth/getUserState',
+        isMobile: 'globalSettings/getIsMobile'
       }),
       availableRoles () {
         try {
@@ -146,7 +179,7 @@
         }
         const apiPayload = Object.assign({}, this.payload, stylesheet)
         let result
-        result = await this.$store.dispatch('maps/patch', [this.payload.uuid, apiPayload])
+        result = await this.$store.dispatch('maps/patch', [this.payload.id, apiPayload])
         if (message) {
           this.$store.commit('notifications/addMessage', {
             type: 'success',
@@ -160,11 +193,11 @@
         this.$q.loading.show()
         try {
           const result = await this.$axios.post(
-            `${process.env.API_HOST}/archives/maps`,
-            {id: this.grid.uuid},
+            `${process.env.API_HOST}/archives/maps/${this.grid._uuid}`,
+            {},
             {
               headers: {
-                Authorization: `Bearer ${localStorage.access_token}`
+                Authorization: `Bearer ${this.$auth.token}`
               }
             }
           )
@@ -182,10 +215,10 @@
         try {
           const result = await this.$axios.post(
             `${process.env.PACKAGER_HOST}/packages`,
-            {id: this.grid.id},
+            {uuid: this.grid._uuid},
             {
               headers: {
-                Authorization: `Bearer ${localStorage.access_token}`
+                Authorization: `Bearer ${this.$auth.token}`
               }
             }
           )

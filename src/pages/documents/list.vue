@@ -2,19 +2,26 @@
   full-screen
     confirm-modal(ref="confirmModal", @confirm="handleConfirmModal")
 
-    span(slot="form-logo")
-    span(slot="form-title") {{ $t('routes.documents.list.title') }}
+    content-block(:position="'first'")
+      headline(:content="$t('routes.documents.list.title')")
 
-    data-table(v-if="user", :config="config", :title="'routes.documents.list.title'", ref="listTable")
-      template(slot="buttons-left")
-        q-btn(@click="$router.push({ name: 'documents.create' })", color="primary") {{ $t('buttons.create_document') }}
+      content-paragraph(:position="'first'")
+        data-table(v-if="user", :config="config", :title="'routes.documents.list.title'", ref="listTable")
 </template>
 
 <script>
   import { mapGetters } from 'vuex'
   import { openURL } from 'quasar'
+  import Headline from '../../components/shared/elements/Headline'
+  import ContentBlock from '../../components/shared/elements/ContentBlock'
+  import ContentParagraph from '../../components/shared/elements/ContentParagraph'
 
   export default {
+    components: {
+      Headline,
+      ContentBlock,
+      ContentParagraph
+    },
     data () {
       const _this = this
       return {
@@ -71,11 +78,15 @@
     },
     computed: {
       ...mapGetters({
-        user: 'auth/getUserState'
+        user: 'auth/getUserState',
+        isMobile: 'globalSettings/getIsMobile'
       }),
       bucketName () {
         return `user-${this.user.uuid}`
       }
+    },
+    mounted () {
+      this.$root.$emit('setBackButton')
     },
     methods: {
       getAssetURL (asset, download = false) {

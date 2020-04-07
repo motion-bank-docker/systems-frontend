@@ -10,9 +10,152 @@ and this project adheres to
 
 ## [Unreleased]
 
+No changes.
+
+## [2.0.0] - 2020-03-31
+
 ### Added
 
+- [cote](https://cote.js.org) Sockend client integration to
+connect to [sockets service](https://gitlab.rlp.net/motionbank/microservices/sockets)
+- Cell datatype available as vuex store module
 - SwimLane component in post-annotator and on standalone page
+- Annotations can have durations through target.selector.value
+- PBA vocabularies (titles for pieces)
+- Frontend can be built as an [Electron](https://electronjs.org/)
+app, including a local metadata service as store module `metadata-ffprobe`
+- Mobile device-friendliness
+- Breadcrumb navigation
+- Buttons now support right-click + open in new tab (still suffers from
+[#253](https://gitlab.rlp.net/motionbank/applications/systems-frontend/issues/253))
+- Audio annotations (supported types: `.m4a` and `.mp3`) can be added
+under `media/create` (playback possible using forked
+[vue-video-player](https://github.com/dasantonym/vue-video-player))
+- Export timelines as CSV
+- Mobile compatiblity for MoSys Editor
+- The file `statics/env.js` can be overwritten to configure
+the frontend at runtime
+- Authentication service attempts silent login when token expires
+
+### Changed
+
+- Videos always have title annotations
+- Metadata uses video duration from annotation
+- Annotation's target.selector.value conforms to standard
+- VideoPlayer uses [privacy-enhanced mode](https://support.google.com/youtube/answer/171780)
+for YouTube sources to be GDPR compliant
+- VideoPlayer uses [dnt](https://github.com/vimeo/player.js/#embed-options)
+(do not track) option for showing Vimeo media for GDPR compliance
+- Basic colors, look & feel
+- New post annotator layout
+- Vocabulary menu layout and functionality
+- Navigation redesign
+- MoSys redesign
+- Renamed `Video` to `Media` throughout project
+
+### Updated
+
+- [mbjs-data-models](https://gitlab.rlp.net/motionbank/mbjs/data-models)
+  to version 1.2.4
+- [mbjs-quasar](https://gitlab.rlp.net/motionbank/mbjs/quasar)
+  to version 2.2.0
+- [mbjs-api-client](https://gitlab.rlp.net/motionbank/mbjs/api-client)
+  to version 2.1.3
+
+### Fixed
+
+- Sync screen
+- Timecode millisecond display
+- Video player scaling issue
+
+### Removed
+
+- Unused store modules `forms`, `conversions` and `timecodes`
+- Routes `media/ingest` and `timelines/timecode`
+
+
+## [1.3.10] - 2020-02-14
+
+### Added
+
+- Searchable global Piecemaker index
+
+### Updated
+
+- sift module
+
+### Fixed
+
+- Escape semicolons in CSV export
+- Missing i18n string for `Index` button
+
+## [1.3.9] - 2019-12-18
+
+### Added
+
+- Annotation table allows export as CSV (including current
+search query)
+
+## [1.3.8] - 2019-12-15
+
+### Added
+
+- Table for viewing, editing and searching annotations
+
+## [1.3.7] - 2019-11-15
+
+### Added
+
+- [Vue integration](https://docs.sentry.io/platforms/javascript/vue/)
+for sentry
+
+## [1.3.6] - 2019-10-31
+
+### Changed
+
+- Auth service attempts silent login
+- Router checks session before each route change
+
+### Fixed
+
+- API client checks auth session before each request
+
+### Updated
+
+- Update mbjs-api-client to v2.1.3
+
+
+## [1.3.5] - 2019-10-02
+
+### Changed
+
+- Allow non-owner to tag videos
+
+### Updated
+
+- Update mbjs-quasar to v1.5.2
+
+
+## [1.3.4] - 2019-05-07
+
+### Changed
+
+- CellVideo shows volume panel for videos
+
+
+## [1.3.3] - 2019-05-04
+
+### Fixed
+
+- Scaling issues in YouTube player in MoSys grids
+
+
+## [1.3.2] - 2019-04-15
+
+### Fixed
+
+- Removed CSS updates from VideoPlayer component to
+temporarily fix scaling issue on sync page
 
 
 ## [1.3.1] - 2019-04-06
@@ -242,7 +385,17 @@ of a video cannot be retrieved
 - Start proper versioning at 1.0.0
 
 
-[Unreleased]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.1...master
+[Unreleased]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v2.0.0...master
+[2.0.0]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.10...v2.0.0
+[1.3.10]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.9...v1.3.10
+[1.3.9]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.8...v1.3.9
+[1.3.8]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.7...v1.3.8
+[1.3.7]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.6...v1.3.7
+[1.3.6]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.5...v1.3.6
+[1.3.5]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.4...v1.3.5
+[1.3.4]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.3...v1.3.4
+[1.3.3]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.2...v1.3.3
+[1.3.2]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.1...v1.3.2
 [1.3.1]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.0...v1.3.1
 [1.3.0]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.2.1...v1.3.0
 [1.2.1]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.2.0...v1.2.1

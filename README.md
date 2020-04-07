@@ -5,6 +5,9 @@
 
 > Combined frontend project for Motion Bank web services
 
+[![Travis (.org)](https://img.shields.io/travis/motionbank/systems-frontend?label=Travis%20CI)](https://travis-ci.org/motionbank/systems-frontend)
+[![CircleCI](https://img.shields.io/circleci/build/gh/motionbank/systems-frontend?label=CircleCI)](https://circleci.com/gh/motionbank/systems-frontend)
+[![Docker Pulls](https://img.shields.io/docker/pulls/motionbank/systems-frontend?style=flat)](https://hub.docker.com/r/motionbank/systems-frontend)
 
 
 ## Setup
@@ -74,9 +77,9 @@ docker images.
 
 ### Versions
 
-* Stable: `motionbank/systems-frontend:release_1_2`
+* Stable: `motionbank/systems-frontend:release_1_3`
 * Staging (beta): `motionbank/systems-frontend:staging`
-* Experimental: `motionbank/systems-frontend:experimental`
+* Experimental: `motionbank/systems-frontend:dev`
 
 ### Configuration
 
@@ -86,6 +89,6 @@ The application listens on port `3030`.
 
 ## License
 
-:copyright: 2019 Mainz University of Applied Sciences (Motion Bank Project) – 
-Released under the [MIT](https://github.com/motionbank-js/motionbank-systems-frontend/blob/master/LICENSE) license
+:copyright: 2020 Mainz University of Applied Sciences (Motion Bank Project) – 
+Released under the [MIT](https://github.com/motionbank-js/systems-frontend/blob/master/LICENSE) license
 

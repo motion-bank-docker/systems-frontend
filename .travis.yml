@@ -1,0 +1,57 @@
+sudo: false
+
+language: node_js
+node_js: "10.16.0"
+
+git:
+  submodules: false
+
+install:
+  - git clone https://gitlab.rlp.net/motionbank/mbjs/quasar-components-mosys.git src/components/mosys
+  - git clone https://gitlab.rlp.net/motionbank/mbjs/quasar-components-shared.git src/components/shared
+  - npm install
+  - ln -s /usr/local/opt/openssl/include/openssl /usr/local/include/ || echo noop
+  - npm run rebuild
+
+cache:
+  directories:
+    - node_modules
+    - $HOME/.cache/electron
+    - $HOME/.cache/electron-builder
+    - $HOME/.npm/_prebuilds
+
+env:
+  global:
+    - ELECTRON_CACHE=$HOME/.cache/electron
+    - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
+
+jobs:
+  include:
+    - stage: Build macOS
+      os: osx
+      osx_image: xcode10.2
+      before_install:
+        - echo $APPLE_DEVELOPER_CERTIFICATE | base64 --decode > certificate.p12
+        - security create-keychain -p mysecretpassword build.keychain
+        - security default-keychain -s build.keychain
+        - security unlock-keychain -p mysecretpassword build.keychain
+        - security import certificate.p12 -k build.keychain -P $APPLE_DEVELOPER_PASSWORD -T /usr/bin/codesign
+        - "security set-key-partition-list -S apple-tool:,apple: -s -k mysecretpassword build.keychain"
+        - security find-identity -v
+      script:
+        - NODE_ENV=production npx quasar build -m electron -t mat
+      before_cache:
+        - rm -rf $HOME/.cache/electron-builder/wine
+    - stage: Build Linux
+      os: linux
+      dist: xenial
+      before_install:
+        - sudo apt-get install -y libsecret-1-dev
+      script:
+        - NODE_ENV=production npx quasar build -m electron -t mat
+      addons:
+        apt:
+          update: true
+
+addons:
+  ssh_known_hosts: gitlab.rlp.net

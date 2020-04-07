@@ -6,7 +6,7 @@
       .col-10.offset-1(slot="form-title")
         h5.no-margin.text-center
           div {{ map.title }}
-          .text-grey-8 {{ map.author.name }}
+          .text-grey-8 {{ map.creator.name }}
 
     // btn: back
     q-btn.absolute-top-left(slot="backButton", @click="$router.push({ name: 'piecemaker.timelines.list' })", icon="keyboard_backspace", round, small, style="top: 66px; left: 16px;")
@@ -41,7 +41,6 @@
 
 <script>
   // import axios from 'axios'
-  import { DateTime } from 'luxon'
   import {
     SessionDiagram,
     SessionFilter,
@@ -61,20 +60,20 @@
   //   return annotation
   // }
   //
-  // const fetchMetaData = async (videos) => {
-  //   let videosMeta = []
+  // const fetchMetaData = async (media) => {
+  //   let mediaMeta = []
   //   const headers = {
-  //     Authorization: `Bearer ${localStorage.getItem('access_token')}`
+  //     Authorization: `Bearer ${this.$auth.token}`
   //   }
-  //   for (let v of videos) {
+  //   for (let v of media) {
   //     try {
-  //       const meta = await axios.get(`${process.env.TRANSCODER_HOST}/metadata/${v.annotation.uuid}`, {headers})
+  //       const meta = await axios.get(`${process.env.TRANSCODER_HOST}/metadata/${v.annotation._uuid}`, {headers})
   //       Object.assign(v.meta, meta.data)
-  //       videosMeta.push(v)
+  //       mediaMeta.push(v)
   //     }
-  //     catch (e) { console.log(e) }
+  //     catch (e) { console.error(e) }
   //   }
-  //   return videosMeta
+  //   return mediaMeta
   // }
 
   export default {
@@ -84,15 +83,15 @@
       SessionStream
     },
     async mounted () {
-      this.map = await this.$store.dispatch('maps/get', this.$route.params.id)
+      this.map = await this.$store.dispatch('maps/get', this.$route.params.uuid)
       this.sessions = await this.generateSessions(this.map.id)
 
       /*
-      this.map = await this.$store.dispatch('maps/get', this.$route.params.id)
+      this.map = await this.$store.dispatch('maps/get', this.$route.params.uuid)
       // const grouped = await this.$store.dispatch('sessions/get', uuid)
       // grouped.sessions = grouped.sessions.map(session => {
-      //   session.start = DateTime.fromISO(session.start)
-      //   session.end = DateTime.fromISO(session.end)
+      //   session.start = session.start
+      //   session.end = session.end
       //   return session
       // })
       const result = await this.$store.dispatch('annotations/find', {
@@ -106,18 +105,18 @@
       .map(a => {
         return resurrectAnnotation(a)
       })
-      const videosBase = result.items.filter(a => { return a.body.type === 'Video' })
+      const mediaBase = result.items.filter(a => { return a.body.type === 'Media' })
         .map(video => {
           return {
             meta: {},
             annotation: video
           }
         })
-      const videos = await fetchMetaData(videosBase)
+      const media = await fetchMetaData(mediaBase)
 
-      const millisDist = (3600 || constants.SESSION_DISTANCE_SECONDS) * 1000
+      const millisDist = (3600 || constants.config.SESSION_DISTANCE_SECONDS) * 1000
       const sessions = []
-      const defaultSession = { start: undefined, end: undefined, duration: undefined, annotations: [], videos: [] }
+      const defaultSession = { start: undefined, end: undefined, duration: undefined, annotations: [], media: [] }
       let session = ObjectUtil.merge({}, defaultSession)
 
       for (let i = 0; i < annotations.length; i++) {
@@ -127,9 +126,9 @@
         let video
 
         // TODO: handle other annotations with a duration here
-        if (a.body.type === 'Video') {
-          video = videos.find(v => {
-            return a.uuid === v.annotation.uuid
+        if (a.body.type === 'Media') {
+          video = media.find(v => {
+            return a._uuid === v.annotation._uuid
           })
           if (video) {
             if (video.meta && video.meta.duration) {
@@ -155,20 +154,20 @@
 
         if (annotationInside) {
           // only set end if past current session.end
-          if (annotationEnd.toMillis() > session.end.toMillis()) {
+          if (annotationEnd > session.end) {
             session.end = annotationEnd
           }
           session.annotations.push({
             annotation: a,
             duration: annotationDuration,
-            relativeTime: annotationStart.toMillis() - session.start.toMillis(),
+            relativeTime: annotationStart - session.start,
             active: false
           })
-          if (video) session.videos.push(video)
+          if (video) session.media.push(video)
         }
         if (!annotationInside || isLastAnnotation) {
           // store current annotation
-          session.duration = session.end.toMillis() - session.start.toMillis()
+          session.duration = session.end - session.start
           if (isNaN(session.duration)) {
             console.error('duration NaN', session)
             session.duration = 0
@@ -185,13 +184,13 @@
             relativeTime: 0,
             active: false
           })
-          if (video) session.videos.push(video)
+          if (video) session.media.push(video)
         }
 
-        // console.log(sessions.length, session.annotations.length, session.videos.length)
+        // console.debug(sessions.length, session.annotations.length, session.media.length)
       }
-      this.grouped = {sessions, videos}
-      // console.log(annotations, this.grouped)
+      this.grouped = {sessions, media}
+      // console.debug(annotations, this.grouped)
       */
     },
     methods: {
@@ -202,7 +201,7 @@
           }
           return {
             annotations: [],
-            videos: [],
+            media: [],
             start: undefined,
             end: undefined
           }
@@ -215,29 +214,28 @@
         const annotations = result.items.sort(this.$sort.onRef)
         let lastRef, session
         for (let annotation of annotations) {
-          const ref = DateTime.fromISO(annotation.target.selector.value)
-          if (lastRef) console.debug('dist', ref.toMillis() - lastRef.toMillis(), ref.minus(lastRef).toMillis(), maxDist)
-          if (!lastRef || ref.toMillis() - lastRef.toMillis() >= maxDist) {
+          const ref = annotation.target.selector._valueMillis
+          if (!lastRef || ref - lastRef >= maxDist) {
             session = storeSession(sessions, session)
-            session.start = annotation.target.selector.value
-            session.end = annotation.target.selector.value
+            session.start = annotation.target.selector._valueMillis
+            session.end = annotation.target.selector._valueMillis
           }
-          let sessionEnd = DateTime.fromISO(session.end)
+          let sessionEnd = session.end
           if (lastRef && lastRef > sessionEnd) {
             sessionEnd = lastRef
-            session.end = sessionEnd.toISO()
+            session.end = sessionEnd
           }
-          if (annotation.body.type === 'Video') {
+          if (annotation.body.type === 'Media') {
             const metadata = await this.$store.dispatch('metadata/get', annotation)
             const video = {
               metadata,
               annotation
             }
             if (metadata && metadata.duration) {
-              const videoEnd = DateTime.fromISO(annotation.target.selector.value).plus(metadata.duration * 1000)
-              if (videoEnd > ref && videoEnd > sessionEnd) session.end = videoEnd.toISO()
+              const videoEnd = annotation.target.selector._valueMillis + metadata.duration * 1000
+              if (videoEnd > ref && videoEnd > sessionEnd) session.end = videoEnd
             }
-            session.videos.push(video)
+            session.media.push(video)
           }
           else if (annotation.body.type === 'TextualBody') {
             session.annotations.push(annotation)
@@ -245,7 +243,6 @@
           lastRef = ref
         }
         storeSession(sessions, session)
-        console.debug('generated session data', sessions)
         return sessions
       },
       selectSession (data) {
@@ -261,7 +258,7 @@
       getTime (val) {
         return val.toLocaleString(this.timeFormat)
       },
-      checkVideoVisibility (videoStart, videoEnd, sessionStart, sessionEnd) {
+      checkMediaVisibility (videoStart, videoEnd, sessionStart, sessionEnd) {
         return (videoStart <= sessionStart && videoEnd >= sessionEnd) ||
           (videoStart >= sessionStart && videoEnd <= sessionEnd) ||
           (videoStart > sessionStart && videoStart < sessionEnd && videoEnd > sessionEnd)
@@ -281,14 +278,14 @@
         const _this = this
         switch (type) {
         case 'annotate':
-          return _this.$router.push(`/piecemaker/videos/${data.row.uuid}/annotate`)
+          return _this.$router.push(`/piecemaker/media/${data.row._uuid}/annotate`)
         }
       }
     },
     data () {
       return {
         activeSession: undefined,
-        grouped: { annotations: [], videos: [] },
+        grouped: { annotations: [], media: [] },
         sessions: undefined,
         map: undefined,
         previewLine: {

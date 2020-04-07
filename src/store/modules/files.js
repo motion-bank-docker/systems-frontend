@@ -9,7 +9,7 @@ const files = {
     async list (context, bucketName) {
       const config = {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('access_token')}`
+          Authorization: `${this.$router.app.$auth.tokenType} ${this.$router.app.$auth.token}`
         }
       }
       let result
@@ -24,7 +24,7 @@ const files = {
     async delete (context, [bucketName, assetName]) {
       const config = {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('access_token')}`
+          Authorization: `${this.$router.app.$auth.tokenType} ${this.$router.app.$auth.token}`
         }
       }
       await axios.delete(`${process.env.STORAGE_HOST}/files/${bucketName}/${assetName}`, config)

@@ -1,9 +1,9 @@
-[submodule "src/components/shared"]
-	path = src/components/shared
-	url = git@gitlab.rlp.net:motionbank/mbjs/quasar-components-shared.git
 [submodule "src/components/mosys"]
 	path = src/components/mosys
 	url = git@gitlab.rlp.net:motionbank/mbjs/quasar-components-mosys.git
+[submodule "src/components/shared"]
+	path = src/components/shared
+	url = git@gitlab.rlp.net:motionbank/mbjs/quasar-components-shared.git
 [submodule ".docker-lib"]
 	path = .docker-lib
 	url = git@gitlab.rlp.net:motionbank/tools/docker-lib.git

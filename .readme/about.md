@@ -65,9 +65,9 @@ docker images.
 
 ### Versions
 
-* Stable: `motionbank/systems-frontend:release_1_2`
+* Stable: `motionbank/systems-frontend:release_1_3`
 * Staging (beta): `motionbank/systems-frontend:staging`
-* Experimental: `motionbank/systems-frontend:experimental`
+* Experimental: `motionbank/systems-frontend:dev`
 
 ### Configuration
 

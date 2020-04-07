@@ -1,29 +1,40 @@
 <template lang="pug">
   full-screen
-    q-btn(slot="backButton", @click="$router.push({ name: 'piecemaker.timelines.list' })", icon="keyboard_backspace", round, small)
 
-    .q-pa-xl(style="min-width: 50vw;")
-      h5.caption(dark) {{ $t('routes.piecemaker.timelines.create.title') }}
-      .row
-        .col-md-12
-          form-main(v-model="payload", :schema="schema")
-      .row
-        .col-12
-          h5.caption(dark) {{ $t('forms.timelines.import.title') }}
-      .column
-        .col-12.q-pa-md
-          q-input(dark, :placeholder="$t('forms.timelines.import.fields.title')", v-model="uploadTitle")
-        .col-12.q-pa-md
+    // -----------------------------------------------------------------------------------------------------------------
+    // add new timeline
+    content-block(:position="'first'")
+      headline(:content="$t('routes.piecemaker.timelines.create.title')")
+
+      content-paragraph
+        form-main(v-model="payload", :schema="schema")
+
+    // -----------------------------------------------------------------------------------------------------------------
+    //
+      // import timeline
+      content-block(:position="'last'")
+        headline(:content="$t('forms.timelines.import.title')")
+
+        // new title (optional)
+        content-paragraph(:position="first")
+          q-input(dark, :float-label="$t('forms.timelines.import.fields.title')", v-model="uploadTitle")
+
+        // set ownership
+        content-paragraph
           q-checkbox(dark, :label="$t('forms.timelines.import.fields.override_author')", v-model="overrideAuthor")
-        <!--.col-12.q-pa-md-->
-          <!--q-checkbox(dark, :label="$t('forms.timelines.import.fields.skip_acl')", v-model="skipAcl")-->
-        .col-12.q-pa-md
-          uploader(dark, :url="url", @finish="onFinish", allowed=".zip", :headers="headers", :fields="uploadFields")
+
+        content-paragraph(:position="last")
+            uploader(dark, :url="url", @finish="onFinish", allowed=".zip", :headers="headers", :fields="uploadFields")
 </template>
 
 <script>
+  import { mapGetters } from 'vuex'
   import Tags from '../../../components/shared/partials/Tags'
   import FormMain from '../../../components/shared/forms/FormMain'
+  import BackButtonNew from '../../../components/shared/buttons/BackButtonNew'
+  import Headline from '../../../components/shared/elements/Headline'
+  import ContentBlock from '../../../components/shared/elements/ContentBlock'
+  import ContentParagraph from '../../../components/shared/elements/ContentParagraph'
 
   import { required } from 'vuelidate/lib/validators'
   import constants from 'mbjs-data-models/src/constants'
@@ -31,7 +42,11 @@
   export default {
     components: {
       FormMain,
-      Tags
+      Tags,
+      BackButtonNew,
+      Headline,
+      ContentBlock,
+      ContentParagraph
     },
     data () {
       const _this = this
@@ -43,9 +58,9 @@
         overrideAuthor: false,
         skipAcl: false,
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('access_token')}`
+          Authorization: `${this.$auth.tokenType} ${this.$auth.token}`
         },
-        type: constants.MAP_TYPE_TIMELINE,
+        type: constants.mapClasses.MAP_CLASS_TIMELINE,
         payload: undefined,
         schema: {
           fields: {
@@ -61,13 +76,18 @@
           },
           submit: {
             handler () {
-              _this.payload.type = [constants.MAP_TYPE_TIMELINE]
+              _this.payload.type = [constants.mapClasses.MAP_CLASS_TIMELINE]
               return _this.$store.dispatch('maps/post', _this.payload)
                 .then(() => _this.$router.push({ name: 'piecemaker.timelines.list' }))
             }
           }
         }
       }
+    },
+    computed: {
+      ...mapGetters({
+        isMobile: 'globalSettings/getIsMobile'
+      })
     },
     watch: {
       uploadTitle (val) {
@@ -79,6 +99,9 @@
       skipAcl (val) {
         this.setOrAddField('skipAcl', val)
       }
+    },
+    mounted () {
+      this.$root.$emit('setBackButton', '/piecemaker/timelines')
     },
     methods: {
       setOrAddField (name, value) {

@@ -1,17 +1,19 @@
 export default {
   buttons: {
     update_access_control: 'Update access settings',
+    annotations_index: 'Index',
     arrow_next: '>',
     arrow_prev: '<',
     abort: 'Abort',
     apply_synchronisation: 'Apply Synchronisation',
     annotate: 'Annotate',
     add_term: 'Add Term',
-    add_video: 'Add Video',
+    add_media: 'Add Media',
     add_vocabulary: 'Add Vocabulary',
     add_and_go: 'Add & Go',
     back: 'Back',
     create_account: 'Create Account',
+    close_account: 'Close Account',
     create_document: 'Add Document',
     create_timeline: 'Create Timeline',
     create_grid: 'Create Grid',
@@ -22,12 +24,14 @@ export default {
     copy_url: 'Copy URL',
     delete: 'Delete',
     download_archive: 'Download Archive',
+    download_csv: 'Download CSV',
     download_package: 'Download Package',
     download: 'Download',
     done: 'Done',
     edit: 'Edit',
     export_grid: 'Export Grid',
     export_timeline: 'Export Timeline',
+    export_timeline_csv: 'Export Timeline as CSV',
     forgot_password: 'Forgot Password',
     live_annotate: 'Live Annotate',
     live_annotate_timeline: 'Live Annotate this timeline',
@@ -42,8 +46,9 @@ export default {
     search: 'Search',
     submit: 'Submit',
     synchronize: 'Sync',
-    videos: 'Videos',
-    yes: 'Yes'
+    media: 'Media',
+    yes: 'Yes',
+    do_not_show_again: 'Do not show again'
   },
   checkboxes: {
     delete: 'delete',
@@ -90,32 +95,40 @@ export default {
     create_annotation_failed: 'Failed to create annotation: {error}',
     update_annotation_failed: 'Failed to update annotation: {error}',
     delete_annotation_failed: 'Failed to remove annotation: {error}',
+    list_annotations_failed: 'Failed to create annotation: {error}',
     export_archive_failed: 'Failed to export timeline archive: {error}',
     packaging_failed: 'Packaging failed: {error}',
     unauthorized: 'Unauthorized',
     forbidden: 'Forbidden',
-    http_server_error: 'HTTP error {code}: {message}'
+    http_server_error: 'HTTP error {code}: {message}',
+    generic_error: '{code} {message}'
   },
   labels: {
+    id: 'ID',
     access_control: 'Access Control',
     access_control_public: 'Public',
     access_control_add_group: 'Add to group',
     access_control_remove_group: 'Remove from group',
     associated_timeline: 'Associated timeline',
-    associated_timeline_warning: 'WARNING: If you already annotated this video, your annotations are linked to the original timeline. Changing the associated timeline will only reassign the video, not the existing annotations.',
-    recursive: 'Apply to all contained annotations and videos',
+    associated_timeline_warning: 'WARNING: If you already annotated this, your annotations are linked to the original timeline. Changing the associated timeline will only reassign this reference time, not the existing annotations.',
+    recursive: 'Apply to all contained annotations and media',
     add_group: 'Add Group',
     add_term: 'Add Term',
-    annotations: 'Annotations',
+    annotations: 'Index',
     annotation_body: 'Annotation text',
     accept_terms: 'I accept the Terms and Conditions',
+    accept: 'Accept',
     author: 'Author',
-    unknown_author: 'Unknown Author',
+    creator: 'Creator',
+    biovision_hierarchy: 'Biovision Hierarchy',
+    anonymous_creator: 'Anonymous',
+    unknown_creator: 'Unknown',
     created: 'Created',
     css_stylesheet: 'CSS Stylesheet',
     updated: 'Updated',
     last_updated: 'Last updated',
     date: 'Date',
+    delete_cell: 'Delete cell?',
     description: 'Description',
     duration: 'Duration',
     edit_title: 'Edit title',
@@ -124,9 +137,11 @@ export default {
     embedded: 'Embedded in',
     empty: 'empty',
     elements_length: 'Used Elements',
+    filmbox: 'Filmbox',
     // timeline_title: 'Timeline title',
     timeline_title: 'Timeline title',
     grid_title: 'Grid title',
+    invitation: 'Invitation',
     last_annotation: 'Last annotated',
     last_edit: 'Last edit',
     location: 'Location',
@@ -136,13 +151,16 @@ export default {
     new_tag: 'New tag',
     new_term: 'New term',
     new_group_title: 'New group title',
+    group_title: 'Group title',
     new_vocabulary: 'New vocabulary',
     no_selection: 'No selection made.',
     organisation: 'Organisation',
     participants: 'Participants',
     password: 'Password',
     password_confirmation: 'Password confirmation',
+    permissions: 'Permissions',
     public: 'Public',
+    reject: 'Reject',
     status: 'Status',
     set_title: 'Set Title',
     set_shortcut: 'Set Shortcut',
@@ -150,14 +168,16 @@ export default {
     size: 'Size',
     tag: 'Tag',
     tags: 'Tags',
-    textual_body: 'Textual annotations',
+    textual_body: 'Annotations',
     title: 'Title',
     title_unknown: 'Unknown Title',
+    timeline: 'Timeline',
     type: 'Type',
-    video_title: 'Video title',
-    video_url: 'Video URL',
-    video: 'Video',
-    vocabulary_entry: 'Vocabulary entry'
+    media_duration: 'Media duration',
+    media_title: 'Media title',
+    media_url: 'Media URL',
+    media: 'Media',
+    vocabulary_entry: 'Vocabularies'
   },
   links: {
     click_to_register: 'Click here to create an account.'
@@ -183,16 +203,19 @@ export default {
     grid_imported: 'Grid imported successfully',
     grid_deleted: 'Grid deleted',
     confirm_delete: 'Delete this item?',
+    confirm_remove_member: 'Remove this member?',
+    confirm_delete_group: 'Delete this group?',
     updated_annotation: 'Updated annotation',
     url_copied: 'URL copied to clipboard',
-    caution_video_time_override: 'Caution: Changing a video\'s time does not update existing annotations!',
+    caution_media_time_override: 'Caution: Changing media reference time does not update associated annotations!',
     browser_unsupported_warning: '<strong>Unsupported browser:</strong> For optimal performance please use ' +
-      '<a href="https://www.google.com/chrome" target="_blank">Google Chrome</a> or ' +
+      '<a href="https://www.mozilla.org/firefox/" target="_blank">Firefox</a> or ' +
       '<a href="http://www.chromium.org/Home" target="_blank">Chromium</a>.<br>' +
-      '<small>While the site might work on your browser, more or less subtle problems can occur. You have been warned!</small>'
+      '<small>While the site might work on your browser, more or less subtle problems can occur. You have been warned!</small>',
+    legacy_site_migration: 'Looking for the previous version and your data? It’s still there:'
   },
   navigation: {
-    annotate_video: 'Annotate Video',
+    annotate_media: 'Annotate Media',
     maps: 'Maps',
     contact: 'Contact',
     imprint: 'Imprint',
@@ -200,7 +223,39 @@ export default {
     logout: 'Sign Out',
     login: 'Sign In',
     manage_account: 'Account',
-    terms: 'Terms'
+    terms: 'Terms',
+    piecemaker: {
+      label: 'Piecemaker',
+      piecemaker_timelines_list: 'Timelines',
+      piecemaker_timelines_annotate: 'Live annotate',
+      piecemaker_media_list: 'Media',
+      piecemaker_media_annotate: 'Annotate',
+      piecemaker_media_edit: 'Edit',
+      piecemaker_media_sync: 'Sync',
+      piecemaker_timelines_search: 'Search',
+      piecemaker_timelines_edit: 'Edit',
+      piecemaker_timelines_create: 'Create timeline'
+    },
+    mosys: {
+      label: 'Mosys',
+      mosys_grids_list: 'All Grids',
+      mosys_grids_annotate: 'Grid Editor',
+      mosys_grids_show: 'View',
+      mosys_grids_edit: 'Edit',
+      mosys_grids_create: 'Create Grid'
+    },
+    documents: {
+      label: 'Documents',
+      documents_list: 'All Documents',
+      documents_copy_url: 'Copy URL',
+      documents_delete: 'Delete',
+      documents_download: 'Download',
+      documents_edit: 'Edit'
+    },
+    users: {
+      label: 'Account settings',
+      users_manage: 'Account settings'
+    }
   },
   routes: {
     documents: {
@@ -215,9 +270,9 @@ export default {
       }
     },
     annotate: {
-      video: {
-        title: 'Annotate Video',
-        caption: 'Select a map and enter a video URL to start annotating.'
+      media: {
+        title: 'Annotate Media',
+        caption: 'Select a map and enter a media URL to start annotating.'
       }
     },
     errors: {
@@ -246,9 +301,9 @@ export default {
         caption: 'Media recording via Cellphone, Web- or other USB-camera.'
       }
     },
-    mocabulary: {
+    vocabularies: {
       trees: {
-        title: 'Mocabulary list',
+        title: 'Vocabulary list',
         caption: 'captions'
       }
     },
@@ -273,6 +328,20 @@ export default {
         title: 'Manage Account',
         caption: 'Update your details and login credentials.',
         first_login: 'As this is your first login, please update your profile info.'
+      }
+    },
+    groups: {
+      list: {
+        title: 'Groups',
+        caption: 'Manage your groups.'
+      },
+      edit: {
+        title: 'Edit group',
+        caption: 'Edit this group.'
+      },
+      new: {
+        title: 'New group',
+        caption: 'Create a new group.'
       }
     },
     site: {
@@ -308,6 +377,10 @@ export default {
           title: 'Edit Timeline',
           caption: 'Edit timeline details.'
         },
+        export: {
+          title: 'Export Timeline',
+          caption: 'Export associated annotations.'
+        },
         list: {
           title: 'All timelines',
           caption: 'All timelines you have access to.'
@@ -323,24 +396,35 @@ export default {
         users: {
           title: 'Users in this timeline',
           caption: '.'
+        },
+        media: {
+          title: 'Media',
+          caption: '.'
         }
       },
-      videos: {
+      media: {
         list: {
-          title: 'Videos',
-          caption: 'All your most wonderful videos are here.'
+          title: 'Media',
+          caption: 'All your most wonderful media are here.'
         },
         edit: {
-          title: 'Edit Video',
-          caption: 'Edit video details.'
+          title: 'Edit media',
+          caption: 'Edit media details.'
         },
         create: {
-          title: 'Add Video',
-          caption: 'Add a new video to your timeline.'
+          title: 'Add Media',
+          caption: 'Add a new media to your timeline.'
+        },
+        sync: {
+          title: 'Sync Media',
+          caption: 'Synchronize media reference time.'
         }
       }
     },
     mosys: {
+      cells: {
+        edit_cell: 'Edit Cell'
+      },
       add: {
         title: 'Add',
         caption: 'Add an URL'
@@ -349,7 +433,7 @@ export default {
         buttons: {
           edit: 'Edit',
           show: 'View',
-          annotate: 'Add cells'
+          annotate: 'Grid Editor'
         },
         create: {
           button: 'Create Grid', // TODO: where do buttons belong?
@@ -361,7 +445,7 @@ export default {
           caption: 'All your grids'
         },
         edit: {
-          title: 'Edit grid',
+          title: 'Edit',
           caption: 'Edit grid details'
         },
         users: {
@@ -372,7 +456,7 @@ export default {
     }
   },
   site: {
-    copyright: 'Copyright 2018 Motion Bank',
+    copyright: 'Copyright 2020',
     license: 'License',
     tagline: 'Digital Research and Annotation Platform for Contemporary Dance.',
     title: 'Web Systems',

@@ -18,24 +18,21 @@ export default {
       component: () => import('pages/shared/users/auth0-action')
     },
     {
-      path: 'create',
-      name: 'users.create',
-      component: () => import('pages/shared/users/create')
-    },
-    {
-      path: 'forgot',
-      name: 'users.forgot',
-      component: () => import('pages/shared/users/forgot')
-    },
-    {
-      path: 'login',
-      name: 'users.login',
-      component: () => import('pages/shared/users/login')
-    },
-    {
       path: 'manage',
       name: 'users.manage',
       component: () => import('pages/shared/users/manage'),
+      meta: {private: true}
+    },
+    {
+      path: 'groupedit',
+      name: 'users.groupedit',
+      component: () => import('pages/shared/users/group_edit'),
+      meta: {private: true}
+    },
+    {
+      path: 'invite',
+      name: 'users.invite',
+      component: () => import('pages/shared/users/invite'),
       meta: {private: true}
     }
   ]

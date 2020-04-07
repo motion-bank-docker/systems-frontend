@@ -24,48 +24,42 @@ const Router = new VueRouter({
 
 Router.beforeEach((to, from, next) => {
   const waitForStore = (app, cb) => {
-    if (app.$store === undefined) setTimeout(() => waitForStore(app, cb), 0)
+    if (typeof app.$store === 'undefined') setTimeout(() => waitForStore(app, cb), 0)
     else cb()
   }
   waitForStore(Router.app, () => {
-    if (!Router.app.$store.state.auth.user) {
-      Router.app.$auth.checkSession(Router.app.$store).catch(() => {
-        if (to.meta.private) {
-          Router.app.$store.commit('auth/setRedirect', to.fullPath)
-          Router.app.$auth.authenticate()
-        }
-      }).then(result => {
-        if (result) {
-          const { user, first } = result
-          if (first) {
-            console.debug('Auth0 first login', user)
-            next({ name: 'users.manage', params: { isFirst: true, redirect: to } })
-          }
-          else {
-            if (to.meta.feature) {
-              if (userHasFeature(Router.app.$store.state.auth.user, to.meta.feature)) next()
-              else next({ name: 'site.welcome' })
-            }
-            next()
-          }
-        }
-        else if (to.meta.private) {
-          Router.app.$store.commit('auth/setRedirect', to.fullPath)
-          Router.app.$auth.authenticate()
-        }
-        else next()
-      }).catch(err => {
-        Router.app.$captureException(err)
-        Router.app.$auth.logout()
-      })
-    }
-    else {
-      if (to.meta.feature) {
-        if (userHasFeature(Router.app.$store.state.auth.user, to.meta.feature)) next()
-        else next({ name: 'site.welcome' })
+    Router.app.$auth.checkSession(Router.app.$store).catch(() => {
+      if (to.meta.private) {
+        Router.app.$store.commit('auth/setRedirect', to.fullPath)
+        Router.app.$auth.authenticate()
       }
-      next()
-    }
+    }).then(result => {
+      if (result) {
+        const { user, first } = result
+        if (first) {
+          console.debug('Auth0 first login', user)
+          next({ name: 'users.manage', params: { isFirst: true, redirect: to } })
+        }
+        else {
+          if (to.meta.feature) {
+            if (userHasFeature(Router.app.$store.state.auth.user, to.meta.feature)) next()
+            else next({ name: 'site.welcome' })
+          }
+          next()
+        }
+      }
+      else if (to.meta.private) {
+        if (process.env.IS_ELECTRON) next()
+        else {
+          Router.app.$store.commit('auth/setRedirect', to.fullPath)
+          Router.app.$auth.authenticate()
+        }
+      }
+      else next()
+    }).catch(err => {
+      Router.app.$captureException(err)
+      Router.app.$auth.logout()
+    })
   })
 })
 

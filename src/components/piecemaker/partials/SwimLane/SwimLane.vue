@@ -1,76 +1,148 @@
 <template lang="pug">
-  .swim-lane-component(:class="[cursorGlobalResize, cursorGlobalGrabbing]", style="position: relative;")
-    .row.q-my-md
-      //
-        q-btn.q-mr-sm(slot="", @click="createMarker", label="Add annotation", color="primary")
-        q-btn.q-mr-sm(slot="", @click="", label="Jump to selected annotation", color="primary")
-        q-btn.q-mr-sm(slot="", @click="", label="Jump to current timecode", color="primary")
+  .swim-lane-component.fit.relative-position(ref="wrapper", :class="[cursorGlobalResize, cursorGlobalGrabbing]")
+    q-resize-observable(@resize="onWrapperResize")
+
+    .row.no-wrap.full-height
 
       marker-context-menu(:root="self")
       marker-details-hover(:root="self")
 
-      .col-8.row
-        .q-pt-xs(:class="{'col-6' : showDetails}")
+      // ----------------------------------------------------------------------------------------------------- left side
 
-          // buttons shows/hides details
+      .ui-border-right.q-pa-md.scroll(
+        v-if="visibilityDetails",
+        :style="selectedAnnotationContainerStyles"
+        )
+        q-resize-observable(@resize="onDetailsResize")
+        .full-width.row.relative-position
 
-          q-btn.q-px-sm.q-mr-sm(@click="handlerToggle('markerDetails')", icon="expand_more",
-          :class="[showDetails ? 'rotate-90' : 'rotate-270 text-white']", size="sm", round)
+          //div
+            // go to prev/next annotation
 
-          // TODO: use input field here to set the timecode to an exact value
-          <!--| Selected timecode: {{ timecode.currentText }}-->
-        .q-pl-xs
+              q-btn.q-mr-xs(icon="navigate_before", round, size="sm", flat, :disabled="!selectedAnnotation")
+              q-btn(icon="navigate_next", round, size="sm", flat, :disabled="!selectedAnnotation")
+
+            // icon + timestamp
+
+          .row.items-center
+            .q-mr-sm(v-if="selectedAnnotation")
+              annotation-icon.cursor-pointer(
+                :annotation="selectedAnnotation",
+                :isSelected="true",
+                @click.native="onTimecodeLabelClick()"
+                )
+
+            div(v-if="selectedAnnotation", :class="{'row': !timecodeLabelBreakpoint}")
+              timecode-label(
+                v-if="selectedAnnotation",
+                @click.native="onTimecodeLabelClick()",
+                :millis="selectedAnnotation.target.selector._valueMillis",
+                :videoDate="getVideoDate()"
+                )
+
+              // duration
+              template(v-if="selectedAnnotation.target.selector._valueDuration")
+                .timecode-label-duration-spacer(v-if="!timecodeLabelBreakpoint")
+                .timecode-label-duration-spacer-vertical(v-else)
+                timecode-label(
+                  @click.native="onTimecodeLabelClick(true)",
+                  :millis="getEndMillisFromDuration(selectedAnnotation)",
+                  :videoDate="getVideoDate()"
+                  )
+
+            .q-caption.q-mt-xs(v-else) No annotation selected
+
+        // details content
+
+        .q-mt-md.text-white
+          marker-details-selected(v-if="visibilityDetails", :root="self", :resizable="resizable")
+
+      // ---------------------------------------------------------------------------------------------------- right side
+
+      div.column.q-pl-md.q-pr-md.q-pt-xs(:style="swimLaneContainerStyles")
+
+        // settings
+
+        div.row.q-mb-xs
+
+          // fix: mouse up in offset from resizeX button
+
+          .bg-transparent.absolute-top-left
+
+          // button change horizontal dimensions from details (affects swimlane width, too)
+
+          q-btn.q-px-sm.q-mr-xs(
+            v-if="visibilityDetails", v-touch-pan="handlerResizeX",
+            @mousedown.native="onResizerDown",
+            size="xs", icon="code", round, flat
+            )
+
+          // setting buttons
+
           settings(ref="settings")
 
-      // resize and hide swimlanes
+          // resize (y) and hide swimlanes
 
-      .col-4.text-right(v-if="resizable")
-        q-btn.q-ml-lg(@click="", v-touch-pan="handlerResize", color="dark", round, size="sm")
-          q-icon.rotate-90(name="code")
-        q-btn.q-ml-sm(@click="handlerToggle('swimlanes')", color="dark", icon="clear", round, size="sm")
+          .absolute-top-right.text-right.q-mt-xs.q-mr-md(v-if="resizable")
+            q-btn.q-ml-lg(
+              @mousedown.native="onResizerDown",
+              v-touch-pan="handlerResizeY",
+              round, size="xs", flat
+              )
+              q-icon.rotate-90(name="code")
 
-    .row(:class="[showDetails ? 'gutter-sm' : '']")
-      div(:class="[showDetails ? 'col-4' : '']")
-        marker-details-selected(v-if="showDetails", :root="self", :resizable="resizable")
-      <!--div(ref="swimlanewrap", :class="[showMarkerDetails ? 'col-8' : 'col-12']")-->
-      div(ref="swimlanewrap", :class="[showDetails ? 'col-8' : 'col-12']")
-        .swim-lane-wrapper.wrapper
-          .timecode-display-hover.no-select.no-event.p-abs.q-caption(
-            ref="timecodeDisplayHover",
-            :class="(isFocused('timecodeBar') && !isDragged()) || isDragged('timecodeBar') ? '' : 'is-hidden'",
-            :style="{left: timecodeBar.displayHover.x + 'px'}"
-            ) {{ timecode.hoverText }}
-          // ----------------------------------------------------------------------------------------------------- Outer SVG
-          svg.swim-lane(
-            @mousedown.left.prevent,
-            width="100%", height="50vh",
-            ref="root"
-            )
-            // swimlanes
-            graph(
-              ref="graph",
-              :annotationsGrouped="annotationsGrouped",
-              :root="self",
-              :offset="offset"
-              )
-            // sections bar
-            timecode-bar(
-              ref="timecodeBar",
-              :root="self",
-              :offset="offset"
-              )
-            // TODO: own component
-            line.sl-graph-timecode-current.stroke-neutral.no-event(
-              :x1="timecodeMarkerCurrentX", y1="0",
-              :x2="timecodeMarkerCurrentX", y2="100%"
-              )
-            // scroll and zoom bar
-            navigation-bar(
-              ref="nav",
-              :root="self",
-              :offset="offset"
-              )
+        // swim lane
 
+        div.full-width.flex-fit-column(
+          ref="swimlanewrap",
+          v-if="!hideSwimlanes",
+          style="background-color: #4C494A;"
+          )
+          .swim-lane-wrapper.wrapper
+
+            // hovering timecode
+
+            .timecode-display-hover.no-select.no-event.p-abs.q-caption(
+              ref="timecodeDisplayHover",
+              :class="(isFocused('timecodeBar') && !isDragged()) || isDragged('timecodeBar') ? '' : 'is-hidden'",
+              :style="{left: timecodeBar.displayHover.x + 'px'}"
+              ) {{ timecode.hoverText }}
+
+            // --------------------------------------------------------------------------------------------- Outer SVG
+            //
+            svg.swim-lane(
+              @mousedown.left.prevent,
+              width="100%", height="100%",
+              ref="root"
+              )
+              // swimlanes
+              graph(
+                ref="graph",
+                :annotationsGrouped="annotationsGrouped",
+                :root="self",
+                :offset="offset"
+                )
+              // sections bar
+              timecode-bar(
+                ref="timecodeBar",
+                :root="self",
+                :offset="offset"
+                )
+              line.sl-graph-timecode-current.stroke-neutral.no-event(
+                :x1="timecodeMarkerCurrentX", y1="0",
+                :x2="timecodeMarkerCurrentX", y2="100%"
+                )
+              marker-map(
+                :root="self",
+                :annotations="annotations"
+                )
+              // scroll and zoom bar
+              navigation-bar(
+                ref="nav",
+                :root="self",
+                :offset="offset",
+                :annotations="annotations"
+                )
 </template>
 
 <script>
@@ -85,9 +157,14 @@
   import MarkerDetailsHover from './MarkerDetailsHover'
   import MarkerDetailsSelected from './MarkerDetailsSelected'
   import MarkerContextMenu from './MarkerContextMenu'
+  import AnnotationIcon from '../AnnotationIcon'
+  import TimecodeLabel from '../TimecodeLabel'
+  import MarkerMap from './MarkerMap/MarkerMap'
 
   export default {
     components: {
+      MarkerMap,
+      AnnotationIcon,
       SwimLaneMarker,
       Graph,
       Settings,
@@ -95,9 +172,20 @@
       TimecodeBar,
       MarkerDetailsHover,
       MarkerDetailsSelected,
-      MarkerContextMenu
+      MarkerContextMenu,
+      TimecodeLabel
     },
-    props: ['timelineUuid', 'markerDetails', 'resizable', 'visibilityDetails'],
+    props: [
+      'markerDetails',
+      'resizable',
+      'start',
+      'duration',
+      'annotations',
+      'media',
+      'map',
+      'selectedMillis',
+      'mode'
+    ],
     data () {
       return {
         self: this,
@@ -130,19 +218,37 @@
           }
         },
         currentKeyDown: null,
-        annotations: [],
+        // annotations: [],
         // store all marker for collision detection later on
         markerList: [],
-        showMarkerDetails: undefined,
-        offset: {
-          gutter: undefined,
-          swimlanewrap: undefined
+        isResizing: false,
+        dimensions: {
+          details: {
+            height: {
+              min: undefined,
+              current: undefined,
+              max: undefined
+            },
+            width: {
+              min: 20,
+              current: undefined,
+              max: 50
+            }
+          }
         },
-        showDetails: this.visibilityDetails
+        selectedAnnotationTime: undefined,
+        dirtyAnnotation: undefined
       }
     },
-    async mounted () {
-      await this.loadData()
+    mounted () {
+      this.setupScreen()
+
+      // await this.loadData()
+
+      this.timeline.duration = this.duration
+      this.timeline.start = this.start
+
+      // this.annotations = this.annotationsTemp
 
       window.addEventListener('mousemove', this.onGlobalMove)
       window.addEventListener('mouseup', this.onGlobalUp)
@@ -150,37 +256,57 @@
       window.addEventListener('keydown', this.onKeyDown)
       window.addEventListener('keyup', this.onKeyUp)
 
-      EventHub.$on('UIDown', this.onUIDown)
-      EventHub.$on('UIEnter', this.onUIEnter)
-      EventHub.$on('UILeave', this.onUILeave)
+      this.$root.$on('UIDown', this.onUIDown)
+      this.$root.$on('UIEnter', this.onUIEnter)
+      this.$root.$on('UILeave', this.onUILeave)
 
-      EventHub.$on('timecodeChange', this.setTimecode)
-      EventHub.$on('scrollPositionChange', this.setScrollPosition)
-      EventHub.$on('scaleFactorChange', this.setScaleFactor)
+      // this.$root.$on('markerDown', this.onMarkerDown)
+
+      this.$root.$on('timecodeChange', this.setTimecode)
+      this.$root.$on('scrollPositionChange', this.setScrollPosition)
+      this.$root.$on('scaleFactorChange', this.setScaleFactor)
+      this.$root.$on('annotationChange', this.onAnnotationChange)
 
       this.timecode.hoverText = this.millisToText(0)
-      EventHub.$emit('timecodeChange', 0)
 
+      this.$root.$emit('afterComponentMounted')
       this.cacheDimensions()
-      EventHub.$emit('afterComponentMounted')
+      // FIXME ugly fix because the call above seems to be fired to early
+      setTimeout(() => { this.cacheDimensions() }, 500)
     },
     beforeDestroy () {
-      this.setScrollPosition(0)
+      this.setScrollPosition({x: 0, y: 0})
       this.setScaleFactor(1)
+
       window.removeEventListener('mousemove', this.onGlobalMove)
       window.removeEventListener('mouseup', this.onGlobalUp)
       window.removeEventListener('resize', this.onResize)
       window.removeEventListener('keydown', this.onKeyDown)
       window.removeEventListener('keyup', this.onKeyUp)
 
+      this.$root.$off('UIDown', this.onUIDown)
+      this.$root.$off('UIEnter', this.onUIEnter)
+      this.$root.$off('UILeave', this.onUILeave)
+
+      this.$root.$off('timecodeChange', this.setTimecode)
+      this.$root.$off('scrollPositionChange', this.setScrollPosition)
+      this.$root.$off('scaleFactorChange', this.setScaleFactor)
+      this.$root.$off('annotationChange', this.onAnnotationChange)
+
       EventHub.$off()
     },
     computed: {
       ...mapGetters({
-        timecodeCurrent: 'swimLaneSettings/getTimecode',
-        scrollPosition: 'swimLaneSettings/getScrollPosition',
-        scaleFactor: 'swimLaneSettings/getScaleFactor',
-        groupAnnotationsBy: 'swimLaneSettings/getGroupAnnotationsBy'
+        timecodeCurrent: 'swimLane/getTimecode',
+        scrollPosition: 'swimLane/getScrollPosition',
+        scaleFactor: 'swimLane/getScaleFactor',
+        groupAnnotationsBy: 'swimLane/getGroupAnnotationsBy',
+        selectedAnnotation: 'swimLane/getSelectedAnnotation',
+        detailsWidth: 'swimLane/getDetailsWidth',
+        timecodeLabelBreakpoint: 'swimLane/getTimecodeLabelBreakpoint',
+        expandedMode: 'swimLane/getExpandedMode',
+        cursorTop: 'swimLane/getCursorTop',
+        visibilityDetails: 'swimLane/getVisibilityDetails'
       }),
       cursorGlobalResize () {
         return this.isDragged(['navHandleRight', 'navHandleLeft']) ? 'global-ew-resize' : ''
@@ -192,109 +318,153 @@
         let groups
         let filtered = {}
 
-        if (this.groupAnnotationsBy === 'type') {
-          groups = this.annotations.reduce((sum, annotation) => {
-            if (sum.indexOf(annotation.body.type) === -1) sum.push(annotation.body.type)
-            return sum
-          }, [])
-          for (let group of groups) {
-            filtered[group] = this.annotations.filter(annotation => annotation.body.type === group)
+        if (this.annotations) {
+          if (this.groupAnnotationsBy === 'type') {
+            groups = this.annotations.reduce((sum, annotation) => {
+              const type = annotation.body.type || annotation.body.source.type
+              if (sum.indexOf(type) === -1) sum.push(type)
+              return sum
+            }, [])
+            for (let group of groups) {
+              filtered[group] = this.annotations.filter(annotation => annotation.body.type === group ||
+                annotation.body.source.type === group)
+            }
           }
-        }
-        else if (this.groupAnnotationsBy === 'author') {
-          groups = this.annotations.reduce((sum, annotation) => {
-            if (sum.indexOf(annotation.author.name) === -1) sum.push(annotation.author.name)
-            return sum
-          }, [])
-          for (let group of groups) {
-            filtered[group] = this.annotations.filter(annotation => annotation.author.name === group)
+          else if (this.groupAnnotationsBy === 'creator') {
+            groups = this.annotations.reduce((sum, annotation) => {
+              if (sum.indexOf(annotation.creator.name) === -1) sum.push(annotation.creator.name)
+              return sum
+            }, [])
+            for (let group of groups) {
+              filtered[group] = this.annotations.filter(annotation => annotation.creator.name === group)
+            }
           }
         }
         return filtered
       },
       timecodeMarkerCurrentX () {
-        if (this.timecodeCurrent) {
+        if (this.timecodeCurrent && this.scrollPosition) {
           let r = this.millisToRelGraph(this.timecodeCurrent) - this.scrollPosition.x
-          let p = this.toAbsGraph(r)
-          return p
+          let p = this.toAbsGraphX(r)
+          if (isFinite(p)) return Math.floor(p) + 0.5
+          else return 0
+          // return p
         }
         return 0
+      },
+      selectedAnnotationContainerStyles () {
+        return {
+          width: this.dimensions.details.width.current + '%',
+          minWidth: this.dimensions.details.width.min + '%',
+          maxWidth: this.dimensions.details.width.max + '%',
+          maxHeight: '100%'
+        }
+      },
+      swimLaneContainerStyles () {
+        return {
+          'flex-grow': 2
+        }
       }
     },
     watch: {
+      expandedMode () {
+        this.setScrollPosition({y: 0})
+      },
+      visibilityDetails () {
+        this.updateCache()
+      },
+      selectedMillis (ms) {
+        let v = this.isVisible({left: this.millisTotaltoAbsGraph(ms), top: 0})
+        if (!v.x) this.setScrollPosition({x: this.millisTotaltoRelGraph(ms) - this.scaleFactor / 2})
+      },
       timecodeCurrent (tc) {
         this.timecode.currentText = this.millisToText(tc)
+      },
+      selectedAnnotation (obj) {
+        if (obj) {
+          let ms = this.millisTotalToTimeline(DateTime.fromISO(obj.target.selector.value).toMillis())
+          this.selectedAnnotationTime = this.millisToText(ms)
+        }
       }
     },
     methods: {
-      // toggleDetails () {
-      //   this.$emit('toggleDetails', 'bla')
-      // },
-      handlerResize (obj) {
-        // console.log(obj.position.top)
-        this.$emit('emitResize', obj.position.top)
+      getEndMillisFromDuration (annotation) {
+        return annotation.target.selector._valueMillis + annotation.target.selector._valueDuration
+      },
+      jumpToMarker (val, useDuration) {
+        let jumpingPoint
+        if (!useDuration) {
+          // if (!val) jumpingPoint = this.selectedMillis
+          if (!val) jumpingPoint = this.selectedAnnotation
+          else jumpingPoint = val
+        }
+        else {
+          jumpingPoint = val
+        }
+        this.setScrollPosition({x: this.millisTotaltoRelGraph(jumpingPoint), y: 0})
+      },
+      onTimecodeLabelClick (useDuration) {
+        this.$root.$emit('emitSelector', this.selectedAnnotation.target.selector, useDuration)
+        this.jumpToMarker(this.selectedAnnotation.target.selector, useDuration)
+      },
+      getVideoDate () {
+        if (this.mode === 'global') return DateTime.fromMillis(this.media.target.selector._valueMillis)
+      },
+      setupScreen () {
+        console.debug('SwimLane: setupScreen', this.dimensions.details)
+        let selectedA = this.selectedAnnotation
+        if (selectedA) {
+          let ms = this.millisTotalToTimeline(DateTime.fromISO(selectedA.target.selector.value).toMillis())
+          this.selectedAnnotationTime = this.millisToText(ms)
+        }
+        else this.selectedAnnotationTime = '–'
+
+        if (this.visibilityDetails && this.detailsWidth) {
+          this.dimensions.details.width.current = this.detailsWidth
+        }
+        else if (this.visibilityDetails && !this.detailsWidth) {
+          this.dimensions.details.width.current = 30
+        }
+      },
+      onWrapperResize (obj) {
+        this.dimensions.details.height.current = obj.height
+      },
+      onDetailsResize (obj) {
+        this.dimensions.details.width.currentPx = obj.width
+        if (this.dimensions.details.width.currentPx < 280) {
+          this.$store.commit('swimLane/setTimecodeLabelBreakpoint', true)
+        }
+        else this.$store.commit('swimLane/setTimecodeLabelBreakpoint', false)
+      },
+      onResizerDown () {
+        this.isResizing = true
+      },
+      handlerResizeY (obj) {
+        this.$store.commit('swimLane/setCursorTop', obj.position.top - 16 - 15)
+      },
+      handlerResizeX (obj) {
+        let
+          clWidth = this.$refs.wrapper.clientWidth,
+          cursorPosLeft = obj.position.left - 16 - 15
+        this.dimensions.details.width.current = cursorPosLeft / clWidth * 100
+        this.$store.commit('swimLane/setDetailsWidth', this.dimensions.details.width.current)
       },
       handlerToggle (val) {
         switch (val) {
         case 'markerDetails':
-          this.showMarkerDetails = !this.showMarkerDetails
-          if (!this.resizable) this.showDetails = this.showMarkerDetails
-          this.$emit('emitToggleDetails', this.showMarkerDetails)
+          this.$store.commit('swimLane/setVisibilityDetails')
           break
         case 'swimlanes':
-          this.$emit('emitHandler')
+          // this.$emit('emitHandler')
+          this.$store.commit('swimLane/setVisibilitySwimlanes')
           break
         }
-      },
-      // ----------------------------------------------------------------------------------------------------- Load Data
-      async loadData () {
-        const timeline = await this.$store.dispatch('maps/get', this.timelineUuid)
-        const result = await this.$store.dispatch('annotations/find', {
-          type: 'Annotation',
-          'target.type': 'Timeline',
-          'target.id': timeline.id
-        })
-
-        // TODO: clean this up, use/add helper methods
-        const annotations = result.items.sort(this.$sort.onRef)
-        // this.annotations = annotations
-
-        // sort annotations earliest to latest
-        // TODO: does not account for possible duration of annotations
-        // annotations.sort((obj1, obj2) => {
-        //   return this.isoToMillis(obj1.target.selector.value) - this.isoToMillis(obj2.target.selector.value)
-        // })
-
-        const duration = annotations[0].getDurationTo(annotations[annotations.length - 1])
-        // TODO: find better way to set a padding so that annotations don't sit on the edges of the graph
-        const padding = 120000 // 2 seconds
-        this.timeline.duration = duration.as('milliseconds') + padding * 2
-        this.timeline.start = DateTime.fromISO(annotations[0].target.selector.value).toMillis() - padding
-
-        this.annotations = annotations
-
-        // Add fake duration
-        // let idx = 0
-        // this.annotations = result.items.map(a => {
-        //   a = a.toObject()
-        //   if (idx % 2 === 0) a.body.duration = Math.round(60000 + Math.random() * 60000)
-        //   idx++
-        //   return a
-        // })
-
-        // TODO: add latest end point of annotation to timeline.duration so it will not lie beyond the visible graph
-
-        for (let a in this.annotations) {
-          let ann = this.annotations[a]
-          console.debug('a:', ann, ann.body.duration)
-        }
-        console.log('annotations', this.annotations.length, DateTime.fromMillis(this.timeline.duration).toFormat('HH:mm:ss.SSS'), this.timelineUuid)
       },
       // -------------------------------------------------------------------------------------------------- E Input Move
       onGlobalMove: function (event) {
         this.inputPosition = this.getInputPosition(event)
         let tc = this.getTimecodeFromInputPosition()
-        EventHub.$emit('inputPositionChange', this.inputPosition)
+        this.$root.$emit('inputPositionChange', this.inputPosition)
 
         if (this.isDragged('graphBackground')) {
           this.$refs.graph.update()
@@ -303,22 +473,16 @@
           this.$refs.nav.update()
         }
         else if (this.isDragged(['timecodeBar'])) {
-          EventHub.$emit('timecodeChange', tc)
+          this.$root.$emit('timecodeChange', tc)
         }
         else if (this.isDragged('marker')) {
-          EventHub.$emit('markerUpdate')
+          this.$root.$emit('markerUpdate')
         }
         this.timecode.hoverText = this.millisToText(tc)
         this.timecode.hover = tc
 
         // TODO: make own component
         let el = this.$refs.timecodeDisplayHover
-
-        // if (this.showDetails) {
-        //   this.offset.gutter = 16
-        // }
-        // else this.offset.gutter = 0
-        // this.offset.swimlanewrap = this.$refs.swimlanewrap.offsetLeft
 
         if (el) {
           this.timecodeBar.displayHover.x = this.restrict(
@@ -331,8 +495,18 @@
       onGlobalUp () {
         this.activeEl = null
         this.inputOffset.x = 0
-        EventHub.$emit('globalUp')
-        // console.log(this.$refs.root.clientHeight)
+
+        if (this.isResizing) {
+          this.updateCache()
+          this.isResizing = false
+        }
+
+        // has dirty annotation => trigger updateAnnotation in parent
+        if (this.dirtyAnnotation) {
+          this.$emit('updateAnnotation', this.dirtyAnnotation)
+          this.dirtyAnnotation = undefined
+        }
+        this.$root.$emit('globalUp')
       },
       // ---------------------------------------------------------------------------------------------------------- E UI
       onUIDown (el) {
@@ -347,7 +521,6 @@
       // ---------------------------------------------------------------------------------------------------- E Keyboard
       onKeyUp () {
         this.currentKeyDown = null
-        // TODO: is there another way to set this? How to setup event listening inside of EventHub?
         EventHub.currentKeyPressed = null
         switch (event.key) {
         case 'Control':
@@ -356,7 +529,6 @@
         }
       },
       onKeyDown (event) {
-        console.log(event.key)
         this.currentKeyDown = event.key
         EventHub.currentKeyPressed = event.key
         if (event.key === ' ' && !this.resizable) event.preventDefault()
@@ -369,29 +541,11 @@
         }
       },
       // ----------------------------------------------------------------------------------------------------- E Actions
-      createMarker () {
-        // TODO create marker here
-        this.setTimecode(Math.floor(this.timeline.duration * Math.random()))
-        let d = DateTime.fromMillis(this.getTimecodeCurrentTotal()).toISO()
-        let m = {
-          created: d,
-          author: {
-            name: 'Author TEMP'
-          },
-          type: 'immer annotation',
-          body: {
-            src: '',
-            purpose: 'Purpose TEMP',
-            type: 'TEMP',
-            duration: Math.random() > 0.5 ? Math.round(Math.random() * 120000) : 0
-          },
-          target: {
-            selector: {
-              value: d
-            }
-          }
-        }
-        this.annotations.push(m)
+      scrollToMillis (ms) {
+        return ms
+      },
+      scrollToAnnotation (a) {
+        return a
       },
       // ------------------------------------------------------------------------------------------------------- E Other
       onResize () {
@@ -400,21 +554,34 @@
       },
       // ----------------------------------------------------------------------------------------------------------- Set
       setScrollPosition (sp) { // 0 - 1
-        // let offset = this.offset.swimlanewrap + this.offset.gutter
-        let x = this.restrict(sp, 0, this.toRelComp(this.el.width - this.$refs.nav.navHandleWidth))
-        let y = 0
-        this.$store.commit('swimLaneSettings/setScrollPosition', x, y)
+        let x = null
+        let y = null
+
+        if (!isNaN(sp.x) && sp.x !== null && this.$refs.nav) {
+          x = this.restrict(sp.x, 0, this.toRelCompX(this.el.width - (this.el.width * this.scaleFactor)))
+        }
+        if (!isNaN(sp.y) && sp.y !== null && this.$refs.graph && this.el) {
+          y = this.restrict(sp.y, 0, this.toRelGraphY(this.$refs.graph.height - this.el.height))
+        }
+        this.$store.commit('swimLane/setScrollPosition', {x: x, y: y})
       },
       setTimecode (tc) { // int ms
-        this.$store.commit('swimLaneSettings/setTimecode', tc)
+        this.$emit('timecodeChange', tc)
       },
       setScaleFactor (sf) {
-        // this.$forceUpdate()
-        this.$store.commit('swimLaneSettings/setScaleFactor', this.restrict(sf, 0, 1))
+        this.$store.commit('swimLane/setScaleFactor', this.restrict(sf, 0, 1))
+      },
+      onAnnotationChange (annotation) {
+        this.dirtyAnnotation = annotation
       },
       // ----------------------------------------------------------------------------------------------------------- Get
-      // TODO: make single input or inputPosition object that holds all values?
-      // TODO: rethink this
+      getVisibleTimeFrame () {
+        let d = Math.floor(this.toRelGraphX(this.el.width) * this.timeline.duration)
+        return {
+          millis: d,
+          text: this.millisToText(d)
+        }
+      },
       getInputPosition (event) {
         if (event) {
           return {
@@ -429,21 +596,22 @@
         else return this.inputPosition
       },
       getInputPositionAbsGraph () {
-        return {x: this.inputPosition.x - this.$refs.graph.x, y: this.inputPosition.y - this.$refs.graph.y}
+        return this.$refs.graph ? {x: this.inputPosition.x - this.$refs.graph.x, y: this.inputPosition.y - this.$refs.graph.y} : {x: 0, y: 0}
       },
-      // TODO add y value
       getInputPositionRelGraph () {
-        return {x: this.toRelGraph(this.getInputPositionAbsGraph().x)}
+        return {x: this.toRelGraphX(this.getInputPositionAbsGraph().x), y: this.toRelGraphY(this.getInputPositionAbsGraph().y)}
       },
       getTimecodeFromInputPosition () {
-        let tc = Math.round(this.toRelGraph(this.inputPosition.x - this.$refs.graph.x) * this.timeline.duration)
-        return this.restrict(tc, 0, this.timeline.duration)
+        if (this.inputPosition && this.$refs.graph) {
+          let tc = Math.round(this.toRelGraphX(this.inputPosition.x - this.$refs.graph.x) * this.timeline.duration)
+          return this.restrict(tc, 0, this.timeline.duration)
+        }
       },
       getTimecodeFromInputPositionTotal () {
         return this.getTimecodeFromInputPosition() + this.timeline.start
       },
       getTimecodeFromGraphPositionAbs (pos) {
-        let tc = Math.round(this.toRelGraph(pos) * this.timeline.duration)
+        let tc = Math.round(this.toRelGraphX(pos) * this.timeline.duration)
         return this.restrict(tc, 0, this.timeline.duration)
       },
       getTimecodeCurrentTotal () {
@@ -458,10 +626,11 @@
       },
       getVisibleTimecodeRange () {
         let t0 = this.relToMillis(this.scrollPosition.x)
-        let t1 = this.relToMillis(this.toRelGraph(this.el.width))
+        let t1 = this.relToMillis(this.toRelGraphX(this.el.width))
         return {start: t0, length: t1}
       },
       // ---------------------------------------------------------------------------------------------------------- Misc
+      // markerList is currently not used for anything
       registerMarker (m) {
         this.markerList.push(m)
       },
@@ -470,6 +639,9 @@
         this.el.width = this.$refs.root.clientWidth
         this.el.height = this.$refs.root.clientHeight
         this.el.bounds = this.$refs.root.getBoundingClientRect()
+      },
+      updateCache (delay = 0) {
+        setTimeout(this.cacheDimensions, delay)
       },
       // -------------------------------------------------------------------------------------------------------- States
       isDragged (el) {
@@ -502,42 +674,73 @@
         }
       },
       // checking for visibility seems to be slower than just rendering everything D=
+      // top and left needs to be set
       isVisible (bounds) {
-        let spa = this.toAbsGraph(this.scrollPosition.x)
-        let offset = bounds.offset || 0
-        return bounds.left - spa >= -offset && bounds.right - spa <= this.el.width + offset
+        let sx = this.toAbsGraphX(this.scrollPosition.x)
+        let sy = this.toAbsGraphY(this.scrollPosition.y)
+        let ox = bounds.offsetX || 0
+        let oy = bounds.offsetY || 0
+        let b = {
+          left: bounds.left,
+          right: bounds.right || bounds.left,
+          top: bounds.top,
+          bottom: bounds.bottom || bounds.top
+        }
+        return {
+          x: b.left - sx >= -ox && b.right - sx <= this.el.width + ox,
+          y: b.top - sy >= -oy && b.bottom - sy <= this.el.height + oy
+        }
       },
       // ---------------------------------------------------------------------------------------------------- Conversion
-      toAbsComp (rel) {
-        // let offset = this.offset.swimlanewrap + this.offset.gutter
+      toAbsCompX (rel) {
         return rel * this.el.width
-        // return rel * this.$refs.swimlanewrap.clientWidth
       },
-      toAbsGraph (rel) {
-        if (this.$refs.graph) return rel * this.$refs.graph.width
-        else return rel * 1
+      toAbsGraphX (rel) {
+        return (this.$refs.graph) ? rel * this.$refs.graph.width : rel * 1
       },
-      toRelComp (abs) { // return 0 - 1
+      toAbsGraphY (rel) {
+        return (this.$refs.graph) ? rel * this.$refs.graph.height : rel * 1
+      },
+      toRelCompX (abs) { // return 0 - 1
         return abs / this.el.width
       },
-      toRelGraph (abs) { // return 0 - 1
+      toRelCompY (abs) { // return 0 - 1
+        return abs / this.el.height
+      },
+      toRelGraphX (abs) { // return 0 - 1
         if (this.$refs.graph) {
           if (this.$refs.graph.width > 0) return abs / this.$refs.graph.width
           else return 0
         }
         else return 0
       },
-      // relCompToRelGraph (rel) {
-      //   return rel + this.scroll
-      // },
-      millisToRelGraph (ms) {
-        return ms / this.timeline.duration
+      toRelGraphY (abs) { // return 0 - 1
+        if (this.$refs.graph) {
+          if (this.$refs.graph.height > 0) return abs / this.$refs.graph.height
+          else return 0
+        }
+        else return 0
       },
-      millisTotalToRelGraph (ms) {
+      millisToRelGraph (ms) {
+        let res = ms / this.timeline.duration
+        if (isFinite(res)) return res
+        else return 0
+      },
+      millisToAbsGraph (ms) {
+        return ms / this.timeline.duration * this.$refs.graph.width
+      },
+      millisToAbsComp (ms) {
+        return ms / this.timeline.duration * this.el.width || 0
+      },
+      millisTotaltoRelGraph (ms) {
         return (ms - this.timeline.start) / this.timeline.duration
       },
-      millisTotalToAbsGraph (ms) {
+      millisTotaltoAbsGraph (ms) {
         if (this.$refs.graph) return (ms - this.timeline.start) / this.timeline.duration * this.$refs.graph.width
+        else return 0
+      },
+      millisTotaltoAbsComp (ms) {
+        if (this.$refs.graph) return (ms - this.timeline.start) / this.timeline.duration * this.el.width
         else return 0
       },
       millisTotalToTimeline (ms) {
@@ -550,57 +753,30 @@
         return Math.round(rel * this.timeline.duration)
       },
       absToMillis (abs) {
-        return Math.round(this.toRelGraph(abs) * this.timeline.duration)
+        return Math.round(this.toRelGraphX(abs) * this.timeline.duration)
       },
       // ---------------------------------------------------------------------------------------------------- Formatting
-      // formatTimecode (tc) {
-      //   let v = tc
-      //   let mil = this.tripleDigit(v % 1000)
-      //   let sec = this.doubleDigit(Math.floor(v / 1000) % 60)
-      //   let min = this.doubleDigit(Math.floor(v / 1000 / 60) % 60)
-      //   let hou = this.doubleDigit(Math.floor(v / 1000 / 60 / 60) % 24)
-      //   let time = hou + ':' + min + ':' + sec + '.' + mil
-      //   return {
-      //     total: time,
-      //     ms: mil,
-      //     s: sec,
-      //     m: min,
-      //     h: hou
-      //   }
-      // },
       millisToText (ms, format) {
-        format = format || 'HH:mm:ss.SSS'
-        return DateTime.fromMillis(ms, { zone: 'utc' }).toFormat(format)
+        if (!isNaN(ms)) {
+          format = format || 'HH:mm:ss.SSS'
+          return DateTime.fromMillis(ms, { zone: 'utc' }).toFormat(format)
+        }
       },
       isoToMillis (iso) {
         return DateTime.fromISO(iso).toMillis()
       },
-      // doubleDigit (v) {
-      //   return (v < 10) ? '0' + v : v.toString()
-      // },
-      // tripleDigit (v) {
-      //   v = v.toString()
-      //   if (v < 10) v = '00' + v
-      //   else if (v < 100) v = '0' + v
-      //   return v
-      // },
-
-      // time scale on timecode bar
-      formatGraphTimeMarker (i) {
-        let s
-        if (i === 0) {
-          s = '00:'
-        }
-        else if (i < 10) {
-          s = '0' + i + ':'
-        }
-        else {
-          s = i + ':'
-        }
-        return s
+      millisToIso (ms) {
+        return DateTime.fromMillis(ms).toISO()
       },
       restrict (p, min, max) {
         return Math.min(Math.max(p, min), max)
+      },
+      // ----------------------------------------------------------------------------------------------- Window Settings
+      disableWindowScroll () {
+        document.body.style.overflow = 'hidden'
+      },
+      enableWindowScroll () {
+        document.body.style.overflow = 'auto'
       }
     }
   }
@@ -608,6 +784,7 @@
 </script>
 
 <style scoped lang="stylus">
+  @import '~variables'
   @import 'swimLane'
 
   svg.swim-lane
@@ -615,20 +792,26 @@
 
   .wrapper
     position: relative
-
-  /*
-  .timecode-display-current
-    height: 25px
-    line-height: 25px
-  */
+    height: 100%
 
   .timecode-display-hover
-    height: 25px
-    line-height: 25px
-    background: $neutral
-    color: $dark
-    padding: 0 8px
-    top: 0px
+    height: 20px
+    line-height: 20px
+    background: $darker
+    color: $white
+    padding: 0 6px
+    top: 4px
     z-index: 99
+
+  .timecode-label-duration-spacer
+    border-bottom: 1px solid $faded
+    width: 8px
+    height: 10px
+
+  .timecode-label-duration-spacer-vertical
+    border-right 1px solid $faded
+    width 44px
+    height 10px
+    margin-bottom -1px
 
 </style>

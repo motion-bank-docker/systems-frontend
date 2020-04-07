@@ -13,8 +13,8 @@ export default {
   mutations: {
     setUser: (state, user) => {
       if (user) {
-        Assert.isType(user.sub, 'string', 'Auth0 ID missing in user object')
-        user.uuid = ObjectUtil.uuid5(user.sub)
+        Assert.isType(user.sub || user.id, 'string', 'ID missing in user object')
+        user.uuid = user.uuid || ObjectUtil.uuid5(user.sub || user.id)
       }
       state.user = user
     },

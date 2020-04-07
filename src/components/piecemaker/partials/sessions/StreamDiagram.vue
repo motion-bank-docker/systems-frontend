@@ -41,22 +41,22 @@
         :y2="`${((sessionTime / duration) * 100).toFixed(3)}%`")
 
       // SWIMLANES - vertical
-      // vertical visualization of the videos
+      // vertical visualization of the media
       //
       svg
         // @click="onClickVideo(vid)",
         svg.shadow-6(
-          v-if="session.videos",
-          v-for="(vid, i) in session.videos",
-          :id="vid.annotation.uuid",
+          v-if="session.media",
+          v-for="(vid, i) in session.media",
+          :id="vid.annotation._uuid",
           :width="20",
           :height="(((vid.metadata.duration * 1000) / duration) * 100).toFixed(3) + '%'",
-          :x="(session.videos.length * 10 + 15) * i + 20",
+          :x="(session.media.length * 10 + 15) * i + 20",
           :y="getSwimlaneY(vid.annotation)")
-          rect.moba-swimlane(width="100%", height="100%", x="0", y="0", :title="vid.annotation.uuid")
+          rect.moba-swimlane(width="100%", height="100%", x="0", y="0", :title="vid.annotation._uuid")
 
           //
-            g(v-if="currentVideo === vid.annotation.uuid")
+            g(v-if="currentVideo === vid.annotation._uuid")
               rect.moba-svg-entry(v-for="n in parseInt(session.duration / 10 + 1)",
                 @click="setSessionTime(parseInt(n * 10), vid)",
                 width="100%", height="10",
@@ -66,7 +66,7 @@
                 x1="25%", x2="75%", :y1="n * 10", :y2="n * 10")
 
           //
-            line.video-line(v-if="currentVideo == vid.annotation.uuid", x1="0", x2="100%", :y1="n * 60", :y2="n * 60",
+            line.video-line(v-if="currentVideo == vid.annotation._uuid", x1="0", x2="100%", :y1="n * 60", :y2="n * 60",
               v-for="n in parseInt(session.duration / 60 + 1)")
 
       // CURRENT TIME
@@ -95,8 +95,8 @@
       // VIDEO TIME
       // displays the actual time of the selected video
       //
-        svg(v-for="(vid, i) in session.videos")
-          svg(v-if="currentVideo === vid.annotation.uuid", :y="(sessionTime - 10)", :x="(session.videos.length * 10) + ((session.videos.length * 10 + 15) * i + 20) + 5")
+        svg(v-for="(vid, i) in session.media")
+          svg(v-if="currentVideo === vid.annotation._uuid", :y="(sessionTime - 10)", :x="(session.media.length * 10) + ((session.media.length * 10 + 15) * i + 20) + 5")
             polygon(points="10 0 0 10 10 20 60 20 60 0 10 0", fill="#749DFC")
             // rect(width="50", height="20", x="10", fill="#749DFC")
             text.q-caption(x="20", y="15", fill="white") {{ Math.floor(sessionTime / 60) }}:{{ Math.trunc(sessionTime - Math.floor(sessionTime / 60) * 60) }}
@@ -116,7 +116,6 @@
 </template>
 
 <script>
-  import { DateTime } from 'luxon'
   export default {
     props: [
       'session',
@@ -143,13 +142,13 @@
         return this.session ? this.session.annotations : []
       },
       duration () {
-        return (DateTime.fromISO(this.session.end).toMillis() - DateTime.fromISO(this.session.start).toMillis()) * 0.001
+        return (this.session.end - this.session.start) * 0.001
       }
     },
     methods: {
       // changeSessionTimeDown () {
-      //   // console.log('changeSessionTime fired')
-      //   // console.log('--> ' + event.clientY)
+      //   // console.debug('changeSessionTime fired')
+      //   // console.debug('--> ' + event.clientY)
       //   this.setSessionTime(event.clientY)
       // },
       setSessionTime (val) {
@@ -161,10 +160,10 @@
         this.$emit('click-video', vid)
       },
       isCurrentVideo (vid) {
-        return this.currentVideo && this.currentVideo === vid.annotation.uuid
+        return this.currentVideo && this.currentVideo === vid.annotation._uuid
       },
       getSwimlaneY (annotation) {
-        return (((DateTime.fromISO(annotation.target.selector.value).toMillis() - DateTime.fromISO(this.session.start).toMillis()) / this.duration) * 100).toFixed(3) + '%'
+        return (((annotation.target.selector._valueMillis - this.session.start) / this.duration) * 100).toFixed(3) + '%'
       }
     }
   }

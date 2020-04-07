@@ -7,8 +7,7 @@ import {
   MarkdownDisplay,
   Uploader,
   Username,
-  VideoPlayer,
-  VideoTitle
+  MediaPlayer
 } from '../components/shared'
 
 export default ({ Vue }) => {
@@ -18,8 +17,7 @@ export default ({ Vue }) => {
   Vue.component('full-screen', FullScreen)
   Vue.component('uploader', Uploader)
   Vue.component('username', Username)
-  Vue.component('video-player', VideoPlayer)
-  Vue.component('video-title', VideoTitle)
+  Vue.component('media-player', MediaPlayer)
   Vue.component('browser-warning', BrowserWarning)
   Vue.component('markdown-display', MarkdownDisplay)
 }

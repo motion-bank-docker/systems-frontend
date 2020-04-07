@@ -58,13 +58,13 @@ const tags = {
               value: tag
             }
           }, {root: true})
-          console.debug('added tag', tag)
+          console.debug('Tags: set', tag)
         }
       }
       for (let tag of originalTags) {
         if (tags.indexOf(tag.body.value) === -1) {
-          await context.dispatch('annotations/delete', tag.uuid, {root: true})
-          console.debug('removed tag', tag.body.value)
+          await context.dispatch('annotations/delete', tag._uuid, {root: true})
+          console.debug('Tags: remove', tag.body.value)
         }
       }
 

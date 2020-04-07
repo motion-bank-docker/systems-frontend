@@ -1,30 +1,48 @@
 <template lang="pug">
   full-screen
-    q-btn(slot="backButton", @click="$router.push({ name: 'piecemaker.timelines.list' })", icon="keyboard_backspace", round, small)
-    .row
-      .col-md-12
-        q-field(label="Search for", dark)
-          q-input(v-model="query", dark)
-        q-btn(@click="search", color="primary") Search
-    .row.q-mt-md(v-for="result in results")
-      .col-md-6
-        markdown-display.markdown-display(:content="result.body.value", :options="mdOptions")
-        small {{ getVideo(result).metadata.title }}
-      .col-md-6
-        p {{ formatDate(result.target.selector.value) }}
-        p
-          a(:href="`/piecemaker/videos/${getVideo(result).annotation.uuid}/annotate#${result.uuid}`") Goto Video
+
+    content-block(:position="'first'")
+      headline(:content="'Search timelines'")
+
+      // input field
+      content-paragraph(:position="'first'")
+        q-input.q-mb-sm(v-model="query", dark, float-label="Search", :before="[{icon: 'search'}]")
+        .full-width.text-right
+          q-btn.full-width(@click="search", color="primary") Search
+
+      // results
+      content-paragraph(v-for="(result, i) in results", :class="{'q-mt-xl': i === 0}")
+        div(:class="{'ui-border-bottom': i < results.length - 1}")
+          // div
+          markdown-display.markdown-display(:content="result.body.value", :options="mdOptions")
+          .q-my-md
+            a.cursor-pointer(:href="`/piecemaker/media/${getMedia(result).annotation._uuid}/annotate#${result._uuid}`")
+              | {{ getMedia(result).metadata.title }}
+            p.text-grey-8 {{ formatDate(result.target.selector._valueMillis) }}
 </template>
 
 <script>
+  import { mapGetters } from 'vuex'
   import { DateTime } from 'luxon'
+  import BackButtonNew from '../../../components/shared/buttons/BackButtonNew'
+  import Headline from '../../../components/shared/elements/Headline'
+  import ContentBlock from '../../../components/shared/elements/ContentBlock'
+  import ContentParagraph from '../../../components/shared/elements/ContentParagraph'
+  import PageSubNav from '../../../components/shared/navigation/PageSubNav'
 
   export default {
+    components: {
+      PageSubNav,
+      BackButtonNew,
+      Headline,
+      ContentBlock,
+      ContentParagraph
+    },
     data () {
       return {
         query: undefined,
         map: undefined,
-        videos: [],
+        media: [],
         results: [],
         mdOptions: {
           target: '_blank'
@@ -32,20 +50,26 @@
       }
     },
     async mounted () {
+      this.$root.$emit('setBackButton', '/piecemaker/timelines')
       this.$q.loading.show()
-      this.map = await this.$store.dispatch('maps/get', this.$route.params.id)
-      const videos = await this.$store.dispatch('annotations/find', {
+      this.map = await this.$store.dispatch('maps/get', this.$route.params.uuid)
+      const media = await this.$store.dispatch('annotations/find', {
         'target.id': this.map.id,
-        'body.type': 'Video'
+        'body.type': 'Media'
       })
-      this.videos = videos.items.sort(this.$sort.onRef).map(annotation => { return { annotation } })
-      for (let i in this.videos) {
+      this.media = media.items.sort(this.$sort.onRef).map(annotation => { return { annotation } })
+      for (let i in this.media) {
         try {
-          this.videos[i].metadata = await this.$store.dispatch('metadata/get', this.videos[i].annotation)
+          this.media[i].metadata = await this.$store.dispatch('metadata/get', this.media[i].annotation)
         }
-        catch (e) { this.videos[i].metadata = {} }
+        catch (e) { this.media[i].metadata = {} }
       }
       this.$q.loading.hide()
+    },
+    computed: {
+      ...mapGetters({
+        isMobile: 'globalSettings/getIsMobile'
+      })
     },
     methods: {
       async search () {
@@ -59,14 +83,14 @@
         this.results = result && Array.isArray(result.items) ? result.items.sort(this.$sort.onRef) : []
         this.$q.loading.hide()
       },
-      formatDate (iso) {
-        return DateTime.fromISO(iso).toLocaleString(DateTime.DATETIME_FULL_WITH_SECONDS)
+      formatDate (millis) {
+        return DateTime.fromMillis(millis).toLocaleString(DateTime.DATETIME_FULL_WITH_SECONDS)
       },
-      getVideo (annotation) {
-        for (let video of this.videos) {
+      getMedia (annotation) {
+        for (let video of this.media) {
           const
-            annoTime = DateTime.fromISO(annotation.target.selector.value, { setZone: true }),
-            videoStart = DateTime.fromISO(video.annotation.target.selector.value, { setZone: true }),
+            annoTime = DateTime.fromMillis(annotation.target.selector._valueMillis),
+            videoStart = DateTime.fromMillis(video.annotation.target.selector._valueMillis),
             videoEnd = videoStart.plus(video.metadata.duration * 1000)
           if (annoTime >= videoStart && annoTime < videoEnd) return video
         }

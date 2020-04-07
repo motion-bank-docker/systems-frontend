@@ -1,24 +1,27 @@
 // Configuration for your app
+const pkg = require('./package.json')
+const SentryWebpackPlugin = require('@sentry/webpack-plugin')
 
 module.exports = function (ctx) {
   return {
     // app plugins (/src/plugins)
     plugins: [
-      'raven',
+      'sentry',
       'api',
       'auth',
       'axios',
       'components',
-      'conversions',
-      'extractions',
       'handle-error',
       'i18n',
       'notifications',
       'pkg',
       'shortkey',
       'sort',
+      'socket',
+      'touch',
       'vocabularies',
-      'window'
+      'window',
+      'intersection-observer'
     ],
     css: [
       'app.styl'
@@ -36,6 +39,31 @@ module.exports = function (ctx) {
       // extractCSS: false,
       // useNotifier: false,
       extendWebpack (cfg) {
+        if (process.env.SENTRY_AUTH_TOKEN) {
+          cfg.plugins.push(
+            new SentryWebpackPlugin({
+              include: '.',
+              ignoreFile: '.sentrycliignore',
+              ignore: [
+                'dist',
+                'node_modules',
+                'webpack.config.js',
+                'quasar.conf.js',
+                '.eslintrc.js',
+                '.postcssrc.js'
+              ],
+              configFile: 'sentry.properties'
+            })
+          )
+        }
+        cfg.externals = Object.assign({
+          nedb: 'commonjs nedb',
+          'ffprobe-static': 'commonjs ffprobe-static',
+          'jwt-decode': 'commonjs jwt-decode',
+          'fluent-ffmpeg': 'commonjs fluent-ffmpeg',
+          'open-graph-scraper': 'commonjs open-graph-scraper',
+          'mbjs-archive': 'commonjs mbjs-archive'
+        }, cfg.externals)
         cfg.module.rules.push({
           enforce: 'pre',
           test: /\.(js|vue)$/,
@@ -48,37 +76,69 @@ module.exports = function (ctx) {
       },
       // Runtime globals
       env: {
+        NODE_ENV: JSON.stringify(process.env.NODE_ENV),
         //
         // Hosts
         //
-        API_HOST: JSON.stringify(process.env.API_HOST || 'https://api.motionbank.org'),
-        STORAGE_HOST: JSON.stringify(process.env.STORAGE_HOST || 'https://storage.motionbank.org'),
-        PACKAGER_HOST: JSON.stringify(process.env.PACKAGER_HOST || 'https://packager.motionbank.org'),
-        TRANSCODER_HOST: JSON.stringify(process.env.TRANSCODER_HOST || 'https://transcoder.motionbank.org'),
-        UI_HOST: JSON.stringify(process.env.UI_HOST || 'https://app.motionbank.org'),
+        API_HOST: JSON.stringify(process.env.API_HOST),
+        SOCKETS_HOST: JSON.stringify(process.env.SOCKETS_HOST),
+        STORAGE_HOST: JSON.stringify(process.env.STORAGE_HOST),
+        PACKAGER_HOST: JSON.stringify(process.env.PACKAGER_HOST),
+        TRANSCODER_HOST: JSON.stringify(process.env.TRANSCODER_HOST),
         //
         // Resources
         //
         VOCABULARY_BASE_URI: JSON.stringify(process.env.VOCABULARY_BASE_URI || 'http://id.motionbank.org/vocabularies/'),
         AUTH0_APP_METADATA_PREFIX: JSON.stringify(process.env.AUTH0_APP_METADATA_PREFIX || 'https://app.motionbank.org/app_metadata/'),
-        ID_FIELD: JSON.stringify(process.env.ID_FIELD || 'uuid'),
+        ID_FIELD: JSON.stringify(process.env.ID_FIELD || '_uuid'),
         //
         // Auth0
         //
-        AUTH0_DOMAIN: JSON.stringify(process.env.AUTH0_DOMAIN || 'auth.motionbank.org'),
-        AUTH0_CLIENT_ID: JSON.stringify(process.env.AUTH0_CLIENT_ID || '80t5TRU9MVhGDVnZ522CvX4hutBxDB6U'),
-        AUTH0_REDIRECT_URL: JSON.stringify(process.env.AUTH0_REDIRECT_URL || 'https://app.motionbank.org/users/callback'),
-        AUTH0_AUDIENCE: JSON.stringify(process.env.AUTH0_AUDIENCE || 'https://api.motionbank.org'),
+        AUTH0_DOMAIN: JSON.stringify(process.env.AUTH0_DOMAIN),
+        AUTH0_CLIENT_ID: JSON.stringify(process.env.AUTH0_CLIENT_ID),
+        AUTH0_REDIRECT_URL: JSON.stringify(process.env.AUTH0_REDIRECT_URL),
+        AUTH0_AUDIENCE: JSON.stringify(process.env.AUTH0_AUDIENCE),
         //
-        // Sentry
+        // General OAuth2
         //
-        SENTRY_DSN: JSON.stringify(process.env.SENTRY_DSN || null),
+        OAUTH_CLIENT_ID: JSON.stringify(process.env.OAUTH_CLIENT_ID),
+        OAUTH_CLIENT_SECRET: JSON.stringify(process.env.OAUTH_CLIENT_SECRET),
+        OAUTH_REDIRECT_URL: JSON.stringify(process.env.OAUTH_REDIRECT_URL),
+        OAUTH_AUTH_URL: JSON.stringify(process.env.OAUTH_AUTH_URL),
+        OAUTH_TOKEN_URL: JSON.stringify(process.env.OAUTH_TOKEN_URL),
+        OAUTH_EDIT_PROFILE_URL: JSON.stringify(process.env.OAUTH_EDIT_PROFILE_URL),
+        //
+        // API Keys
+        //
+        SENTRY_DSN: JSON.stringify(process.env.SENTRY_DSN),
+        YOUTUBE_API_KEY: JSON.stringify(process.env.YOUTUBE_API_KEYl),
+        VIMEO_ACCESS_TOKEN: JSON.stringify(process.env.VIMEO_ACCESS_TOKEN),
         //
         // App config
         //
         IS_STAGING: JSON.stringify(process.env.IS_STAGING || false),
+        IS_ELECTRON: JSON.stringify(process.env.IS_ELECTRON || false),
+        BUILD_NAME_EXT: JSON.stringify(process.env.BUILD_NAME_EXT || null),
         USE_RESOURCE_CACHE: JSON.stringify(process.env.USE_RESOURCE_CACHE || false),
-        UI_VERSION: JSON.stringify(process.env.UI_VERSION || require('./package.json').version)
+        UI_VERSION: JSON.stringify(process.env.UI_VERSION || require('./package.json').version),
+        FLUENTFFMPEG_COV: JSON.stringify(false),
+        //
+        // Build flags
+        //
+        FLAG_ENABLE_FRAGMENT_ENCODING: JSON.stringify(process.env.FLAG_ENABLE_FRAGMENT_ENCODING || false),
+        //
+        // Features
+        //
+        MIGRATION_PREVIOUS_URL: JSON.stringify(process.env.MIGRATION_PREVIOUS_URL || null),
+        MIGRATION_PREVIOUS_INFO_URL: JSON.stringify(process.env.MIGRATION_PREVIOUS_INFO_URL || null),
+        USE_ACL: JSON.stringify(process.env.USE_ACL || true),
+        USE_FILES: JSON.stringify(process.env.USE_FILES || true),
+        USE_TAGS: JSON.stringify(process.env.USE_TAGS || true),
+        USE_METADATA: JSON.stringify(process.env.USE_TAGS || true),
+        USE_CUSTOM_MEDIA_STORE: JSON.stringify(process.env.USE_CUSTOM_MEDIA_STORE || false),
+        UI_HIDE_MOSYS: JSON.stringify(process.env.UI_HIDE_MOSYS || false),
+        UI_HIDE_DOCUMENTS: JSON.stringify(process.env.UI_HIDE_DOCUMENTS || false),
+        MODULE_PROVIDER: JSON.stringify(process.env.MODULE_PROVIDER || null)
       }
     },
     devServer: {
@@ -97,15 +157,17 @@ module.exports = function (ctx) {
         'QLayoutHeader',
         'QLayoutDrawer',
         'QPageContainer',
-        'QPage',
+        // 'QPage',
         'QWindowResizeObservable',
+        'QResizeObservable',
         'QPageSticky',
         //
         // Buttons
         //
         'QBtn',
-        'QBtnToggle',
+        // 'QBtnToggle',
         'QBtnDropdown',
+        'QBtnGroup',
         //
         // Navigation
         //
@@ -116,6 +178,8 @@ module.exports = function (ctx) {
         'QTab',
         'QTabPane',
         'QRouteTab',
+        'QBreadcrumbs',
+        'QBreadcrumbsEl',
         //
         // Form Components
         //
@@ -131,6 +195,7 @@ module.exports = function (ctx) {
         'QDatetimePicker',
         'QDatetime',
         'QAutocomplete',
+        'QOptionGroup',
         //
         // Grouping
         //
@@ -162,18 +227,23 @@ module.exports = function (ctx) {
         // Progress
         //
         'QSpinner',
-        'QSpinnerTail',
+        // 'QSpinnerTail',
         'QSpinnerPuff',
         //
         // Scrolling
         //
-        'QScrollArea',
+        // 'QScrollArea',
         //
         // Other Components
         //
         'QIcon',
         'QChip',
-        'QUploader'
+        'QUploader',
+        'QEditor',
+        'QCarousel',
+        'QCarouselSlide',
+        'QCarouselControl',
+        'QAlert'
       ],
       directives: [
         'Ripple',
@@ -188,7 +258,8 @@ module.exports = function (ctx) {
         'Dialog',
         'Loading',
         'ActionSheet',
-        'Screen'
+        'Screen',
+        'AppFullscreen'
       ]
     },
     animations: 'all',
@@ -235,18 +306,27 @@ module.exports = function (ctx) {
       // id: 'org.cordova.quasar.app'
     },
     electron: {
+      bundler: 'builder', // or 'packager'
       extendWebpack (cfg) {
-        // do something with cfg
+        cfg.externals = Object.assign({
+          keytar: 'commonjs keytar',
+          'mbjs-auth-service': 'commonjs mbjs-auth-service'
+        }, cfg.externals)
       },
-      packager: {
-        // OS X / Mac App Store
-        // appBundleId: '',
-        // appCategoryType: '',
-        // osxSign: '',
-        // protocol: 'myapp://path',
+      builder: {
+        // https://www.electron.build/configuration/configuration
 
-        // Window only
-        // win32metadata: { ... }
+        appId: `org.motionbank.${pkg.name}${process.env.BUILD_NAME_EXT ? `-${process.env.BUILD_NAME_EXT.toLocaleLowerCase()}` : ''}`,
+        productName: `Motion Bank Systems${process.env.BUILD_NAME_EXT ? ` (${process.env.BUILD_NAME_EXT})` : ''}`,
+        copyright: '2019 Motion Bank',
+        asarUnpack: [
+          // '**/app/node_modules/ffmpeg-static/*',
+          '**/app/node_modules/ffprobe-static/*'
+        ],
+        mac: {
+          category: 'public.app-category.education',
+          target: 'dmg'
+        }
       }
     },
 

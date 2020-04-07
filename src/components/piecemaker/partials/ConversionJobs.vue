@@ -31,9 +31,9 @@
         this.pollTimeout = undefined
         const jobIds = this.$store.state.conversions.jobIds
         for (let jobId of jobIds) {
-          console.debug('checking conversion job...', jobId)
+          console.debug('Checking conversion job...', jobId)
           const job = await this.$store.dispatch('conversions/get', jobId)
-          console.debug('job status', jobId, job)
+          console.debug('Job status', jobId, job)
           if (job.failed) {
             this.$store.commit('conversions/removeJobId', jobId)
             this.$store.commit('conversions/removeJobDetail', jobId)
@@ -44,7 +44,7 @@
           }
           else if (job.finished) {
             const headers = {
-              Authorization: `Bearer ${localStorage.getItem('access_token')}`
+              Authorization: `Bearer ${this.$auth.token}`
             }
             this.$store.commit('conversions/removeJobId', jobId)
             const detail = this.$store.state.conversions.jobDetails[jobId]
@@ -68,20 +68,20 @@
                   id: job.result.video,
                   type: 'video/mp4'
                 },
-                type: 'Video',
+                type: 'Media',
                 purpose: detail.purpose || 'linking'
               },
               target
             }
-            console.debug('create annotation with payload', payload)
+            console.debug('Create annotation with payload', payload)
             const annotation = await this.$store.dispatch('annotations/post', payload)
-            console.debug('created annotation', annotation)
+            console.debug('Created annotation', annotation)
             if (detail.isPublic) {
-              console.debug('make annotation public')
-              await this.$store.dispatch('acl/set', {uuid: annotation.uuid, role: 'public', permissions: ['get']})
+              console.debug('Make annotation public', annotation.id)
+              await this.$store.dispatch('acl/set', {id: annotation.id, role: 'public', permissions: ['get']})
             }
             this.$store.commit('conversions/removeJobDetail', jobId)
-            this.$root.$emit('updateVideos')
+            this.$root.$emit('updateMedia')
             this.$root.$emit('jobResult', { annotation, jobId, detail })
             this.$store.commit('notifications/addMessage', {
               body: 'messages.conversion_successful',

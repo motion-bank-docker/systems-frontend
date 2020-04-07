@@ -94,7 +94,7 @@
         this.session.annotations.forEach(aobj => {
           if (aobj.duration >= _this.sessionTime && !found) {
             aobj.active = found = true
-            const el = this.$refs[`annotation-${aobj.annotation.uuid}-${aobj.duration}`]
+            const el = this.$refs[`annotation-${aobj.annotation._uuid}-${aobj.duration}`]
             if (Array.isArray(el)) _this.scrollToElement(el[0], 250)
           }
           else aobj.active = false
@@ -106,7 +106,6 @@
         this.setSessionTime(val)
       },
       checkVideoVisibility (videoStart, videoEnd, sessionStart, sessionEnd) {
-        // console.log(videoStart, videoEnd, sessionStart, sessionEnd)
         if ((videoStart <= sessionStart && videoEnd >= sessionEnd) || (videoStart >= sessionStart && videoEnd <= sessionEnd) || (videoStart > sessionStart && videoStart < sessionEnd && videoEnd > sessionEnd)) return true
         else return false
       },
@@ -120,7 +119,7 @@
       onClickVideo (vid) {
         this.showVideo = true
         this.video = vid
-        this.currentVideo = vid.annotation.uuid
+        this.currentVideo = vid.annotation._uuid
       },
       onCloseVideo () {
         this.showVideo = false
@@ -140,11 +139,9 @@
         this.fixDiagram = bounds.top < 50 && (bounds.height + bounds.top) >= window.innerHeight
       },
       setSessionTime (seconds) {
-        console.debug('set session time', seconds, this.player, this.sessionTime)
         if (this.player) {
           const time = SessionHelpers.sessionToAnnotationTime(seconds, this.video.annotation, this.session)
           this.player.currentTime(time)
-          console.log('new time', time)
         }
         else this.sessionTime = seconds
       },
@@ -160,7 +157,7 @@
         const _this = this
         switch (type) {
         case 'annotate':
-          return _this.$router.push(`/piecemaker/videos/${data.row.uuid}/annotate`)
+          return _this.$router.push(`/piecemaker/media/${data.row._uuid}/annotate`)
         }
       }
     }

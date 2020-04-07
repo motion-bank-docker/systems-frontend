@@ -11,7 +11,7 @@
       // VIDEO PLAYER
       //
       div(:style="[fixDiagram ? styleActivePreview : styleActivePreviewDocked]")
-        video-player(v-if="video", :annotation="video.annotation",
+        media-player(v-if="video", :annotation="video.annotation",
           @ready="playerReady($event)", @time="onPlayerTime($event)")
 
       .absolute-top-left.q-mt-sm.q-ml-sm(@mousedown="resizeButtonDown")
@@ -31,7 +31,7 @@
                 q-item-main {{ video.annotation.body.source.id }}
               q-item
                 q-item-side Author:
-                q-item-main {{ video.annotation.author.name }}
+                q-item-main {{ video.annotation.creator.name }}
               q-item
                 q-item-side Created:
                 q-item-main {{ video.annotation.created }}
