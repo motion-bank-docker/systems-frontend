@@ -22,6 +22,18 @@ export default {
       name: 'users.manage',
       component: () => import('pages/shared/users/manage'),
       meta: {private: true}
+    },
+    {
+      path: 'groupedit',
+      name: 'users.groupedit',
+      component: () => import('pages/shared/users/group_edit'),
+      meta: {private: true}
+    },
+    {
+      path: 'invite',
+      name: 'users.invite',
+      component: () => import('pages/shared/users/invite'),
+      meta: {private: true}
     }
   ]
 }
