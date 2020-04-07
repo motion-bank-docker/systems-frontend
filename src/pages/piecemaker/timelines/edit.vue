@@ -15,7 +15,8 @@
               // :class="[!isMobile ? 'q-mr-sm' : '']", :label="exportLabelCSV")
 
     // -------------------------------------------------------------------------------------------------- access control
-
+    content-block
+      permissions
     //
       content-block(v-if="availableRoles.length", :position="'last'")
         headline.q-mt-lg(:content="$t('labels.access_control')")
@@ -49,6 +50,7 @@
   import Headline from '../../../components/shared/elements/Headline'
   import ContentBlock from '../../../components/shared/elements/ContentBlock'
   import ContentParagraph from '../../../components/shared/elements/ContentParagraph'
+  import Permissions from '../../../components/shared/partials/Permissions'
 
   import { required } from 'vuelidate/lib/validators'
   import constants from 'mbjs-data-models/src/constants'
@@ -70,7 +72,8 @@
       Headline,
       Tags,
       ContentBlock,
-      ContentParagraph
+      ContentParagraph,
+      Permissions
     },
     data () {
       const _this = this

@@ -107,6 +107,7 @@ export default {
     id: 'ID',
     access_control: 'Access Control',
     access_control_public: 'Public',
+    access_control_rights: 'Default Access Rights',
     access_control_add_group: 'Add to group',
     access_control_remove_group: 'Remove from group',
     associated_timeline: 'Associated timeline',
