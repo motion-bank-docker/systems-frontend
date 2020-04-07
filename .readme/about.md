@@ -1,3 +1,5 @@
+[![motion-bank-docker](https://circleci.com/gh/motion-bank-docker/systems-frontend.svg?style=svg)](https://app.circleci.com/pipelines/github/motion-bank-docker/systems-frontend)
+
 ## Setup
 
 Clone repo, then run:
