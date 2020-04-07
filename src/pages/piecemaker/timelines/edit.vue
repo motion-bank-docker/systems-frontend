@@ -8,11 +8,12 @@
       content-paragraph
         form-main(v-model="payload", :schema="schema")
           //
-            div(slot="form-buttons-add", :class="{'full-width row q-mb-sm': isMobile}")
-              q-btn.col(v-if="$route.params.uuid", slot="form-buttons-add", :label="exportLabel", @click="exportTimeline",
+          div(slot="form-buttons-add", :class="{'full-width row q-mb-sm': isMobile}")
+            q-btn.col(v-if="$route.params.uuid", slot="form-buttons-add",
+              :label="exportLabel", @click="exportTimeline",
               color="grey", :class="[!isMobile ? 'q-mr-sm' : '']")
-              q-btn(v-if="$route.params.uuid", @click="exportCSV", color="grey",
-              // :class="[!isMobile ? 'q-mr-sm' : '']", :label="exportLabelCSV")
+            // q-btn(v-if="$route.params.uuid", @click="exportCSV", color="grey",
+            //   :class="[!isMobile ? 'q-mr-sm' : '']", :label="exportLabelCSV")
 
     // -------------------------------------------------------------------------------------------------- access control
 
