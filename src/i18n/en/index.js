@@ -104,6 +104,7 @@ export default {
     generic_error: '{code} {message}'
   },
   labels: {
+    id: 'ID',
     access_control: 'Access Control',
     access_control_public: 'Public',
     access_control_add_group: 'Add to group',
@@ -116,6 +117,7 @@ export default {
     annotations: 'Index',
     annotation_body: 'Annotation text',
     accept_terms: 'I accept the Terms and Conditions',
+    accept: 'Accept',
     author: 'Author',
     creator: 'Creator',
     biovision_hierarchy: 'Biovision Hierarchy',
@@ -139,6 +141,7 @@ export default {
     // timeline_title: 'Timeline title',
     timeline_title: 'Timeline title',
     grid_title: 'Grid title',
+    invitation: 'Invitation',
     last_annotation: 'Last annotated',
     last_edit: 'Last edit',
     location: 'Location',
@@ -148,13 +151,16 @@ export default {
     new_tag: 'New tag',
     new_term: 'New term',
     new_group_title: 'New group title',
+    group_title: 'Group title',
     new_vocabulary: 'New vocabulary',
     no_selection: 'No selection made.',
     organisation: 'Organisation',
     participants: 'Participants',
     password: 'Password',
     password_confirmation: 'Password confirmation',
+    permissions: 'Permissions',
     public: 'Public',
+    reject: 'Reject',
     status: 'Status',
     set_title: 'Set Title',
     set_shortcut: 'Set Shortcut',
@@ -197,6 +203,8 @@ export default {
     grid_imported: 'Grid imported successfully',
     grid_deleted: 'Grid deleted',
     confirm_delete: 'Delete this item?',
+    confirm_remove_member: 'Remove this member?',
+    confirm_delete_group: 'Delete this group?',
     updated_annotation: 'Updated annotation',
     url_copied: 'URL copied to clipboard',
     caution_media_time_override: 'Caution: Changing media reference time does not update associated annotations!',
@@ -320,6 +328,20 @@ export default {
         title: 'Manage Account',
         caption: 'Update your details and login credentials.',
         first_login: 'As this is your first login, please update your profile info.'
+      }
+    },
+    groups: {
+      list: {
+        title: 'Groups',
+        caption: 'Manage your groups.'
+      },
+      edit: {
+        title: 'Edit group',
+        caption: 'Edit this group.'
+      },
+      new: {
+        title: 'New group',
+        caption: 'Create a new group.'
       }
     },
     site: {
