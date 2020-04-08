@@ -26,12 +26,12 @@
         h5.q-my-none.q-pt-none(style="width: 100%") {{ this.$t('routes.groups.list.title') }}
         div.text-white(style="flex-grow: auto; white-space: nowrap;")
 
-          q-btn.no-shadow(@click="addGroup()", color="primary")
+          q-btn.no-shadow(@click="$router.push({ name: 'users.groups_create' })", color="primary")
             q-icon(name="add")
 
       content-paragraph
         //----- table
-        q-table(:columns="config.columns", :data="tableData", dark, :pagination.sync="config.pagination", hide-bottom)
+        q-table(:columns="config.columns", :data="groups", dark, :pagination.sync="config.pagination", hide-bottom)
 
           q-td(slot="body-cell-title", slot-scope="props", :props="props")
             template(v-if="props.value") {{ props.value }}
@@ -80,6 +80,11 @@
     async mounted () {
       this.isFirst = this.$route.params.isFirst
 
+      const result = await this.$store.dispatch('groups/find', {
+        'creator.id': this.$auth.user.id
+      })
+      this.groups = result.items
+
       this.config.columns.push({
         name: 'actions',
         align: 'right',
@@ -90,7 +95,7 @@
         // format: makeFormatter('actions')
       })
 
-      const userInfo = this.$store.dispatch('manage/getUser')
+      const userInfo = this.$store.dispatch('auth0/getUser')
       if (userInfo.app_metadata) {
         const { roles } = userInfo.app_metadata
         if (Array.isArray(roles)) {
@@ -108,6 +113,7 @@
           { title: 'My Super Group', id: 'asdf-1234' },
           { title: 'My Other Group', id: 'qwer-5678' }
         ],
+        groups: [],
         config: {
           pagination: {
             rowsPerPage: 0
@@ -119,14 +125,6 @@
               label: 'Title',
               align: 'left',
               field: 'title',
-              sortable: true
-            },
-            {
-              name: 'id',
-              required: true,
-              label: 'ID',
-              align: 'right',
-              field: 'id',
               sortable: true
             }
           ]

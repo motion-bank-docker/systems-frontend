@@ -24,8 +24,14 @@ export default {
       meta: {private: true}
     },
     {
-      path: 'groupedit',
-      name: 'users.groupedit',
+      path: 'groups/create',
+      name: 'users.groups_create',
+      component: () => import('pages/shared/users/group_edit'),
+      meta: {private: true}
+    },
+    {
+      path: 'groups/:uuid/edit',
+      name: 'users.groups_edit',
       component: () => import('pages/shared/users/group_edit'),
       meta: {private: true}
     },
