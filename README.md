@@ -5,10 +5,10 @@
 
 > Combined frontend project for Motion Bank web services
 
-[![Travis (.org)](https://img.shields.io/travis/motionbank/systems-frontend?label=Travis%20CI)](https://travis-ci.org/motionbank/systems-frontend)
-[![CircleCI](https://img.shields.io/circleci/build/gh/motionbank/systems-frontend?label=CircleCI)](https://circleci.com/gh/motionbank/systems-frontend)
 [![Docker Pulls](https://img.shields.io/docker/pulls/motionbank/systems-frontend?style=flat)](https://hub.docker.com/r/motionbank/systems-frontend)
 
+
+[![motion-bank-docker](https://circleci.com/gh/motion-bank-docker/systems-frontend.svg?style=svg)](https://app.circleci.com/pipelines/github/motion-bank-docker/systems-frontend)
 
 ## Setup
 
