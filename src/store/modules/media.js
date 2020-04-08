@@ -42,7 +42,7 @@ const mediaFactory = function (env = {}) {
         await checkAuth(context)
         const requestConfig = env.getRequestConfig()
         requestConfig.params = { query }
-        const response = await axios.get(`${process.env.API_HOST}videos/`, requestConfig)
+        const response = await axios.get(`${context.rootState.settings.apiHost}videos/`, requestConfig)
         const items = response.data.hits ? response.data.hits.map(item => {
           return createMediaAnnotation(item)
         }) : []
@@ -50,7 +50,7 @@ const mediaFactory = function (env = {}) {
       },
       async get (context, id) {
         await checkAuth(context)
-        const { data } = await axios.get(`${process.env.API_HOST}videos/${parseURI(id).id}/`, env.getRequestConfig())
+        const { data } = await axios.get(`${context.rootState.settings.apiHost}videos/${parseURI(id).id}/`, env.getRequestConfig())
         return {
           annotation: createMediaAnnotation(data),
           metadata: Array.isArray(data.data) && data.data.length ? data.data[0] : {}

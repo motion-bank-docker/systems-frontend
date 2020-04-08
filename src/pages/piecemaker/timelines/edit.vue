@@ -139,7 +139,7 @@
         this.$q.loading.show()
         try {
           const result = await this.$axios.post(
-            `${process.env.API_HOST}/archives/maps/${this.timeline._uuid}`,
+            `${this.$store.state.settings.apiHost}/archives/maps/${this.timeline._uuid}`,
             {},
             {
               headers: {

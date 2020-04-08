@@ -192,7 +192,7 @@
         this.$q.loading.show()
         try {
           const result = await this.$axios.post(
-            `${process.env.API_HOST}/archives/maps/${this.grid._uuid}`,
+            `${this.$store.state.settings.apiHost}/archives/maps/${this.grid._uuid}`,
             {},
             {
               headers: {

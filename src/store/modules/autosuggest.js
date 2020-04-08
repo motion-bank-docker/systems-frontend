@@ -26,13 +26,13 @@ const factory = function (env = {}) {
         const config = env.getRequestConfig()
         config.params = { media_url: id, query }
         config.headers['Accept'] = 'application/ld+json'
-        const { data } = await axios.get(`${process.env.API_HOST}autosuggest/annotations/`, config)
+        const { data } = await axios.get(`${context.rootState.settings.apiHost}autosuggest/annotations/`, config)
         return data
       },
       async getFilters (context) {
         if (!Object.keys(context.state.filters).length) {
           await checkAuth(context)
-          const { data } = await axios.get(`${process.env.API_HOST}autosuggest/annotations/filters/`, env.getRequestConfig())
+          const { data } = await axios.get(`${context.rootState.settings.apiHost}autosuggest/annotations/filters/`, env.getRequestConfig())
           const filters = {}
           for (let item of data) {
             filters[item.key] = item

@@ -43,14 +43,14 @@
     data () {
       const _this = this
       return {
-        url: `${process.env.API_HOST}/archives/maps`,
+        url: `${this.$store.state.settings.apiHost}/archives/maps`,
         responses: {},
         uploadFields: [],
         uploadTitle: undefined,
         overrideAuthor: false,
         skipAcl: false,
         headers: {
-          Authorization: `Bearer ${_this.$auth.token}`
+          Authorization: `Bearer ${this.$auth.token}`
         },
         type: constants.mapClasses.MAP_CLASS_GRID,
         payload: {},
