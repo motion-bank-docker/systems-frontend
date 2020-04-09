@@ -22,6 +22,24 @@ export default {
       name: 'users.manage',
       component: () => import('pages/shared/users/manage'),
       meta: {private: true}
+    },
+    {
+      path: 'manage/create',
+      name: 'users.create',
+      component: () => import('pages/shared/users/admin'),
+      meta: {private: true}
+    },
+    {
+      path: 'manage/:id',
+      name: 'users.admin',
+      component: () => import('pages/shared/users/admin'),
+      meta: {private: true}
+    },
+    {
+      path: 'list',
+      name: 'users.list',
+      component: () => import('pages/shared/users/list'),
+      meta: {private: true}
     }
   ]
 }
