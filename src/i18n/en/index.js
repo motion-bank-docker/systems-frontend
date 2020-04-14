@@ -344,8 +344,11 @@ export default {
         caption: 'Manage your groups.'
       },
       edit: {
-        title: 'Edit group',
-        caption: 'Edit this group.'
+        title: 'Edit group'
+      },
+      create: {
+        title: 'Create group',
+        caption: 'Add a new group.'
       },
       new: {
         title: 'New group',

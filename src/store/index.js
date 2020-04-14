@@ -13,7 +13,8 @@ import {
   Annotation,
   Map,
   Document,
-  Cell
+  Cell,
+  Group
 } from 'mbjs-data-models/src/models'
 
 /** Import custom modules */
@@ -91,6 +92,7 @@ const mobaApiModules = {
   maps: makeResourceModule(apiClient, Map, 'map'),
   cells: makeResourceModule(apiClient, Cell, 'cell'),
   documents: makeResourceModule(apiClient, Document, 'document'),
+  groups: makeResourceModule(apiClient, Group, 'group'),
   profiles: makeResourceModule(apiClient, undefined, 'profile'),
   sessions: makeResourceModule(apiClient, undefined, 'session')
 }

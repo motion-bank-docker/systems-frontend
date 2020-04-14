@@ -6,13 +6,17 @@
     //------------------------------------------------------------------------------------------------------------ title
     content-block(:position="'first'")
 
-      headline(:content="$t('routes.groups.edit.title')")
-        | {{ groupTitle }}
+      template(v-if="$route.params.uuid")
+        headline(:content="$t('routes.groups.edit.title')")
+          | {{ payload ? payload.title : '' }}
+      template(v-else)
+        headline(:content="$t('routes.groups.create.title')")
+          | {{ $t('routes.groups.create.caption') }}
 
       form-main(v-model="payload", :schema="schema")
 
     //---------------------------------------------------------------------------------------------------------- members
-    content-block
+    content-block(v-if="$route.params.uuid")
 
       div.q-mb-lg.q-pb-sm(style="display: flex;")
         h5.q-my-none.q-pt-none(style="width: 100%") Members
@@ -50,13 +54,18 @@
   import ContentBlock from '../../../components/shared/elements/ContentBlock'
   import FormMain from '../../../components/shared/forms/FormMain'
   import Headline from '../../../components/shared/elements/Headline'
+  import { required } from 'vuelidate/src/validators'
+  import parseURI from 'mbjs-data-models/src/lib/parse-uri'
 
   export default {
     name: 'group_edit',
     components: { FormMain, ContentBlock, Headline },
     data () {
+      const context = this
+      let payload
+      if (this.$route.params.uuid) payload = this.$store.dispatch('groups/get', this.$route.params.uuid)
+      else payload = { title: undefined }
       return {
-        groupTitle: 'abc 123',
         inviteUrl: 'https://url.motionbank.org/Dh23DJa7',
         tableData: [
           {name: undefined, status: 'https://url.motionbank.org/Dh23DJa7'},
@@ -65,7 +74,7 @@
           {name: 'Member 4', status: 'https://url.motionbank.org/Dh23DJa7'},
           {name: 'Member 5', status: 'https://url.motionbank.org/Dh23DJa7'}
         ],
-        payload: undefined,
+        payload,
         config: {
           pagination: {
             rowsPerPage: 0
@@ -109,18 +118,27 @@
               fullWidth: true,
               type: 'text',
               label: 'labels.group_title',
-              errorLabel: 'errors.field_required'
+              errorLabel: 'errors.field_required',
+              validators: {
+                required
+              }
             }
           },
           submit: {
-            handler () {
-              console.log('submit')
-              /*
-              _this.payload.type = [constants.mapClasses.MAP_CLASS_TIMELINE]
-              return _this.$store.dispatch('maps/post', _this.payload)
-                .then(() => _this.$router.push({ name: 'piecemaker.timelines.list' }))
-              */
-            }
+            async handler () {
+              if (context.$route.params.uuid) {
+                return context.$store.dispatch('groups/patch', [context.$route.params.uuid, context.payload])
+              }
+              else {
+                const group = await context.$store.dispatch('groups/post', context.payload)
+                return context.$router.push({
+                  name: 'users.groups_edit',
+                  params: { uuid: parseURI(group.id).uuid }
+                })
+              }
+            },
+            label: 'buttons.save',
+            message: 'messages.update_success'
           }
         }
       }

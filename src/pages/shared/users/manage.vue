@@ -39,10 +39,9 @@
             span.text-grey-7(v-else) unset
 
           q-td(slot="body-cell-actions", slot-scope="props", :props="props", auto-width)
-            q-btn(v-for="btn in actions", :key="btn.icon", flat, size="md", :icon="btn.icon",
-              @click="defaultClick(btn, props)",
-              :disabled="btn.type === 'copy' && props.row.name",
-              :class="{'text-grey-7': btn.type === 'copy' && props.row.name}") {{ $t(btn.title) }}
+            q-btn(icon="edit", flat, size="md", @click="editGroup(props.row)")
+            q-btn(icon="delete", flat, size="md",
+              @click="$refs.confirmModal.show('messages.confirm_delete_group', props.row)")
 </template>
 
 <script>
@@ -52,6 +51,7 @@
   import Headline from '../../../components/shared/elements/Headline'
   import ContentBlock from '../../../components/shared/elements/ContentBlock'
   import ContentParagraph from '../../../components/shared/elements/ContentParagraph'
+  import parseURI from 'mbjs-data-models/src/lib/parse-uri'
 
   export default {
     components: {
@@ -62,10 +62,7 @@
       ContentParagraph
     },
     async mounted () {
-      const result = await this.$store.dispatch('groups/find', {
-        'creator.id': this.$auth.user.id
-      })
-      this.groups = result.items
+      await this.loadGroups()
 
       this.config.columns.push({
         name: 'actions',
@@ -76,16 +73,6 @@
         sort: false
         // format: makeFormatter('actions')
       })
-
-      const userInfo = this.$store.dispatch('auth0/getUser')
-      if (userInfo.app_metadata) {
-        const { roles } = userInfo.app_metadata
-        if (Array.isArray(roles)) {
-          for (let role of roles) {
-            console.log(role)
-          }
-        }
-      }
     },
     data () {
       const context = this
@@ -111,23 +98,6 @@
             }
           ]
         },
-        actions: [
-          {
-            type: 'edit',
-            icon: 'edit',
-            color: 'primary',
-            click: (item) => {
-              console.log(item)
-              this.$router.push({ name: 'users.groupedit' })
-            }
-          },
-          {
-            type: 'delete',
-            icon: 'delete',
-            color: 'primary',
-            click: (item) => this.$refs.confirmModal.show('messages.confirm_delete_group', item.__index)
-          }
-        ],
         demo: [
           { title: 'My Super Group', id: 'asdf-1234' },
           { title: 'My Other Group', id: 'qwer-5678' }
@@ -249,11 +219,18 @@
           }
         }
       },
-      addGroup () {
-        this.tableData.unshift({title: undefined, id: 'yxcv-5555'})
+      async loadGroups () {
+        const result = await this.$store.dispatch('groups/find', {
+          'creator.id': this.$auth.user.id
+        })
+        this.groups = result.items
       },
-      deleteGroup (index) {
-        this.tableData.splice(index, 1)
+      editGroup (group) {
+        this.$router.push({ name: 'users.groups_edit', params: { uuid: parseURI(group.id).uuid } })
+      },
+      async deleteGroup (group) {
+        await this.$store.dispatch('groups/delete', group.id)
+        await this.loadGroups()
       }
     }
   }
