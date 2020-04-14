@@ -12,7 +12,7 @@
         h6 {{ $t('labels.profile') }}
         form-main(v-model="profile", :schema="profileSchema")
 
-      content-paragraph
+      content-paragraph(v-if="!$route.params.isFirst")
         h6 {{ $t('labels.account_credentials') }}
         form-main(v-model="credentials", :schema="credentialsSchema")
           // q-btn.q-mr-md.bg-grey-9(v-if="!$route.params.isFirst", slot="form-buttons-add", :label="$t('buttons.close_account')")
