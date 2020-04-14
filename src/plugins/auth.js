@@ -14,7 +14,7 @@ export default ({ Vue }) => {
       redirectUriPassive: process.env.OAUTH_REDIRECT_URL_PASSIVE || `${document.location.origin}/users/callback_passive`,
       authorization: process.env.OAUTH_AUTH_URL,
       token: process.env.OAUTH_TOKEN_URL,
-      profileEndpoint: `${process.env.API_HOST}user_profile/`,
+      profileEndpoint: `${process.env.API_HOST || window.API_HOST}user_profile/`,
       response_type: 'token'
     })
   }

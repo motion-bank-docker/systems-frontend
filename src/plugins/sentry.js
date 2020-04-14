@@ -13,6 +13,8 @@ export default ({ Vue }) => {
       // Ignore ResizeObserver-related errors
       // see: https://stackoverflow.com/questions/49384120/resizeobserver-loop-limit-exceeded
       if (err.message && err.message.indexOf('ResizeObserver') > -1) return
+      // Ignore HTTP status errors below 500
+      if (err.response && err.response.status && err.response.status < 500) return
       Sentry.captureException(err)
     }
     else {

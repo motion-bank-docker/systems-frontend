@@ -51,7 +51,7 @@
     data () {
       const _this = this
       return {
-        url: `${process.env.API_HOST}/archives/maps`,
+        url: `${this.$store.state.settings.apiHost}/archives/maps`,
         responses: {},
         uploadFields: [],
         uploadTitle: undefined,

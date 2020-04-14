@@ -101,7 +101,9 @@ export default {
     unauthorized: 'Unauthorized',
     forbidden: 'Forbidden',
     http_server_error: 'HTTP error {code}: {message}',
-    generic_error: '{code} {message}'
+    generic_error: '{code} {message}',
+    passwords_do_not_match: 'Passwords do not match',
+    minimum_length_6: 'Minimum length: 6 characters'
   },
   labels: {
     id: 'ID',
@@ -110,6 +112,7 @@ export default {
     access_control_rights: 'Default Access Rights',
     access_control_add_group: 'Add to group',
     access_control_remove_group: 'Remove from group',
+    account_credentials: 'Account credentials',
     associated_timeline: 'Associated timeline',
     associated_timeline_warning: 'WARNING: If you already annotated this, your annotations are linked to the original timeline. Changing the associated timeline will only reassign this reference time, not the existing annotations.',
     recursive: 'Apply to all contained annotations and media',
@@ -135,6 +138,9 @@ export default {
     edit_title: 'Edit title',
     edit_term: 'Edit term',
     email: 'Email',
+    email_verified: 'Email verified',
+    roles: 'Roles',
+    features: 'Features',
     embedded: 'Embedded in',
     empty: 'empty',
     elements_length: 'Used Elements',
@@ -161,6 +167,7 @@ export default {
     password_confirmation: 'Password confirmation',
     permissions: 'Permissions',
     public: 'Public',
+    profile: 'Profile',
     reject: 'Reject',
     status: 'Status',
     set_title: 'Set Title',
