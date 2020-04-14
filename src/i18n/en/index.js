@@ -101,7 +101,9 @@ export default {
     unauthorized: 'Unauthorized',
     forbidden: 'Forbidden',
     http_server_error: 'HTTP error {code}: {message}',
-    generic_error: '{code} {message}'
+    generic_error: '{code} {message}',
+    passwords_do_not_match: 'Passwords do not match',
+    minimum_length_6: 'Minimum length: 6 characters'
   },
   labels: {
     access_control: 'Access Control',
