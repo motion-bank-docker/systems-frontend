@@ -3,7 +3,7 @@
 
     confirm-modal(ref="confirmModal", @confirm="removeMember")
 
-    //------------------------------------------------------------------------------------------------------------ title
+    //-------------------- title
     content-block(:position="'first'")
 
       template(v-if="$route.params.uuid")
@@ -15,25 +15,26 @@
 
       form-main(v-model="payload", :schema="schema")
 
-    //---------------------------------------------------------------------------------------------------------- members
+    //-------------------- members
     content-block(v-if="$route.params.uuid")
 
       div.q-mb-lg.q-pb-sm(style="display: flex;")
-        h5.q-my-none.q-pt-none(style="width: 100%") Members
+        h5.q-my-none.q-pt-none(style="width: 100%") {{ $t('labels.members') }}
         div.text-white(style="flex-grow: auto; white-space: nowrap;")
 
           q-btn.q-mr-md(flat)
             | ?
             q-popover.q-pa-md(anchor="top left", self="top right", :offset="[8, 0]")
-              | Create a new invitation. Copy the URL, and send it via mail. Send every invitation only once.
+              | {{ $t('help.create_invitation') }}
 
-          q-btn.no-shadow(@click="addInvitation()", color="primary")
+          q-btn.no-shadow(@click="addInvitation", color="primary")
             q-icon(name="add")
 
         .text-grey-8.ui-border-bottom.q-pb-md
 
-      //----- table
-      q-table(:columns="config.columns", :data="tableData", dark, :pagination.sync="config.pagination", hide-bottom)
+      //------------------- table
+      q-table(:columns="config.columns", :data="tableData", dark,
+        :pagination.sync="config.pagination", hide-bottom)
 
         q-td(slot="body-cell-name", slot-scope="props", :props="props")
           template(v-if="props.value") {{ props.value }}
@@ -43,11 +44,9 @@
           | {{ checkStatus(props) }}
 
         q-td(slot="body-cell-actions", slot-scope="props", :props="props", auto-width)
-          q-btn(v-for="btn in actions", :key="btn.icon", flat, size="md", :icon="btn.icon",
-          @click="defaultClick(btn, props)",
-          :disabled="btn.type === 'copy' && props.row.name",
-          :class="{'text-grey-7': btn.type === 'copy' && props.row.name}") {{ $t(btn.title) }}
-
+          q-btn(icon="file_copy", flat, size="md", @click="copyUrl(props.row.invite_url)")
+          q-btn(icon="delete", flat, size="md",
+            @click="$refs.confirmModal.show('messages.confirm_remove_member', props.row)")
 </template>
 
 <script>
@@ -55,15 +54,20 @@
   import FormMain from '../../../components/shared/forms/FormMain'
   import Headline from '../../../components/shared/elements/Headline'
   import { required } from 'vuelidate/src/validators'
-  import parseURI from 'mbjs-data-models/src/lib/parse-uri'
 
   export default {
     name: 'group_edit',
-    components: { FormMain, ContentBlock, Headline },
+    components: {
+      FormMain,
+      ContentBlock,
+      Headline
+    },
     data () {
       const context = this
       let payload
-      if (this.$route.params.uuid) payload = this.$store.dispatch('groups/get', this.$route.params.uuid)
+      if (this.$route.params.uuid) {
+        payload = this.$store.dispatch('groups/get', this.$route.params.uuid)
+      }
       else payload = { title: undefined }
       return {
         inviteUrl: 'https://url.motionbank.org/Dh23DJa7',
@@ -95,23 +99,12 @@
               align: 'right',
               field: 'status',
               sortable: true
+            },
+            {
+              name: 'actions'
             }
           ]
         },
-        actions: [
-          {
-            type: 'copy',
-            icon: 'file_copy',
-            color: 'primary',
-            click: (item) => this.copyUrl(item.status)
-          },
-          {
-            type: 'remove',
-            icon: 'clear',
-            color: 'primary',
-            click: (item) => this.$refs.confirmModal.show('messages.confirm_remove_member', item.__index)
-          }
-        ],
         schema: {
           fields: {
             title: {
@@ -127,13 +120,14 @@
           submit: {
             async handler () {
               if (context.$route.params.uuid) {
-                return context.$store.dispatch('groups/patch', [context.$route.params.uuid, context.payload])
+                return context.$store.dispatch('groups/patch',
+                  [context.$route.params.uuid, context.payload])
               }
               else {
                 const group = await context.$store.dispatch('groups/post', context.payload)
                 return context.$router.push({
                   name: 'users.groups_edit',
-                  params: { uuid: parseURI(group.id).uuid }
+                  params: { uuid: group.uuid }
                 })
               }
             },
@@ -142,17 +136,6 @@
           }
         }
       }
-    },
-    mounted () {
-      this.config.columns.push({
-        name: 'actions',
-        align: 'right',
-        type: 'string',
-        filter: false,
-        sortable: false,
-        sort: false
-        // format: makeFormatter('actions')
-      })
     },
     methods: {
       defaultClick (btn, props) {
@@ -168,21 +151,23 @@
           }
         }
       },
-      copyUrl (val) {
-        navigator.clipboard.writeText(val)
-          .then(() => {
-            this.$q.notify({
-              message: 'Copied.',
-              timeout: 1000,
-              color: 'primary'
-            })
+      async copyUrl (val) {
+        try {
+          await navigator.clipboard.writeText(val)
+          this.$store.commit('notifications/addMessage', {
+            body: 'messages.copied_url', mode: 'alert', type: 'success'
           })
-          .catch(() => {
-            console.log('error')
+        }
+        catch (err) {
+          console.debug('Failed to copy URL', err.message)
+          this.$store.commit('notifications/addMessage', {
+            body: 'errors.failed_to_copy_url', mode: 'alert', type: 'error'
           })
+        }
       },
-      addInvitation () {
-        this.tableData.unshift({name: undefined, status: this.inviteUrl})
+      async addInvitation () {
+        const invitation = await this.$store.dispatch('invites/post', {})
+        console.log('invitation', invitation)
       },
       checkStatus (props) {
         if (props.row.name) return 'accepted'

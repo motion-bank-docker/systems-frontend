@@ -3,7 +3,7 @@
 
     confirm-modal(ref="confirmModal", @confirm="deleteGroup")
 
-    //------------------------------------------------------------------------------------------------------------- user
+    //---------------------- user
     content-block(position="first")
 
       headline(:content="$t('routes.users.manage.title')")
@@ -20,19 +20,20 @@
         form-main(v-model="credentials", :schema="credentialsSchema")
           // q-btn.q-mr-md.bg-grey-9(v-if="!$route.params.isFirst", slot="form-buttons-add", :label="$t('buttons.close_account')")
 
-    //----------------------------------------------------------------------------------------------------------- groups
+    //---------------------- groups
     content-block
 
       div.q-mb-lg.q-pb-sm(style="display: flex;")
-        h5.q-my-none.q-pt-none(style="width: 100%") {{ this.$t('routes.groups.list.title') }}
+        h5.q-my-none.q-pt-none(style="width: 100%") {{ $t('routes.groups.list.title') }}
         div.text-white(style="flex-grow: auto; white-space: nowrap;")
 
           q-btn.no-shadow(@click="$router.push({ name: 'users.groups_create' })", color="primary")
             q-icon(name="add")
 
       content-paragraph
-        //----- table
-        q-table(:columns="config.columns", :data="groups", dark, :pagination.sync="config.pagination", hide-bottom)
+        //----------------- table
+        q-table(:columns="config.columns", :data="groups", dark,
+          :pagination.sync="config.pagination", hide-bottom)
 
           q-td(slot="body-cell-title", slot-scope="props", :props="props")
             template(v-if="props.value") {{ props.value }}
@@ -51,7 +52,6 @@
   import Headline from '../../../components/shared/elements/Headline'
   import ContentBlock from '../../../components/shared/elements/ContentBlock'
   import ContentParagraph from '../../../components/shared/elements/ContentParagraph'
-  import parseURI from 'mbjs-data-models/src/lib/parse-uri'
 
   export default {
     components: {
@@ -185,7 +185,8 @@
               if (context.credentials.password) payload.password = context.credentials.password
               else payload.email = context.credentials.email
               try {
-                await context.$store.dispatch('auth0/patchUser', [context.$store.state.auth.user.sub, payload])
+                await context.$store.dispatch(
+                  'auth0/patchUser', [context.$store.state.auth.user.sub, payload])
                 context.credentials.password_repeat = undefined
                 context.credentials.password = undefined
               }
@@ -226,10 +227,10 @@
         this.groups = result.items
       },
       editGroup (group) {
-        this.$router.push({ name: 'users.groups_edit', params: { uuid: parseURI(group.id).uuid } })
+        this.$router.push({ name: 'users.groups_edit', params: { uuid: group.uuid } })
       },
       async deleteGroup (group) {
-        await this.$store.dispatch('groups/delete', group.id)
+        await this.$store.dispatch('groups/delete', group.uuid)
         await this.loadGroups()
       }
     }

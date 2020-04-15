@@ -103,7 +103,8 @@ export default {
     http_server_error: 'HTTP error {code}: {message}',
     generic_error: '{code} {message}',
     passwords_do_not_match: 'Passwords do not match',
-    minimum_length_6: 'Minimum length: 6 characters'
+    minimum_length_6: 'Minimum length: 6 characters',
+    failed_to_copy_url: 'Failed to copy URL to clipboard'
   },
   labels: {
     id: 'ID',
@@ -153,7 +154,8 @@ export default {
     last_edit: 'Last edit',
     location: 'Location',
     map_title: 'Map Title',
-    my_vocabularies: 'my vocabularies',
+    members: 'Members',
+    my_vocabularies: 'My vocabularies',
     name: 'Name',
     new_tag: 'New tag',
     new_term: 'New term',
@@ -220,7 +222,11 @@ export default {
       '<a href="https://www.mozilla.org/firefox/" target="_blank">Firefox</a> or ' +
       '<a href="http://www.chromium.org/Home" target="_blank">Chromium</a>.<br>' +
       '<small>While the site might work on your browser, more or less subtle problems can occur. You have been warned!</small>',
-    legacy_site_migration: 'Looking for the previous version and your data? It’s still there:'
+    legacy_site_migration: 'Looking for the previous version and your data? It’s still there:',
+    copied_url: 'Copied URL to clipboard.'
+  },
+  help: {
+    create_invitation: 'Create a new invitation. Copy the URL, and send it via mail. Send every invitation only once.'
   },
   navigation: {
     annotate_media: 'Annotate Media',
