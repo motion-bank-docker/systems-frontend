@@ -8,45 +8,32 @@
 
       template(v-if="$route.params.uuid")
         headline(:content="$t('routes.groups.edit.title')")
-          | {{ payload ? payload.title : '' }}
+          | {{ group ? group.title : '' }}
       template(v-else)
         headline(:content="$t('routes.groups.create.title')")
           | {{ $t('routes.groups.create.caption') }}
 
-      form-main(v-model="payload", :schema="schema")
+      form-main(v-model="group", :schema="schema")
 
     //-------------------- members
     content-block(v-if="$route.params.uuid")
+      //------------------- invitations
+      q-table(:columns="invitations.columns", :data="invitations.items", dark,
+        :title="$t('labels.invitations')", :pagination.sync="invitations.pagination", hide-bottom)
 
-      div.q-mb-lg.q-pb-sm(style="display: flex;")
-        h5.q-my-none.q-pt-none(style="width: 100%") {{ $t('labels.members') }}
-        div.text-white(style="flex-grow: auto; white-space: nowrap;")
+        template(slot="top-left", slot-scope="props")
+          div.q-mb-md
+            h5.q-mb-md {{ $t('labels.invitations') }}
+            | {{ $t('help.create_invitation') }}
 
-          q-btn.q-mr-md(flat)
-            | ?
-            q-popover.q-pa-md(anchor="top left", self="top right", :offset="[8, 0]")
-              | {{ $t('help.create_invitation') }}
-
-          q-btn.no-shadow(@click="addInvitation", color="primary")
-            q-icon(name="add")
-
-        .text-grey-8.ui-border-bottom.q-pb-md
-
-      //------------------- table
-      q-table(:columns="config.columns", :data="tableData", dark,
-        :pagination.sync="config.pagination", hide-bottom)
-
-        q-td(slot="body-cell-name", slot-scope="props", :props="props")
-          template(v-if="props.value") {{ props.value }}
-          span.text-grey-7(v-else) unset
-
-        q-td(slot="body-cell-status", slot-scope="props", :props="props")
-          | {{ checkStatus(props) }}
+        template(slot="top-right", slot-scope="props")
+          q-btn.no-shadow(@click="addInvitation", color="primary",
+            icon="add", :label="$t('buttons.create_invitation')")
 
         q-td(slot="body-cell-actions", slot-scope="props", :props="props", auto-width)
-          q-btn(icon="file_copy", flat, size="md", @click="copyUrl(props.row.invite_url)")
+          q-btn(icon="file_copy", flat, size="md", @click="copyUrl(props.row)")
           q-btn(icon="delete", flat, size="md",
-            @click="$refs.confirmModal.show('messages.confirm_remove_member', props.row)")
+            @click="$refs.confirmModal.show('messages.confirm_remove_invitation', props.row)")
 </template>
 
 <script>
@@ -54,6 +41,7 @@
   import FormMain from '../../../components/shared/forms/FormMain'
   import Headline from '../../../components/shared/elements/Headline'
   import { required } from 'vuelidate/src/validators'
+  import { DateTime } from 'luxon'
 
   export default {
     name: 'group_edit',
@@ -64,41 +52,31 @@
     },
     data () {
       const context = this
-      let payload
+      let group
       if (this.$route.params.uuid) {
-        payload = this.$store.dispatch('groups/get', this.$route.params.uuid)
+        group = this.$store.dispatch('groups/get', this.$route.params.uuid)
       }
-      else payload = { title: undefined }
+      else group = { title: undefined }
       return {
-        inviteUrl: 'https://url.motionbank.org/Dh23DJa7',
-        tableData: [
-          {name: undefined, status: 'https://url.motionbank.org/Dh23DJa7'},
-          {name: 'Member 2', status: 'https://url.motionbank.org/Dh23DJa7'},
-          {name: undefined, status: 'https://url.motionbank.org/Dh23DJa7'},
-          {name: 'Member 4', status: 'https://url.motionbank.org/Dh23DJa7'},
-          {name: 'Member 5', status: 'https://url.motionbank.org/Dh23DJa7'}
-        ],
-        payload,
-        config: {
-          pagination: {
-            rowsPerPage: 0
-          },
+        group,
+        invitations: {
+          items: [],
+          pagination: {},
           columns: [
             {
-              name: 'name',
-              required: true,
-              label: 'Name',
+              name: 'url',
+              label: this.$t('labels.url'),
               align: 'left',
-              field: 'name',
-              sortable: true
+              field: 'code',
+              format: val => `${document.location.origin}/invite/${val}`
             },
             {
-              name: 'status',
-              required: true,
-              label: 'Status',
+              name: 'created',
+              label: this.$t('labels.created'),
               align: 'right',
-              field: 'status',
-              sortable: true
+              field: 'created',
+              sortable: true,
+              format: val => DateTime.fromMillis(val).toLocaleString(DateTime.DATETIME_SHORT)
             },
             {
               name: 'actions'
@@ -108,7 +86,6 @@
         schema: {
           fields: {
             title: {
-              fullWidth: true,
               type: 'text',
               label: 'labels.group_title',
               errorLabel: 'errors.field_required',
@@ -121,10 +98,10 @@
             async handler () {
               if (context.$route.params.uuid) {
                 return context.$store.dispatch('groups/patch',
-                  [context.$route.params.uuid, context.payload])
+                  [context.$route.params.uuid, context.group])
               }
               else {
-                const group = await context.$store.dispatch('groups/post', context.payload)
+                const group = await context.$store.dispatch('groups/post', context.group)
                 return context.$router.push({
                   name: 'users.groups_edit',
                   params: { uuid: group.uuid }
@@ -137,23 +114,23 @@
         }
       }
     },
+    watch: {
+      group: {
+        async handler (val) {
+          if (val && val.id) {
+            let { items } = await this.$store.dispatch('invites/find', {
+              group_id: val.id
+            })
+            this.invitations.items = items
+          }
+        },
+        deep: true
+      }
+    },
     methods: {
-      defaultClick (btn, props) {
-        if (btn.click) return btn.click(props.row)
-        if (btn.type === 'remove') {
-          try {
-            console.log('REMOVE')
-            // await this.$store.dispatch(`${this.path}/delete`, props.row._uuid)
-          }
-          catch (err) {
-            if (typeof this.$captureException === 'function') this.$captureException(err)
-            else console.error(err)
-          }
-        }
-      },
-      async copyUrl (val) {
+      async copyUrl (invite) {
         try {
-          await navigator.clipboard.writeText(val)
+          await navigator.clipboard.writeText(`${document.location.origin}/invite/${invite.code}`)
           this.$store.commit('notifications/addMessage', {
             body: 'messages.copied_url', mode: 'alert', type: 'success'
           })
@@ -166,7 +143,9 @@
         }
       },
       async addInvitation () {
-        const invitation = await this.$store.dispatch('invites/post', {})
+        const invitation = await this.$store.dispatch('invites/post', {
+          group_id: this.group.id
+        })
         console.log('invitation', invitation)
       },
       checkStatus (props) {
