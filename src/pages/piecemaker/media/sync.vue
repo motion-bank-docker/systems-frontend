@@ -14,7 +14,7 @@
         // media list
         q-list.q-py-none
           q-item.q-pa-none.cursor-pointer(v-for="(ref, i) in refMedia", :key="ref._uuid",
-          @click.native="handlerModalItem(i)")
+            @click.native="handlerModalItem(i)")
             q-item-main.q-pa-none(:class="[i === refMedia.length - 1 ? 'q-mb-sm' : '']")
               q-item-tile.q-py-sm(:class="{'text-primary': getRefMediaTitle(refIndex) === getRefMediaTitle(i) }")
                 | {{ getRefMediaTitle(i) }}
@@ -31,7 +31,7 @@
           // media to be sync'd
           template(v-if="media")
             media-player.relative-position(:src="media.body.source.id", :fine-controls="true",
-            @ready="onVidPlayerReady($event)")
+              @ready="onVidPlayerReady($event)")
 
             .q-mt-sm
               div.q-mb-sm.q-mt-xs(title="Applying the synchronisation will move this media in time")
@@ -49,10 +49,10 @@
         // reference media
         template(v-if="media && refIndex > -1")
           media-player.relative-position(:annotation="refMedia[refIndex]", :fine-controls="true",
-          @ready="onTargetPlayerReady($event)", :key="refIndex")
+            @ready="onTargetPlayerReady($event)", :key="refIndex")
 
           div.q-mb-sm.q-mt-sm(v-if="refIndex > -1",
-          title="This media is used as source reference and will not be changed")
+            title="This media is used as source reference and will not be changed")
 
             q-item.q-pa-none
 
@@ -62,7 +62,7 @@
               // "change reference media" button
               q-item-side.text-right(style="min-width: auto;")
                 q-btn.cursor-pointer.button-offset.border-light(@click.native="handlerRefMediaTitle", icon="edit",
-                round, size="xs", title="Change media")
+                  round, size="xs", title="Change media")
 
           .q-mt-sm
             q-btn.border-light.q-mr-sm(@click="setMarker(refVidPlayer, 1)") {{ $t('buttons.set_marker') }}
@@ -77,7 +77,7 @@
             div.q-pb-sm.text-grey-8.ui-border-bottom Synchronize with:
 
             q-item.q-pa-none.cursor-pointer.relative-position(v-for="(vid, i) in refMedia", highlight, :key="vid._uuid",
-            @click.native="refIndex = i")
+              @click.native="refIndex = i")
               q-item-main.q-pa-none
                 q-item-tile.q-py-sm(:class="{'q-caption': !isMobile}")
                   | {{ getRefMediaTitle(i) }}
@@ -279,7 +279,7 @@
   */
 
   /*.media-titles*/
-    /*margin-bottom 1em*/
+  /*margin-bottom 1em*/
 
   /*
   .media-player
