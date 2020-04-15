@@ -227,7 +227,8 @@ export default {
       '<a href="http://www.chromium.org/Home" target="_blank">Chromium</a>.<br>' +
       '<small>While the site might work on your browser, more or less subtle problems can occur. You have been warned!</small>',
     legacy_site_migration: 'Looking for the previous version and your data? It’s still there:',
-    copied_url: 'Copied URL to clipboard.'
+    copied_url: 'Copied URL to clipboard.',
+    group_invite_request: 'You have been invited by {name} to join "{group}".'
   },
   help: {
     create_invitation: 'Create a new invitation. Copy the URL, and send it via mail. Send every invitation only once.'

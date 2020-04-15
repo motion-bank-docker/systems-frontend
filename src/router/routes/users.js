@@ -54,7 +54,7 @@ export default {
       meta: {private: true}
     },
     {
-      path: 'invite',
+      path: 'invite/:code',
       name: 'users.invite',
       component: () => import('pages/shared/users/invite'),
       meta: {private: true}

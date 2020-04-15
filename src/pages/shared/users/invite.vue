@@ -1,15 +1,15 @@
 <template lang="pug">
   full-screen
+    template(v-if="invitation")
+      content-block.text-center(:position="'first'")
+        headline(:content="$t('labels.invitation')")
 
-    content-block.text-center(:position="'first'")
-      headline(:content="$t('labels.invitation')")
+      content-block.text-center
+        | {{ $t('messages.group_invite_request', { name: invitation.creator.name, group: group.title }) }}
 
-    content-block.text-center
-      | You have been invited by {{ invitation.from }} to join Group {{ invitation.into }}.
-
-    content-block.text-center
-      q-btn.bg-positive.q-mr-md(@click="accept()", :label="$t('labels.accept')", flat)
-      q-btn.bg-negative(@click="reject()", :label="$t('labels.reject')", flat)
+      content-block.text-center
+        q-btn.bg-positive.q-mr-md(@click="accept()", :label="$t('labels.accept')", flat)
+        q-btn.bg-negative(@click="reject()", :label="$t('labels.reject')", flat)
 </template>
 
 <script>
@@ -21,10 +21,17 @@
     components: { ContentBlock, Headline },
     data () {
       return {
-        invitation: {
-          from: 'Person X',
-          into: 'Testgruppe'
-        }
+        invitation: undefined,
+        group: undefined
+      }
+    },
+    async mounted () {
+      const result = await this.$store.dispatch('invites/find', {
+        code: this.$route.params.code
+      })
+      this.invitation = result.items.pop()
+      if (this.invitation) {
+        this.group = await this.$store.dispatch('groups/get', this.invitation.group_id)
       }
     },
     methods: {

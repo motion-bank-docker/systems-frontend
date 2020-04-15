@@ -68,7 +68,7 @@
               label: this.$t('labels.url'),
               align: 'left',
               field: 'code',
-              format: val => `${document.location.origin}/invite/${val}`
+              format: val => `${document.location.origin}/users/invite/${val}`
             },
             {
               name: 'created',
@@ -130,7 +130,7 @@
     methods: {
       async copyUrl (invite) {
         try {
-          await navigator.clipboard.writeText(`${document.location.origin}/invite/${invite.code}`)
+          await navigator.clipboard.writeText(`${document.location.origin}/users/invite/${invite.code}`)
           this.$store.commit('notifications/addMessage', {
             body: 'messages.copied_url', mode: 'alert', type: 'success'
           })
