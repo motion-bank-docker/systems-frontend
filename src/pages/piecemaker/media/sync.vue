@@ -97,6 +97,7 @@
   import { DateTime } from 'luxon'
   import constants from 'mbjs-data-models/src/constants'
   import {parseURI} from 'mbjs-data-models/src/lib'
+  import { Map } from 'mbjs-data-models'
   import Headline from '../../../components/shared/elements/Headline'
 
   export default {
@@ -234,11 +235,14 @@
         // apply difference to media annotation:
         // new_media_annotation = media_annotation + diff
         const selectorUpdated = vidSelector.plus(markerDiff)
+        const tempMap = new Map()
+        const end = _this.media.target.selector._valueDuration
+          ? selectorUpdated.plus(_this.media.target.selector._valueDuration) : undefined
+        const target = tempMap.getInterval(selectorUpdated.toISO(), end)
         const update = {
           target: ObjectUtil.merge({}, _this.media.target, {
             selector: {
-              type: 'Fragment',
-              value: selectorUpdated.toISO()
+              value: target.selector.value
             }
           })
         }
