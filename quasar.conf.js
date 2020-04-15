@@ -2,6 +2,11 @@
 const pkg = require('./package.json')
 const SentryWebpackPlugin = require('@sentry/webpack-plugin')
 
+// get git info from command line
+let commitHash = require('child_process')
+  .execSync('git rev-parse --short HEAD')
+  .toString().trim()
+
 module.exports = function (ctx) {
   return {
     // app plugins (/src/plugins)
@@ -43,7 +48,6 @@ module.exports = function (ctx) {
           cfg.plugins.push(
             new SentryWebpackPlugin({
               include: '.',
-              ignoreFile: '.sentrycliignore',
               ignore: [
                 'dist',
                 'node_modules',
@@ -119,6 +123,7 @@ module.exports = function (ctx) {
         IS_STAGING: JSON.stringify(process.env.IS_STAGING || false),
         IS_ELECTRON: JSON.stringify(process.env.IS_ELECTRON || false),
         BUILD_NAME_EXT: JSON.stringify(process.env.BUILD_NAME_EXT || null),
+        COMMIT_HASH: JSON.stringify(commitHash),
         USE_RESOURCE_CACHE: JSON.stringify(process.env.USE_RESOURCE_CACHE || false),
         UI_VERSION: JSON.stringify(process.env.UI_VERSION || require('./package.json').version),
         FLUENTFFMPEG_COV: JSON.stringify(false),
