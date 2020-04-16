@@ -3,7 +3,7 @@
     content-block.text-center(:position="'first'")
       headline(:content="$t('labels.invitation')")
 
-    template(v-if="invitation")
+    template(v-if="invitation && group")
       content-block.text-center
         | {{ $t('messages.group_invite_request', { name: invitation.creator.name, group: group.title }) }}
 
