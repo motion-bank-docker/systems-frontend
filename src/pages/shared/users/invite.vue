@@ -15,7 +15,7 @@
       content-block.text-center
         | {{ $t('errors.invite_invalid') }}
       content-block.text-center
-        q-btn(color="grey", @click="$router.push({ name: 'users.manage' })", :label="$t('buttons.confirm')")
+        q-btn(color="grey", @click="$router.push({ name: 'users.groups' })", :label="$t('buttons.confirm')")
 </template>
 
 <script>

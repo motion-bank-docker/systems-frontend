@@ -42,6 +42,12 @@ export default {
       meta: {private: true}
     },
     {
+      path: 'groups',
+      name: 'users.groups',
+      component: () => import('pages/shared/users/groups_list'),
+      meta: {private: true}
+    },
+    {
       path: 'groups/create',
       name: 'users.groups_create',
       component: () => import('pages/shared/users/group_edit'),

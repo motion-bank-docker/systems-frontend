@@ -280,7 +280,8 @@ export default {
     },
     users: {
       label: 'Account settings',
-      users_manage: 'Account settings'
+      users_manage: 'Account settings',
+      groups: 'Groups'
     }
   },
   routes: {
@@ -354,6 +355,10 @@ export default {
         title: 'Manage Account',
         caption: 'Update your details and login credentials.',
         first_login: 'As this is your first login, please update your profile info.'
+      },
+      groups: {
+        title: 'Manage Groups',
+        caption: 'Create groups and manage group memberships.'
       }
     },
     groups: {
