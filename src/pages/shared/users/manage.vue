@@ -23,21 +23,24 @@
     //---------------------- groups
     content-block
 
-      div.q-mb-lg.q-pb-sm(style="display: flex;")
-        h5.q-my-none.q-pt-none(style="width: 100%") {{ $t('routes.groups.list.title') }}
-        div.text-white(style="flex-grow: auto; white-space: nowrap;")
+      content-paragraph.q-mb-lg
+        //----------------- my memberships
+        q-table(:columns="memberships.columns", :data="memberships.items", dark,
+          :title="$t('labels.group_memberships')",
+          :pagination.sync="memberships.pagination", hide-bottom)
 
-          q-btn.no-shadow(@click="$router.push({ name: 'users.groups_create' })", color="primary")
-            q-icon(name="add")
+          q-td(slot="body-cell-actions", slot-scope="props", :props="props", auto-width)
+            q-btn(icon="edit", flat, size="md", @click="leaveGroup(props.row)")
 
       content-paragraph
-        //----------------- table
-        q-table(:columns="config.columns", :data="groups", dark,
-          :pagination.sync="config.pagination", hide-bottom)
+        //----------------- my groups
+        q-table(:columns="groups.columns", :data="groups.items", dark,
+          :title="$t('labels.my_groups')",
+          :pagination.sync="groups.pagination", hide-bottom)
 
-          q-td(slot="body-cell-title", slot-scope="props", :props="props")
-            template(v-if="props.value") {{ props.value }}
-            span.text-grey-7(v-else) unset
+          template(slot="top-right", slot-scope="props")
+            q-btn.no-shadow(@click="$router.push({ name: 'users.groups_create' })",
+              color="primary", icon="add")
 
           q-td(slot="body-cell-actions", slot-scope="props", :props="props", auto-width)
             q-btn(icon="edit", flat, size="md", @click="editGroup(props.row)")
@@ -63,27 +66,13 @@
     },
     async mounted () {
       await this.loadGroups()
-
-      this.config.columns.push({
-        name: 'actions',
-        align: 'right',
-        type: 'string',
-        filter: false,
-        sortable: false,
-        sort: false
-        // format: makeFormatter('actions')
-      })
+      await this.loadMemberships()
     },
     data () {
       const context = this
       return {
-        inviteUrl: 'https://url.motionbank.org/Dh23DJa7',
-        tableData: [
-          { title: 'My Super Group', id: 'asdf-1234' },
-          { title: 'My Other Group', id: 'qwer-5678' }
-        ],
-        groups: [],
-        config: {
+        memberships: {
+          items: [],
           pagination: {
             rowsPerPage: 0
           },
@@ -91,26 +80,42 @@
             {
               name: 'title',
               required: true,
-              label: 'Title',
+              label: this.$t('labels.title'),
               align: 'left',
               field: 'title',
               sortable: true
+            },
+            {
+              name: 'creator',
+              required: true,
+              label: this.$t('labels.creator'),
+              align: 'left',
+              field: 'creator',
+              format: val => val.name
+            },
+            {
+              name: 'actions'
             }
           ]
         },
-        demo: [
-          { title: 'My Super Group', id: 'asdf-1234' },
-          { title: 'My Other Group', id: 'qwer-5678' }
-        ],
-        requestTransform: async demo => {
-          for (let i in demo) {
-            const transformed = {}
-            const row = demo[i]
-            transformed.title = row.title
-            transformed.id = row.id
-            demo[i] = transformed
-          }
-          return demo
+        groups: {
+          items: [],
+          pagination: {
+            rowsPerPage: 0
+          },
+          columns: [
+            {
+              name: 'title',
+              required: true,
+              label: this.$t('labels.title'),
+              align: 'left',
+              field: 'title',
+              sortable: true
+            },
+            {
+              name: 'actions'
+            }
+          ]
         },
         state: 'manage-profile',
         roles: [],
@@ -207,24 +212,22 @@
       }
     },
     methods: {
-      defaultClick (btn, props) {
-        if (btn.click) return btn.click(props.row)
-        if (btn.type === 'remove') {
-          try {
-            console.log('REMOVE')
-            // await this.$store.dispatch(`${this.path}/delete`, props.row._uuid)
+      async loadMemberships () {
+        const result = await this.$axios.get(
+          `${process.env.API_HOST}/users/memberships`,
+          {
+            headers: {
+              Authorization: `${this.$auth.tokenType} ${this.$auth.token}`
+            }
           }
-          catch (err) {
-            if (typeof this.$captureException === 'function') this.$captureException(err)
-            else console.error(err)
-          }
-        }
+        )
+        this.memberships.items = result.data.items || []
       },
       async loadGroups () {
         const result = await this.$store.dispatch('groups/find', {
           'creator.id': this.$auth.user.id
         })
-        this.groups = result.items
+        this.groups.items = result.items
       },
       editGroup (group) {
         this.$router.push({ name: 'users.groups_edit', params: { uuid: group.uuid } })
@@ -232,6 +235,17 @@
       async deleteGroup (group) {
         await this.$store.dispatch('groups/delete', group.uuid)
         await this.loadGroups()
+      },
+      async leaveGroup (group) {
+        await this.$axios.delete(
+          `${process.env.API_HOST}/users/memberships/${group.uuid}`,
+          {
+            headers: {
+              Authorization: `${this.$auth.tokenType} ${this.$auth.token}`
+            }
+          }
+        )
+        await this.loadMemberships()
       }
     }
   }
