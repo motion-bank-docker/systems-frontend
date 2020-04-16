@@ -148,10 +148,6 @@
         })
         this.invitations.items.push(invitation)
       },
-      checkStatus (props) {
-        if (props.row.name) return 'accepted'
-        else return props.row.status
-      },
       removeMember (index) {
         this.tableData.splice(index, 1)
       }

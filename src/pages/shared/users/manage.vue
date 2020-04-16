@@ -119,7 +119,6 @@
           ]
         },
         state: 'manage-profile',
-        roles: [],
         profileSchema: {
           fields: {
             name: {
