@@ -2,6 +2,7 @@ export default {
   buttons: {
     update_access_control: 'Update access settings',
     annotations_index: 'Index',
+    accept: 'Accept',
     arrow_next: '>',
     arrow_prev: '<',
     abort: 'Abort',
@@ -41,6 +42,7 @@ export default {
     more_info: 'More info',
     no: 'No',
     request_reset_pass: 'Request Password Reset',
+    reject: 'Reject',
     save_changes: 'Save changes',
     save: 'Save',
     set_marker: 'Set Marker',
@@ -106,7 +108,9 @@ export default {
     generic_error: '{code} {message}',
     passwords_do_not_match: 'Passwords do not match',
     minimum_length_6: 'Minimum length: 6 characters',
-    failed_to_copy_url: 'Failed to copy URL to clipboard'
+    failed_to_copy_url: 'Failed to copy URL to clipboard',
+    invite_invalid: 'This invitation already expired or the URL is invalid.',
+    invite_failed: 'Invitation failed.'
   },
   labels: {
     id: 'ID',
@@ -124,7 +128,6 @@ export default {
     annotations: 'Index',
     annotation_body: 'Annotation text',
     accept_terms: 'I accept the Terms and Conditions',
-    accept: 'Accept',
     author: 'Author',
     creator: 'Creator',
     biovision_hierarchy: 'Biovision Hierarchy',
@@ -173,7 +176,6 @@ export default {
     permissions: 'Permissions',
     public: 'Public',
     profile: 'Profile',
-    reject: 'Reject',
     status: 'Status',
     set_title: 'Set Title',
     set_shortcut: 'Set Shortcut',
@@ -228,7 +230,9 @@ export default {
       '<small>While the site might work on your browser, more or less subtle problems can occur. You have been warned!</small>',
     legacy_site_migration: 'Looking for the previous version and your data? It’s still there:',
     copied_url: 'Copied URL to clipboard.',
-    group_invite_request: 'You have been invited by {name} to join "{group}".'
+    group_invite_request: 'You have been invited by {name} to join "{group}".',
+    invite_accepted: 'Invitation accepted',
+    invite_rejected: 'Invitation rejected'
   },
   help: {
     create_invitation: 'Create a new invitation. Copy the URL, and send it via mail. Send every invitation only once.'

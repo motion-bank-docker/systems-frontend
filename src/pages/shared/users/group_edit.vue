@@ -146,7 +146,7 @@
         const invitation = await this.$store.dispatch('invites/post', {
           group_id: this.group.id
         })
-        console.log('invitation', invitation)
+        this.invitations.items.push(invitation)
       },
       checkStatus (props) {
         if (props.row.name) return 'accepted'
