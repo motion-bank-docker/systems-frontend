@@ -30,7 +30,8 @@
           :pagination.sync="memberships.pagination", hide-bottom)
 
           q-td(slot="body-cell-actions", slot-scope="props", :props="props", auto-width)
-            q-btn(icon="edit", flat, size="md", @click="leaveGroup(props.row)")
+            q-btn(v-if="!isOwnGroup(props.row)", icon="exit_to_app", flat,
+              size="md", @click="leaveGroup(props.row)", :label="$t('buttons.leave')")
 
       content-paragraph
         //----------------- my groups
@@ -246,6 +247,9 @@
           }
         )
         await this.loadMemberships()
+      },
+      isOwnGroup (group) {
+        return group.creator.id === this.$auth.user.id
       }
     }
   }
