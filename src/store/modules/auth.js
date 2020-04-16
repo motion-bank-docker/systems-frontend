@@ -19,9 +19,9 @@ export default {
       state.user = user
     },
     setRedirect: (state, target) => {
-      Assert.isType(target, 'string', 'redirect target must be object')
+      Assert.isType(target, 'string', 'redirect target must be string')
       state.redirectTo = target
-      localStorage.setItem('redirectTo', JSON.stringify(target))
+      localStorage.setItem('redirectTo', target)
     },
     clearRedirect: (state) => {
       state.redirectTo = undefined
