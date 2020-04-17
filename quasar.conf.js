@@ -66,7 +66,8 @@ module.exports = function (ctx) {
                 '.eslintrc.js',
                 '.postcssrc.js'
               ],
-              configFile: 'sentry.properties'
+              configFile: 'sentry.properties',
+              release: getVersion()
             })
           )
         }
