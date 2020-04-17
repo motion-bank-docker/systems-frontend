@@ -41,7 +41,7 @@ Router.beforeEach((to, from, next) => {
       if (result) {
         const { user, first } = result
         if (process.env.SENTRY_DSN) {
-          Sentry.setUser({ email: user.email, id: user.id, name: user.profile.name })
+          Sentry.setUser({ email: user.email, id: user.id, username: user.profile.name })
         }
         if (first) {
           console.debug('Auth0 first login', user)
