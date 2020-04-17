@@ -4,7 +4,7 @@
 </template>
 
 <script>
-  import * as Sentry from '@sentry/browser'
+  // import * as Sentry from '@sentry/browser'
   export default {
     props: ['auth'],
     async mounted () {

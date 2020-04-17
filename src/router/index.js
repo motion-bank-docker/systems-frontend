@@ -4,7 +4,7 @@ import VueRouter from 'vue-router'
 import routes from './routes'
 import { userHasFeature } from 'mbjs-quasar/src/lib'
 
-import * as Sentry from '@sentry/browser'
+// import * as Sentry from '@sentry/browser'
 
 Vue.use(VueRouter)
 
