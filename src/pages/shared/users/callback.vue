@@ -11,7 +11,7 @@
       try {
         const { user, first } = await this.$auth.handleAuthentication(this.$store)
         if (process.env.SENTRY_DSN) {
-          Sentry.setUser({ email: user.email, id: user.id, name: user.profile.name })
+          Sentry.setUser({ email: user.email, id: user.id, username: user.profile.name })
         }
         console.debug('Authenticated user', user, first)
         this.$store.commit('notifications/addMessage', {
