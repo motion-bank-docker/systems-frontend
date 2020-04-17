@@ -10,6 +10,13 @@ const branchName = require('child_process')
   .execSync('git rev-parse --abbrev-ref HEAD')
   .toString().trim()
 
+const getVersion = function () {
+  if (process.env.BUILD_NAME_EXT) {
+    return `v${pkg.version}-${process.env.BUILD_NAME_EXT}-${commitHash}`
+  }
+  return `v${pkg.version}-${commitHash}`
+}
+
 module.exports = function (ctx) {
   return {
     // app plugins (/src/plugins)
@@ -128,6 +135,7 @@ module.exports = function (ctx) {
         BUILD_NAME_EXT: JSON.stringify(process.env.BUILD_NAME_EXT || null),
         COMMIT_HASH: JSON.stringify(commitHash),
         BRANCH_NAME: JSON.stringify(branchName),
+        APP_VERSION: JSON.stringify(getVersion()),
         USE_RESOURCE_CACHE: JSON.stringify(process.env.USE_RESOURCE_CACHE || false),
         UI_VERSION: JSON.stringify(process.env.UI_VERSION || require('./package.json').version),
         FLUENTFFMPEG_COV: JSON.stringify(false),
