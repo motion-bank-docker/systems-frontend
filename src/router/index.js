@@ -4,7 +4,7 @@ import VueRouter from 'vue-router'
 import routes from './routes'
 import { userHasFeature } from 'mbjs-quasar/src/lib'
 
-// import * as Sentry from '@sentry/browser'
+import * as Sentry from '@sentry/browser'
 
 Vue.use(VueRouter)
 
@@ -40,9 +40,9 @@ Router.beforeEach((to, from, next) => {
     }).then(result => {
       if (result) {
         const { user, first } = result
-        // if (process.env.SENTRY_DSN) {
-        //   Sentry.setUser({ email: user.email, id: user.id, username: user.profile.name })
-        // }
+        if (process.env.SENTRY_DSN) {
+          Sentry.setUser({ email: user.email, id: user.id, username: user.profile.name })
+        }
         if (first) {
           console.debug('Auth0 first login', user)
           next({ name: 'users.manage', params: { isFirst: true, redirect: redirectPath || to } })
