@@ -17,7 +17,7 @@
 
     // -------------------------------------------------------------------------------------------------- access control
     content-block
-      permissions
+      permissions(v-if="timeline", :resource="timeline.id")
     //
       content-block(v-if="availableRoles.length", :position="'last'")
         headline.q-mt-lg(:content="$t('labels.access_control')")

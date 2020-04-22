@@ -172,6 +172,7 @@ export default {
     group_title: 'Group title',
     new_vocabulary: 'New vocabulary',
     no_selection: 'No selection made.',
+    none: 'None',
     organisation: 'Organisation',
     participants: 'Participants',
     password: 'Password',
@@ -179,6 +180,7 @@ export default {
     permissions: 'Permissions',
     public: 'Public',
     profile: 'Profile',
+    read: 'Read',
     status: 'Status',
     set_title: 'Set Title',
     set_shortcut: 'Set Shortcut',
@@ -196,7 +198,8 @@ export default {
     media_title: 'Media title',
     media_url: 'Media URL',
     media: 'Media',
-    vocabulary_entry: 'Vocabularies'
+    vocabulary_entry: 'Vocabularies',
+    write: 'Write'
   },
   links: {
     click_to_register: 'Click here to create an account.'
