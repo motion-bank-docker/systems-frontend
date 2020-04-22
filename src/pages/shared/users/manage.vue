@@ -56,12 +56,10 @@
           },
           submit: {
             async handler () {
-              console.log('payload', context.profile)
               const profile = await context.$store.dispatch(
                 'profiles/patch',
                 [context.$store.state.auth.user.uuid, context.profile]
               )
-              console.log('profile', profile)
               if (profile) {
                 const user = Object.assign({}, context.$store.state.auth.user)
                 user.profile = Object.assign({}, user.profile, profile)
