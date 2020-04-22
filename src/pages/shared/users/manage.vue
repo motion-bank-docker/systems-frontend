@@ -58,7 +58,7 @@
             async handler () {
               const profile = await context.$store.dispatch(
                 'profiles/patch',
-                [context.$store.state.auth.user.uuid, context.payload]
+                [context.$store.state.auth.user.uuid, context.profile]
               )
               if (profile) {
                 const user = Object.assign({}, context.$store.state.auth.user)
