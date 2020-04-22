@@ -103,6 +103,7 @@ export default {
     list_annotations_failed: 'Failed to create annotation: {error}',
     export_archive_failed: 'Failed to export timeline archive: {error}',
     packaging_failed: 'Packaging failed: {error}',
+    update_acl_failed: 'Failed to update ACL: {error}',
     unauthorized: 'Unauthorized',
     forbidden: 'Forbidden',
     http_server_error: 'HTTP error {code}: {message}',
