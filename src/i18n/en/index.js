@@ -239,7 +239,8 @@ export default {
     copied_url: 'Copied URL to clipboard.',
     group_invite_request: 'You have been invited by {name} to join "{group}".',
     invite_accepted: 'Invitation accepted',
-    invite_rejected: 'Invitation rejected'
+    invite_rejected: 'Invitation rejected',
+    confirm_remove_invitation: 'Remove invitation?'
   },
   help: {
     create_invitation: 'Create a new invitation. Copy the URL, and send it via mail. Send every invitation only once.'
