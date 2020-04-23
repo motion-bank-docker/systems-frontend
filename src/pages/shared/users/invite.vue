@@ -71,7 +71,7 @@
           })
         }
         this.$q.loading.hide()
-        this.$router.push({ name: 'users.manage' })
+        this.$router.push({ name: 'users.groups' })
       }
     }
   }
