@@ -106,13 +106,15 @@ export default {
     update_acl_failed: 'Failed to update ACL: {error}',
     unauthorized: 'Unauthorized',
     forbidden: 'Forbidden',
+    not_found: 'Not found',
     http_server_error: 'HTTP error {code}: {message}',
     generic_error: '{code} {message}',
     passwords_do_not_match: 'Passwords do not match',
     minimum_length_6: 'Minimum length: 6 characters',
-    failed_to_copy_url: 'Failed to copy URL to clipboard',
+    failed_to_copy_url: 'Failed to copy URL to clipboard: {error}',
     invite_invalid: 'This invitation already expired or the URL is invalid.',
-    invite_failed: 'Invitation failed.'
+    invite_failed: 'Invitation failed.',
+    remove_invitation_failed: 'Failed to remove invitation: {error}'
   },
   labels: {
     id: 'ID',
