@@ -1,7 +1,7 @@
 <template lang="pug">
   full-screen
 
-    confirm-modal(ref="confirmModal", @confirm="removeMember")
+    confirm-modal(ref="confirmModal", @confirm="removeInvitation")
 
     //-------------------- title
     content-block(:position="'first'")
@@ -136,10 +136,7 @@
           })
         }
         catch (err) {
-          console.debug('Failed to copy URL', err.message)
-          this.$store.commit('notifications/addMessage', {
-            body: 'errors.failed_to_copy_url', mode: 'alert', type: 'error'
-          })
+          this.$handleError(this, err, 'errors.failed_to_copy_url')
         }
       },
       async addInvitation () {
@@ -148,8 +145,15 @@
         })
         this.invitations.items.push(invitation)
       },
-      removeMember (index) {
-        this.tableData.splice(index, 1)
+      async removeInvitation (invitation) {
+        try {
+          const index = this.invitations.items.findIndex(item => item.id === invitation.id)
+          await this.$store.dispatch('invites/delete', invitation.id)
+          this.invitations.items.splice(index, 1)
+        }
+        catch (err) {
+          this.$handleError(this, err, 'errors.remove_invitation_failed')
+        }
       }
     }
   }

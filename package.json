@@ -44,7 +44,7 @@
     "@sentry/browser": "^5.13.2",
     "@sentry/integrations": "^5.13.2",
     "auth0-js": "9.8.2",
-    "axios": "^0.18.1",
+    "axios": "^0.19.2",
     "bluebird": "3.5.3",
     "cote": "^0.20.0",
     "ffprobe-static": "^3.0.0",
