@@ -4,11 +4,15 @@
 </template>
 
 <script>
+  import * as Sentry from '@sentry/browser'
   export default {
     props: ['auth'],
     async mounted () {
       try {
         const { user, first } = await this.$auth.handleAuthentication(this.$store)
+        if (process.env.SENTRY_DSN) {
+          Sentry.setUser({ id: user.id, username: user.profile ? user.profile.name : undefined })
+        }
         console.debug('Authenticated user', user, first)
         this.$store.commit('notifications/addMessage', {
           body: this.$t('messages.login_success'),

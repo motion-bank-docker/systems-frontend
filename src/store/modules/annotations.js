@@ -21,7 +21,7 @@ const annotationsFactory = function (env = {}) {
         const config = env.getRequestConfig()
         config.params = { media_url: id }
         config.headers['Accept'] = 'application/ld+json'
-        const response = await axios.get(`${process.env.API_HOST}videos/annotations/`, config)
+        const response = await axios.get(`${context.rootState.settings.apiHost}videos/annotations/`, config)
         const items = await AnnotationFactory.fromFlatJsonLd(response.data)
         console.debug('annotations/find', items)
         return items
@@ -38,7 +38,7 @@ const annotationsFactory = function (env = {}) {
         const config = env.getRequestConfig()
         config.params = { media_url: payload.target.id, format: 'json-ld' }
         if (typeof payload.toObject === 'function') payload = payload.toObject()
-        const response = await axios.post(`${process.env.API_HOST}videos/annotations/`, payload, config)
+        const response = await axios.post(`${context.rootState.settings.apiHost}videos/annotations/`, payload, config)
         const items = await AnnotationFactory.fromFlatJsonLd(response.data)
         console.debug('annotations/post', items)
         return items.length ? items[0] : undefined
@@ -48,7 +48,7 @@ const annotationsFactory = function (env = {}) {
         const config = env.getRequestConfig()
         config.headers['Accept'] = 'application/ld+json'
         config.headers['Content-Type'] = 'application/ld+json'
-        const url = `${process.env.API_HOST}videos/annotations/${parseURI(id).id}/`
+        const url = `${context.rootState.settings.apiHost}videos/annotations/${parseURI(id).id}/`
         if (typeof payload.toObject === 'function') payload = payload.toObject()
         const response = await axios.patch(url, payload, config)
         const items = await AnnotationFactory.fromFlatJsonLd(response.data)
@@ -57,7 +57,7 @@ const annotationsFactory = function (env = {}) {
       },
       async delete (context, id) {
         await checkAuth(context)
-        await axios.delete(`${process.env.API_HOST}videos/annotations/${parseURI(id).id}`, env.getRequestConfig())
+        await axios.delete(`${context.rootState.settings.apiHost}videos/annotations/${parseURI(id).id}`, env.getRequestConfig())
       }
     }
   }

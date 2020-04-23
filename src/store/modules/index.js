@@ -8,6 +8,7 @@ import tags from './tags'
 import files from './files'
 import queue from './queue'
 import swimLane from './swim-lane'
+import settings from './settings'
 import vocabularies from './vocabularies'
 
 export {
@@ -21,5 +22,6 @@ export {
   notifications,
   queue,
   swimLane,
+  settings,
   vocabularies
 }

@@ -10,15 +10,16 @@
       content-paragraph
         form-main(v-model="payload", :schema="schema")
           //
-            div(slot="form-buttons-add", :class="{'full-width row q-mb-sm': isMobile}")
-              q-btn.bg-grey-9.col(q-if="$route.params.uuid", :label="exportLabel",
-              @click="exportGrid",
-              // :class="[!isMobile ? '' : '']")
-              q-btn.bg-grey-9.col(q-if="$route.params.uuid && userHasPackager", :label="packageLabel",
-              @click="createPackage",
-              // :class="[!isMobile ? 'q-mx-sm' : 'q-ml-sm']")
+          div(slot="form-buttons-add", :class="{'full-width row q-mb-sm': isMobile}")
+            q-btn.bg-grey-9.col.q-mr-md(q-if="$route.params.uuid", :label="exportLabel",
+            @click="exportGrid", :class="[!isMobile ? '' : '']")
+            // q-btn.bg-grey-9.col(q-if="$route.params.uuid && userHasPackager", :label="packageLabel",
+            // @click="createPackage",
+            // :class="[!isMobile ? 'q-mx-sm' : 'q-ml-sm']")
 
     // -------------------------------------------------------------------------------------------------- access control
+    content-block
+      permissions
 
     //
       content-block(v-if="availableRoles.length")
@@ -74,6 +75,7 @@
   import Headline from '../../../components/shared/elements/Headline'
   import ContentBlock from '../../../components/shared/elements/ContentBlock'
   import ContentParagraph from '../../../components/shared/elements/ContentParagraph'
+  import Permissions from '../../../components/shared/partials/Permissions'
 
   import { required } from 'vuelidate/lib/validators'
   import constants from 'mbjs-data-models/src/constants'
@@ -88,7 +90,8 @@
       Tags,
       Headline,
       ContentBlock,
-      ContentParagraph
+      ContentParagraph,
+      Permissions
     },
     data () {
       const _this = this
@@ -193,7 +196,7 @@
         this.$q.loading.show()
         try {
           const result = await this.$axios.post(
-            `${process.env.API_HOST}/archives/maps/${this.grid._uuid}`,
+            `${this.$store.state.settings.apiHost}/archives/maps/${this.grid._uuid}`,
             {},
             {
               headers: {

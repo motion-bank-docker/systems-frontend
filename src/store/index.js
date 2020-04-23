@@ -28,7 +28,8 @@ import {
   notifications,
   queue,
   swimLane,
-  vocabularies
+  vocabularies,
+  settings
 } from './modules'
 
 import mediaFactory from './modules/media'
@@ -75,7 +76,7 @@ else {
       redirectUriPassive: process.env.OAUTH_REDIRECT_URL_PASSIVE || `${document.location.origin}/users/callback_passive`,
       authorization: process.env.OAUTH_AUTH_URL,
       token: process.env.OAUTH_TOKEN_URL,
-      profileEndpoint: `${process.env.API_HOST}user_profile/`,
+      profileEndpoint: `${process.env.API_HOST || window.API_HOST}user_profile/`,
       response_type: 'token'
     })
   }
@@ -90,6 +91,8 @@ const mobaApiModules = {
   maps: makeResourceModule(apiClient, Map, 'map'),
   cells: makeResourceModule(apiClient, Cell, 'cell'),
   documents: makeResourceModule(apiClient, Document, 'document'),
+  groups: makeResourceModule(apiClient, undefined, 'group'),
+  invites: makeResourceModule(apiClient, undefined, 'invite'),
   profiles: makeResourceModule(apiClient, undefined, 'profile'),
   sessions: makeResourceModule(apiClient, undefined, 'session')
 }
@@ -109,7 +112,8 @@ const modules = {
   notifications,
   queue,
   swimLane,
-  vocabularies
+  vocabularies,
+  settings
 }
 for (let key in mobaApiModules) {
   if (mobaApiModules[key]) modules[key] = mobaApiModules[key]

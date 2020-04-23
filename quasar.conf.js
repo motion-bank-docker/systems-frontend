@@ -2,6 +2,21 @@
 const pkg = require('./package.json')
 const SentryWebpackPlugin = require('@sentry/webpack-plugin')
 
+// get git info from command line
+const commitHash = require('child_process')
+  .execSync('git rev-parse --short HEAD')
+  .toString().trim()
+const branchName = require('child_process')
+  .execSync('git rev-parse --abbrev-ref HEAD')
+  .toString().trim()
+
+const getVersion = function () {
+  if (process.env.BUILD_NAME_EXT) {
+    return `v${pkg.version}-${process.env.BUILD_NAME_EXT}-${commitHash}`
+  }
+  return `v${pkg.version}-${commitHash}`
+}
+
 module.exports = function (ctx) {
   return {
     // app plugins (/src/plugins)
@@ -43,7 +58,6 @@ module.exports = function (ctx) {
           cfg.plugins.push(
             new SentryWebpackPlugin({
               include: '.',
-              ignoreFile: '.sentrycliignore',
               ignore: [
                 'dist',
                 'node_modules',
@@ -52,7 +66,8 @@ module.exports = function (ctx) {
                 '.eslintrc.js',
                 '.postcssrc.js'
               ],
-              configFile: 'sentry.properties'
+              configFile: 'sentry.properties',
+              release: getVersion()
             })
           )
         }
@@ -119,6 +134,9 @@ module.exports = function (ctx) {
         IS_STAGING: JSON.stringify(process.env.IS_STAGING || false),
         IS_ELECTRON: JSON.stringify(process.env.IS_ELECTRON || false),
         BUILD_NAME_EXT: JSON.stringify(process.env.BUILD_NAME_EXT || null),
+        COMMIT_HASH: JSON.stringify(commitHash),
+        BRANCH_NAME: JSON.stringify(branchName),
+        APP_VERSION: JSON.stringify(getVersion()),
         USE_RESOURCE_CACHE: JSON.stringify(process.env.USE_RESOURCE_CACHE || false),
         UI_VERSION: JSON.stringify(process.env.UI_VERSION || require('./package.json').version),
         FLUENTFFMPEG_COV: JSON.stringify(false),

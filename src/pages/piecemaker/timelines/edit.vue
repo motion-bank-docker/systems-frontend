@@ -8,14 +8,16 @@
       content-paragraph
         form-main(v-model="payload", :schema="schema")
           //
-            div(slot="form-buttons-add", :class="{'full-width row q-mb-sm': isMobile}")
-              q-btn.col(v-if="$route.params.uuid", slot="form-buttons-add", :label="exportLabel", @click="exportTimeline",
+          div(slot="form-buttons-add", :class="{'full-width row q-mb-sm': isMobile}")
+            q-btn.col(v-if="$route.params.uuid", slot="form-buttons-add",
+              :label="exportLabel", @click="exportTimeline",
               color="grey", :class="[!isMobile ? 'q-mr-sm' : '']")
-              q-btn(v-if="$route.params.uuid", @click="exportCSV", color="grey",
-              // :class="[!isMobile ? 'q-mr-sm' : '']", :label="exportLabelCSV")
+            // q-btn(v-if="$route.params.uuid", @click="exportCSV", color="grey",
+            //   :class="[!isMobile ? 'q-mr-sm' : '']", :label="exportLabelCSV")
 
     // -------------------------------------------------------------------------------------------------- access control
-
+    content-block
+      permissions(v-if="timeline", :resource="timeline.id")
     //
       content-block(v-if="availableRoles.length", :position="'last'")
         headline.q-mt-lg(:content="$t('labels.access_control')")
@@ -49,6 +51,7 @@
   import Headline from '../../../components/shared/elements/Headline'
   import ContentBlock from '../../../components/shared/elements/ContentBlock'
   import ContentParagraph from '../../../components/shared/elements/ContentParagraph'
+  import Permissions from '../../../components/shared/partials/Permissions'
 
   import { required } from 'vuelidate/lib/validators'
   import constants from 'mbjs-data-models/src/constants'
@@ -70,7 +73,8 @@
       Headline,
       Tags,
       ContentBlock,
-      ContentParagraph
+      ContentParagraph,
+      Permissions
     },
     data () {
       const _this = this
@@ -138,7 +142,7 @@
         this.$q.loading.show()
         try {
           const result = await this.$axios.post(
-            `${process.env.API_HOST}/archives/maps/${this.timeline._uuid}`,
+            `${this.$store.state.settings.apiHost}/archives/maps/${this.timeline._uuid}`,
             {},
             {
               headers: {

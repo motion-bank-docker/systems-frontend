@@ -24,13 +24,43 @@ export default {
       meta: {private: true}
     },
     {
-      path: 'groupedit',
-      name: 'users.groupedit',
+      path: 'manage/create',
+      name: 'users.create',
+      component: () => import('pages/shared/users/admin'),
+      meta: {private: true}
+    },
+    {
+      path: 'manage/:id',
+      name: 'users.admin',
+      component: () => import('pages/shared/users/admin'),
+      meta: {private: true}
+    },
+    {
+      path: 'list',
+      name: 'users.list',
+      component: () => import('pages/shared/users/list'),
+      meta: {private: true}
+    },
+    {
+      path: 'groups',
+      name: 'users.groups',
+      component: () => import('pages/shared/users/groups_list'),
+      meta: {private: true}
+    },
+    {
+      path: 'groups/create',
+      name: 'users.groups_create',
       component: () => import('pages/shared/users/group_edit'),
       meta: {private: true}
     },
     {
-      path: 'invite',
+      path: 'groups/:uuid/edit',
+      name: 'users.groups_edit',
+      component: () => import('pages/shared/users/group_edit'),
+      meta: {private: true}
+    },
+    {
+      path: 'invite/:code',
       name: 'users.invite',
       component: () => import('pages/shared/users/invite'),
       meta: {private: true}

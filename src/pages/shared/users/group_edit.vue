@@ -3,172 +3,150 @@
 
     confirm-modal(ref="confirmModal", @confirm="removeMember")
 
-    //------------------------------------------------------------------------------------------------------------ title
+    //-------------------- title
     content-block(:position="'first'")
 
-      headline(:content="$t('routes.groups.edit.title')")
-        | {{ groupTitle }}
+      template(v-if="$route.params.uuid")
+        headline(:content="$t('routes.groups.edit.title')")
+          | {{ group ? group.title : '' }}
+      template(v-else)
+        headline(:content="$t('routes.groups.create.title')")
+          | {{ $t('routes.groups.create.caption') }}
 
-      form-main(v-model="payload", :schema="schema")
+      form-main(v-model="group", :schema="schema")
 
-    //---------------------------------------------------------------------------------------------------------- members
-    content-block
+    //-------------------- members
+    content-block(v-if="$route.params.uuid")
+      //------------------- invitations
+      q-table(:columns="invitations.columns", :data="invitations.items", dark,
+        :title="$t('labels.invitations')", :pagination.sync="invitations.pagination", hide-bottom)
 
-      div.q-mb-lg.q-pb-sm(style="display: flex;")
-        h5.q-my-none.q-pt-none(style="width: 100%") Members
-        div.text-white(style="flex-grow: auto; white-space: nowrap;")
+        template(slot="top-left", slot-scope="props")
+          div.q-mb-md
+            h5.q-mb-md {{ $t('labels.invitations') }}
+            | {{ $t('help.create_invitation') }}
 
-          q-btn.q-mr-md(flat)
-            | ?
-            q-popover.q-pa-md(anchor="top left", self="top right", :offset="[8, 0]")
-              | Create a new invitation. Copy the URL, and send it via mail. Send every invitation only once.
-
-          q-btn.no-shadow(@click="addInvitation()", color="primary")
-            q-icon(name="add")
-
-        .text-grey-8.ui-border-bottom.q-pb-md
-
-      //----- table
-      q-table(:columns="config.columns", :data="tableData", dark, :pagination.sync="config.pagination", hide-bottom)
-
-        q-td(slot="body-cell-name", slot-scope="props", :props="props")
-          template(v-if="props.value") {{ props.value }}
-          span.text-grey-7(v-else) unset
-
-        q-td(slot="body-cell-status", slot-scope="props", :props="props")
-          | {{ checkStatus(props) }}
+        template(slot="top-right", slot-scope="props")
+          q-btn.no-shadow(@click="addInvitation", color="primary",
+            icon="add", :label="$t('buttons.create_invitation')")
 
         q-td(slot="body-cell-actions", slot-scope="props", :props="props", auto-width)
-          q-btn(v-for="btn in actions", :key="btn.icon", flat, size="md", :icon="btn.icon",
-          @click="defaultClick(btn, props)",
-          :disabled="btn.type === 'copy' && props.row.name",
-          :class="{'text-grey-7': btn.type === 'copy' && props.row.name}") {{ $t(btn.title) }}
-
+          q-btn(icon="file_copy", flat, size="md", @click="copyUrl(props.row)")
+          q-btn(icon="delete", flat, size="md",
+            @click="$refs.confirmModal.show('messages.confirm_remove_invitation', props.row)")
 </template>
 
 <script>
   import ContentBlock from '../../../components/shared/elements/ContentBlock'
   import FormMain from '../../../components/shared/forms/FormMain'
   import Headline from '../../../components/shared/elements/Headline'
+  import { required } from 'vuelidate/src/validators'
+  import { DateTime } from 'luxon'
 
   export default {
     name: 'group_edit',
-    components: { FormMain, ContentBlock, Headline },
+    components: {
+      FormMain,
+      ContentBlock,
+      Headline
+    },
     data () {
+      const context = this
+      let group
+      if (this.$route.params.uuid) {
+        group = this.$store.dispatch('groups/get', this.$route.params.uuid)
+      }
+      else group = { title: undefined }
       return {
-        groupTitle: 'abc 123',
-        inviteUrl: 'https://url.motionbank.org/Dh23DJa7',
-        tableData: [
-          {name: undefined, status: 'https://url.motionbank.org/Dh23DJa7'},
-          {name: 'Member 2', status: 'https://url.motionbank.org/Dh23DJa7'},
-          {name: undefined, status: 'https://url.motionbank.org/Dh23DJa7'},
-          {name: 'Member 4', status: 'https://url.motionbank.org/Dh23DJa7'},
-          {name: 'Member 5', status: 'https://url.motionbank.org/Dh23DJa7'}
-        ],
-        payload: undefined,
-        config: {
-          pagination: {
-            rowsPerPage: 0
-          },
+        group,
+        invitations: {
+          items: [],
+          pagination: {},
           columns: [
             {
-              name: 'name',
-              required: true,
-              label: 'Name',
+              name: 'url',
+              label: this.$t('labels.url'),
               align: 'left',
-              field: 'name',
-              sortable: true
+              field: 'code',
+              format: val => `${document.location.origin}/users/invite/${val}`
             },
             {
-              name: 'status',
-              required: true,
-              label: 'Status',
+              name: 'created',
+              label: this.$t('labels.created'),
               align: 'right',
-              field: 'status',
-              sortable: true
+              field: 'created',
+              sortable: true,
+              format: val => DateTime.fromMillis(val).toLocaleString(DateTime.DATETIME_SHORT)
+            },
+            {
+              name: 'actions'
             }
           ]
         },
-        actions: [
-          {
-            type: 'copy',
-            icon: 'file_copy',
-            color: 'primary',
-            click: (item) => this.copyUrl(item.status)
-          },
-          {
-            type: 'remove',
-            icon: 'clear',
-            color: 'primary',
-            click: (item) => this.$refs.confirmModal.show('messages.confirm_remove_member', item.__index)
-          }
-        ],
         schema: {
           fields: {
             title: {
-              fullWidth: true,
               type: 'text',
               label: 'labels.group_title',
-              errorLabel: 'errors.field_required'
+              errorLabel: 'errors.field_required',
+              validators: {
+                required
+              }
             }
           },
           submit: {
-            handler () {
-              console.log('submit')
-              /*
-              _this.payload.type = [constants.mapClasses.MAP_CLASS_TIMELINE]
-              return _this.$store.dispatch('maps/post', _this.payload)
-                .then(() => _this.$router.push({ name: 'piecemaker.timelines.list' }))
-              */
-            }
+            async handler () {
+              if (context.$route.params.uuid) {
+                return context.$store.dispatch('groups/patch',
+                  [context.$route.params.uuid, context.group])
+              }
+              else {
+                const group = await context.$store.dispatch('groups/post', context.group)
+                return context.$router.push({
+                  name: 'users.groups_edit',
+                  params: { uuid: group.uuid }
+                })
+              }
+            },
+            label: 'buttons.save',
+            message: 'messages.update_success'
           }
         }
       }
     },
-    mounted () {
-      this.config.columns.push({
-        name: 'actions',
-        align: 'right',
-        type: 'string',
-        filter: false,
-        sortable: false,
-        sort: false
-        // format: makeFormatter('actions')
-      })
+    watch: {
+      group: {
+        async handler (val) {
+          if (val && val.id) {
+            let { items } = await this.$store.dispatch('invites/find', {
+              group_id: val.id
+            })
+            this.invitations.items = items
+          }
+        },
+        deep: true
+      }
     },
     methods: {
-      defaultClick (btn, props) {
-        if (btn.click) return btn.click(props.row)
-        if (btn.type === 'remove') {
-          try {
-            console.log('REMOVE')
-            // await this.$store.dispatch(`${this.path}/delete`, props.row._uuid)
-          }
-          catch (err) {
-            if (typeof this.$captureException === 'function') this.$captureException(err)
-            else console.error(err)
-          }
+      async copyUrl (invite) {
+        try {
+          await navigator.clipboard.writeText(`${document.location.origin}/users/invite/${invite.code}`)
+          this.$store.commit('notifications/addMessage', {
+            body: 'messages.copied_url', mode: 'alert', type: 'success'
+          })
+        }
+        catch (err) {
+          console.debug('Failed to copy URL', err.message)
+          this.$store.commit('notifications/addMessage', {
+            body: 'errors.failed_to_copy_url', mode: 'alert', type: 'error'
+          })
         }
       },
-      copyUrl (val) {
-        navigator.clipboard.writeText(val)
-          .then(() => {
-            this.$q.notify({
-              message: 'Copied.',
-              timeout: 1000,
-              color: 'primary'
-            })
-          })
-          .catch(() => {
-            console.log('error')
-          })
-      },
-      addInvitation () {
-        this.tableData.unshift({name: undefined, status: this.inviteUrl})
-      },
-      checkStatus (props) {
-        if (props.row.name) return 'accepted'
-        else return props.row.status
+      async addInvitation () {
+        const invitation = await this.$store.dispatch('invites/post', {
+          group_id: this.group.id
+        })
+        this.invitations.items.push(invitation)
       },
       removeMember (index) {
         this.tableData.splice(index, 1)

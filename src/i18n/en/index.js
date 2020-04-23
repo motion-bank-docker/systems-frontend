@@ -2,6 +2,7 @@ export default {
   buttons: {
     update_access_control: 'Update access settings',
     annotations_index: 'Index',
+    accept: 'Accept',
     arrow_next: '>',
     arrow_prev: '<',
     abort: 'Abort',
@@ -18,6 +19,7 @@ export default {
     create_timeline: 'Create Timeline',
     create_grid: 'Create Grid',
     create_package: 'Create Package',
+    create_invitation: 'Create invitation',
     cancel: 'Cancel',
     change: 'Change',
     confirm: 'OK',
@@ -33,12 +35,15 @@ export default {
     export_timeline: 'Export Timeline',
     export_timeline_csv: 'Export Timeline as CSV',
     forgot_password: 'Forgot Password',
+    help: 'Help',
+    leave: 'Leave',
     live_annotate: 'Live Annotate',
     live_annotate_timeline: 'Live Annotate this timeline',
     login: 'Sign In',
     more_info: 'More info',
     no: 'No',
     request_reset_pass: 'Request Password Reset',
+    reject: 'Reject',
     save_changes: 'Save changes',
     save: 'Save',
     set_marker: 'Set Marker',
@@ -98,17 +103,25 @@ export default {
     list_annotations_failed: 'Failed to create annotation: {error}',
     export_archive_failed: 'Failed to export timeline archive: {error}',
     packaging_failed: 'Packaging failed: {error}',
+    update_acl_failed: 'Failed to update ACL: {error}',
     unauthorized: 'Unauthorized',
     forbidden: 'Forbidden',
     http_server_error: 'HTTP error {code}: {message}',
-    generic_error: '{code} {message}'
+    generic_error: '{code} {message}',
+    passwords_do_not_match: 'Passwords do not match',
+    minimum_length_6: 'Minimum length: 6 characters',
+    failed_to_copy_url: 'Failed to copy URL to clipboard',
+    invite_invalid: 'This invitation already expired or the URL is invalid.',
+    invite_failed: 'Invitation failed.'
   },
   labels: {
     id: 'ID',
     access_control: 'Access Control',
     access_control_public: 'Public',
+    access_control_rights: 'Default Access Rights',
     access_control_add_group: 'Add to group',
     access_control_remove_group: 'Remove from group',
+    account_credentials: 'Account credentials',
     associated_timeline: 'Associated timeline',
     associated_timeline_warning: 'WARNING: If you already annotated this, your annotations are linked to the original timeline. Changing the associated timeline will only reassign this reference time, not the existing annotations.',
     recursive: 'Apply to all contained annotations and media',
@@ -117,7 +130,6 @@ export default {
     annotations: 'Index',
     annotation_body: 'Annotation text',
     accept_terms: 'I accept the Terms and Conditions',
-    accept: 'Accept',
     author: 'Author',
     creator: 'Creator',
     biovision_hierarchy: 'Biovision Hierarchy',
@@ -134,6 +146,10 @@ export default {
     edit_title: 'Edit title',
     edit_term: 'Edit term',
     email: 'Email',
+    email_verified: 'Email verified',
+    roles: 'Roles',
+    features: 'Features',
+    group_memberships: 'Group memberships',
     embedded: 'Embedded in',
     empty: 'empty',
     elements_length: 'Used Elements',
@@ -146,7 +162,10 @@ export default {
     last_edit: 'Last edit',
     location: 'Location',
     map_title: 'Map Title',
-    my_vocabularies: 'my vocabularies',
+    members: 'Members',
+    invitations: 'Invitations',
+    my_groups: 'My Groups',
+    my_vocabularies: 'My vocabularies',
     name: 'Name',
     new_tag: 'New tag',
     new_term: 'New term',
@@ -154,13 +173,15 @@ export default {
     group_title: 'Group title',
     new_vocabulary: 'New vocabulary',
     no_selection: 'No selection made.',
+    none: 'None',
     organisation: 'Organisation',
     participants: 'Participants',
     password: 'Password',
     password_confirmation: 'Password confirmation',
     permissions: 'Permissions',
     public: 'Public',
-    reject: 'Reject',
+    profile: 'Profile',
+    read: 'Read',
     status: 'Status',
     set_title: 'Set Title',
     set_shortcut: 'Set Shortcut',
@@ -173,11 +194,13 @@ export default {
     title_unknown: 'Unknown Title',
     timeline: 'Timeline',
     type: 'Type',
+    url: 'URL',
     media_duration: 'Media duration',
     media_title: 'Media title',
     media_url: 'Media URL',
     media: 'Media',
-    vocabulary_entry: 'Vocabularies'
+    vocabulary_entry: 'Vocabularies',
+    write: 'Write'
   },
   links: {
     click_to_register: 'Click here to create an account.'
@@ -212,7 +235,14 @@ export default {
       '<a href="https://www.mozilla.org/firefox/" target="_blank">Firefox</a> or ' +
       '<a href="http://www.chromium.org/Home" target="_blank">Chromium</a>.<br>' +
       '<small>While the site might work on your browser, more or less subtle problems can occur. You have been warned!</small>',
-    legacy_site_migration: 'Looking for the previous version and your data? It’s still there:'
+    legacy_site_migration: 'Looking for the previous version and your data? It’s still there:',
+    copied_url: 'Copied URL to clipboard.',
+    group_invite_request: 'You have been invited by {name} to join "{group}".',
+    invite_accepted: 'Invitation accepted',
+    invite_rejected: 'Invitation rejected'
+  },
+  help: {
+    create_invitation: 'Create a new invitation. Copy the URL, and send it via mail. Send every invitation only once.'
   },
   navigation: {
     annotate_media: 'Annotate Media',
@@ -254,7 +284,8 @@ export default {
     },
     users: {
       label: 'Account settings',
-      users_manage: 'Account settings'
+      users_manage: 'Account settings',
+      groups: 'Groups'
     }
   },
   routes: {
@@ -328,6 +359,10 @@ export default {
         title: 'Manage Account',
         caption: 'Update your details and login credentials.',
         first_login: 'As this is your first login, please update your profile info.'
+      },
+      groups: {
+        title: 'Manage Groups',
+        caption: 'Create groups and manage group memberships.'
       }
     },
     groups: {
@@ -336,8 +371,11 @@ export default {
         caption: 'Manage your groups.'
       },
       edit: {
-        title: 'Edit group',
-        caption: 'Edit this group.'
+        title: 'Edit group'
+      },
+      create: {
+        title: 'Create group',
+        caption: 'Add a new group.'
       },
       new: {
         title: 'New group',

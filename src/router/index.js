@@ -4,6 +4,8 @@ import VueRouter from 'vue-router'
 import routes from './routes'
 import { userHasFeature } from 'mbjs-quasar/src/lib'
 
+import * as Sentry from '@sentry/browser'
+
 Vue.use(VueRouter)
 
 const Router = new VueRouter({
@@ -28,6 +30,8 @@ Router.beforeEach((to, from, next) => {
     else cb()
   }
   waitForStore(Router.app, () => {
+    const redirectPath = Router.app.$store.state.auth.redirectTo
+    if (redirectPath) Router.app.$store.commit('auth/clearRedirect')
     Router.app.$auth.checkSession(Router.app.$store).catch(() => {
       if (to.meta.private) {
         Router.app.$store.commit('auth/setRedirect', to.fullPath)
@@ -36,16 +40,19 @@ Router.beforeEach((to, from, next) => {
     }).then(result => {
       if (result) {
         const { user, first } = result
+        if (process.env.SENTRY_DSN) {
+          Sentry.setUser({ id: user.id, username: user.profile ? user.profile.name : undefined })
+        }
         if (first) {
           console.debug('Auth0 first login', user)
-          next({ name: 'users.manage', params: { isFirst: true, redirect: to } })
+          next({ name: 'users.manage', params: { isFirst: true, redirect: redirectPath || to } })
         }
         else {
           if (to.meta.feature) {
-            if (userHasFeature(Router.app.$store.state.auth.user, to.meta.feature)) next()
+            if (userHasFeature(Router.app.$store.state.auth.user, to.meta.feature)) next(redirectPath)
             else next({ name: 'site.welcome' })
           }
-          next()
+          next(redirectPath)
         }
       }
       else if (to.meta.private) {
@@ -55,7 +62,7 @@ Router.beforeEach((to, from, next) => {
           Router.app.$auth.authenticate()
         }
       }
-      else next()
+      else next(redirectPath)
     }).catch(err => {
       Router.app.$captureException(err)
       Router.app.$auth.logout()

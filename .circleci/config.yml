@@ -34,7 +34,7 @@ jobs:
             API_HOST: https://api-dev.motionbank.org
           command: |
             set +o pipefail
-            AUTH0_CLIENT_ID=${DEV_AUTH0_CLIENT_ID} SENTRY_DSN=${DEV_SENTRY_DSN} npm run build-dev
+            AUTH0_CLIENT_ID=${DEV_AUTH0_CLIENT_ID} npm run build-dev
             docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
             docker build --no-cache -t motionbank/systems-frontend:dev .
             docker push motionbank/systems-frontend:dev
@@ -52,7 +52,7 @@ jobs:
           name: Release Production Image
           command: |
             set +o pipefail
-            MIGRATION_PREVIOUS_URL=https://legacy.motionbank.org MIGRATION_PREVIOUS_INFO_URL=https://medium.com/motion-bank/supporting-dance-practice-and-education-during-covid-19-ca43e71eb93 AUTH0_CLIENT_ID=${PROD_AUTH0_CLIENT_ID} SENTRY_DSN=${PROD_SENTRY_DSN} npm run build
+            MIGRATION_PREVIOUS_URL=https://legacy.motionbank.org MIGRATION_PREVIOUS_INFO_URL=https://medium.com/motion-bank/supporting-dance-practice-and-education-during-covid-19-ca43e71eb93 AUTH0_CLIENT_ID=${PROD_AUTH0_CLIENT_ID} npm run build
             docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
             docker build --no-cache -t motionbank/systems-frontend:${CIRCLE_BRANCH} .
             docker push motionbank/systems-frontend:${CIRCLE_BRANCH}
@@ -88,7 +88,7 @@ jobs:
           name: Release Staging Image
           command: |
             set +o pipefail
-            BUILD_NAME_EXT=staging AUTH0_CLIENT_ID=${STAGING_AUTH0_CLIENT_ID} SENTRY_DSN=${STAGING_SENTRY_DSN} npm run build
+            AUTH0_CLIENT_ID=${STAGING_AUTH0_CLIENT_ID} BUILD_NAME_EXT=staging npm run build
             docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
             docker build --no-cache -t motionbank/systems-frontend:staging .
             docker push motionbank/systems-frontend:staging

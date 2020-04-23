@@ -9,15 +9,32 @@ const getAuthHeaders = function (context) {
 const auth0 = {
   namespaced: true,
   state: {
-    apiHost: process.env.API_HOST || window.API_HOST
+    apiHost: process.env.API_HOST || window.API_HOST,
+    pagination: undefined,
+    filter: undefined
   },
   actions: {
+    async findUsers (context, [filter, pagination]) {
+      const { data } = await axios.get(
+        `${context.state.apiHost}/manage`,
+        { headers: getAuthHeaders(this), params: { filter, pagination: JSON.stringify(pagination) } })
+      return data
+    },
+
     async getUser (context, userId = undefined) {
       const { user } = this.$router.app.$auth
       const { data } = await axios.get(
         `${context.state.apiHost}/manage/${userId || user.sub}`,
         { headers: getAuthHeaders(this) })
       return data
+    },
+
+    async patchUser (context, [userId, payload]) {
+      const result = await axios.patch(
+        `${context.state.apiHost}/manage/${userId}`,
+        payload,
+        { headers: getAuthHeaders(this) })
+      return result.data
     },
 
     async patchUserMetadata (context, [userId = undefined, metadata = {}]) {
@@ -52,6 +69,14 @@ const auth0 = {
         `${context.state.apiHost}/manage/${userId || user.sub}`,
         { headers: getAuthHeaders(this) })
       return data
+    }
+  },
+  mutations: {
+    setPagination (state, pagination) {
+      state.pagination = pagination
+    },
+    setFilter (state, filter) {
+      state.filter = filter
     }
   }
 }

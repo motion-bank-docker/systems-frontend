@@ -7,18 +7,17 @@
       content-paragraph(:position="'last'")
         form-main(v-model="payload", :schema="schema")
 
-    //
-      content-block(:position="'last'")
-        headline(:content="$t('forms.grids.import.title')")
+    content-block(:position="'last'")
+      headline(:content="$t('forms.grids.import.title')")
 
-        content-paragraph
-          q-input(dark, :float-label="$t('forms.grids.import.fields.title')", v-model="uploadTitle")
+      content-paragraph
+        q-input(dark, :float-label="$t('forms.grids.import.fields.title')", v-model="uploadTitle")
 
-        content-paragraph
-          q-checkbox(dark, :label="$t('forms.grids.import.fields.override_author')", v-model="overrideAuthor")
+      content-paragraph
+        q-checkbox(dark, :label="$t('forms.grids.import.fields.override_author')", v-model="overrideAuthor")
 
-        content-paragraph(:position="'last'")
-          uploader(dark, :url="url", @finish="onFinish", allowed=".zip", :headers="headers", :fields="uploadFields")
+      content-paragraph(:position="'last'")
+        uploader(dark, :url="url", @finish="onFinish", allowed=".zip", :headers="headers", :fields="uploadFields")
 
 </template>
 
@@ -44,14 +43,14 @@
     data () {
       const _this = this
       return {
-        url: `${process.env.API_HOST}/archives/maps/upload`,
+        url: `${this.$store.state.settings.apiHost}/archives/maps`,
         responses: {},
         uploadFields: [],
         uploadTitle: undefined,
         overrideAuthor: false,
         skipAcl: false,
         headers: {
-          Authorization: `Bearer ${_this.$auth.token}`
+          Authorization: `Bearer ${this.$auth.token}`
         },
         type: constants.mapClasses.MAP_CLASS_GRID,
         payload: {},

@@ -37,9 +37,7 @@
   "metapak": {
     "configs": [
       "readme",
-      "circleci",
-      "docker",
-      "travis"
+      "docker"
     ]
   },
   "dependencies": {
