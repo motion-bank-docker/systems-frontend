@@ -151,6 +151,7 @@ export default {
     email_verified: 'Email verified',
     roles: 'Roles',
     features: 'Features',
+    groups: 'Groups',
     group_memberships: 'Group memberships',
     embedded: 'Embedded in',
     empty: 'empty',
