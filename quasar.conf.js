@@ -137,6 +137,7 @@ module.exports = function (ctx) {
         COMMIT_HASH: JSON.stringify(commitHash),
         BRANCH_NAME: JSON.stringify(branchName),
         APP_VERSION: JSON.stringify(getVersion()),
+        BUILD_TIME: JSON.stringify(Date.now()),
         USE_RESOURCE_CACHE: JSON.stringify(process.env.USE_RESOURCE_CACHE || false),
         UI_VERSION: JSON.stringify(process.env.UI_VERSION || require('./package.json').version),
         FLUENTFFMPEG_COV: JSON.stringify(false),
