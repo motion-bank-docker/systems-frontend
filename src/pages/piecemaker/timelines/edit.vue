@@ -18,33 +18,9 @@
     // -------------------------------------------------------------------------------------------------- access control
     content-block
       permissions(v-if="timeline", :resource="timeline.id")
-    //
-      content-block(v-if="availableRoles.length", :position="'last'")
-        headline.q-mt-lg(:content="$t('labels.access_control')")
-          | {{ $t('descriptions.access_control') }}
-
-        // 'add to group'
-        content-paragraph
-          q-select(v-model="acl.group", :clearable="true", :clear-value="undefined",
-          // :float-label="$t('labels.access_control_add_group')", :options="availableRoles", dark)
-
-        // 'remove from group'
-        content-paragraph
-          q-select(v-model="acl.group_remove", :clearable="true", :clear-value="undefined",
-          // :float-label="$t('labels.access_control_remove_group')", :options="availableRoles", dark)
-
-        // 'apply to all contained annotations and media'
-        content-paragraph
-          q-checkbox(v-model="acl.recursive", :label="$t('labels.recursive')", dark)
-
-        // update button
-        content-paragraph
-          q-btn(:label="$t('buttons.update_access_control')", @click="updateACL", color="primary",
-          slot="buttons", :class="{'full-width': isMobile}")
 </template>
 
 <script>
-  import AccessControl from '../../../components/shared/forms/AccessControl'
   import Tags from '../../../components/shared/partials/Tags'
   import FormMain from '../../../components/shared/forms/FormMain'
   import BackButtonNew from '../../../components/shared/buttons/BackButtonNew'
@@ -67,7 +43,6 @@
   export default {
     components: {
       PageSubNav,
-      AccessControl,
       BackButtonNew,
       FormMain,
       Headline,
@@ -87,11 +62,6 @@
         exportLabelCSV: this.$t('buttons.export_timeline_csv'),
         type: constants.mapClasses.MAP_CLASS_TIMELINE,
         payload: this.$route.params.uuid ? _this.$store.dispatch('maps/get', _this.$route.params.uuid) : undefined,
-        acl: {
-          group: undefined,
-          group_remove: undefined,
-          recursive: false
-        },
         schema: {
           fields: {
             title: {
@@ -124,17 +94,7 @@
       ...mapGetters({
         user: 'auth/getUserState',
         isMobile: 'globalSettings/getIsMobile'
-      }),
-      availableRoles () {
-        try {
-          return this.user[`${process.env.AUTH0_APP_METADATA_PREFIX}roles`]
-            .filter(role => role !== 'user')
-            .map(role => { return { label: role, value: role } })
-        }
-        catch (e) {
-          return []
-        }
-      }
+      })
     },
     methods: {
       async exportTimeline () {
@@ -171,11 +131,6 @@
         )
         document.body.appendChild(this.downloadUrlCSV)
         this.exportLabelCSV = this.$t('buttons.download_csv')
-        this.$q.loading.hide()
-      },
-      async updateACL () {
-        this.$q.loading.show()
-        await aclHelper.updateACL(this, this.acl, this.timeline)
         this.$q.loading.hide()
       }
     }
