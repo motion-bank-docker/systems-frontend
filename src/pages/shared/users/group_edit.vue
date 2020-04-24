@@ -101,10 +101,10 @@
                   [context.$route.params.uuid, context.group])
               }
               else {
-                const group = await context.$store.dispatch('groups/post', context.group)
+                context.group = await context.$store.dispatch('groups/post', context.group)
                 return context.$router.push({
                   name: 'users.groups_edit',
-                  params: { uuid: group.uuid }
+                  params: { uuid: context.group.uuid }
                 })
               }
             },
