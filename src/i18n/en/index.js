@@ -501,7 +501,8 @@ export default {
     license: 'License',
     tagline: 'Digital Research and Annotation Platform for Contemporary Dance.',
     title: 'Web Systems',
-    version: 'UI Version'
+    version: 'UI Version',
+    build_time: 'Build time'
   },
   table: {
     no_data: 'No data to display.',
