@@ -14,15 +14,11 @@
 
       content-paragraph
         form-main(v-model.lazy="payload", :schema="schema", ref="mediaForm")
-
-      content-paragraph(:position="'last'")
-        access-control
 </template>
 
 <script>
   import { mapGetters } from 'vuex'
 
-  import AccessControl from '../../../components/shared/forms/AccessControl'
   import CalendarTimeMain from '../../../components/shared/forms/CalendarTimeMain'
   import FormMain from '../../../components/shared/forms/FormMain'
   import Headline from '../../../components/shared/elements/Headline'
@@ -39,7 +35,6 @@
 
   export default {
     components: {
-      AccessControl,
       CalendarTimeMain,
       FormMain,
       Headline,

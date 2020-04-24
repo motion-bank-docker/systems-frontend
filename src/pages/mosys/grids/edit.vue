@@ -19,32 +19,7 @@
 
     // -------------------------------------------------------------------------------------------------- access control
     content-block
-      permissions
-
-    //
-      content-block(v-if="availableRoles.length")
-
-        headline(:content="$t('labels.access_control')")
-          | {{ $t('descriptions.access_control') }}
-
-        // add to group
-        content-paragraph(:position="'first'")
-          q-select(v-model="acl.group", :clearable="true", :clear-value="undefined",
-          // :float-label="$t('labels.access_control_add_group')", :options="availableRoles", dark)
-
-        // remove from group
-        content-paragraph
-          q-select(v-model="acl.group_remove", :clearable="true", :clear-value="undefined",
-          // :float-label="$t('labels.access_control_remove_group')", :options="availableRoles", dark)
-
-        // apply to all contained annotations and media
-        content-paragraph
-          q-checkbox(v-model="acl.recursive", :label="$t('labels.recursive')", dark)
-
-        // button "update access settings"
-        content-paragraph
-          q-btn(:label="$t('buttons.update_access_control')", @click="updateACL", color="primary",
-          // :class="[isMobile ? 'full-width' : '']", slot="buttons")
+      permissions(v-if="grid", :resource="grid.id")
 
     // -------------------------------------------------------------------------------------------------- css stylesheet
 
@@ -69,7 +44,6 @@
 </template>
 
 <script>
-  import AccessControl from '../../../components/shared/forms/AccessControl'
   import Tags from '../../../components/shared/partials/Tags'
   import FormMain from '../../../components/shared/forms/FormMain'
   import Headline from '../../../components/shared/elements/Headline'
@@ -85,7 +59,6 @@
 
   export default {
     components: {
-      AccessControl,
       FormMain,
       Tags,
       Headline,
