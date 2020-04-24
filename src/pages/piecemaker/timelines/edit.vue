@@ -31,7 +31,6 @@
 
   import { required } from 'vuelidate/lib/validators'
   import constants from 'mbjs-data-models/src/constants'
-  import { aclHelper } from 'mbjs-quasar/src/lib'
   import { Map } from 'mbjs-data-models'
   import { ObjectUtil } from 'mbjs-utils'
   import exportCSV from '../../../lib/export/csv'
