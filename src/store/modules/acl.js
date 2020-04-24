@@ -20,6 +20,13 @@ const acl = {
         { headers: getAuthHeaders(this) }
         )
     },
+    async clone (context, { source, target }) {
+      await axios.put(
+        `${context.rootState.settings.apiHost}/acl/clone`,
+        { source, target },
+        { headers: getAuthHeaders(this) }
+      )
+    },
     async remove (context, { role, id, permissions }) {
       const query = `?role=${encodeURIComponent(role)}&resource=${encodeURIComponent(id)}` +
         `&permissions=${encodeURIComponent(permissions)}`
