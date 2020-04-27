@@ -395,7 +395,6 @@
             Assert.ok(uuidValidate(annotation._uuid))
             Assert.isType(annotation.body.value, 'string')
             await this.$store.dispatch('annotations/patch', [annotation.id, annotation])
-            await this.getAnnotations()
             // this.$store.commit('notifications/addMessage', {
             //   body: 'messages.updated_annotation',
             //   mode: 'alert',
@@ -409,6 +408,7 @@
           catch (err) {
             this.$handleError(this, err, 'errors.update_annotation_failed')
           }
+          await this.getAnnotations()
         }
         this.editAnnotationBuffer = undefined
         this.editAnnotationIndex = undefined
