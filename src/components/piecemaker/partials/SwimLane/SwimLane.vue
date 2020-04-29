@@ -184,7 +184,8 @@
       'media',
       'map',
       'selectedMillis',
-      'mode'
+      'mode',
+      'mayEdit'
     ],
     data () {
       return {
