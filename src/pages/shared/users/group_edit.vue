@@ -2,6 +2,7 @@
   full-screen
 
     confirm-modal(ref="confirmModal", @confirm="removeInvitation")
+    confirm-modal(ref="confirmDeleteMemberModal", @confirm="removeMember")
 
     //-------------------- title
     content-block(:position="'first'")
@@ -17,6 +18,18 @@
 
     //-------------------- members
     content-block(v-if="$route.params.uuid")
+      //------------------- memberships
+      q-table(:columns="memberColumns", :data="members", dark,
+        :title="$t('labels.members')", :pagination.sync="memberPagination", hide-bottom)
+
+        template(slot="top-left", slot-scope="props")
+          div.q-mb-md
+            h5.q-mb-md {{ $t('labels.members') }}
+
+        q-td(slot="body-cell-actions", slot-scope="props", :props="props", auto-width)
+          q-btn(icon="delete", flat, size="md",
+            @click="$refs.confirmDeleteMemberModal.show('messages.confirm_remove_member', props.row)")
+
       //------------------- invitations
       q-table(:columns="invitations.columns", :data="invitations.items", dark,
         :title="$t('labels.invitations')", :pagination.sync="invitations.pagination", hide-bottom)
@@ -42,10 +55,12 @@
   import Headline from '../../../components/shared/elements/Headline'
   import { required } from 'vuelidate/src/validators'
   import { DateTime } from 'luxon'
+  import PromiseSpan from '../../../components/shared/elements/PromiseSpan'
 
   export default {
     name: 'group_edit',
     components: {
+      PromiseSpan,
       FormMain,
       ContentBlock,
       Headline
@@ -59,6 +74,19 @@
       else group = { title: undefined }
       return {
         group,
+        members: [],
+        memberPagination: {},
+        memberColumns: [
+          {
+            name: 'name',
+            label: this.$t('labels.name'),
+            align: 'left',
+            field: 'name'
+          },
+          {
+            name: 'actions'
+          }
+        ],
         invitations: {
           items: [],
           pagination: {},
@@ -116,8 +144,21 @@
     },
     watch: {
       group: {
-        async handler (val) {
-          if (val && val.id) {
+        async handler (val, last) {
+          if (!last || (val && last && val.id !== last.id)) {
+            const members = []
+            if (Array.isArray(val.members)) {
+              for (const id of val.members) {
+                const member = { id }
+                const profile = await this.$store.dispatch('profiles/get', id)
+                if (profile) {
+                  member.name = profile.name
+                }
+                members.push(member)
+              }
+            }
+            this.members = members
+
             let { items } = await this.$store.dispatch('invites/find', {
               group_id: val.id
             })
@@ -153,6 +194,17 @@
         }
         catch (err) {
           this.$handleError(this, err, 'errors.remove_invitation_failed')
+        }
+      },
+      async removeMember (member) {
+        try {
+          const index = this.group.members.findIndex(item => item === member.id)
+          this.group.members.splice(index, 1)
+          await this.$store.dispatch('groups/patch', [this.group.id, { members: this.group.members }])
+          this.members.splice(index, 1)
+        }
+        catch (err) {
+          this.$handleError(this, err, 'errors.remove_member_failed')
         }
       }
     }
