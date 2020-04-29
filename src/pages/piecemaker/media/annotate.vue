@@ -110,6 +110,8 @@
                   @click.native="addDurationToAnnotation(annotation)",
                   :text="'Add current timecode'")
 
+              .q-caption.q-ml-lg.q-mt-xs.q-pl-sm(style="color: #fff8;") {{ annotation.creator.name }}
+
               // buttons
 
               <!--div.float-right(v-if="currentHover === annotation.uuid")-->
