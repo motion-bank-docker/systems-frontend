@@ -115,7 +115,8 @@ export default {
     invite_invalid: 'This invitation already expired or the URL is invalid.',
     invite_failed: 'Invitation failed.',
     remove_invitation_failed: 'Failed to remove invitation: {error}',
-    add_media_forbidden: 'You are not allowed to add media to this timeline'
+    add_media_forbidden: 'You are not allowed to add media to this timeline.',
+    editing_forbidden: 'You are not allowed to edit this item.'
   },
   labels: {
     id: 'ID',
