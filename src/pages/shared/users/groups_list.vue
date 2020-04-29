@@ -25,9 +25,10 @@
           :title="$t('labels.my_groups')",
           :pagination.sync="groups.pagination", hide-bottom)
 
-          template(slot="top-right", slot-scope="props")
-            q-btn.no-shadow(@click="$router.push({ name: 'users.groups_create' })",
-              color="primary", icon="add")
+          //
+            template(slot="top-right", slot-scope="props")
+              q-btn.no-shadow(@click="$router.push({ name: 'users.groups_create' })",
+                color="primary", icon="add")
 
           q-td(slot="body-cell-actions", slot-scope="props", :props="props", auto-width)
             q-btn(icon="edit", flat, size="md", @click="editGroup(props.row)")
