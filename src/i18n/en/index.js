@@ -203,7 +203,8 @@ export default {
     media_url: 'Media URL',
     media: 'Media',
     vocabulary_entry: 'Vocabularies',
-    free_editing: 'Free editing'
+    free_editing: 'Free editing',
+    view: 'View'
   },
   links: {
     click_to_register: 'Click here to create an account.'
