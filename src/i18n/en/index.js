@@ -103,7 +103,8 @@ export default {
     http_server_error: 'HTTP error {code}: {message}',
     generic_error: '{code} {message}',
     passwords_do_not_match: 'Passwords do not match',
-    minimum_length_6: 'Minimum length: 6 characters'
+    minimum_length_6: 'Minimum length: 6 characters',
+    media_player_error: 'MediaPlayer error: {error} ({code} {type})'
   },
   labels: {
     access_control: 'Access Control',
