@@ -293,6 +293,10 @@ export default {
       label: 'Account settings',
       users_manage: 'Account settings',
       groups: 'Groups'
+    },
+    groups: {
+      create: 'Create Group',
+      edit: 'Edit Group'
     }
   },
   routes: {
