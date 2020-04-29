@@ -30,6 +30,7 @@
         :timelineUuid="timeline._uuid",
         :markerDetails="false",
         :resizable="true",
+        :mayEdit="mayEdit",
         :start="getMediaDate().toMillis()",
         :duration="getMediaDuration()",
         :annotations="annotations",
@@ -104,11 +105,12 @@
                 // add timecode button
 
                 template(v-else)
-                  .timecode-label-duration-spacer.show-on-hover
+                  .timecode-label-duration-spacer.show-on-hover(v-if="mayEdit")
 
                   timecode-label.show-on-hover(
+                  v-if="mayEdit",
                   @click.native="addDurationToAnnotation(annotation)",
-                  :text="'Add current timecode'")
+                  text="Add current timecode")
 
               .q-caption.q-ml-lg.q-mt-xs.q-pl-sm(style="color: #fff8;") {{ annotation.creator.name }}
 
@@ -117,7 +119,7 @@
               <!--div.float-right(v-if="currentHover === annotation.uuid")-->
               .absolute-top-right.annotation-list-item-buttons.show-on-hover.show-on-edit(style="margin-top: -4px;")
 
-                q-btn.float-right(@click="$refs.confirmModal.show('messages.confirm_delete', annotation, 'buttons.delete')",
+                q-btn.float-right(v-if="mayEdit", @click="$refs.confirmModal.show('messages.confirm_delete', annotation, 'buttons.delete')",
                 size="xs", flat, icon="delete", round)
 
                 q-btn.q-mr-sm(
