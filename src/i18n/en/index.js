@@ -114,7 +114,8 @@ export default {
     failed_to_copy_url: 'Failed to copy URL to clipboard: {error}',
     invite_invalid: 'This invitation already expired or the URL is invalid.',
     invite_failed: 'Invitation failed.',
-    remove_invitation_failed: 'Failed to remove invitation: {error}'
+    remove_invitation_failed: 'Failed to remove invitation: {error}',
+    add_media_forbidden: 'You are not allowed to add media to this timeline'
   },
   labels: {
     id: 'ID',
