@@ -338,9 +338,14 @@
         this.media = await this.$store.dispatch('annotations/get', this.$route.params.uuid)
         this.timeline = await this.$store.dispatch('maps/get', parseURI(this.media.target.id).uuid)
         if (this.timeline) {
-          const acl = await this.$store.dispatch('acl/isAllowed',
-            { id: this.timeline.id, permission: 'get' })
-          this.mayEdit = !!(acl || {}).get
+          try {
+            const acl = await this.$store.dispatch('acl/isAllowed',
+              { id: this.timeline.id, permission: 'get' })
+            this.mayEdit = !!(acl || {}).get
+          }
+          catch (err) {
+            this.$handleError(err)
+          }
         }
         this.$root.$emit('setBackButton', '/piecemaker/timelines/' + parseURI(this.media.target.id).uuid + '/media')
         if (this.media) {
