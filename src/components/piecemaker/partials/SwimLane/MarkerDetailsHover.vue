@@ -27,6 +27,8 @@
         :videoDate="videoDate"
         )
 
+    .q-caption.q-ml-lg.q-mt-xs.q-pl-sm(style="color: #fff8;") {{ hoveredAnnotation.creator.name }}
+
     .q-my-md.ellipsis-3-lines.md-content
       | {{ getAnnotationContent(hoveredAnnotation) }}
 

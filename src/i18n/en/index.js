@@ -184,7 +184,7 @@ export default {
     permissions: 'Permissions',
     public: 'Public',
     profile: 'Profile',
-    read: 'Read',
+    contribute: 'Contribute',
     status: 'Status',
     set_title: 'Set Title',
     set_shortcut: 'Set Shortcut',
@@ -203,7 +203,8 @@ export default {
     media_url: 'Media URL',
     media: 'Media',
     vocabulary_entry: 'Vocabularies',
-    write: 'Write'
+    free_editing: 'Free editing',
+    view: 'View'
   },
   links: {
     click_to_register: 'Click here to create an account.'

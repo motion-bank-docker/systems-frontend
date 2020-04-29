@@ -41,7 +41,6 @@
 <script>
   import constants from 'mbjs-data-models/src/constants'
   import { DateTime } from 'luxon'
-  import { deleteHelper } from 'mbjs-quasar/src/lib'
   import Headline from '../../../components/shared/elements/Headline'
   import ContentBlock from '../../../components/shared/elements/ContentBlock'
   import ContentParagraph from '../../../components/shared/elements/ContentParagraph'
@@ -151,8 +150,18 @@
     },
     methods: {
       async handleConfirmModal (item) {
-        await deleteHelper.deleteMap(this, item)
-        this.$refs.listTable.request()
+        try {
+          await this.$store.dispatch('maps/delete', item._uuid)
+          this.$store.commit('notifications/addMessage', {
+            body: 'messages.timeline_deleted',
+            mode: 'alert',
+            type: 'success'
+          })
+          this.$refs.listTable.request()
+        }
+        catch (err) {
+          this.$handleError(err)
+        }
       }
     },
     mounted () {
