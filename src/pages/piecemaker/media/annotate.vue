@@ -14,7 +14,7 @@
       :class="[!visibilitySwimlanes ? 'fit' : '']")
 
         media-player.full-height.relative-position(v-if="media", :annotation="media", :fine-controls="true",
-        @ready="playerReady($event)", @time="onPlayerTime($event)")
+        :post-errors="true", @ready="playerReady($event)", @time="onPlayerTime($event)")
 
       // swimlane content
 
