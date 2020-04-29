@@ -6,7 +6,7 @@
     content-block(:position="'first'")
       headline(:content="$t('routes.piecemaker.timelines.edit.title')")
       content-paragraph
-        form-main(v-model="payload", :schema="schema")
+        form-main(v-if="acl.put", v-model="payload", :schema="schema")
           //
           div(slot="form-buttons-add", :class="{'full-width row q-mb-sm': isMobile}")
             q-btn.col(v-if="$route.params.uuid", slot="form-buttons-add",
@@ -14,9 +14,10 @@
               color="grey", :class="[!isMobile ? 'q-mr-sm' : '']")
             // q-btn(v-if="$route.params.uuid", @click="exportCSV", color="grey",
             //   :class="[!isMobile ? 'q-mr-sm' : '']", :label="exportLabelCSV")
+        p(v-if="acl.put === false") {{ $t('errors.editing_forbidden') }}
 
     // -------------------------------------------------------------------------------------------------- access control
-    content-block
+    content-block(v-if="acl.delete === true || acl.acl === true")
       permissions(v-if="timeline", :resource="timeline.id")
 </template>
 
@@ -54,6 +55,7 @@
       const _this = this
       return {
         timeline: undefined,
+        acl: {},
         env: process.env,
         downloadURL: undefined,
         exportLabel: this.$t('buttons.export_timeline'),
@@ -86,7 +88,17 @@
     async mounted () {
       this.$root.$emit('setBackButton', '/piecemaker/timelines')
       this.$q.loading.show()
-      this.timeline = await this.$store.dispatch('maps/get', this.$route.params.uuid)
+      try {
+        this.timeline = await this.$store.dispatch('maps/get', this.$route.params.uuid)
+        let acl
+        acl = await this.$store.dispatch('acl/isAllowed', { id: this.timeline.id, permission: 'put' })
+        this.acl = Object.assign({}, this.acl, acl)
+        acl = await this.$store.dispatch('acl/isAllowed', { id: this.timeline.id, permission: 'delete' })
+        this.acl = Object.assign({}, this.acl, acl)
+      }
+      catch (err) {
+        this.$handleError(err)
+      }
       this.$q.loading.hide()
     },
     computed: {
