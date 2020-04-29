@@ -46,6 +46,7 @@
       q-page-sticky(position="top")
 
         annotation-field(
+        v-if="mayEdit",
         @annotation="onAnnotation",
         ref="annotationField",
         :submit-on-num-enters="1",
@@ -118,10 +119,10 @@
                 size="xs", flat, icon="delete", round)
 
                 q-btn.q-mr-sm(
-                v-if="(!isEditingAnnotations && annotation.body.type === 'TextualBody' || editAnnotationIndex !== i && annotation.body.type !== 'VocabularyEntry')",
+                v-if="mayEdit && (!isEditingAnnotations && annotation.body.type === 'TextualBody' || editAnnotationIndex !== i && annotation.body.type !== 'VocabularyEntry')",
                 @click="setEditIndex(i)", size="xs", icon="edit", round, flat)
 
-                q-btn.float-right.q-mr-sm(v-if="annotation.body.type === 'TextualBody' && editAnnotationIndex === i",
+                q-btn.float-right.q-mr-sm(v-if="mayEdit && annotation.body.type === 'TextualBody' && editAnnotationIndex === i",
                 @click="updateAnnotation(annotation)", size="xs", :color="isAnnotationDirty ? 'primary' : undefined",
                 icon="save", round, flat)
 
@@ -178,6 +179,7 @@
     },
     data () {
       return {
+        mayEdit: false,
         active: false,
         annotations: [],
         currentHover: undefined,
@@ -333,6 +335,11 @@
       async getMedia () {
         this.media = await this.$store.dispatch('annotations/get', this.$route.params.uuid)
         this.timeline = await this.$store.dispatch('maps/get', parseURI(this.media.target.id).uuid)
+        if (this.timeline) {
+          const acl = await this.$store.dispatch('acl/isAllowed',
+            { id: this.timeline.id, permission: 'get' })
+          this.mayEdit = !!(acl || {}).get
+        }
         this.$root.$emit('setBackButton', '/piecemaker/timelines/' + parseURI(this.media.target.id).uuid + '/media')
         if (this.media) {
           this.metadata = await this.$store.dispatch('metadata/getLocal', this.media)

@@ -34,8 +34,8 @@ const acl = {
         `${context.rootState.settings.apiHost}/acl${query}`,
         { headers: getAuthHeaders(this) })
     },
-    async isRoleAllowed (context, { role, id, permission }) {
-      const query = `?role=${encodeURIComponent(role)}&resource=${encodeURIComponent(id)}` +
+    async isAllowed (context, { id, permission }) {
+      const query = `?resource=${encodeURIComponent(id)}` +
         `&permission=${encodeURIComponent(permission)}`
       const { data } = await axios.get(
         `${context.rootState.settings.apiHost}/acl${query}`,
