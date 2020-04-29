@@ -5,12 +5,14 @@
       headline(:content="$t('routes.piecemaker.media.create.title')")
 
       content-paragraph(:position="'first'")
-        calendar-time-main(@update="onCalendarUpdate")
+        calendar-time-main(v-if="mayAdd", @update="onCalendarUpdate")
 
       content-paragraph(:position="'last'")
-        form-main(v-model="payload", :schema="schema", ref="mediaForm")
-          q-btn(label="Cancel", @click.native="$router.push({name: 'piecemaker.timelines.show', params: {uuid: $route.params.timelineUuid} })")
-
+        form-main(v-if="mayAdd", v-model="payload", :schema="schema", ref="mediaForm")
+          q-btn(label="Cancel", @click.native="$router.push({name: 'piecemaker.media.list', params: {uuid: $route.params.timelineUuid} })")
+        div(v-if="mayAdd === false")
+          p {{ $t('errors.add_media_forbidden') }}
+          q-btn(label="Cancel", @click.native="$router.push({name: 'piecemaker.media.list', params: {uuid: $route.params.timelineUuid} })")
 </template>
 
 <script>
@@ -42,6 +44,7 @@
       const _this = this
       return {
         timeline: undefined,
+        mayAdd: undefined,
         // FIXME: i know this is bullshit!!! (but i hope it works for now)
         apiPayload: undefined,
         payload: { url: undefined, title: undefined },
@@ -100,6 +103,16 @@
     },
     async mounted () {
       this.timeline = await this.$store.dispatch('maps/get', this.$route.params.timelineUuid)
+      if (this.timeline) {
+        try {
+          const acl = await this.$store.dispatch('acl/isAllowed',
+            { id: this.timeline.id, permission: 'get' })
+          this.mayAdd = !!(acl || {}).get
+        }
+        catch (err) {
+          this.$handleError(err)
+        }
+      }
     }
   }
 </script>
