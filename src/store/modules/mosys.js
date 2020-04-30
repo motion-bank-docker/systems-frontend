@@ -14,11 +14,13 @@ const mosys = {
     editCellModal: false,
     currentTimeline: undefined,
     sourceCellInput: undefined,
+    mayEdit: false,
 
     editGrid: false,
     dimensions: {}
   },
   getters: {
+    getMayEdit: state => state.mayEdit,
     getEditGrid: state => state.editGrid,
     getSourceCellInput: state => state.sourceCellInput,
     getNewCell: state => state.newCell,
@@ -32,6 +34,10 @@ const mosys = {
     getCurrentTimeline: state => state.currentTimeline
   },
   mutations: {
+    setMayEdit (state, value) {
+      state.mayEdit = value
+      console.log('STORE', value)
+    },
     toggleGridEdit (state) {
       state.editGrid = !state.editGrid
     },
