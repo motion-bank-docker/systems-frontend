@@ -182,8 +182,14 @@
       this.drawer = this.visibilityDrawer
       this.setupScreen()
       this.videoHeight = this.viewport.height - this.swimlanesHeight - this.headerHeight
+
+      this.$root.$on('emitSelector', this.gotoSelector)
+      this.$root.$on('annotationEndMillis', this.getAnnotationEndMillis)
     },
     beforeDestroy () {
+      this.$root.$off('emitSelector', this.gotoSelector)
+      this.$root.$off('annotationEndMillis', this.getAnnotationEndMillis)
+
       this.$store.commit('swimLane/setSelectedAnnotation')
       AppFullscreen.exit()
     },
@@ -297,10 +303,6 @@
         if (typeof this.editAnnotationIndex === 'number') return
         if (this.annotations[val]) this.scrollToAnnotation(this.annotations[val].id)
       }
-    },
-    created () {
-      this.$root.$on('emitSelector', this.gotoSelector)
-      this.$root.$on('annotationEndMillis', this.getAnnotationEndMillis)
     },
     methods: {
       getPlayerTime () {
