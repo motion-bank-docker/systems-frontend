@@ -14,7 +14,7 @@
       :class="[!visibilitySwimlanes ? 'fit' : '']")
 
         media-player.full-height.relative-position(v-if="media", :annotation="media", :fine-controls="true",
-        @ready="playerReady($event)", @time="onPlayerTime($event)")
+        :post-errors="true", @ready="playerReady($event)", @time="onPlayerTime($event)")
 
       // swimlane content
 
@@ -176,8 +176,14 @@
       this.drawer = this.visibilityDrawer
       this.setupScreen()
       this.setVideoHeight()
+
+      this.$root.$on('emitSelector', this.gotoSelector)
+      this.$root.$on('annotationEndMillis', this.getAnnotationEndMillis)
     },
     beforeDestroy () {
+      this.$root.$off('emitSelector', this.gotoSelector)
+      this.$root.$off('annotationEndMillis', this.getAnnotationEndMillis)
+
       this.$store.commit('swimLane/setSelectedAnnotation')
       AppFullscreen.exit()
     },
@@ -276,10 +282,6 @@
         if (typeof this.editAnnotationIndex === 'number') return
         if (this.annotations[val]) this.scrollToAnnotation(this.annotations[val]._uuid)
       }
-    },
-    created () {
-      this.$root.$on('emitSelector', this.gotoSelector)
-      this.$root.$on('annotationEndMillis', this.getAnnotationEndMillis)
     },
     methods: {
       setVideoHeight () {

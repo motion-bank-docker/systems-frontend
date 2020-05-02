@@ -111,6 +111,7 @@ export default {
     generic_error: '{code} {message}',
     passwords_do_not_match: 'Passwords do not match',
     minimum_length_6: 'Minimum length: 6 characters',
+    media_player_error: 'MediaPlayer error: {error} ({code} {type})',
     failed_to_copy_url: 'Failed to copy URL to clipboard: {error}',
     invite_invalid: 'This invitation already expired or the URL is invalid.',
     invite_failed: 'Invitation failed.',

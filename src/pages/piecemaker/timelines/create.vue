@@ -12,19 +12,20 @@
     // -----------------------------------------------------------------------------------------------------------------
     //
     // import timeline
-    content-block(:position="'last'")
-      headline(:content="$t('forms.timelines.import.title')")
+    //
+      content-block(:position="'last'")
+        headline(:content="$t('forms.timelines.import.title')")
 
-      // new title (optional)
-      content-paragraph(:position="first")
-        q-input(dark, :float-label="$t('forms.timelines.import.fields.title')", v-model="uploadTitle")
+        // new title (optional)
+        content-paragraph(:position="first")
+          q-input(dark, :float-label="$t('forms.timelines.import.fields.title')", v-model="uploadTitle")
 
-      // set ownership
-      content-paragraph
-        q-checkbox(dark, :label="$t('forms.timelines.import.fields.override_author')", v-model="overrideAuthor")
+        // set ownership
+        content-paragraph
+          q-checkbox(dark, :label="$t('forms.timelines.import.fields.override_author')", v-model="overrideAuthor")
 
-      content-paragraph(:position="last")
-          uploader(dark, :url="url", @finish="onFinish", allowed=".zip", :headers="headers", :fields="uploadFields")
+        content-paragraph(:position="last")
+            uploader(dark, :url="url", @finish="onFinish", allowed=".zip", :headers="headers", :fields="uploadFields")
 </template>
 
 <script>
