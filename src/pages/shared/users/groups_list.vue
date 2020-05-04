@@ -9,31 +9,48 @@
       headline(:content="$t('routes.users.groups.title')")
         | {{ $t('routes.users.groups.caption') }}
 
-      content-paragraph.q-mb-lg
+      content-paragraph.q-mb-xl
+
         //----------------- my memberships
+        // :title="$t('labels.group_memberships')",
         q-table(:columns="memberships.columns", :data="memberships.items", dark,
-          :title="$t('labels.group_memberships')",
-          :pagination.sync="memberships.pagination", hide-bottom)
+        :pagination.sync="memberships.pagination", hide-bottom)
+
+          q-td(slot="body-cell-title", slot-scope="props", :props="props", auto-width)
+            | {{ props.row.title }}
+
+          q-td(slot="body-cell-creator", slot-scope="props", :props="props", auto-width)
+            | {{ props.row.creator.name }}
+
+          q-td(slot="body-cell-ownership", slot-scope="props", :props="props", auto-width)
+            template(v-if="props.row.creator.id === $auth.user.id")
+              q-icon.q-mr-md(name="check", size="18px")
 
           q-td(slot="body-cell-actions", slot-scope="props", :props="props", auto-width)
             q-btn(v-if="!isOwnGroup(props.row)", flat, size="md",
-              @click="leaveGroup(props.row)", :label="$t('buttons.leave')")
-
-      content-paragraph
-        //----------------- my groups
-        q-table(:columns="groups.columns", :data="groups.items", dark,
-          :title="$t('labels.my_groups')",
-          :pagination.sync="groups.pagination", hide-bottom)
-
-          //
-            template(slot="top-right", slot-scope="props")
-              q-btn.no-shadow(@click="$router.push({ name: 'users.groups_create' })",
-                color="primary", icon="add")
-
-          q-td(slot="body-cell-actions", slot-scope="props", :props="props", auto-width)
-            q-btn(icon="edit", flat, size="md", @click="editGroup(props.row)")
-            q-btn(icon="delete", flat, size="md",
+            @click="leaveGroup(props.row)", :label="$t('buttons.leave')")
+            template(v-else)
+              q-btn(flat, size="md", @click="editGroup(props.row)", :label="$t('buttons.edit')")
+              q-btn(flat, size="md", :label="$t('buttons.delete')"
               @click="$refs.confirmModal.show('messages.confirm_delete_group', props.row)")
+
+      //
+        content-paragraph
+          //----------------- my groups
+          q-table(:columns="groups.columns", :data="groups.items", dark,
+          // :title="$t('labels.my_groups')",
+          // :pagination.sync="groups.pagination", hide-bottom)
+
+            //
+              template(slot="top-right", slot-scope="props")
+                q-btn.no-shadow(@click="$router.push({ name: 'users.groups_create' })",
+                  color="primary", icon="add")
+
+            q-td(slot="body-cell-actions", slot-scope="props", :props="props", auto-width)
+              q-btn(flat, size="md", @click="editGroup(props.row)", :label="$t('buttons.edit')")
+              q-btn(flat, size="md", :label="$t('buttons.delete')"
+              @click="$refs.confirmModal.show('messages.confirm_delete_group', props.row)")
+
 </template>
 
 <script>
@@ -76,8 +93,17 @@
               required: true,
               label: this.$t('labels.creator'),
               align: 'left',
-              field: 'creator',
-              format: val => val.name
+              field: row => row.creator.name,
+              sortable: true
+            },
+            {
+              name: 'ownership',
+              label: this.$t('labels.ownership'),
+              align: 'center',
+              field: row => {
+                if (row.creator.id === this.$auth.user.id) return row.creator.id === this.$auth.user.id
+              },
+              sortable: true
             },
             {
               name: 'actions'
