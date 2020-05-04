@@ -69,7 +69,7 @@
       ContentParagraph
     },
     async mounted () {
-      await this.loadGroups()
+      // await this.loadGroups()
       await this.loadMemberships()
     },
     data () {
@@ -154,7 +154,7 @@
       },
       async deleteGroup (group) {
         await this.$store.dispatch('groups/delete', group.uuid)
-        await this.loadGroups()
+        await this.loadMemberships()
       },
       async leaveGroup (group) {
         await this.$axios.delete(
