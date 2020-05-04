@@ -42,6 +42,7 @@ export default {
     login: 'Sign In',
     more_info: 'More info',
     no: 'No',
+    remove: 'Remove',
     request_reset_pass: 'Request Password Reset',
     reject: 'Reject',
     save_changes: 'Save changes',
@@ -169,7 +170,7 @@ export default {
     last_edit: 'Last edit',
     location: 'Location',
     map_title: 'Map Title',
-    members: 'Members',
+    members: 'Confirmed Members',
     invitations: 'Invitations',
     my_groups: 'My Groups',
     my_vocabularies: 'My vocabularies',
@@ -181,6 +182,7 @@ export default {
     new_vocabulary: 'New vocabulary',
     no_selection: 'No selection made.',
     none: 'None',
+    ownership: 'Ownership',
     organisation: 'Organisation',
     participants: 'Participants',
     password: 'Password',
@@ -251,7 +253,8 @@ export default {
     confirm_remove_invitation: 'Remove invitation?'
   },
   help: {
-    create_invitation: 'Create a new invitation. Copy the URL, and send it via mail. Send every invitation only once.'
+    confirmed_members: 'List of all confirmed members in this group.',
+    create_invitation: 'Create a new invitation for each person you want to invite. Copy the URL, and send it via mail. Send every invitation only once.'
   },
   navigation: {
     annotate_media: 'Annotate Media',

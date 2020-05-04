@@ -4,7 +4,7 @@
     confirm-modal(ref="confirmModal", @confirm="removeInvitation")
     confirm-modal(ref="confirmDeleteMemberModal", @confirm="removeMember")
 
-    //-------------------- title
+    //------------------------------------------------------------------------------------------------------------ title
     content-block(:position="'first'")
 
       template(v-if="$route.params.uuid")
@@ -16,37 +16,35 @@
 
       form-main(v-model="group", :schema="schema")
 
-    //-------------------- members
+    //------------------------------------------------------------------------------------------------ confirmed members
+    content-block.q-pb-lg(v-if="$route.params.uuid")
+
+      headline(:content="$t('labels.members')")
+        | {{ $t('help.confirmed_members') }}
+
+      q-table(:columns="memberColumns", :data="members", dark, :pagination.sync="memberPagination", hide-bottom)
+
+        q-td(slot="body-cell-actions", slot-scope="props", :props="props", auto-width)
+          q-btn(:label="$t('buttons.remove')", flat, size="md",
+          @click="$refs.confirmDeleteMemberModal.show('messages.confirm_remove_member', props.row)")
+
+    //------------------------------------------------------------------------------------------------------ invitations
     content-block(v-if="$route.params.uuid")
-      //------------------- memberships
-      q-table(:columns="memberColumns", :data="members", dark,
-        :title="$t('labels.members')", :pagination.sync="memberPagination", hide-bottom)
 
-        template(slot="top-left", slot-scope="props")
-          div.q-mb-md
-            h5.q-mb-md {{ $t('labels.members') }}
+      headline(:content="$t('labels.invitations')")
+        | {{ $t('help.create_invitation') }}
 
-        q-td(slot="body-cell-actions", slot-scope="props", :props="props", auto-width)
-          q-btn(icon="delete", flat, size="md",
-            @click="$refs.confirmDeleteMemberModal.show('messages.confirm_remove_member', props.row)")
-
-      //------------------- invitations
       q-table(:columns="invitations.columns", :data="invitations.items", dark,
-        :title="$t('labels.invitations')", :pagination.sync="invitations.pagination", hide-bottom)
-
-        template(slot="top-left", slot-scope="props")
-          div.q-mb-md
-            h5.q-mb-md {{ $t('labels.invitations') }}
-            | {{ $t('help.create_invitation') }}
-
-        template(slot="top-right", slot-scope="props")
-          q-btn.no-shadow(@click="addInvitation", color="primary",
-            icon="add", :label="$t('buttons.create_invitation')")
+      :pagination.sync="invitations.pagination", hide-bottom)
 
         q-td(slot="body-cell-actions", slot-scope="props", :props="props", auto-width)
-          q-btn(icon="file_copy", flat, size="md", @click="copyUrl(props.row)")
-          q-btn(icon="delete", flat, size="md",
-            @click="$refs.confirmModal.show('messages.confirm_remove_invitation', props.row)")
+          q-btn(:label="$t('buttons.copy_url')", flat, size="md", @click="copyUrl(props.row)")
+          q-btn(:label="$t('buttons.delete')", flat, size="md",
+          @click="$refs.confirmModal.show('messages.confirm_remove_invitation', props.row)")
+
+      .text-right.q-mt-lg
+        q-btn.no-shadow(@click="addInvitation", color="primary", icon="add", :label="$t('buttons.create_invitation')")
+
 </template>
 
 <script>
@@ -81,7 +79,8 @@
             name: 'name',
             label: this.$t('labels.name'),
             align: 'left',
-            field: 'name'
+            field: 'name',
+            sortable: true
           },
           {
             name: 'actions'
