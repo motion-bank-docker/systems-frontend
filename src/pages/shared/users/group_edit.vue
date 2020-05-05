@@ -43,7 +43,7 @@
     template(v-if="invitations.items.length > 0")
       content-block(v-if="$route.params.uuid")
 
-        headline(:content="$t('labels.invitations')")
+        headline(:content="$t('labels.pending_invitations')")
           | {{ $t('help.create_invitation') }}
           // groups-stepper.bg-grey-8.q-mt-md(:defaultStep="'members'")
 

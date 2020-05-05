@@ -176,6 +176,7 @@ export default {
     map_title: 'Map Title',
     members: 'Members',
     invitations: 'Invitations',
+    pending_invitations: 'Pending Invitations',
     my_groups: 'My Groups',
     my_vocabularies: 'My vocabularies',
     name: 'Name',
@@ -266,7 +267,7 @@ export default {
         'Every shared element will appear in the timelines/grids list of this groups members.'
     },
     confirmed_members: 'List of all members in this group.',
-    create_invitation: 'Create a new invitation for each person you want to invite. Copy the URL, and send it via mail. Send every invitation only once.'
+    create_invitation: 'Each person you invite has their own invitation link. Copy its URL, and then send it to them via email. Each link can only be used once!'
   },
   navigation: {
     annotate_media: 'Annotate Media',
