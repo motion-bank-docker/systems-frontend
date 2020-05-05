@@ -18,24 +18,29 @@
 
       form-main(v-model="group", :schema="schema")
 
+    //------------------------------------------------------------------------------------------------ confirmed members
+    content-block.q-pb-lg(v-if="$route.params.uuid")
+
+      headline(:content="$t('labels.members')")
+        q-item.q-pa-none.bg-transparent
+          q-item-main
+            | {{ $t('help.confirmed_members') }}
+          q-item-side
+            q-btn.no-shadow(@click="$refs.invitationModal.show()", color="primary", icon="add",
+            :label="$t('buttons.invite_member')")
+
+      template(v-if="members.length > 0")
+        q-table(:columns="memberColumns", :data="members", dark, :pagination.sync="memberPagination", hide-bottom)
+
+          q-td(slot="body-cell-actions", slot-scope="props", :props="props", auto-width)
+            q-btn(:label="$t('buttons.remove')", flat, size="md",
+            @click="$refs.confirmDeleteMemberModal.show('messages.confirm_remove_member', props.row)")
+
+      template(v-else)
+        .text-grey-8 {{ $t('errors.no_members') }}
+
+    //------------------------------------------------------------------------------------------------------ invitations
     template(v-if="invitations.items.length > 0")
-      //------------------------------------------------------------------------------------------------ confirmed members
-      content-block.q-pb-lg(v-if="$route.params.uuid")
-
-        headline(:content="$t('labels.members')")
-          | {{ $t('help.confirmed_members') }}
-
-        template(v-if="members.length > 0")
-          q-table(:columns="memberColumns", :data="members", dark, :pagination.sync="memberPagination", hide-bottom)
-
-            q-td(slot="body-cell-actions", slot-scope="props", :props="props", auto-width)
-              q-btn(:label="$t('buttons.remove')", flat, size="md",
-              @click="$refs.confirmDeleteMemberModal.show('messages.confirm_remove_member', props.row)")
-
-        template(v-else)
-          .text-grey-8 {{ $t('errors.no_confirmed_members') }}
-
-      //------------------------------------------------------------------------------------------------------ invitations
       content-block(v-if="$route.params.uuid")
 
         headline(:content="$t('labels.invitations')")
@@ -50,15 +55,6 @@
             q-btn(:label="$t('buttons.delete')", flat, size="md",
             @click="$refs.confirmModal.show('messages.confirm_remove_invitation', props.row)")
 
-        .text-right.q-mt-lg
-          q-btn.no-shadow(@click="$refs.invitationModal.show()", color="primary", icon="add",
-          :label="$t('buttons.create_invitation')")
-
-    template(v-else)
-      .text-center.q-mt-xl.q-pt-lg
-        .text-grey-8 {{ $t('errors.no_members') }}
-        q-btn.no-shadow.q-mt-md(@click="$refs.invitationModal.show()", color="primary", icon="add",
-        :label="$t('buttons.create_invitation')")
 </template>
 
 <script>
