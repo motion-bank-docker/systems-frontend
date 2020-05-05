@@ -94,6 +94,13 @@
           pagination: {},
           columns: [
             {
+              name: 'name',
+              label: this.$t('labels.name'),
+              align: 'left',
+              field: 'name',
+              sortable: true
+            },
+            {
               name: 'url',
               label: this.$t('labels.url'),
               align: 'left',
@@ -162,7 +169,8 @@
             this.members = members
 
             let { items } = await this.$store.dispatch('invites/find', {
-              group_id: val.id
+              group_id: val.id,
+              name: val.name
             })
             this.invitations.items = items
           }
@@ -182,9 +190,10 @@
           this.$handleError(this, err, 'errors.failed_to_copy_url')
         }
       },
-      async addInvitation () {
+      async addInvitation (name) {
         const invitation = await this.$store.dispatch('invites/post', {
-          group_id: this.group.id
+          group_id: this.group.id,
+          name
         })
         this.invitations.items.push(invitation)
       },
