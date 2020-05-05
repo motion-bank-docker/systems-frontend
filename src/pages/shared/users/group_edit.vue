@@ -4,6 +4,8 @@
     confirm-modal(ref="confirmModal", @confirm="removeInvitation")
     confirm-modal(ref="confirmDeleteMemberModal", @confirm="removeMember")
 
+    invitation-modal(ref="invitationModal", @confirm="addInvitation")
+
     //------------------------------------------------------------------------------------------------------------ title
     content-block(:position="'first'")
 
@@ -16,36 +18,47 @@
 
       form-main(v-model="group", :schema="schema")
 
-    //------------------------------------------------------------------------------------------------------ invitations
-    content-block(v-if="$route.params.uuid")
+    template(v-if="invitations.items.length > 0")
+      //------------------------------------------------------------------------------------------------ confirmed members
+      content-block.q-pb-lg(v-if="$route.params.uuid")
 
-      headline(:content="$t('labels.invitations')")
-        // | {{ $t('help.create_invitation') }}
-        groups-stepper.bg-grey-8.q-mt-md(:defaultStep="'members'")
+        headline(:content="$t('labels.members')")
+          | {{ $t('help.confirmed_members') }}
 
-      q-table(:columns="invitations.columns", :data="invitations.items", dark,
+        template(v-if="members.length > 0")
+          q-table(:columns="memberColumns", :data="members", dark, :pagination.sync="memberPagination", hide-bottom)
+
+            q-td(slot="body-cell-actions", slot-scope="props", :props="props", auto-width)
+              q-btn(:label="$t('buttons.remove')", flat, size="md",
+              @click="$refs.confirmDeleteMemberModal.show('messages.confirm_remove_member', props.row)")
+
+        template(v-else)
+          .text-grey-8 {{ $t('errors.no_confirmed_members') }}
+
+      //------------------------------------------------------------------------------------------------------ invitations
+      content-block(v-if="$route.params.uuid")
+
+        headline(:content="$t('labels.invitations')")
+          | {{ $t('help.create_invitation') }}
+          // groups-stepper.bg-grey-8.q-mt-md(:defaultStep="'members'")
+
+        q-table(:columns="invitations.columns", :data="invitations.items", dark,
         :pagination.sync="invitations.pagination", hide-bottom)
 
-        q-td(slot="body-cell-actions", slot-scope="props", :props="props", auto-width)
-          q-btn(:label="$t('buttons.copy_url')", flat, size="md", @click="copyUrl(props.row)")
-          q-btn(:label="$t('buttons.delete')", flat, size="md",
+          q-td(slot="body-cell-actions", slot-scope="props", :props="props", auto-width)
+            q-btn(:label="$t('buttons.copy_url')", flat, size="md", @click="copyUrl(props.row)")
+            q-btn(:label="$t('buttons.delete')", flat, size="md",
             @click="$refs.confirmModal.show('messages.confirm_remove_invitation', props.row)")
 
-      .text-right.q-mt-lg
-        q-btn.no-shadow(@click="addInvitation", color="primary", icon="add", :label="$t('buttons.create_invitation')")
+        .text-right.q-mt-lg
+          q-btn.no-shadow(@click="$refs.invitationModal.show()", color="primary", icon="add",
+          :label="$t('buttons.create_invitation')")
 
-    //------------------------------------------------------------------------------------------------ confirmed members
-    content-block.q-pb-lg(v-if="$route.params.uuid")
-
-      headline(:content="$t('labels.members')")
-        // | {{ $t('help.confirmed_members') }}
-
-      q-table(:columns="memberColumns", :data="members", dark, :pagination.sync="memberPagination", hide-bottom)
-
-        q-td(slot="body-cell-actions", slot-scope="props", :props="props", auto-width)
-          q-btn(:label="$t('buttons.remove')", flat, size="md",
-          @click="$refs.confirmDeleteMemberModal.show('messages.confirm_remove_member', props.row)")
-
+    template(v-else)
+      .text-center.q-mt-xl.q-pt-lg
+        .text-grey-8 {{ $t('errors.no_members') }}
+        q-btn.no-shadow.q-mt-md(@click="$refs.invitationModal.show()", color="primary", icon="add",
+        :label="$t('buttons.create_invitation')")
 </template>
 
 <script>
@@ -56,6 +69,7 @@
   import { DateTime } from 'luxon'
   import PromiseSpan from '../../../components/shared/elements/PromiseSpan'
   import GroupsStepper from '../../../components/shared/partials/GroupsStepper'
+  import InvitationModal from '../../../components/shared/dialogs/InvitationModal'
 
   export default {
     name: 'group_edit',
@@ -64,7 +78,8 @@
       FormMain,
       ContentBlock,
       Headline,
-      GroupsStepper
+      GroupsStepper,
+      InvitationModal
     },
     data () {
       const context = this
@@ -76,7 +91,7 @@
       return {
         group,
         members: [],
-        memberPagination: {},
+        memberPagination: {rowsPerPage: 0},
         memberColumns: [
           {
             name: 'name',
@@ -91,7 +106,7 @@
         ],
         invitations: {
           items: [],
-          pagination: {},
+          pagination: {rowsPerPage: 0},
           columns: [
             {
               name: 'name',

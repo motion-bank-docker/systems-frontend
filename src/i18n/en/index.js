@@ -88,6 +88,9 @@ export default {
     }
   },
   errors: {
+    no_invitations: 'You didn\'t invite anyone to this group yet.',
+    no_members: 'This group has no members yet.',
+    no_confirmed_members: 'No confirmed members yet.',
     document_delete_failed: 'Failed to delete Document',
     item_exists: 'This item already exists.',
     unknown: 'Unknown Error',
@@ -127,7 +130,7 @@ export default {
     accessibility: 'Accessibility',
     access_control: 'Access Control',
     access_control_public: 'Public',
-    access_control_rights: 'Default Access Rights',
+    access_control_rights: 'Access Rights',
     access_control_add_group: 'Add to group',
     access_control_remove_group: 'Remove from group',
     account_credentials: 'Account credentials',
@@ -256,9 +259,9 @@ export default {
   },
   help: {
     acl: {
-      mosys: 'Define here the accessibility of this grid for every group you own or have access to.',
-      piecemaker: 'Define here the accessibility of this timeline for every group you own or have access to.',
-      group_edit: 'You have to define the accessibility of your elements (timelines or grids) to publish them to ' +
+      mosys: 'Define here the access rights of this grid for every group you own or have access to.',
+      piecemaker: 'Define here the access rights of this timeline for every group you own or have access to.',
+      group_edit: 'You have to define the access rights of your elements (timelines or grids) to publish them to ' +
         'the members of this group via the element\'s edit page. ' +
         'Depending on the rights you set there the group members can either work with or just view the element. ' +
         'Every shared element will appear in the timelines/grids list of this groups members.'
