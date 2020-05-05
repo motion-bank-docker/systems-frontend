@@ -235,6 +235,9 @@ module.exports = function (ctx) {
         'QItemSide',
         'QItemTile',
         'QItemSeparator',
+        'QStepper',
+        'QStep',
+        'QStepperNavigation',
         //
         // Popups
         //
