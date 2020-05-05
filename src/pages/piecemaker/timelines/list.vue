@@ -105,7 +105,8 @@
               field: 'creator',
               sortable: true,
               filter: true
-            },
+            }
+            /*
             {
               name: 'ownership',
               label: this.$t('labels.ownership'),
@@ -115,6 +116,7 @@
               },
               sortable: true
             }
+            */
           ],
           actions: [
             {
