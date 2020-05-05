@@ -36,6 +36,7 @@ export default {
     export_timeline_csv: 'Export Timeline as CSV',
     forgot_password: 'Forgot Password',
     help: 'Help',
+    here: 'Here',
     leave: 'Leave',
     live_annotate: 'Live Annotate',
     live_annotate_timeline: 'Live Annotate this timeline',
@@ -123,6 +124,7 @@ export default {
   },
   labels: {
     id: 'ID',
+    accessibility: 'Accessibility',
     access_control: 'Access Control',
     access_control_public: 'Public',
     access_control_rights: 'Default Access Rights',
@@ -253,6 +255,14 @@ export default {
     confirm_remove_invitation: 'Remove invitation?'
   },
   help: {
+    acl: {
+      mosys: 'Define here the accessibility of this grid for every group you own or have access to.',
+      piecemaker: 'Define here the accessibility of this timeline for every group you own or have access to.',
+      group_edit: 'You have to define the accessibility of your elements (timelines or grids) to publish them to ' +
+        'the members of this group via the element\'s edit page. ' +
+        'Depending on the rights you set there the group members can either work with or just view the element. ' +
+        'Every shared element will appear in the timelines/grids list of this groups members.'
+    },
     confirmed_members: 'List of all confirmed members in this group.',
     create_invitation: 'Create a new invitation for each person you want to invite. Copy the URL, and send it via mail. Send every invitation only once.'
   },
@@ -280,7 +290,7 @@ export default {
     },
     mosys: {
       label: 'Mosys',
-      mosys_grids_list: 'All Grids',
+      mosys_grids_list: 'Grids',
       mosys_grids_annotate: 'Grid Editor',
       mosys_grids_show: 'View',
       mosys_grids_edit: 'Edit',
@@ -378,7 +388,7 @@ export default {
       },
       groups: {
         title: 'Manage Groups',
-        caption: 'Create groups and manage group memberships.'
+        caption: 'Groups can give other users access to your timelines/grids respectively you can get access to other user\'s timelines/grids.'
       }
     },
     groups: {

@@ -16,34 +16,35 @@
 
       form-main(v-model="group", :schema="schema")
 
+    //------------------------------------------------------------------------------------------------------ invitations
+    content-block(v-if="$route.params.uuid")
+
+      headline(:content="$t('labels.invitations')")
+        // | {{ $t('help.create_invitation') }}
+        groups-stepper.bg-grey-8.q-mt-md(:defaultStep="'members'")
+
+      q-table(:columns="invitations.columns", :data="invitations.items", dark,
+        :pagination.sync="invitations.pagination", hide-bottom)
+
+        q-td(slot="body-cell-actions", slot-scope="props", :props="props", auto-width)
+          q-btn(:label="$t('buttons.copy_url')", flat, size="md", @click="copyUrl(props.row)")
+          q-btn(:label="$t('buttons.delete')", flat, size="md",
+            @click="$refs.confirmModal.show('messages.confirm_remove_invitation', props.row)")
+
+      .text-right.q-mt-lg
+        q-btn.no-shadow(@click="addInvitation", color="primary", icon="add", :label="$t('buttons.create_invitation')")
+
     //------------------------------------------------------------------------------------------------ confirmed members
     content-block.q-pb-lg(v-if="$route.params.uuid")
 
       headline(:content="$t('labels.members')")
-        | {{ $t('help.confirmed_members') }}
+        // | {{ $t('help.confirmed_members') }}
 
       q-table(:columns="memberColumns", :data="members", dark, :pagination.sync="memberPagination", hide-bottom)
 
         q-td(slot="body-cell-actions", slot-scope="props", :props="props", auto-width)
           q-btn(:label="$t('buttons.remove')", flat, size="md",
           @click="$refs.confirmDeleteMemberModal.show('messages.confirm_remove_member', props.row)")
-
-    //------------------------------------------------------------------------------------------------------ invitations
-    content-block(v-if="$route.params.uuid")
-
-      headline(:content="$t('labels.invitations')")
-        | {{ $t('help.create_invitation') }}
-
-      q-table(:columns="invitations.columns", :data="invitations.items", dark,
-      :pagination.sync="invitations.pagination", hide-bottom)
-
-        q-td(slot="body-cell-actions", slot-scope="props", :props="props", auto-width)
-          q-btn(:label="$t('buttons.copy_url')", flat, size="md", @click="copyUrl(props.row)")
-          q-btn(:label="$t('buttons.delete')", flat, size="md",
-          @click="$refs.confirmModal.show('messages.confirm_remove_invitation', props.row)")
-
-      .text-right.q-mt-lg
-        q-btn.no-shadow(@click="addInvitation", color="primary", icon="add", :label="$t('buttons.create_invitation')")
 
 </template>
 
@@ -54,6 +55,7 @@
   import { required } from 'vuelidate/src/validators'
   import { DateTime } from 'luxon'
   import PromiseSpan from '../../../components/shared/elements/PromiseSpan'
+  import GroupsStepper from '../../../components/shared/partials/GroupsStepper'
 
   export default {
     name: 'group_edit',
@@ -61,7 +63,8 @@
       PromiseSpan,
       FormMain,
       ContentBlock,
-      Headline
+      Headline,
+      GroupsStepper
     },
     data () {
       const context = this

@@ -4,10 +4,10 @@
     confirm-modal(ref="confirmModal", @confirm="deleteGroup")
 
     //---------------------- groups
-    content-block
+    content-block(:position="'first'")
 
       headline(:content="$t('routes.users.groups.title')")
-        | {{ $t('routes.users.groups.caption') }}
+        groups-stepper.bg-grey-8.q-mt-md(:defaultStep="groups")
 
       content-paragraph.q-mb-xl
 
@@ -59,6 +59,7 @@
   import Headline from '../../../components/shared/elements/Headline'
   import ContentBlock from '../../../components/shared/elements/ContentBlock'
   import ContentParagraph from '../../../components/shared/elements/ContentParagraph'
+  import GroupsStepper from '../../../components/shared/partials/GroupsStepper'
 
   export default {
     components: {
@@ -66,7 +67,8 @@
       FormMain,
       Headline,
       ContentBlock,
-      ContentParagraph
+      ContentParagraph,
+      GroupsStepper
     },
     async mounted () {
       // await this.loadGroups()
