@@ -4,10 +4,10 @@
     confirm-modal(ref="confirmModal", @confirm="deleteGroup")
 
     //---------------------- groups
-    content-block
+    content-block(:position="'first'")
 
       headline(:content="$t('routes.users.groups.title')")
-        | {{ $t('routes.users.groups.caption') }}
+        // groups-stepper.bg-grey-8.q-mt-md(:defaultStep="groups")
 
       content-paragraph.q-mb-xl
 
@@ -22,9 +22,10 @@
           q-td(slot="body-cell-creator", slot-scope="props", :props="props", auto-width)
             | {{ props.row.creator.name }}
 
-          q-td(slot="body-cell-ownership", slot-scope="props", :props="props", auto-width)
-            template(v-if="props.row.creator.id === $auth.user.id")
-              q-icon.q-mr-md(name="check", size="18px")
+          //
+            q-td(slot="body-cell-ownership", slot-scope="props", :props="props", auto-width)
+              template(v-if="props.row.creator.id === $auth.user.id")
+                q-icon.q-mr-md(name="check", size="18px")
 
           q-td(slot="body-cell-actions", slot-scope="props", :props="props", auto-width)
             q-btn(v-if="!isOwnGroup(props.row)", flat, size="md",
@@ -59,6 +60,7 @@
   import Headline from '../../../components/shared/elements/Headline'
   import ContentBlock from '../../../components/shared/elements/ContentBlock'
   import ContentParagraph from '../../../components/shared/elements/ContentParagraph'
+  import GroupsStepper from '../../../components/shared/partials/GroupsStepper'
 
   export default {
     components: {
@@ -66,7 +68,8 @@
       FormMain,
       Headline,
       ContentBlock,
-      ContentParagraph
+      ContentParagraph,
+      GroupsStepper
     },
     async mounted () {
       // await this.loadGroups()
@@ -96,6 +99,7 @@
               field: row => row.creator.name,
               sortable: true
             },
+            /*
             {
               name: 'ownership',
               label: this.$t('labels.ownership'),
@@ -105,6 +109,7 @@
               },
               sortable: true
             },
+            */
             {
               name: 'actions'
             }

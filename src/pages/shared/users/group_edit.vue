@@ -4,6 +4,8 @@
     confirm-modal(ref="confirmModal", @confirm="removeInvitation")
     confirm-modal(ref="confirmDeleteMemberModal", @confirm="removeMember")
 
+    invitation-modal(ref="invitationModal", @confirm="addInvitation")
+
     //------------------------------------------------------------------------------------------------------------ title
     content-block(:position="'first'")
 
@@ -20,30 +22,38 @@
     content-block.q-pb-lg(v-if="$route.params.uuid")
 
       headline(:content="$t('labels.members')")
-        | {{ $t('help.confirmed_members') }}
+        q-item.q-pa-none.bg-transparent
+          q-item-main
+            | {{ $t('help.confirmed_members') }}
+          q-item-side
+            q-btn.no-shadow(@click="$refs.invitationModal.show()", color="primary", icon="add",
+            :label="$t('buttons.invite_member')")
 
-      q-table(:columns="memberColumns", :data="members", dark, :pagination.sync="memberPagination", hide-bottom)
+      template(v-if="members.length > 0")
+        q-table(:columns="memberColumns", :data="members", dark, :pagination.sync="memberPagination", hide-bottom)
 
-        q-td(slot="body-cell-actions", slot-scope="props", :props="props", auto-width)
-          q-btn(:label="$t('buttons.remove')", flat, size="md",
-          @click="$refs.confirmDeleteMemberModal.show('messages.confirm_remove_member', props.row)")
+          q-td(slot="body-cell-actions", slot-scope="props", :props="props", auto-width)
+            q-btn(:label="$t('buttons.remove')", flat, size="md",
+            @click="$refs.confirmDeleteMemberModal.show('messages.confirm_remove_member', props.row)")
+
+      template(v-else)
+        .text-grey-8 {{ $t('errors.no_members') }}
 
     //------------------------------------------------------------------------------------------------------ invitations
-    content-block(v-if="$route.params.uuid")
+    template(v-if="invitations.items.length > 0")
+      content-block(v-if="$route.params.uuid")
 
-      headline(:content="$t('labels.invitations')")
-        | {{ $t('help.create_invitation') }}
+        headline(:content="$t('labels.pending_invitations')")
+          | {{ $t('help.create_invitation') }}
+          // groups-stepper.bg-grey-8.q-mt-md(:defaultStep="'members'")
 
-      q-table(:columns="invitations.columns", :data="invitations.items", dark,
-      :pagination.sync="invitations.pagination", hide-bottom)
+        q-table(:columns="invitations.columns", :data="invitations.items", dark,
+        :pagination.sync="invitations.pagination", hide-bottom)
 
-        q-td(slot="body-cell-actions", slot-scope="props", :props="props", auto-width)
-          q-btn(:label="$t('buttons.copy_url')", flat, size="md", @click="copyUrl(props.row)")
-          q-btn(:label="$t('buttons.delete')", flat, size="md",
-          @click="$refs.confirmModal.show('messages.confirm_remove_invitation', props.row)")
-
-      .text-right.q-mt-lg
-        q-btn.no-shadow(@click="addInvitation", color="primary", icon="add", :label="$t('buttons.create_invitation')")
+          q-td(slot="body-cell-actions", slot-scope="props", :props="props", auto-width)
+            q-btn(:label="$t('buttons.copy_url')", flat, size="md", @click="copyUrl(props.row)")
+            q-btn(:label="$t('buttons.delete')", flat, size="md",
+            @click="$refs.confirmModal.show('messages.confirm_remove_invitation', props.row)")
 
 </template>
 
@@ -54,6 +64,8 @@
   import { required } from 'vuelidate/src/validators'
   import { DateTime } from 'luxon'
   import PromiseSpan from '../../../components/shared/elements/PromiseSpan'
+  import GroupsStepper from '../../../components/shared/partials/GroupsStepper'
+  import InvitationModal from '../../../components/shared/dialogs/InvitationModal'
 
   export default {
     name: 'group_edit',
@@ -61,7 +73,9 @@
       PromiseSpan,
       FormMain,
       ContentBlock,
-      Headline
+      Headline,
+      GroupsStepper,
+      InvitationModal
     },
     data () {
       const context = this
@@ -73,7 +87,7 @@
       return {
         group,
         members: [],
-        memberPagination: {},
+        memberPagination: {rowsPerPage: 0},
         memberColumns: [
           {
             name: 'name',
@@ -88,8 +102,15 @@
         ],
         invitations: {
           items: [],
-          pagination: {},
+          pagination: {rowsPerPage: 0},
           columns: [
+            {
+              name: 'name',
+              label: this.$t('labels.name'),
+              align: 'left',
+              field: 'name',
+              sortable: true
+            },
             {
               name: 'url',
               label: this.$t('labels.url'),
@@ -159,7 +180,8 @@
             this.members = members
 
             let { items } = await this.$store.dispatch('invites/find', {
-              group_id: val.id
+              group_id: val.id,
+              name: val.name
             })
             this.invitations.items = items
           }
@@ -179,9 +201,10 @@
           this.$handleError(this, err, 'errors.failed_to_copy_url')
         }
       },
-      async addInvitation () {
+      async addInvitation (name) {
         const invitation = await this.$store.dispatch('invites/post', {
-          group_id: this.group.id
+          group_id: this.group.id,
+          name
         })
         this.invitations.items.push(invitation)
       },

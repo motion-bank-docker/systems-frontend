@@ -19,7 +19,6 @@ export default {
     create_timeline: 'Create Timeline',
     create_grid: 'Create Grid',
     create_package: 'Create Package',
-    create_invitation: 'Create invitation',
     cancel: 'Cancel',
     change: 'Change',
     confirm: 'OK',
@@ -36,6 +35,8 @@ export default {
     export_timeline_csv: 'Export Timeline as CSV',
     forgot_password: 'Forgot Password',
     help: 'Help',
+    here: 'Here',
+    invite_member: 'Invite member',
     leave: 'Leave',
     live_annotate: 'Live Annotate',
     live_annotate_timeline: 'Live Annotate this timeline',
@@ -87,6 +88,8 @@ export default {
     }
   },
   errors: {
+    no_invitations: 'You didn\'t invite anyone to this group yet.',
+    no_members: 'This group has no members yet.',
     document_delete_failed: 'Failed to delete Document',
     item_exists: 'This item already exists.',
     unknown: 'Unknown Error',
@@ -123,9 +126,10 @@ export default {
   },
   labels: {
     id: 'ID',
+    accessibility: 'Accessibility',
     access_control: 'Access Control',
     access_control_public: 'Public',
-    access_control_rights: 'Default Access Rights',
+    access_control_rights: 'Access Rights',
     access_control_add_group: 'Add to group',
     access_control_remove_group: 'Remove from group',
     account_credentials: 'Account credentials',
@@ -170,8 +174,9 @@ export default {
     last_edit: 'Last edit',
     location: 'Location',
     map_title: 'Map Title',
-    members: 'Confirmed Members',
+    members: 'Members',
     invitations: 'Invitations',
+    pending_invitations: 'Pending Invitations',
     my_groups: 'My Groups',
     my_vocabularies: 'My vocabularies',
     name: 'Name',
@@ -253,8 +258,16 @@ export default {
     confirm_remove_invitation: 'Remove invitation?'
   },
   help: {
-    confirmed_members: 'List of all confirmed members in this group.',
-    create_invitation: 'Create a new invitation for each person you want to invite. Copy the URL, and send it via mail. Send every invitation only once.'
+    acl: {
+      mosys: 'Define here the access rights of this grid for every group you own or have access to.',
+      piecemaker: 'Define here the access rights of this timeline for every group you own or have access to.',
+      group_edit: 'You have to define the access rights of your elements (timelines or grids) to publish them to ' +
+        'the members of this group via the element\'s edit page. ' +
+        'Depending on the rights you set there the group members can either work with or just view the element. ' +
+        'Every shared element will appear in the timelines/grids list of this groups members.'
+    },
+    confirmed_members: 'List of all members in this group.',
+    create_invitation: 'Each person you invite has their own invitation link. Copy its URL, and then send it to them via email. Each link can only be used once!'
   },
   navigation: {
     annotate_media: 'Annotate Media',
@@ -280,7 +293,7 @@ export default {
     },
     mosys: {
       label: 'Mosys',
-      mosys_grids_list: 'All Grids',
+      mosys_grids_list: 'Grids',
       mosys_grids_annotate: 'Grid Editor',
       mosys_grids_show: 'View',
       mosys_grids_edit: 'Edit',
@@ -378,7 +391,7 @@ export default {
       },
       groups: {
         title: 'Manage Groups',
-        caption: 'Create groups and manage group memberships.'
+        caption: 'Groups can give other users access to your timelines/grids respectively you can get access to other user\'s timelines/grids.'
       }
     },
     groups: {
