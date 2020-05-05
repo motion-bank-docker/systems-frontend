@@ -19,7 +19,6 @@ export default {
     create_timeline: 'Create Timeline',
     create_grid: 'Create Grid',
     create_package: 'Create Package',
-    create_invitation: 'Create invitation',
     cancel: 'Cancel',
     change: 'Change',
     confirm: 'OK',
@@ -37,6 +36,7 @@ export default {
     forgot_password: 'Forgot Password',
     help: 'Help',
     here: 'Here',
+    invite_member: 'Invite member',
     leave: 'Leave',
     live_annotate: 'Live Annotate',
     live_annotate_timeline: 'Live Annotate this timeline',
@@ -90,7 +90,6 @@ export default {
   errors: {
     no_invitations: 'You didn\'t invite anyone to this group yet.',
     no_members: 'This group has no members yet.',
-    no_confirmed_members: 'No confirmed members yet.',
     document_delete_failed: 'Failed to delete Document',
     item_exists: 'This item already exists.',
     unknown: 'Unknown Error',
@@ -175,7 +174,7 @@ export default {
     last_edit: 'Last edit',
     location: 'Location',
     map_title: 'Map Title',
-    members: 'Confirmed Members',
+    members: 'Members',
     invitations: 'Invitations',
     my_groups: 'My Groups',
     my_vocabularies: 'My vocabularies',
@@ -266,7 +265,7 @@ export default {
         'Depending on the rights you set there the group members can either work with or just view the element. ' +
         'Every shared element will appear in the timelines/grids list of this groups members.'
     },
-    confirmed_members: 'List of all confirmed members in this group.',
+    confirmed_members: 'List of all members in this group.',
     create_invitation: 'Create a new invitation for each person you want to invite. Copy the URL, and send it via mail. Send every invitation only once.'
   },
   navigation: {
