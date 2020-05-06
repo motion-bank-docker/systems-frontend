@@ -12,6 +12,34 @@ and this project adheres to
 
 No changes.
 
+
+## [2.1.0] - 2020-05-06
+
+### Added
+
+- Groups
+- Invitation URLs
+- Timelines and Grids can have global ACL presets: `View`, `Contribute` and `Free Editing`
+- Grids and Timelines have a read-only mode for the `View` preset
+- `settings` store module with persistence option in localStorage
+- User administration for [Auth0](https://auth0.com/) users directly in app
+- Users can change their Login credentials on `users/manage`
+- Environment variables: `COMMIT_HASH`, `BRANCH_NAME` and `APP_VERSION`
+- Include FxiOS in supported browsers
+
+### Changed
+
+- Grid and Timeline export enabled again
+- Improved error tracking with improved [Sentry](https://sentry.io/) configuration
+- All items created within a Timeline or Grid now inherit their respective ACL entries
+
+### Fixed
+
+- User profile editing
+- Broken API_HOST configuration
+- Redirect to original target after authentication
+
+
 ## [2.0.0] - 2020-03-31
 
 ### Added
@@ -385,7 +413,8 @@ of a video cannot be retrieved
 - Start proper versioning at 1.0.0
 
 
-[Unreleased]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v2.0.0...master
+[Unreleased]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v2.1.0...master
+[2.1.0]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v2.0.0...v2.1.0
 [2.0.0]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.10...v2.0.0
 [1.3.10]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.9...v1.3.10
 [1.3.9]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.8...v1.3.9
