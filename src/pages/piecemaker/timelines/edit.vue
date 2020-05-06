@@ -6,7 +6,7 @@
     content-block(:position="'first'")
       headline(:content="$t('routes.piecemaker.timelines.edit.title')")
       content-paragraph
-        form-main(v-model="payload", :schema="schema")
+        form-main(v-if="acl.put", v-model="payload", :schema="schema")
           //
           div(slot="form-buttons-add", :class="{'full-width row q-mb-sm': isMobile}")
             q-btn.col(v-if="$route.params.uuid", slot="form-buttons-add",
@@ -14,46 +14,24 @@
               color="grey", :class="[!isMobile ? 'q-mr-sm' : '']")
             // q-btn(v-if="$route.params.uuid", @click="exportCSV", color="grey",
             //   :class="[!isMobile ? 'q-mr-sm' : '']", :label="exportLabelCSV")
+        p(v-if="acl.put === false") {{ $t('errors.editing_forbidden') }}
 
     // -------------------------------------------------------------------------------------------------- access control
-
-    //
-      content-block(v-if="availableRoles.length", :position="'last'")
-        headline.q-mt-lg(:content="$t('labels.access_control')")
-          | {{ $t('descriptions.access_control') }}
-
-        // 'add to group'
-        content-paragraph
-          q-select(v-model="acl.group", :clearable="true", :clear-value="undefined",
-          // :float-label="$t('labels.access_control_add_group')", :options="availableRoles", dark)
-
-        // 'remove from group'
-        content-paragraph
-          q-select(v-model="acl.group_remove", :clearable="true", :clear-value="undefined",
-          // :float-label="$t('labels.access_control_remove_group')", :options="availableRoles", dark)
-
-        // 'apply to all contained annotations and media'
-        content-paragraph
-          q-checkbox(v-model="acl.recursive", :label="$t('labels.recursive')", dark)
-
-        // update button
-        content-paragraph
-          q-btn(:label="$t('buttons.update_access_control')", @click="updateACL", color="primary",
-          slot="buttons", :class="{'full-width': isMobile}")
+    content-block(v-if="acl.delete === true || acl.acl === true")
+      permissions(v-if="timeline", :resource="timeline.id")
 </template>
 
 <script>
-  import AccessControl from '../../../components/shared/forms/AccessControl'
   import Tags from '../../../components/shared/partials/Tags'
   import FormMain from '../../../components/shared/forms/FormMain'
   import BackButtonNew from '../../../components/shared/buttons/BackButtonNew'
   import Headline from '../../../components/shared/elements/Headline'
   import ContentBlock from '../../../components/shared/elements/ContentBlock'
   import ContentParagraph from '../../../components/shared/elements/ContentParagraph'
+  import Permissions from '../../../components/shared/partials/Permissions'
 
   import { required } from 'vuelidate/lib/validators'
   import constants from 'mbjs-data-models/src/constants'
-  import { aclHelper } from 'mbjs-quasar/src/lib'
   import { Map } from 'mbjs-data-models'
   import { ObjectUtil } from 'mbjs-utils'
   import exportCSV from '../../../lib/export/csv'
@@ -65,18 +43,19 @@
   export default {
     components: {
       PageSubNav,
-      AccessControl,
       BackButtonNew,
       FormMain,
       Headline,
       Tags,
       ContentBlock,
-      ContentParagraph
+      ContentParagraph,
+      Permissions
     },
     data () {
       const _this = this
       return {
         timeline: undefined,
+        acl: {},
         env: process.env,
         downloadURL: undefined,
         exportLabel: this.$t('buttons.export_timeline'),
@@ -84,11 +63,6 @@
         exportLabelCSV: this.$t('buttons.export_timeline_csv'),
         type: constants.mapClasses.MAP_CLASS_TIMELINE,
         payload: this.$route.params.uuid ? _this.$store.dispatch('maps/get', _this.$route.params.uuid) : undefined,
-        acl: {
-          group: undefined,
-          group_remove: undefined,
-          recursive: false
-        },
         schema: {
           fields: {
             title: {
@@ -114,24 +88,24 @@
     async mounted () {
       this.$root.$emit('setBackButton', '/piecemaker/timelines')
       this.$q.loading.show()
-      this.timeline = await this.$store.dispatch('maps/get', this.$route.params.uuid)
+      try {
+        this.timeline = await this.$store.dispatch('maps/get', this.$route.params.uuid)
+        let acl
+        acl = await this.$store.dispatch('acl/isAllowed', { id: this.timeline.id, permission: 'put' })
+        this.acl = Object.assign({}, this.acl, acl)
+        acl = await this.$store.dispatch('acl/isAllowed', { id: this.timeline.id, permission: 'delete' })
+        this.acl = Object.assign({}, this.acl, acl)
+      }
+      catch (err) {
+        this.$handleError(err)
+      }
       this.$q.loading.hide()
     },
     computed: {
       ...mapGetters({
         user: 'auth/getUserState',
         isMobile: 'globalSettings/getIsMobile'
-      }),
-      availableRoles () {
-        try {
-          return this.user[`${process.env.AUTH0_APP_METADATA_PREFIX}roles`]
-            .filter(role => role !== 'user')
-            .map(role => { return { label: role, value: role } })
-        }
-        catch (e) {
-          return []
-        }
-      }
+      })
     },
     methods: {
       async exportTimeline () {
@@ -168,11 +142,6 @@
         )
         document.body.appendChild(this.downloadUrlCSV)
         this.exportLabelCSV = this.$t('buttons.download_csv')
-        this.$q.loading.hide()
-      },
-      async updateACL () {
-        this.$q.loading.show()
-        await aclHelper.updateACL(this, this.acl, this.timeline)
         this.$q.loading.hide()
       }
     }

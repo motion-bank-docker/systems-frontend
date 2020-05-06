@@ -1,6 +1,6 @@
 <template lang="pug">
   full-screen
-
+    //---------------------- user
     content-block(position="first")
 
       headline(:content="$t('routes.users.manage.title')")
@@ -109,7 +109,8 @@
               if (context.credentials.password) payload.password = context.credentials.password
               else payload.email = context.credentials.email
               try {
-                await context.$store.dispatch('auth0/patchUser', [context.$store.state.auth.user.sub, payload])
+                await context.$store.dispatch(
+                  'auth0/patchUser', [context.$store.state.auth.user.sub, payload])
                 context.credentials.password_repeat = undefined
                 context.credentials.password = undefined
               }

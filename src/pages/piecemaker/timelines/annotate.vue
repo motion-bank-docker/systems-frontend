@@ -39,12 +39,14 @@
       // input field
       q-page-sticky(position="top")
         annotation-field(
+        v-if="acl.get",
         @annotation="onAnnotation",
         ref="annotationField",
         :submit-on-num-enters="1",
         :selector-value="baseSelector",
         :hasTransparency="false",
-        :mode="'global'")
+        mode="global")
+        p.q-mt-lg(v-if="acl.get === false") {{ $t('errors.annotate_timeline_forbidden') }}
 
 </template>
 
@@ -65,6 +67,7 @@
     },
     data () {
       return {
+        acl: {},
         timeline: undefined,
         annotations: [],
         inputStyle: true,
@@ -73,7 +76,17 @@
       }
     },
     async mounted () {
-      this.timeline = await this.$store.dispatch('maps/get', this.$route.params.uuid)
+      this.$q.loading.show()
+      try {
+        this.timeline = await this.$store.dispatch('maps/get', this.$route.params.uuid)
+        let acl
+        acl = await this.$store.dispatch('acl/isAllowed', { id: this.timeline.id, permission: 'get' })
+        this.acl = Object.assign({}, this.acl, acl)
+      }
+      catch (err) {
+        this.$handleError(err)
+      }
+      this.$q.loading.hide()
     },
     /*
     computed: {

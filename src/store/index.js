@@ -91,6 +91,8 @@ const mobaApiModules = {
   maps: makeResourceModule(apiClient, Map, 'map'),
   cells: makeResourceModule(apiClient, Cell, 'cell'),
   documents: makeResourceModule(apiClient, Document, 'document'),
+  groups: makeResourceModule(apiClient, undefined, 'group'),
+  invites: makeResourceModule(apiClient, undefined, 'invite'),
   profiles: makeResourceModule(apiClient, undefined, 'profile'),
   sessions: makeResourceModule(apiClient, undefined, 'session')
 }

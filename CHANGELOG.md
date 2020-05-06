@@ -12,6 +12,43 @@ and this project adheres to
 
 No changes.
 
+
+## [2.1.0] - 2020-05-06
+
+### Added
+
+- Groups
+- Invitation URLs
+- Timelines and Grids can have global ACL presets: `View`, `Contribute` and `Free Editing`
+- Grids and Timelines have a read-only mode for the `View` preset
+- `settings` store module with persistence option in localStorage
+- User administration for [Auth0](https://auth0.com/) users directly in app
+- Users can change their Login credentials on `users/manage`
+- Environment variables: `COMMIT_HASH`, `BRANCH_NAME` and `APP_VERSION`
+- Include FxiOS in supported browsers
+
+### Changed
+
+- Grid and Timeline export enabled again
+- Improved error tracking with improved [Sentry](https://sentry.io/) configuration
+- All items created within a Timeline or Grid now inherit their respective ACL entries
+
+### Fixed
+
+- User profile editing
+- Broken API_HOST configuration
+- Redirect to original target after authentication
+
+### Updated
+
+- [cote](https://github.com/dashersw/cote)
+to 1.0.0
+- [mbjs-data-models](https://gitlab.rlp.net/motionbank/mbjs/data-models)
+to 2.0.18
+- [mbjs-auth-service](https://gitlab.rlp.net/motionbank/mbjs/auth-service)
+to 1.0.8
+
+
 ## [2.0.0] - 2020-03-31
 
 ### Added
@@ -36,6 +73,7 @@ under `media/create` (playback possible using forked
 - The file `statics/env.js` can be overwritten to configure
 the frontend at runtime
 - Authentication service attempts silent login when token expires
+- [mbjs-auth-service](https://gitlab.rlp.net/motionbank/mbjs/auth-service)
 
 ### Changed
 
@@ -56,7 +94,7 @@ for YouTube sources to be GDPR compliant
 ### Updated
 
 - [mbjs-data-models](https://gitlab.rlp.net/motionbank/mbjs/data-models)
-  to version 1.2.4
+  to version 2.0.0
 - [mbjs-quasar](https://gitlab.rlp.net/motionbank/mbjs/quasar)
   to version 2.2.0
 - [mbjs-api-client](https://gitlab.rlp.net/motionbank/mbjs/api-client)
@@ -385,7 +423,8 @@ of a video cannot be retrieved
 - Start proper versioning at 1.0.0
 
 
-[Unreleased]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v2.0.0...master
+[Unreleased]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/release_2_0...release_2_1
+[2.1.0]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v2.0.0...release_2_0
 [2.0.0]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.10...v2.0.0
 [1.3.10]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.9...v1.3.10
 [1.3.9]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.8...v1.3.9

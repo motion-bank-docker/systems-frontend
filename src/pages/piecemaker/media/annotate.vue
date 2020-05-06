@@ -30,6 +30,7 @@
         :timelineUuid="timeline._uuid",
         :markerDetails="false",
         :resizable="true",
+        :mayEdit="mayEdit",
         :start="getMediaDate().toMillis()",
         :duration="getMediaDuration()",
         :annotations="annotations",
@@ -46,6 +47,7 @@
       q-page-sticky(position="top")
 
         annotation-field(
+        v-if="mayEdit",
         @annotation="onAnnotation",
         ref="annotationField",
         :submit-on-num-enters="1",
@@ -103,25 +105,28 @@
                 // add timecode button
 
                 template(v-else)
-                  .timecode-label-duration-spacer.show-on-hover
+                  .timecode-label-duration-spacer.show-on-hover(v-if="mayEdit")
 
                   timecode-label.show-on-hover(
+                  v-if="mayEdit",
                   @click.native="addDurationToAnnotation(annotation)",
-                  :text="'Add current timecode'")
+                  text="Add current timecode")
+
+              .q-caption.q-ml-lg.q-mt-xs.q-pl-sm(style="color: #fff8;") {{ annotation.creator.name }}
 
               // buttons
 
               <!--div.float-right(v-if="currentHover === annotation.uuid")-->
               .absolute-top-right.annotation-list-item-buttons.show-on-hover.show-on-edit(style="margin-top: -4px;")
 
-                q-btn.float-right(@click="$refs.confirmModal.show('messages.confirm_delete', annotation, 'buttons.delete')",
+                q-btn.float-right(v-if="mayEdit", @click="$refs.confirmModal.show('messages.confirm_delete', annotation, 'buttons.delete')",
                 size="xs", flat, icon="delete", round)
 
                 q-btn.q-mr-sm(
-                v-if="(!isEditingAnnotations && annotation.body.type === 'TextualBody' || editAnnotationIndex !== i && annotation.body.type !== 'VocabularyEntry')",
+                v-if="mayEdit && (!isEditingAnnotations && annotation.body.type === 'TextualBody' || editAnnotationIndex !== i && annotation.body.type !== 'VocabularyEntry')",
                 @click="setEditIndex(i)", size="xs", icon="edit", round, flat)
 
-                q-btn.float-right.q-mr-sm(v-if="annotation.body.type === 'TextualBody' && editAnnotationIndex === i",
+                q-btn.float-right.q-mr-sm(v-if="mayEdit && annotation.body.type === 'TextualBody' && editAnnotationIndex === i",
                 @click="updateAnnotation(annotation)", size="xs", :color="isAnnotationDirty ? 'primary' : undefined",
                 icon="save", round, flat)
 
@@ -184,6 +189,7 @@
     },
     data () {
       return {
+        mayEdit: false,
         active: false,
         annotations: [],
         currentHover: undefined,
@@ -335,6 +341,16 @@
       async getMedia () {
         this.media = await this.$store.dispatch('annotations/get', this.$route.params.uuid)
         this.timeline = await this.$store.dispatch('maps/get', parseURI(this.media.target.id).uuid)
+        if (this.timeline) {
+          try {
+            const acl = await this.$store.dispatch('acl/isAllowed',
+              { id: this.timeline.id, permission: 'get' })
+            this.mayEdit = !!(acl || {}).get
+          }
+          catch (err) {
+            this.$handleError(err)
+          }
+        }
         this.$root.$emit('setBackButton', '/piecemaker/timelines/' + parseURI(this.media.target.id).uuid + '/media')
         if (this.media) {
           this.metadata = await this.$store.dispatch('metadata/getLocal', this.media)
@@ -397,7 +413,6 @@
             Assert.ok(uuidValidate(annotation._uuid))
             Assert.isType(annotation.body.value, 'string')
             await this.$store.dispatch('annotations/patch', [annotation.id, annotation])
-            await this.getAnnotations()
             // this.$store.commit('notifications/addMessage', {
             //   body: 'messages.updated_annotation',
             //   mode: 'alert',
@@ -411,6 +426,7 @@
           catch (err) {
             this.$handleError(this, err, 'errors.update_annotation_failed')
           }
+          await this.getAnnotations()
         }
         this.editAnnotationBuffer = undefined
         this.editAnnotationIndex = undefined

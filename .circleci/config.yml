@@ -87,7 +87,7 @@ jobs:
       - run:
           name: Release Staging Image
           environment:
-            IS_STAGING: true
+            BUILD_NAME_EXT: staging
             API_HOST: https://api-staging.motionbank.org
           command: |
             set +o pipefail

@@ -20,16 +20,30 @@ const acl = {
         { headers: getAuthHeaders(this) }
         )
     },
-    async remove (context, { role, id, permission }) {
+    async clone (context, { source, target }) {
+      await axios.put(
+        `${context.rootState.settings.apiHost}/acl/clone`,
+        { source, target },
+        { headers: getAuthHeaders(this) }
+      )
+    },
+    async remove (context, { role, id, permissions }) {
       const query = `?role=${encodeURIComponent(role)}&resource=${encodeURIComponent(id)}` +
-        `&permission=${encodeURIComponent(permission)}`
+        `&permissions=${encodeURIComponent(permissions)}`
       await axios.delete(
         `${context.rootState.settings.apiHost}/acl${query}`,
         { headers: getAuthHeaders(this) })
     },
-    async isRoleAllowed (context, { role, id, permission }) {
-      const query = `?role=${encodeURIComponent(role)}&resource=${encodeURIComponent(id)}` +
+    async isAllowed (context, { id, permission }) {
+      const query = `?resource=${encodeURIComponent(id)}` +
         `&permission=${encodeURIComponent(permission)}`
+      const { data } = await axios.get(
+        `${context.rootState.settings.apiHost}/acl${query}`,
+        { headers: getAuthHeaders(this) })
+      return data
+    },
+    async list (context, { role, id }) {
+      const query = `?role=${encodeURIComponent(role)}&resource=${encodeURIComponent(id)}`
       const { data } = await axios.get(
         `${context.rootState.settings.apiHost}/acl${query}`,
         { headers: getAuthHeaders(this) })

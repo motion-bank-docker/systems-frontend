@@ -23,7 +23,6 @@
   import constants from 'mbjs-data-models/src/constants'
   import { DateTime } from 'luxon'
   import { mapGetters } from 'vuex'
-  import { deleteHelper } from 'mbjs-quasar/src/lib'
   import Headline from '../../../components/shared/elements/Headline'
   import ContentBlock from '../../../components/shared/elements/ContentBlock'
   import ContentParagraph from '../../../components/shared/elements/ContentParagraph'
@@ -47,6 +46,7 @@
             transformed.title = row.title
             transformed.last_updated = row.updated ? row.updated : row.created
             transformed.creator = row.creator ? row.creator.name : _this.$t('labels.unknown_creator')
+            transformed.creatorId = row.creator ? row.creator.id : ''
             transformed._uuid = row._uuid
             transformed.id = row.id
             rows[i] = transformed
@@ -78,6 +78,17 @@
               sortable: true,
               filter: true
             }
+            /*
+            {
+              name: 'ownership',
+              label: this.$t('labels.ownership'),
+              align: 'center',
+              field: row => {
+                if (row.creatorId === this.$auth.user.id) return row.creatorId === this.$auth.user.id
+              },
+              sortable: true
+            }
+            */
           ],
           actions: [
             {
@@ -119,8 +130,18 @@
     },
     methods: {
       async handleConfirmModal (item) {
-        await deleteHelper.deleteMap(this, item)
-        this.$refs.listTable.request()
+        try {
+          await this.$store.dispatch('maps/delete', item._uuid)
+          this.$store.commit('notifications/addMessage', {
+            body: 'messages.grid_deleted',
+            mode: 'alert',
+            type: 'success'
+          })
+          this.$refs.listTable.request()
+        }
+        catch (err) {
+          this.$handleError(err)
+        }
       }
     }
   }

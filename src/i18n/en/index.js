@@ -2,6 +2,7 @@ export default {
   buttons: {
     update_access_control: 'Update access settings',
     annotations_index: 'Index',
+    accept: 'Accept',
     arrow_next: '>',
     arrow_prev: '<',
     abort: 'Abort',
@@ -33,12 +34,18 @@ export default {
     export_timeline: 'Export Timeline',
     export_timeline_csv: 'Export Timeline as CSV',
     forgot_password: 'Forgot Password',
+    help: 'Help',
+    here: 'Here',
+    invite_member: 'Invite member',
+    leave: 'Leave',
     live_annotate: 'Live Annotate',
     live_annotate_timeline: 'Live Annotate this timeline',
     login: 'Sign In',
     more_info: 'More info',
     no: 'No',
+    remove: 'Remove',
     request_reset_pass: 'Request Password Reset',
+    reject: 'Reject',
     save_changes: 'Save changes',
     save: 'Save',
     set_marker: 'Set Marker',
@@ -81,6 +88,8 @@ export default {
     }
   },
   errors: {
+    no_invitations: 'You didn\'t invite anyone to this group yet.',
+    no_members: 'This group has no members yet.',
     document_delete_failed: 'Failed to delete Document',
     item_exists: 'This item already exists.',
     unknown: 'Unknown Error',
@@ -98,17 +107,29 @@ export default {
     list_annotations_failed: 'Failed to create annotation: {error}',
     export_archive_failed: 'Failed to export timeline archive: {error}',
     packaging_failed: 'Packaging failed: {error}',
+    update_acl_failed: 'Failed to update ACL: {error}',
     unauthorized: 'Unauthorized',
     forbidden: 'Forbidden',
+    not_found: 'Not found',
     http_server_error: 'HTTP error {code}: {message}',
     generic_error: '{code} {message}',
     passwords_do_not_match: 'Passwords do not match',
     minimum_length_6: 'Minimum length: 6 characters',
-    media_player_error: 'MediaPlayer error: {error} ({code} {type})'
+    media_player_error: 'MediaPlayer error: {error} ({code} {type})',
+    failed_to_copy_url: 'Failed to copy URL to clipboard: {error}',
+    invite_invalid: 'This invitation already expired or the URL is invalid.',
+    invite_failed: 'Invitation failed.',
+    remove_invitation_failed: 'Failed to remove invitation: {error}',
+    add_media_forbidden: 'You are not allowed to add media to this Timeline.',
+    editing_forbidden: 'You are not allowed to edit this item.',
+    annotate_timeline_forbidden: 'You are not allowed to annotate this Timeline.'
   },
   labels: {
+    id: 'ID',
+    accessibility: 'Accessibility',
     access_control: 'Access Control',
     access_control_public: 'Public',
+    access_control_rights: 'Access Rights',
     access_control_add_group: 'Add to group',
     access_control_remove_group: 'Remove from group',
     account_credentials: 'Account credentials',
@@ -139,6 +160,8 @@ export default {
     email_verified: 'Email verified',
     roles: 'Roles',
     features: 'Features',
+    groups: 'Groups',
+    group_memberships: 'Group memberships',
     embedded: 'Embedded in',
     empty: 'empty',
     elements_length: 'Used Elements',
@@ -146,23 +169,33 @@ export default {
     // timeline_title: 'Timeline title',
     timeline_title: 'Timeline title',
     grid_title: 'Grid title',
+    invitation: 'Invitation',
     last_annotation: 'Last annotated',
     last_edit: 'Last edit',
     location: 'Location',
     map_title: 'Map Title',
-    my_vocabularies: 'my vocabularies',
+    members: 'Members',
+    invitations: 'Invitations',
+    pending_invitations: 'Pending Invitations',
+    my_groups: 'My Groups',
+    my_vocabularies: 'My vocabularies',
     name: 'Name',
     new_tag: 'New tag',
     new_term: 'New term',
     new_group_title: 'New group title',
+    group_title: 'Group title',
     new_vocabulary: 'New vocabulary',
     no_selection: 'No selection made.',
+    none: 'None',
+    ownership: 'Ownership',
     organisation: 'Organisation',
     participants: 'Participants',
     password: 'Password',
     password_confirmation: 'Password confirmation',
+    permissions: 'Permissions',
     public: 'Public',
     profile: 'Profile',
+    contribute: 'Contribute',
     status: 'Status',
     set_title: 'Set Title',
     set_shortcut: 'Set Shortcut',
@@ -175,11 +208,14 @@ export default {
     title_unknown: 'Unknown Title',
     timeline: 'Timeline',
     type: 'Type',
+    url: 'URL',
     media_duration: 'Media duration',
     media_title: 'Media title',
     media_url: 'Media URL',
     media: 'Media',
-    vocabulary_entry: 'Vocabularies'
+    vocabulary_entry: 'Vocabularies',
+    free_editing: 'Free editing',
+    view: 'View'
   },
   links: {
     click_to_register: 'Click here to create an account.'
@@ -205,6 +241,8 @@ export default {
     grid_imported: 'Grid imported successfully',
     grid_deleted: 'Grid deleted',
     confirm_delete: 'Delete this item?',
+    confirm_remove_member: 'Remove this member?',
+    confirm_delete_group: 'Delete this group?',
     updated_annotation: 'Updated annotation',
     url_copied: 'URL copied to clipboard',
     caution_media_time_override: 'Caution: Changing media reference time does not update associated annotations!',
@@ -212,7 +250,24 @@ export default {
       '<a href="https://www.mozilla.org/firefox/" target="_blank">Firefox</a> or ' +
       '<a href="http://www.chromium.org/Home" target="_blank">Chromium</a>.<br>' +
       '<small>While the site might work on your browser, more or less subtle problems can occur. You have been warned!</small>',
-    legacy_site_migration: 'Looking for the previous version and your data? It’s still there:'
+    legacy_site_migration: 'Looking for the previous version and your data? It’s still there:',
+    copied_url: 'Copied URL to clipboard.',
+    group_invite_request: 'You have been invited by {name} to join "{group}".',
+    invite_accepted: 'Invitation accepted',
+    invite_rejected: 'Invitation rejected',
+    confirm_remove_invitation: 'Remove invitation?'
+  },
+  help: {
+    acl: {
+      mosys: 'Define here the access rights of this grid for every group you own or have access to.',
+      piecemaker: 'Define here the access rights of this timeline for every group you own or have access to.',
+      group_edit: 'You have to define the access rights of your elements (timelines or grids) to publish them to ' +
+        'the members of this group via the element\'s edit page. ' +
+        'Depending on the rights you set there the group members can either work with or just view the element. ' +
+        'Every shared element will appear in the timelines/grids list of this groups members.'
+    },
+    confirmed_members: 'List of all members in this group.',
+    create_invitation: 'Each person you invite has their own invitation link. Copy its URL, and then send it to them via email. Each link can only be used once!'
   },
   navigation: {
     annotate_media: 'Annotate Media',
@@ -238,7 +293,7 @@ export default {
     },
     mosys: {
       label: 'Mosys',
-      mosys_grids_list: 'All Grids',
+      mosys_grids_list: 'Grids',
       mosys_grids_annotate: 'Grid Editor',
       mosys_grids_show: 'View',
       mosys_grids_edit: 'Edit',
@@ -254,7 +309,12 @@ export default {
     },
     users: {
       label: 'Account settings',
-      users_manage: 'Account settings'
+      users_manage: 'Account settings',
+      groups: 'Groups'
+    },
+    groups: {
+      create: 'Create Group',
+      edit: 'Edit Group'
     }
   },
   routes: {
@@ -328,6 +388,27 @@ export default {
         title: 'Manage Account',
         caption: 'Update your details and login credentials.',
         first_login: 'As this is your first login, please update your profile info.'
+      },
+      groups: {
+        title: 'Manage Groups',
+        caption: 'Groups can give other users access to your timelines/grids respectively you can get access to other user\'s timelines/grids.'
+      }
+    },
+    groups: {
+      list: {
+        title: 'Groups',
+        caption: 'Manage your groups.'
+      },
+      edit: {
+        title: 'Edit group'
+      },
+      create: {
+        title: 'Create group',
+        caption: 'Add a new group.'
+      },
+      new: {
+        title: 'New group',
+        caption: 'Create a new group.'
       }
     },
     site: {

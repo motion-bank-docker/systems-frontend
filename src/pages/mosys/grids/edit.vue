@@ -8,7 +8,7 @@
         // | {{ payload.title }}
 
       content-paragraph
-        form-main(v-model="payload", :schema="schema")
+        form-main(v-if="acl.put", v-model="payload", :schema="schema")
           //
           div(slot="form-buttons-add", :class="{'full-width row q-mb-sm': isMobile}")
             q-btn.bg-grey-9.col.q-mr-md(q-if="$route.params.uuid", :label="exportLabel",
@@ -16,33 +16,11 @@
             // q-btn.bg-grey-9.col(q-if="$route.params.uuid && userHasPackager", :label="packageLabel",
             // @click="createPackage",
             // :class="[!isMobile ? 'q-mx-sm' : 'q-ml-sm']")
+        p(v-if="acl.put === false") {{ $t('errors.editing_forbidden') }}
 
     // -------------------------------------------------------------------------------------------------- access control
-
-    //
-      content-block(v-if="availableRoles.length")
-
-        headline(:content="$t('labels.access_control')")
-          | {{ $t('descriptions.access_control') }}
-
-        // add to group
-        content-paragraph(:position="'first'")
-          q-select(v-model="acl.group", :clearable="true", :clear-value="undefined",
-          // :float-label="$t('labels.access_control_add_group')", :options="availableRoles", dark)
-
-        // remove from group
-        content-paragraph
-          q-select(v-model="acl.group_remove", :clearable="true", :clear-value="undefined",
-          // :float-label="$t('labels.access_control_remove_group')", :options="availableRoles", dark)
-
-        // apply to all contained annotations and media
-        content-paragraph
-          q-checkbox(v-model="acl.recursive", :label="$t('labels.recursive')", dark)
-
-        // button "update access settings"
-        content-paragraph
-          q-btn(:label="$t('buttons.update_access_control')", @click="updateACL", color="primary",
-          // :class="[isMobile ? 'full-width' : '']", slot="buttons")
+    content-block(v-if="acl.delete === true || acl.acl === true")
+      permissions(v-if="grid", :resource="grid.id")
 
     // -------------------------------------------------------------------------------------------------- css stylesheet
 
@@ -67,12 +45,12 @@
 </template>
 
 <script>
-  import AccessControl from '../../../components/shared/forms/AccessControl'
   import Tags from '../../../components/shared/partials/Tags'
   import FormMain from '../../../components/shared/forms/FormMain'
   import Headline from '../../../components/shared/elements/Headline'
   import ContentBlock from '../../../components/shared/elements/ContentBlock'
   import ContentParagraph from '../../../components/shared/elements/ContentParagraph'
+  import Permissions from '../../../components/shared/partials/Permissions'
 
   import { required } from 'vuelidate/lib/validators'
   import constants from 'mbjs-data-models/src/constants'
@@ -82,16 +60,17 @@
 
   export default {
     components: {
-      AccessControl,
       FormMain,
       Tags,
       Headline,
       ContentBlock,
-      ContentParagraph
+      ContentParagraph,
+      Permissions
     },
     data () {
       const _this = this
       return {
+        acl: {},
         grid: undefined,
         stylesheet: undefined,
         stylesheetUrl: undefined,
@@ -100,11 +79,6 @@
         exportLabel: this.$t('buttons.export_grid'),
         packageLabel: this.$t('buttons.create_package'),
         packageDownloadURL: undefined,
-        acl: {
-          group: undefined,
-          group_remove: undefined,
-          recursive: false
-        },
         type: constants.mapClasses.MAP_CLASS_GRID,
         payload: this.$route.params.uuid ? _this.$store.dispatch('maps/get', _this.$route.params.uuid) : undefined,
         schema: {
@@ -129,17 +103,21 @@
     },
     async mounted () {
       this.$q.loading.show()
-      this.grid = await this.$store.dispatch('maps/get', this.$route.params.uuid)
+      try {
+        this.grid = await this.$store.dispatch('maps/get', this.$route.params.uuid)
+        let acl
+        acl = await this.$store.dispatch('acl/isAllowed', {id: this.grid.id, permission: 'put'})
+        this.acl = Object.assign({}, this.acl, acl)
+        acl = await this.$store.dispatch('acl/isAllowed', {id: this.grid.id, permission: 'delete'})
+        this.acl = Object.assign({}, this.acl, acl)
+      }
+      catch (err) {
+        this.$handleError(err)
+      }
 
       if (this.userHasCSSEditing) {
         this.stylesheet = this.grid.stylesheet ? this.grid.stylesheet.value : undefined
         this.stylesheetUrl = this.grid.stylesheet ? this.grid.stylesheet.id : undefined
-      }
-
-      if (process.env.IS_STAGING) {
-        const aclQuery = {role: 'public', id: this.grid.id, permission: 'get'}
-        const permissions = await this.$store.dispatch('acl/isRoleAllowed', aclQuery)
-        this.acl.public = permissions.get === true
       }
       this.$q.loading.hide()
     },

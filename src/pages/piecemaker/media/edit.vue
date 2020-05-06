@@ -5,24 +5,21 @@
       headline(:content="$t('routes.piecemaker.media.edit.title') + ':'")
         | {{ payload.title }} ({{ duration }})
 
-      content-paragraph(:position="'first'")
+      content-paragraph(v-if="acl.put", :position="'first'")
         calendar-time-main(:datetime="selectorValue", @update="onCalendarUpdate")
 
-      content-paragraph
+      content-paragraph(v-if="acl.put")
         // p.q-mt-md {{ $t('labels.media_duration') }}: {{ duration }}
         p(v-if="selectorOverride !== selectorValue") {{ $t('messages.caution_media_time_override') }}
 
       content-paragraph
-        form-main(v-model.lazy="payload", :schema="schema", ref="mediaForm")
-
-      content-paragraph(:position="'last'")
-        access-control
+        form-main(v-if="acl.put", v-model.lazy="payload", :schema="schema", ref="mediaForm")
+        p(v-if="acl.put === false") {{ $t('errors.editing_forbidden') }}
 </template>
 
 <script>
   import { mapGetters } from 'vuex'
 
-  import AccessControl from '../../../components/shared/forms/AccessControl'
   import CalendarTimeMain from '../../../components/shared/forms/CalendarTimeMain'
   import FormMain from '../../../components/shared/forms/FormMain'
   import Headline from '../../../components/shared/elements/Headline'
@@ -39,7 +36,6 @@
 
   export default {
     components: {
-      AccessControl,
       CalendarTimeMain,
       FormMain,
       Headline,
@@ -52,6 +48,9 @@
       },
       async getMedia () {
         this.media = await this.$store.dispatch('annotations/get', this.$route.params.uuid)
+        let acl
+        acl = await this.$store.dispatch('acl/isAllowed', { id: this.media.id, permission: 'put' })
+        this.acl = Object.assign({}, this.acl, acl)
         this.timeline = await this.$store.dispatch('maps/get', parseURI(this.media.target.id).uuid)
         this.$root.$emit('setBackButton', '/piecemaker/timelines/' + parseURI(this.media.target.id).uuid + '/media')
       }
@@ -86,6 +85,12 @@
     },
     async mounted () {
       this.$q.loading.show()
+      try {
+
+      }
+      catch (err) {
+        this.$handleError(err)
+      }
       this.schema.fields.tags.autocompleteOptions = await this.$store.dispatch('tags/list')
       const timelinesResult = await this.$store.dispatch('maps/find', {
         type: 'Timeline'
@@ -102,6 +107,7 @@
     data () {
       const context = this
       return {
+        acl: {},
         apiPayload: undefined,
         selectorOverride: undefined,
         titlePayload: undefined,

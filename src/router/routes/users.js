@@ -40,6 +40,30 @@ export default {
       name: 'users.list',
       component: () => import('pages/shared/users/list'),
       meta: {private: true}
+    },
+    {
+      path: 'groups',
+      name: 'users.groups',
+      component: () => import('pages/shared/users/groups_list'),
+      meta: {private: true}
+    },
+    {
+      path: 'groups/create',
+      name: 'users.groups_create',
+      component: () => import('pages/shared/users/group_edit'),
+      meta: {private: true}
+    },
+    {
+      path: 'groups/:uuid/edit',
+      name: 'users.groups_edit',
+      component: () => import('pages/shared/users/group_edit'),
+      meta: {private: true}
+    },
+    {
+      path: 'invite/:code',
+      name: 'users.invite',
+      component: () => import('pages/shared/users/invite'),
+      meta: {private: true}
     }
   ]
 }
