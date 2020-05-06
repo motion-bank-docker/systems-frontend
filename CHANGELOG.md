@@ -39,6 +39,15 @@ No changes.
 - Broken API_HOST configuration
 - Redirect to original target after authentication
 
+### Updated
+
+- [cote](https://github.com/dashersw/cote)
+to 1.0.0
+- [mbjs-data-models](https://gitlab.rlp.net/motionbank/mbjs/data-models)
+to 2.0.18
+- [mbjs-auth-service](https://gitlab.rlp.net/motionbank/mbjs/auth-service)
+to 1.0.8
+
 
 ## [2.0.0] - 2020-03-31
 
@@ -64,6 +73,7 @@ under `media/create` (playback possible using forked
 - The file `statics/env.js` can be overwritten to configure
 the frontend at runtime
 - Authentication service attempts silent login when token expires
+- [mbjs-auth-service](https://gitlab.rlp.net/motionbank/mbjs/auth-service)
 
 ### Changed
 
@@ -84,7 +94,7 @@ for YouTube sources to be GDPR compliant
 ### Updated
 
 - [mbjs-data-models](https://gitlab.rlp.net/motionbank/mbjs/data-models)
-  to version 1.2.4
+  to version 2.0.0
 - [mbjs-quasar](https://gitlab.rlp.net/motionbank/mbjs/quasar)
   to version 2.2.0
 - [mbjs-api-client](https://gitlab.rlp.net/motionbank/mbjs/api-client)
