@@ -423,8 +423,8 @@ of a video cannot be retrieved
 - Start proper versioning at 1.0.0
 
 
-[Unreleased]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v2.1.0...master
-[2.1.0]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v2.0.0...v2.1.0
+[Unreleased]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/release_2_0...release_2_1
+[2.1.0]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v2.0.0...release_2_0
 [2.0.0]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.10...v2.0.0
 [1.3.10]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.9...v1.3.10
 [1.3.9]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.8...v1.3.9
