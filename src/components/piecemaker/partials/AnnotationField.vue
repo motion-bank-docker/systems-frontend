@@ -137,7 +137,7 @@
         this.annotationText = undefined
       },
       getSelectorValue () {
-        return this.currentSelectorValue || this.selectorValue || { key: 'datetime-t', value: DateTime.local().toISO() }
+        return this.currentSelectorValue || this.selectorValue || { key: 'date-time:t', value: DateTime.local().toISO() }
       },
       focusInput () {
         if (this.$refs.textInput) this.$refs.textInput.focus()
