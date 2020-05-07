@@ -10,7 +10,9 @@ and this project adheres to
 
 ## [Unreleased]
 
-No changes.
+### Fixed
+
+- Invalid default selector in AnnotationField causing live annotator to break
 
 
 ## [2.1.0] - 2020-05-06
