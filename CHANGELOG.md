@@ -10,6 +10,14 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+- Editing functionality for AnnotationList mosys cell
+
+### Changed
+
+- AnnotationList cell design
+
 ### Fixed
 
 - Invalid default selector in AnnotationField causing live annotator to break
