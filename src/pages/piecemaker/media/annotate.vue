@@ -154,7 +154,7 @@
 
   import AnnotationField from '../../../components/piecemaker/partials/AnnotationField'
   import SwimLane from '../../../components/piecemaker/partials/SwimLane/SwimLane'
-  import TimecodeLabel from '../../../components/piecemaker/partials/TimecodeLabel'
+  import TimecodeLabel from '../../../components/shared/partials/TimecodeLabel'
   import AnnotationIcon from '../../../components/piecemaker/partials/AnnotationIcon'
 
   const { getScrollTarget, setScrollPosition } = scroll
