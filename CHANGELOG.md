@@ -22,6 +22,14 @@ and this project adheres to
 
 - Invalid default selector in AnnotationField causing live annotator to break
 
+### Removed
+
+- [vue-video-player](https://github.com/surmon-china/vue-video-player) video wrapper
+
+### Updated
+
+- [Video.js](https://videojs.com/) to 7.7.5
+
 
 ## [2.1.0] - 2020-05-06
 
