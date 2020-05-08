@@ -22,7 +22,7 @@
           v-if="video",
           :src="video.body.source.id",
           @ready="playerReady($event)",
-          @time="onPlayerTime($event)")
+          @timeupdate="onPlayerTime($event)")
       .absolute-top-left.fit.justify-center.row.items-center(v-if="!ready")
         q-spinner(size="30px")
 

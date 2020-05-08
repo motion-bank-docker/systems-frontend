@@ -21,7 +21,7 @@
       div.relative-position(:style="{height: videoHeight + 'px', maxHeight: viewport.height - 52 - 250 + 'px'}",
       :class="[!visibilitySwimlanes ? 'fit' : '']")
         media-player.full-height.relative-position(v-if="media", :annotation="media", :fine-controls="true",
-        @ready="playerReady($event)", @time="onPlayerTime($event)", :auth="playerAuth", :ratio="ratio")
+        @ready="playerReady($event)", @timeupdate="onPlayerTime($event)", :auth="playerAuth", :ratio="ratio")
 
       // swimlane content
 
