@@ -7,7 +7,7 @@ const mosys = {
     showSources: false,
     // showAddCells: false,
     showEditingCells: false,
-    selectedCells: [],
+    // selectedCells: [],
     editingCells: [],
     editingCell: undefined,
     scrollPositionCache: 0,
@@ -27,7 +27,7 @@ const mosys = {
     getNewCell: state => state.newCell,
     getShowSources: state => state.showSources,
     // getShowAddCells: state => state.showAddCells,
-    getSelectedCells: state => state.selectedCells,
+    // getSelectedCells: state => state.selectedCells,
     getEditingCell: state => state.editingCell,
     getEditingCells: state => state.editingCells,
     getShowEditingCells: state => state.showEditingCells,
@@ -66,9 +66,11 @@ const mosys = {
         state.showSources = false
       }
     },
+    /*
     setSelectedCells (state, cells) {
       state.selectedCells = cells
     },
+    */
     setSourcesTab (state, tabName) {
       state.sourcesTabName = tabName
     },
