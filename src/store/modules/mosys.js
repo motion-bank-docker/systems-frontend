@@ -51,6 +51,7 @@ const mosys = {
     },
     setEditCellModal (state, visibility) {
       state.editCellModal = visibility
+      if (!visibility) state.editingCell = undefined
     },
     cacheNewCell (state, cell) {
       state.newCell = cell
