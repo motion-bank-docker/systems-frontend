@@ -93,6 +93,7 @@ jobs:
           environment:
             BUILD_NAME_EXT: staging
             API_HOST: https://api-staging.motionbank.org
+            PACKAGER_HOST: https://packager.motionbank.org
           command: |
             set +o pipefail
             AUTH0_CLIENT_ID=${STAGING_AUTH0_CLIENT_ID} npm run build
