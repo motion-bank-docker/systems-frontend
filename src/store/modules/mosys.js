@@ -9,6 +9,7 @@ const mosys = {
     showEditingCells: false,
     selectedCells: [],
     editingCells: [],
+    editingCell: undefined,
     scrollPositionCache: 0,
     newCell: undefined,
     editCellModal: false,
@@ -27,6 +28,7 @@ const mosys = {
     getShowSources: state => state.showSources,
     // getShowAddCells: state => state.showAddCells,
     getSelectedCells: state => state.selectedCells,
+    getEditingCell: state => state.editingCell,
     getEditingCells: state => state.editingCells,
     getShowEditingCells: state => state.showEditingCells,
     getScrollPositionCache: state => state.scrollPositionCache,
@@ -52,6 +54,10 @@ const mosys = {
     },
     cacheNewCell (state, cell) {
       state.newCell = cell
+    },
+    setEditingCell (state, cell) {
+      state.editingCell = cell
+      console.log('store EDITING CELL', cell)
     },
     setEditingCells (state, cells) {
       state.editingCells = cells
