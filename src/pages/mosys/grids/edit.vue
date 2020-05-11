@@ -13,9 +13,8 @@
           div(slot="form-buttons-add", :class="{'full-width row q-mb-sm': isMobile}")
             q-btn.bg-grey-9.col.q-mr-md(q-if="$route.params.uuid", :label="exportLabel",
             @click="exportGrid", :class="[!isMobile ? '' : '']")
-            // q-btn.bg-grey-9.col(q-if="$route.params.uuid && userHasPackager", :label="packageLabel",
-            // @click="createPackage",
-            // :class="[!isMobile ? 'q-mx-sm' : 'q-ml-sm']")
+            q-btn.bg-grey-9.col(q-if="$route.params.uuid", :label="packageLabel",
+              @click="createPackage", :class="[!isMobile ? 'q-mx-sm' : 'q-ml-sm']")
         p(v-if="acl.put === false") {{ $t('errors.editing_forbidden') }}
 
     // -------------------------------------------------------------------------------------------------- access control
@@ -136,9 +135,6 @@
           return []
         }
       },
-      userHasPackager () {
-        return userHasFeature(this.user, 'packager')
-      },
       userHasCSSEditing () {
         return userHasFeature(this.user, 'cssediting')
       }
@@ -192,7 +188,7 @@
         try {
           const result = await this.$axios.post(
             `${process.env.PACKAGER_HOST}/packages`,
-            {uuid: this.grid._uuid},
+            {rootId: this.grid.id},
             {
               headers: {
                 Authorization: `Bearer ${this.$auth.token}`

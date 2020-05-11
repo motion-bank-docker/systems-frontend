@@ -117,7 +117,7 @@
         this.$refs.vocabularyModal.show(val)
       },
       annotationText (text) {
-        if (!text) this.currentSelectorValue = undefined
+        if (!text || !text.trim().length) this.currentSelectorValue = undefined
         else if (!this.selectedEntry) this.currentSelectorValue = this.getSelectorValue()
         if (this.$refs.vocabulary && this.$refs.vocabulary.visible) {
           this.$refs.vocabulary.updateFilter(text)
@@ -137,7 +137,7 @@
         this.annotationText = undefined
       },
       getSelectorValue () {
-        return this.currentSelectorValue || this.selectorValue || { key: 'datetime-t', value: DateTime.local().toISO() }
+        return this.currentSelectorValue || this.selectorValue || { key: 'date-time:t', value: DateTime.local().toISO() }
       },
       focusInput () {
         if (this.$refs.textInput) this.$refs.textInput.focus()
@@ -222,7 +222,7 @@
       },
       createAnnotation () {
         const text = this.annotationText && this.annotationText.trim()
-        if (text && text.length > 0) {
+        if (text && text.trim().length) {
           const annotation = {
             body: ObjectUtil.merge({}, this.currentBody),
             target: {

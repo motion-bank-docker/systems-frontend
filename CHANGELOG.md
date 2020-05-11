@@ -10,7 +10,25 @@ and this project adheres to
 
 ## [Unreleased]
 
-No changes.
+### Added
+
+- Editing functionality for AnnotationList mosys cell
+
+### Changed
+
+- AnnotationList cell design
+
+### Fixed
+
+- Invalid default selector in AnnotationField causing live annotator to break
+
+### Removed
+
+- [vue-video-player](https://github.com/surmon-china/vue-video-player) video wrapper
+
+### Updated
+
+- [Video.js](https://videojs.com/) to 7.7.5
 
 
 ## [2.1.0] - 2020-05-06
@@ -423,8 +441,8 @@ of a video cannot be retrieved
 - Start proper versioning at 1.0.0
 
 
-[Unreleased]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/release_2_0...release_2_1
-[2.1.0]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v2.0.0...release_2_0
+[Unreleased]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v2.1.0...release_2_1
+[2.1.0]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v2.0.0...v2.1.0
 [2.0.0]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.10...v2.0.0
 [1.3.10]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.9...v1.3.10
 [1.3.9]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.8...v1.3.9

@@ -158,7 +158,7 @@
   import MarkerDetailsSelected from './MarkerDetailsSelected'
   import MarkerContextMenu from './MarkerContextMenu'
   import AnnotationIcon from '../AnnotationIcon'
-  import TimecodeLabel from '../TimecodeLabel'
+  import TimecodeLabel from '../../../shared/partials/TimecodeLabel'
   import MarkerMap from './MarkerMap/MarkerMap'
 
   export default {
