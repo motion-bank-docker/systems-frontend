@@ -57,8 +57,16 @@ const mosys = {
     },
     setEditingCell (state, cell) {
       state.editingCell = cell
+      state.showEditingCells = cell
+      /*
+      state.showEditingCells = cells.length > 0
+      if (state.showEditingCells) {
+        state.showSources = false
+      }
+      */
       console.log('store EDITING CELL', cell)
     },
+    /*
     setEditingCells (state, cells) {
       state.editingCells = cells
       state.showEditingCells = cells.length > 0
@@ -66,6 +74,7 @@ const mosys = {
         state.showSources = false
       }
     },
+    */
     /*
     setSelectedCells (state, cells) {
       state.selectedCells = cells

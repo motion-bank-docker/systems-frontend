@@ -64,7 +64,7 @@
         this.$refs.gridEditor.deleteCell('', annotation)
       },
       closePanelHandler () {
-        this.$store.commit('mosys/setEditingCells', '')
+        // this.$store.commit('mosys/setEditingCells', '')
       },
       closedModal () {
         this.$store.commit('mosys/hideEditingCells')
