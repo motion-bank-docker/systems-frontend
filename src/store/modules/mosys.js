@@ -38,7 +38,7 @@ const mosys = {
   mutations: {
     setMayEdit (state, value) {
       state.mayEdit = value
-      console.log('STORE', value)
+      // console.log('STORE', value)
     },
     toggleGridEdit (state) {
       state.editGrid = !state.editGrid
@@ -56,15 +56,20 @@ const mosys = {
       state.newCell = cell
     },
     setEditingCell (state, cell) {
-      state.editingCell = cell
-      state.showEditingCells = cell
+      if (state.editingCell === cell) {
+        state.editingCell = undefined
+        state.showEditingCells = false
+      }
+      else {
+        state.editingCell = cell
+        state.showEditingCells = true
+      }
       /*
       state.showEditingCells = cells.length > 0
       if (state.showEditingCells) {
         state.showSources = false
       }
       */
-      console.log('store EDITING CELL', cell)
     },
     /*
     setEditingCells (state, cells) {
