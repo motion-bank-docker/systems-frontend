@@ -10,6 +10,7 @@ const mosys = {
     // selectedCells: [],
     editingCells: [],
     editingCell: undefined,
+    updatedCell: undefined,
     scrollPositionCache: 0,
     newCell: undefined,
     editCellModal: false,
@@ -21,6 +22,7 @@ const mosys = {
     dimensions: {}
   },
   getters: {
+    getUpdatedCell: state => state.updatedCell,
     getMayEdit: state => state.mayEdit,
     getEditGrid: state => state.editGrid,
     getSourceCellInput: state => state.sourceCellInput,
@@ -36,9 +38,11 @@ const mosys = {
     getCurrentTimeline: state => state.currentTimeline
   },
   mutations: {
+    setUpdatedCell (state, value) {
+      state.updatedCell = value
+    },
     setMayEdit (state, value) {
       state.mayEdit = value
-      // console.log('STORE', value)
     },
     toggleGridEdit (state) {
       state.editGrid = !state.editGrid
