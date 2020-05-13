@@ -21,7 +21,7 @@
       div.relative-position(:style="{height: videoHeight + 'px', maxHeight: viewport.height - 52 - 250 + 'px'}",
       :class="[!visibilitySwimlanes ? 'fit' : '']")
         media-player.full-height.relative-position(v-if="media", :annotation="media", :fine-controls="true",
-        @ready="playerReady($event)", @time="onPlayerTime($event)", :auth="playerAuth", :ratio="ratio")
+        @ready="playerReady($event)", @timeupdate="onPlayerTime($event)", :auth="playerAuth", :ratio="ratio")
 
       // swimlane content
 
@@ -154,7 +154,7 @@
 
   import AnnotationField from '../../../components/piecemaker/partials/AnnotationFieldGeneric'
   import SwimLane from '../../../components/piecemaker/partials/SwimLane/SwimLane'
-  import TimecodeLabel from '../../../components/piecemaker/partials/TimecodeLabel'
+  import TimecodeLabel from '../../../components/shared/partials/TimecodeLabel'
   import AnnotationIcon from '../../../components/piecemaker/partials/AnnotationIcon'
 
   const { getScrollTarget, setScrollPosition } = scroll

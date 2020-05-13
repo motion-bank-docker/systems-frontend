@@ -45,7 +45,7 @@
 <script>
   // import { EventHub } from './EventHub'
   import AnnotationIcon from '../AnnotationIcon'
-  import TimecodeLabel from '../TimecodeLabel'
+  import TimecodeLabel from '../../../shared/partials/TimecodeLabel'
 
   export default {
     components: {

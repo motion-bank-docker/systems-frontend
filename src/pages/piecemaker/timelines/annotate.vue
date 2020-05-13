@@ -56,7 +56,7 @@
   import { ObjectUtil, Assert } from 'mbjs-utils'
   import { DateTime } from 'luxon'
   import constants from 'mbjs-data-models/src/constants'
-  import TimecodeLabel from '../../../components/piecemaker/partials/TimecodeLabel'
+  import TimecodeLabel from '../../../components/shared/partials/TimecodeLabel'
   import AnnotationIcon from '../../../components/piecemaker/partials/AnnotationIcon'
 
   export default {

@@ -12,7 +12,7 @@
       //
       div(:style="[fixDiagram ? styleActivePreview : styleActivePreviewDocked]")
         media-player(v-if="video", :annotation="video.annotation",
-          @ready="playerReady($event)", @time="onPlayerTime($event)")
+          @ready="playerReady($event)", @timeupdate="onPlayerTime($event)")
 
       .absolute-top-left.q-mt-sm.q-ml-sm(@mousedown="resizeButtonDown")
         // BTN
