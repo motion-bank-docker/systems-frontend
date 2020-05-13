@@ -52,6 +52,7 @@ jobs:
           name: Release Production Image
           environment:
             API_HOST: https://api.motionbank.org
+            PACKAGER_HOST: https://packager.motionbank.org
             MIGRATION_PREVIOUS_URL: https://legacy.motionbank.org
             MIGRATION_PREVIOUS_INFO_URL: https://medium.com/motion-bank/supporting-dance-practice-and-education-during-covid-19-ca43e71eb93
           command: |
@@ -93,7 +94,7 @@ jobs:
           environment:
             BUILD_NAME_EXT: staging
             API_HOST: https://api-staging.motionbank.org
-            PACKAGER_HOST: https://packager.motionbank.org
+            PACKAGER_HOST: https://packager-staging.motionbank.org
           command: |
             set +o pipefail
             AUTH0_CLIENT_ID=${STAGING_AUTH0_CLIENT_ID} npm run build
