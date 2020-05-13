@@ -7,8 +7,10 @@ const mosys = {
     showSources: false,
     // showAddCells: false,
     showEditingCells: false,
-    selectedCells: [],
+    // selectedCells: [],
     editingCells: [],
+    editingCell: undefined,
+    updatedCell: undefined,
     scrollPositionCache: 0,
     newCell: undefined,
     editCellModal: false,
@@ -20,13 +22,15 @@ const mosys = {
     dimensions: {}
   },
   getters: {
+    getUpdatedCell: state => state.updatedCell,
     getMayEdit: state => state.mayEdit,
     getEditGrid: state => state.editGrid,
     getSourceCellInput: state => state.sourceCellInput,
     getNewCell: state => state.newCell,
     getShowSources: state => state.showSources,
     // getShowAddCells: state => state.showAddCells,
-    getSelectedCells: state => state.selectedCells,
+    // getSelectedCells: state => state.selectedCells,
+    getEditingCell: state => state.editingCell,
     getEditingCells: state => state.editingCells,
     getShowEditingCells: state => state.showEditingCells,
     getScrollPositionCache: state => state.scrollPositionCache,
@@ -34,9 +38,11 @@ const mosys = {
     getCurrentTimeline: state => state.currentTimeline
   },
   mutations: {
+    setUpdatedCell (state, value) {
+      state.updatedCell = value
+    },
     setMayEdit (state, value) {
       state.mayEdit = value
-      console.log('STORE', value)
     },
     toggleGridEdit (state) {
       state.editGrid = !state.editGrid
@@ -49,10 +55,28 @@ const mosys = {
     },
     setEditCellModal (state, visibility) {
       state.editCellModal = visibility
+      if (!visibility) state.editingCell = undefined
     },
     cacheNewCell (state, cell) {
       state.newCell = cell
     },
+    setEditingCell (state, cell) {
+      if (state.editingCell === cell) {
+        state.editingCell = undefined
+        state.showEditingCells = false
+      }
+      else {
+        state.editingCell = cell
+        state.showEditingCells = true
+      }
+      /*
+      state.showEditingCells = cells.length > 0
+      if (state.showEditingCells) {
+        state.showSources = false
+      }
+      */
+    },
+    /*
     setEditingCells (state, cells) {
       state.editingCells = cells
       state.showEditingCells = cells.length > 0
@@ -60,9 +84,12 @@ const mosys = {
         state.showSources = false
       }
     },
+    */
+    /*
     setSelectedCells (state, cells) {
       state.selectedCells = cells
     },
+    */
     setSourcesTab (state, tabName) {
       state.sourcesTabName = tabName
     },
