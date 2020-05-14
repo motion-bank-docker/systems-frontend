@@ -125,6 +125,7 @@ export default {
     annotate_timeline_forbidden: 'You are not allowed to annotate this Timeline.'
   },
   labels: {
+    rejected: 'Rejected.',
     id: 'ID',
     accessibility: 'Accessibility',
     access_control: 'Access Control',
