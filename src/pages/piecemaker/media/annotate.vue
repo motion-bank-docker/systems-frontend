@@ -10,7 +10,7 @@
 
       // media player
 
-      div.relative(:style="{height: videoHeight + 'px', maxHeight: viewport.height - 52 - 250 + 'px'}",
+      div.relative-position(:style="{height: videoHeight + 'px', maxHeight: viewport.height - 52 - 250 + 'px'}",
       :class="[!visibilitySwimlanes ? 'fit' : '']")
 
         media-player.full-height.relative-position(v-if="media", :annotation="media", :fine-controls="true",

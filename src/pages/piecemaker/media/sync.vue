@@ -30,7 +30,8 @@
         div
           // media to be sync'd
           template(v-if="media")
-            media-player.relative-position(:src="media.body.source.id", :fine-controls="true",
+            div.relative-position
+              media-player.relative-position(:src="media.body.source.id", :fine-controls="true",
               @ready="onVidPlayerReady($event)")
 
             .q-mt-sm
@@ -48,7 +49,8 @@
 
         // reference media
         template(v-if="media && refIndex > -1")
-          media-player.relative-position(:annotation="refMedia[refIndex]", :fine-controls="true",
+          div.relative-position
+            media-player.relative-position(:annotation="refMedia[refIndex]", :fine-controls="true",
             @ready="onTargetPlayerReady($event)", :key="refIndex")
 
           div.q-mb-sm.q-mt-sm(v-if="refIndex > -1",
