@@ -7,9 +7,8 @@
 
     // -------------------------------------------------------------------------------------------------------- new cell
     .desktop-only(v-if="$store.state.mosys.showSources")
-      // .grid-editor-border-left.z-top.bg-grey-4
 
-      .full-height.fixed-top-right.z-max(style="border-left: 1px solid rgba(255,255,255,0.2);")
+      .full-height.fixed-top-right.z-top(style="border-left: 1px solid rgba(255,255,255,0.2);")
         source-editor.source-editor.overflow-hidden.bg-dark
 
     q-modal.mobile-only.z-max(v-model="$store.state.mosys.showSources", minimized, content-css="border-radius: .5rem;",
@@ -18,15 +17,15 @@
 
     // ----------------------------------------------------------------------------------------------------- cell editor
     .desktop-only(v-if="showEditingCells")
-      // .grid-editor-border-left.z-top.bg-grey-4
 
-      .full-height.fixed-top-right.z-max(style="border-left: 1px solid rgba(255,255,255,0.2);")
+      .full-height.fixed-top-right.z-top(style="border-left: 1px solid rgba(255,255,255,0.2);")
         cell-editor.grid-editor-editing-cells.bg-dark(@closePanel="closePanelHandler", @removeCell="removeCellHandler")
 
 </template>
 
 <script>
   import { mapGetters } from 'vuex'
+
   import GridEditor from '../../../components/mosys/partials/GridEditor'
   import SourceEditor from '../../../components/mosys/partials/SourceEditor'
   import CellEditor from '../../../components/mosys/partials/CellEditor'
@@ -43,17 +42,10 @@
         isMobile: this.$q.platform.is.mobile
       }
     },
-    mounted () {
-      this.$root.$on('mosys_saveScrollPosition', this.handleSaveGridScrollPosition)
-    },
-    beforeDestroy () {
-      this.$root.$off('mosys_saveScrollPosition', this.handleSaveGridScrollPosition)
-    },
     computed: {
       ...mapGetters({
         showEditingCells: 'mosys/getShowEditingCells',
         showSources: 'mosys/getShowSources'
-        // scrollPositionCache: 'mosys/getScrollPositionCache'
       }),
       tabsAreOpen () {
         return this.showSources || this.showEditingCells

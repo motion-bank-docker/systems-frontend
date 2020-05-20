@@ -7,26 +7,9 @@
 
 <script>
   import GridDisplay from '../../../components/mosys/partials/GridDisplay'
-  import { mapGetters } from 'vuex'
   export default {
     components: {
       GridDisplay
-    },
-    computed: {
-      ...mapGetters({
-        scrollPositionCache: 'mosys/getScrollPositionCache'
-      })
-    },
-    mounted () {
-      this.$root.$on('mosys_saveScrollPosition', this.handleSaveGridScrollPosition)
-    },
-    beforeDestroy () {
-      this.$root.$off('mosys_saveScrollPosition', this.handleSaveGridScrollPosition)
-    },
-    methods: {
-      handleSaveGridScrollPosition () {
-        this.$store.commit('mosys/setScrollPositionCache', this.$refs.gridDisplay.$el.scrollLeft)
-      }
     }
   }
 </script>
