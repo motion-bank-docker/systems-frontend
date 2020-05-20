@@ -11,7 +11,6 @@ const mosys = {
     editingCells: [],
     editingCell: undefined,
     updatedCell: undefined,
-    scrollPositionCache: 0,
     newCell: undefined,
     editCellModal: false,
     currentTimeline: undefined,
@@ -19,7 +18,11 @@ const mosys = {
     mayEdit: false,
 
     editGrid: false,
-    dimensions: {}
+    dimensions: {},
+    currentScrollConfig: {
+      id: undefined,
+      offset: undefined
+    }
   },
   getters: {
     getUpdatedCell: state => state.updatedCell,
@@ -33,7 +36,6 @@ const mosys = {
     getEditingCell: state => state.editingCell,
     getEditingCells: state => state.editingCells,
     getShowEditingCells: state => state.showEditingCells,
-    getScrollPositionCache: state => state.scrollPositionCache,
     getEditCellModal: state => state.editCellModal,
     getCurrentTimeline: state => state.currentTimeline
   },
@@ -99,8 +101,9 @@ const mosys = {
         state.showEditingCells = false
       }
     },
-    toggleSources: (state) => {
-      state.showSources = !state.showSources
+    toggleSources: (state, val) => {
+      if (!val) state.showSources = !state.showSources
+      else state.showSources = false
       if (state.showSources) {
         state.showEditingCells = false
         state.editingCells = []
@@ -144,8 +147,9 @@ const mosys = {
       state.showEditingCells = false
       state.editingCells = []
     },
-    setScrollPositionCache: (state, p) => {
-      state.scrollPositionCache = p
+    setScrollConfig (state, [id, offset]) {
+      state.currentScrollConfig.id = id
+      state.currentScrollConfig.offset = offset
     }
   },
   actions: {
