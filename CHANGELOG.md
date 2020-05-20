@@ -12,15 +12,25 @@ and this project adheres to
 
 ### Added
 
-- Editing functionality for AnnotationList mosys cell
+- Editing functionality for CellAnnotationList
+- CellAnnotationList shows errors
+- CellAnnotationList shows durations
+- GridDisplay can be locked
+- Improved content previews in Cells
+- Scroll position saved when switching between `Edit` and `View` in GridEditor
+- Display style editor for CellImage
 
 ### Changed
 
+- Grid Packager API activated for new version
 - AnnotationList cell design
+- Minor GridEditor design updates
+- CellText uses MarkdownDisplay component
 
 ### Fixed
 
 - Invalid default selector in AnnotationField causing live annotator to break
+- Minor exceptions in GridEditor
 
 ### Removed
 
