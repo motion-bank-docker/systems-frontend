@@ -29,6 +29,7 @@ and this project adheres to
 
 ### Fixed
 
+- CalendarTimeMain correctly sets initial value
 - Invalid default selector in AnnotationField causing live annotator to break
 - Minor exceptions in GridEditor
 
