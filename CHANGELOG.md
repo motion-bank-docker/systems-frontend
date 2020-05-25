@@ -10,7 +10,9 @@ and this project adheres to
 
 ## [Unreleased]
 
-No changes.
+### Changed
+
+- Add media screen redirects to media list after submit
 
 
 ## [2.1.1] - 2020-05-25
