@@ -10,6 +10,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Fixed
+
+- Wrong cell content in GridDisplay due to reuse of rendered components
+
 ### Changed
 
 - Add media screen redirects to media list after submit
