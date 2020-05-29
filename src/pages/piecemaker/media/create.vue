@@ -95,7 +95,10 @@
               if (metadata) {
                 await titleHelper.create(_this.$store, annotation.id, metadata.title)
               }
-              _this.$router.push(`/piecemaker/media/${annotation._uuid}/edit`)
+              _this.$router.push({
+                name: 'piecemaker.media.list',
+                params: { timelineUuid: _this.$route.params.timelineUuid }
+              })
             }
           }
         }

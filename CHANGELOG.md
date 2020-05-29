@@ -13,6 +13,21 @@ and this project adheres to
 No changes.
 
 
+## [2.1.2] - 2020-05-29
+
+### Added
+
+- Showing author information in CellAnnotationList is configurable, defaults to false
+
+### Fixed
+
+- Wrong cell content in GridDisplay due to reuse of rendered components
+
+### Changed
+
+- Add media screen redirects to media list after submit
+
+
 ## [2.1.1] - 2020-05-25
 
 ### Added
@@ -457,7 +472,8 @@ of a video cannot be retrieved
 - Start proper versioning at 1.0.0
 
 
-[Unreleased]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v2.1.1...release_2_1
+[Unreleased]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v2.1.2...release_2_1
+[2.1.2]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v2.1.1...v2.1.2
 [2.1.1]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v2.1.0...v2.1.1
 [2.1.0]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v2.0.0...v2.1.0
 [2.0.0]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.10...v2.0.0
