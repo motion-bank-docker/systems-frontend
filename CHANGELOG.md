@@ -10,6 +10,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+- Showing author information in CellAnnotationList is configurable, defaults to false
+
 ### Fixed
 
 - Wrong cell content in GridDisplay due to reuse of rendered components
