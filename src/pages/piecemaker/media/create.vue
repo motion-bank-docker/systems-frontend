@@ -4,8 +4,12 @@
     content-block(:position="'first'")
       headline(:content="$t('routes.piecemaker.media.create.title')")
 
+      .q-mb-lg
+        q-alert(color="info" v-if="!selectorValue") {{ $t('routes.piecemaker.media.create.default_selector_notice') }}
+        q-alert(color="info" :actions="actions" v-else) {{ $t('routes.piecemaker.media.create.override_selector_notice') }}
+
       content-paragraph(:position="'first'")
-        calendar-time-main(v-if="mayAdd", :datetime="selectorValue", @update="onCalendarUpdate")
+        calendar-time-main(v-if="mayAdd", @update="onCalendarUpdate")
 
       content-paragraph(:position="'last'")
         form-main(v-if="mayAdd", v-model="payload", :schema="schema", ref="mediaForm")
@@ -43,6 +47,14 @@
     data () {
       const _this = this
       return {
+        actions: [
+          {
+            label: this.$t('buttons.reset'),
+            handler () {
+              _this.selectorValue = undefined
+            }
+          }
+        ],
         timeline: undefined,
         mayAdd: undefined,
         // FIXME: i know this is bullshit!!! (but i hope it works for now)
@@ -71,11 +83,10 @@
                 }
               })
               let
-                start = _this.selectorValue || DateTime.local().toString(),
+                start = _this.selectorValue,
                 end
-              if (metadata && metadata.publishedAt) {
-                _this.selectorValue = DateTime.fromISO(metadata.publishedAt, { setZone: true }).toISO()
-                start = _this.selectorValue
+              if (!_this.selectorValue && metadata && metadata.publishedAt) {
+                start = DateTime.fromISO(metadata.publishedAt, { setZone: true }).toISO()
               }
               else start = DateTime.local().toString()
               if (metadata && metadata.duration) {
