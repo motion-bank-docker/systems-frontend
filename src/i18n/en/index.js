@@ -126,7 +126,8 @@ export default {
     add_media_forbidden: 'You are not allowed to add media to this Timeline.',
     editing_forbidden: 'You are not allowed to edit this item.',
     annotate_timeline_forbidden: 'You are not allowed to annotate this Timeline.',
-    media_could_not_be_accessed: 'The supplied media URL could not be accessed.'
+    media_could_not_be_accessed: 'The supplied media URL could not be accessed.',
+    access_to_media_denied: 'Access to the media URL was denied.'
   },
   labels: {
     rejected: 'Rejected.',
