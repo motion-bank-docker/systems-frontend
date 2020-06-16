@@ -215,6 +215,7 @@ export default {
     timeline: 'Timeline',
     type: 'Type',
     url: 'URL',
+    use_custom_date: 'Use custom date and time',
     media_duration: 'Media duration',
     media_title: 'Media title',
     media_url: 'Media URL',
@@ -488,8 +489,7 @@ export default {
         create: {
           title: 'Add Media',
           caption: 'Add a new media to your timeline.',
-          default_selector_notice: 'Now using the video publishing date (if available), or the current date. Use the calendar to set a custom date and time for the video.',
-          override_selector_notice: 'You have set a custom date for the video.'
+          default_selector_notice: 'Now using the current date and time of submission or the original video publishing date, if available.'
         },
         sync: {
           title: 'Sync Media',

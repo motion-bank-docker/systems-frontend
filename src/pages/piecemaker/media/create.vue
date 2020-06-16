@@ -4,12 +4,9 @@
     content-block(:position="'first'")
       headline(:content="$t('routes.piecemaker.media.create.title')")
 
-      .q-mb-lg
-        q-alert(color="info" v-if="!selectorValue") {{ $t('routes.piecemaker.media.create.default_selector_notice') }}
-        q-alert(color="info" :actions="actions" v-else) {{ $t('routes.piecemaker.media.create.override_selector_notice') }}
-
       content-paragraph(:position="'first'")
-        calendar-time-main(v-if="mayAdd", @update="onCalendarUpdate")
+        q-alert.q-mb-lg(color="info" v-if="!payload.customMediaDate") {{ $t('routes.piecemaker.media.create.default_selector_notice') }}
+        calendar-time-main(v-if="mayAdd && payload.customMediaDate", @update="onCalendarUpdate")
 
       content-paragraph(:position="'last'")
         form-main(v-if="mayAdd", v-model="payload", :schema="schema", ref="mediaForm")
@@ -42,6 +39,17 @@
     methods: {
       onCalendarUpdate (val) {
         this.selectorValue = val
+      },
+      async fetchMetadata () {
+        if (this.payload.url) {
+          this.metadata = await this.$store.dispatch('metadata/get', {
+            body: {
+              source: {
+                id: this.payload.url
+              }
+            }
+          })
+        }
       }
     },
     data () {
@@ -59,10 +67,16 @@
         mayAdd: undefined,
         // FIXME: i know this is bullshit!!! (but i hope it works for now)
         apiPayload: undefined,
-        payload: { url: undefined, title: undefined },
+        payload: { url: undefined, title: undefined, customMediaDate: false },
         selectorValue: undefined,
+        metadata: undefined,
         schema: {
           fields: {
+            customMediaDate: {
+              fullWidth: true,
+              type: 'checkbox',
+              label: 'labels.use_custom_date'
+            },
             url: {
               fullWidth: true,
               type: 'text',
@@ -75,22 +89,16 @@
           },
           submit: {
             async handler () {
-              const metadata = await _this.$store.dispatch('metadata/get', {
-                body: {
-                  source: {
-                    id: _this.payload.url
-                  }
-                }
-              })
+              await this.fetchMetadata()
               let
                 start = _this.selectorValue,
                 end
-              if (!_this.selectorValue && metadata && metadata.publishedAt) {
-                start = DateTime.fromISO(metadata.publishedAt, { setZone: true }).toISO()
+              if ((!this.payload.customMediaDate || !_this.selectorValue) && _this.metadata && _this.metadata.publishedAt) {
+                start = DateTime.fromISO(_this.metadata.publishedAt, { setZone: true }).toISO()
               }
-              else start = DateTime.local().toString()
-              if (metadata && metadata.duration) {
-                end = DateTime.fromISO(start, {setZone: true}).plus(metadata.duration * 1000).toISO()
+              else if (!this.payload.customMediaDate) start = DateTime.local().toString()
+              if (_this.metadata && _this.metadata.duration) {
+                end = DateTime.fromISO(start, {setZone: true}).plus(_this.metadata.duration * 1000).toISO()
               }
               const
                 target = _this.timeline.getInterval(start, end),
@@ -108,8 +116,8 @@
                 target
               }
               const annotation = await _this.$store.dispatch('annotations/post', _this.apiPayload)
-              if (metadata) {
-                await titleHelper.create(_this.$store, annotation.id, metadata.title)
+              if (_this.metadata) {
+                await titleHelper.create(_this.$store, annotation.id, _this.metadata.title)
               }
               _this.$router.push({
                 name: 'piecemaker.media.list',
