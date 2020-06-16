@@ -26,6 +26,10 @@ reference date, if available (e.g. live streams)
 
 - Exception on edit media screen when media duration is unknown
 
+### Updated
+
+- [sift](https://github.com/crcn/sift.js/) to v13.1.10
+
 
 ## [2.1.2] - 2020-05-29
 
