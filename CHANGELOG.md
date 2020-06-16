@@ -17,6 +17,7 @@ reference date, if available (e.g. live streams)
 - `Live` indicator for YouTube live streams in post-annotator
 - Edit media screen allows adding duration for live streams once archived
 - Duration field on edit media screen
+- Add media screen refuses to add inaccessible videos
 
 ### Changed
 
