@@ -8,6 +8,7 @@ export default {
     abort: 'Abort',
     apply_synchronisation: 'Apply Synchronisation',
     annotate: 'Annotate',
+    add_duration: 'Add duration',
     add_term: 'Add Term',
     add_media: 'Add Media',
     add_vocabulary: 'Add Vocabulary',
@@ -480,7 +481,8 @@ export default {
         },
         edit: {
           title: 'Edit media',
-          caption: 'Edit media details.'
+          caption: 'Edit media details.',
+          duration_found: 'Media currently has no duration but a duration was found for it.'
         },
         create: {
           title: 'Add Media',
