@@ -41,7 +41,7 @@ const metadata = {
           }
         }
         catch (err) {
-          console.error('metadta', err)
+          if (err.message === 'ENOENT') throw new Error(err.message)
           if (!err.response || err.response.status > 404) console.error(err.message)
         }
       }
