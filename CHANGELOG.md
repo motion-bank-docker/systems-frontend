@@ -22,6 +22,7 @@ reference date, if available (e.g. live streams)
 
 - Add media screen explicitly shows option for overriding or auto-detecting media start times
 - Make Media duration in post-annotator dynamic
+- Enable CSV export on `timelines/edit`
 
 ### Fixed
 
