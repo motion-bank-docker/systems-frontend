@@ -185,7 +185,8 @@
       'map',
       'selectedMillis',
       'mode',
-      'mayEdit'
+      'mayEdit',
+      'isLive'
     ],
     data () {
       return {

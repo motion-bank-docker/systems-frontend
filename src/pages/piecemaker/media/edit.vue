@@ -5,6 +5,9 @@
       headline(:content="$t('routes.piecemaker.media.edit.title') + ':'")
         | {{ payload.title }} ({{ duration }})
 
+      .q-mb-lg
+        q-alert(color="info" :actions="actions" v-if="showDurationOverride") {{ $t('routes.piecemaker.media.edit.duration_found') }}
+
       content-paragraph(v-if="acl.put", :position="'first'")
         calendar-time-main(:datetime="selectorValue", @update="onCalendarUpdate")
 
@@ -107,9 +110,19 @@
     data () {
       const context = this
       return {
+        actions: [
+          {
+            label: this.$t('buttons.add_duration'),
+            handler () {
+              context.durationOverride = context.meta.duration * 1000
+            }
+          }
+        ],
         acl: {},
         apiPayload: undefined,
         selectorOverride: undefined,
+        showDurationOverride: false,
+        durationOverride: undefined,
         titlePayload: undefined,
         media: undefined,
         meta: undefined,
@@ -119,9 +132,17 @@
           .then(async result => {
             context.$q.loading.show()
 
+            if (result.target.selector) {
+              const duration = result.target.selector.getDuration()
+              if (!duration) {
+                this.meta = await this.$store.dispatch('metadata/get', result)
+                this.showDurationOverride = !!this.meta.duration
+              }
+              else this.meta = await this.$store.dispatch('metadata/getLocal', result)
+            }
+
             this.annotation = result
             this.map = await this.$store.dispatch('maps/get', parseURI(result.target.id).uuid)
-            this.meta = await this.$store.dispatch('metadata/getLocal', result)
             this.titlePayload = this.meta.titleAnnotation
 
             const tags = await this.$store.dispatch('tags/get', result)
@@ -180,6 +201,7 @@
                 await titleHelper.update(context.$store, context.titlePayload.id, context.payload.title)
               }
               let selector
+              if (context.durationOverride) context.annotation.target.selector._valueDuration = context.durationOverride
               if (context.selectorOverride) {
                 const
                   durationMs = context.annotation.target.selector._valueDuration,
