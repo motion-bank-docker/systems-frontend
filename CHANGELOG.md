@@ -16,6 +16,7 @@ and this project adheres to
 reference date, if available (e.g. live streams)
 - `Live` indicator for YouTube live streams in post-annotator
 - Edit media screen allows adding duration for live streams once archived
+- Duration field on edit media screen
 
 ### Changed
 
@@ -25,6 +26,10 @@ reference date, if available (e.g. live streams)
 ### Fixed
 
 - Exception on edit media screen when media duration is unknown
+
+### Updated
+
+- [sift](https://github.com/crcn/sift.js/) to v13.1.10
 
 
 ## [2.1.2] - 2020-05-29
