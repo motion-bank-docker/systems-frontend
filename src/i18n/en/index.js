@@ -175,6 +175,7 @@ export default {
     invitation: 'Invitation',
     last_annotation: 'Last annotated',
     last_edit: 'Last edit',
+    live: 'Live',
     location: 'Location',
     map_title: 'Map Title',
     members: 'Members',

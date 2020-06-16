@@ -16,6 +16,8 @@
         media-player.full-height.relative-position(v-if="media", :annotation="media", :fine-controls="true",
         :post-errors="true", @ready="playerReady($event)", @timeupdate="onPlayerTime($event)")
 
+        q-chip.q-ma-md.absolute-top-left(v-if="isLive") {{ $t('labels.live') }}
+
       // swimlane content
 
       .absolute-bottom-right.bg-dark.full-width.ui-border-top(
@@ -31,8 +33,9 @@
         :markerDetails="false",
         :resizable="true",
         :mayEdit="mayEdit",
-        :start="getMediaDate().toMillis()",
-        :duration="getMediaDuration()",
+        :isLive="isLive",
+        :start="mediaDate.toMillis()",
+        :duration="mediaDuration",
         :annotations="annotations",
         :media="media",
         :key="componentKey",
@@ -90,7 +93,7 @@
                 timecode-label(
                 @click.native="gotoSelector(annotation.target.selector, false, annotation)",
                 :millis="annotation.target.selector._valueMillis",
-                :videoDate="getMediaDate()")
+                :videoDate="mediaDate")
 
                 // annotation has duration
 
@@ -100,7 +103,7 @@
                   timecode-label(
                   @click.native="gotoSelector(annotation.target.selector, true, annotation)",
                   :millis="getAnnotationEndMillis(annotation)",
-                  :videoDate="getMediaDate()")
+                  :videoDate="mediaDate")
 
                 // add timecode button
 
@@ -266,6 +269,29 @@
       isAnnotationDirty () {
         return this.isEditingAnnotations &&
           this.annotations[this.editAnnotationIndex].body.value !== this.editAnnotationBuffer
+      },
+      mediaDate () {
+        if (this.media && this.media.target.selector) {
+          return DateTime.fromMillis(this.media.target.selector._valueMillis)
+        }
+        else return DateTime.local()
+      },
+      mediaDuration () {
+        if (this.media && this.media.target.selector) {
+          let duration = this.media.target.selector.getDuration()
+          if (duration) {
+            return duration.as('milliseconds')
+          }
+          else {
+            const videoDate = DateTime.fromMillis(this.media.target.selector._valueMillis)
+            duration = Interval.fromDateTimes(videoDate, DateTime.local()).toDuration()
+            return duration.as('milliseconds')
+          }
+        }
+        return 0
+      },
+      isLive () {
+        return this.metadata.liveBroadcastContent === 'live'
       }
     },
     watch: {
@@ -353,7 +379,10 @@
         }
         this.$root.$emit('setBackButton', '/piecemaker/timelines/' + parseURI(this.media.target.id).uuid + '/media')
         if (this.media) {
-          this.metadata = await this.$store.dispatch('metadata/getLocal', this.media)
+          let duration
+          if (this.media.target.selector) duration = this.media.target.selector.getDuration()
+          if (!duration) this.metadata = await this.$store.dispatch('metadata/get', this.media)
+          else this.metadata = await this.$store.dispatch('metadata/getLocal', this.media)
         }
       },
       async getAnnotations () {
@@ -497,16 +526,6 @@
       setEditIndex (i) {
         this.editAnnotationIndex = i
         this.editAnnotationBuffer = this.annotations[i].body.value
-      },
-      getMediaDate () {
-        return DateTime.fromMillis(this.media.target.selector._valueMillis)
-      },
-      getMediaDuration () {
-        const duration = this.media.target.selector.getDuration()
-        if (duration) {
-          return duration.as('milliseconds')
-        }
-        return 0
       },
 
       // Annotation list items specific
