@@ -27,6 +27,7 @@ reference date, if available (e.g. live streams)
 ### Fixed
 
 - Exception on edit media screen when media duration is unknown
+- Exception in `UserNav` when `route.name` is undefined
 
 ### Updated
 
