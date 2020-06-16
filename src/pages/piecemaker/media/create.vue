@@ -89,14 +89,14 @@
           },
           submit: {
             async handler () {
-              await this.fetchMetadata()
+              await _this.fetchMetadata()
               let
                 start = _this.selectorValue,
                 end
-              if ((!this.payload.customMediaDate || !_this.selectorValue) && _this.metadata && _this.metadata.publishedAt) {
+              if ((!_this.payload.customMediaDate || !_this.selectorValue) && _this.metadata && _this.metadata.publishedAt) {
                 start = DateTime.fromISO(_this.metadata.publishedAt, { setZone: true }).toISO()
               }
-              else if (!this.payload.customMediaDate) start = DateTime.local().toString()
+              else if (!_this.payload.customMediaDate) start = DateTime.local().toString()
               if (_this.metadata && _this.metadata.duration) {
                 end = DateTime.fromISO(start, {setZone: true}).plus(_this.metadata.duration * 1000).toISO()
               }
