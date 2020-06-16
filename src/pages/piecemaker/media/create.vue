@@ -89,7 +89,13 @@
           },
           submit: {
             async handler () {
-              await _this.fetchMetadata()
+              try {
+                await _this.fetchMetadata()
+              }
+              catch (err) {
+                if (err.message === 'ENOENT') throw new Error('errors.media_could_not_be_accessed')
+                else throw err
+              }
               let
                 start = _this.selectorValue,
                 end
