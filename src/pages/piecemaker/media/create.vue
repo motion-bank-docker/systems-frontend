@@ -5,7 +5,7 @@
       headline(:content="$t('routes.piecemaker.media.create.title')")
 
       content-paragraph(:position="'first'")
-        calendar-time-main(v-if="mayAdd", @update="onCalendarUpdate")
+        calendar-time-main(v-if="mayAdd", :datetime="selectorValue", @update="onCalendarUpdate")
 
       content-paragraph(:position="'last'")
         form-main(v-if="mayAdd", v-model="payload", :schema="schema", ref="mediaForm")
@@ -37,7 +37,7 @@
     },
     methods: {
       onCalendarUpdate (val) {
-        this.selectorTime = val
+        this.selectorValue = val
       }
     },
     data () {
@@ -48,7 +48,7 @@
         // FIXME: i know this is bullshit!!! (but i hope it works for now)
         apiPayload: undefined,
         payload: { url: undefined, title: undefined },
-        selectorTime: undefined,
+        selectorValue: undefined,
         schema: {
           fields: {
             url: {
@@ -71,8 +71,13 @@
                 }
               })
               let
-                start = _this.selectorTime || DateTime.local().toString(),
+                start = _this.selectorValue || DateTime.local().toString(),
                 end
+              if (metadata && metadata.publishedAt) {
+                _this.selectorValue = DateTime.fromISO(metadata.publishedAt, { setZone: true }).toISO()
+                start = _this.selectorValue
+              }
+              else start = DateTime.local().toString()
               if (metadata && metadata.duration) {
                 end = DateTime.fromISO(start, {setZone: true}).plus(metadata.duration * 1000).toISO()
               }
