@@ -93,7 +93,8 @@
                 await _this.fetchMetadata()
               }
               catch (err) {
-                if (err.message === 'ENOENT') throw new Error('errors.media_could_not_be_accessed')
+                if (err.message && err.message.indexOf('ENOENT') === 0) throw new Error('errors.media_could_not_be_accessed')
+                if (err.message && err.message.indexOf('EACCESS') === 0) throw new Error('errors.access_to_media_denied')
                 else throw err
               }
               let

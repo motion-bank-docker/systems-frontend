@@ -41,7 +41,8 @@ const metadata = {
           }
         }
         catch (err) {
-          if (err.message === 'ENOENT') throw new Error(err.message)
+          if (err.message && err.message.indexOf('ENOENT') === 0) throw new Error(err.message)
+          if (err.message && err.message.indexOf('EACCESS') === 0) throw new Error(err.message)
           if (!err.response || err.response.status > 404) console.error(err.message)
         }
       }
