@@ -12,8 +12,8 @@
             q-btn.col(v-if="$route.params.uuid", slot="form-buttons-add",
               :label="exportLabel", @click="exportTimeline",
               color="grey", :class="[!isMobile ? 'q-mr-sm' : '']")
-            // q-btn(v-if="$route.params.uuid", @click="exportCSV", color="grey",
-            //   :class="[!isMobile ? 'q-mr-sm' : '']", :label="exportLabelCSV")
+            q-btn(v-if="$route.params.uuid", @click="exportCSV", color="grey",
+               :class="[!isMobile ? 'q-mr-sm' : '']", :label="exportLabelCSV")
         p(v-if="acl.put === false") {{ $t('errors.editing_forbidden') }}
 
     // -------------------------------------------------------------------------------------------------- access control

@@ -17,15 +17,19 @@ reference date, if available (e.g. live streams)
 - `Live` indicator for YouTube live streams in post-annotator
 - Edit media screen allows adding duration for live streams once archived
 - Duration field on edit media screen
+- Add media screen refuses to add inaccessible videos
+- Metadata store relays 'not found' and 'access denied' errors
 
 ### Changed
 
 - Add media screen explicitly shows option for overriding or auto-detecting media start times
 - Make Media duration in post-annotator dynamic
+- Enable CSV export on `timelines/edit`
 
 ### Fixed
 
 - Exception on edit media screen when media duration is unknown
+- Exception in `UserNav` when `route.name` is undefined
 
 ### Updated
 
