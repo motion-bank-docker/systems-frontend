@@ -10,7 +10,10 @@ and this project adheres to
 
 ## [Unreleased]
 
-No changes.
+### Added
+
+- Add media screen uses `publishedAt` field from YouTube metadata as initial
+reference date, if available (e.g. live streams)
 
 
 ## [2.1.2] - 2020-05-29
