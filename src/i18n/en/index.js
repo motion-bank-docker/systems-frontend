@@ -45,6 +45,7 @@ export default {
     no: 'No',
     remove: 'Remove',
     request_reset_pass: 'Request Password Reset',
+    reset: 'Reset',
     reject: 'Reject',
     save_changes: 'Save changes',
     save: 'Save',
