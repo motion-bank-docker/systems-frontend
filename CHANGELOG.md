@@ -15,6 +15,10 @@ and this project adheres to
 - Add media screen uses `publishedAt` field from YouTube metadata as initial
 reference date, if available (e.g. live streams)
 
+### Fixed
+
+- Exception on edit media screen when media duration is unknown
+
 
 ## [2.1.2] - 2020-05-29
 
