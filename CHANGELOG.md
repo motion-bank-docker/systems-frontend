@@ -14,10 +14,12 @@ and this project adheres to
 
 - Add media screen uses `publishedAt` field from YouTube metadata as initial
 reference date, if available (e.g. live streams)
+- `Live` indicator for YouTube live streams in post-annotator
 
 ### Changed
 
 - Add media screen explicitly shows option for overriding or auto-detecting media start times
+- Make Media duration in post-annotator dynamic
 
 ### Fixed
 
