@@ -18,6 +18,7 @@ reference date, if available (e.g. live streams)
 - Edit media screen allows adding duration for live streams once archived
 - Duration field on edit media screen
 - Add media screen refuses to add inaccessible videos
+- Metadata store relays 'not found' and 'access denied' errors
 
 ### Changed
 
