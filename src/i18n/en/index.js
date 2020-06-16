@@ -147,6 +147,7 @@ export default {
     accept_terms: 'I accept the Terms and Conditions',
     author: 'Author',
     creator: 'Creator',
+    duration_seconds: 'Duration (s)',
     biovision_hierarchy: 'Biovision Hierarchy',
     anonymous_creator: 'Anonymous',
     unknown_creator: 'Unknown',

@@ -114,7 +114,7 @@
           {
             label: this.$t('buttons.add_duration'),
             handler () {
-              context.durationOverride = context.meta.duration * 1000
+              context.payload.duration = context.meta.duration
             }
           }
         ],
@@ -122,7 +122,6 @@
         apiPayload: undefined,
         selectorOverride: undefined,
         showDurationOverride: false,
-        durationOverride: undefined,
         titlePayload: undefined,
         media: undefined,
         meta: undefined,
@@ -132,13 +131,18 @@
           .then(async result => {
             context.$q.loading.show()
 
+            let duration
             if (result.target.selector) {
-              const duration = result.target.selector.getDuration()
-              if (!duration) {
-                this.meta = await this.$store.dispatch('metadata/get', result)
-                this.showDurationOverride = !!this.meta.duration
-              }
-              else this.meta = await this.$store.dispatch('metadata/getLocal', result)
+              duration = result.target.selector.getDuration()
+            }
+
+            if (!duration) {
+              this.meta = await this.$store.dispatch('metadata/get', result)
+              this.showDurationOverride = !!this.meta.duration
+            }
+            else {
+              duration = (duration.as('milliseconds') * 0.001).toFixed(3)
+              this.meta = await this.$store.dispatch('metadata/getLocal', result)
             }
 
             this.annotation = result
@@ -154,6 +158,7 @@
               _uuid: parseURI(result.target.id).uuid,
               url: result.body.source.id,
               id: result.id,
+              duration,
               title: this.meta.title,
               timeline: result.target.id,
               tags
@@ -161,6 +166,11 @@
           }),
         schema: {
           fields: {
+            duration: {
+              fullWidth: true,
+              type: 'text',
+              label: 'labels.duration_seconds'
+            },
             url: {
               fullWidth: true,
               type: 'text',
@@ -201,16 +211,23 @@
                 await titleHelper.update(context.$store, context.titlePayload.id, context.payload.title)
               }
               let selector
-              if (context.durationOverride) context.annotation.target.selector._valueDuration = context.durationOverride
+              if (context.payload.duration) {
+                const duration = Math.round(parseFloat(context.payload.duration) * 1000)
+                const target = context.map.getInterval(
+                  DateTime.fromMillis(context.annotation.target.selector._valueMillis).toISO(),
+                  DateTime.fromMillis(context.annotation.target.selector._valueMillis)
+                    .plus(duration).toISO())
+                selector = target.selector.toObject()
+              }
               if (context.selectorOverride) {
                 const
-                  durationMs = context.annotation.target.selector._valueDuration,
+                  durationMs = (selector || context.annotation.target.selector)._valueDuration,
                   end = durationMs ? DateTime.fromISO(context.selectorOverride, {setZone: true})
                     .plus(durationMs).toISO() : undefined
                 const target = context.map.getInterval(context.selectorOverride, end)
                 selector = target.selector.toObject()
               }
-              else selector = context.annotation.target.selector.toObject()
+              else selector = (selector || context.annotation.target.selector).toObject()
               context.apiPayload = {
                 target: {
                   id: context.payload.timeline,
