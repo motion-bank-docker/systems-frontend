@@ -1,4 +1,5 @@
 import auth0 from './auth0'
+import elan from './elan'
 import mosys from './mosys'
 import notifications from './notifications'
 import auth from './auth'
@@ -13,6 +14,7 @@ import vocabularies from './vocabularies'
 
 export {
   auth0,
+  elan,
   auth,
   acl,
   files,
