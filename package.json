@@ -79,7 +79,8 @@
     "vue-shortkey": "3.1.6",
     "vue-socket.io": "^3.0.7",
     "vuelidate": "0.7.4",
-    "vuezingtouch": "^18.10.27"
+    "vuezingtouch": "^18.10.27",
+    "xml-js": "^1.6.11"
   },
   "devDependencies": {
     "@babel/runtime": "^7.0.0-beta.54",
