@@ -17,6 +17,9 @@
 
       content-paragraph
         form-main(v-if="acl.put", v-model.lazy="payload", :schema="schema", ref="mediaForm")
+          div(slot="form-buttons-add", :class="{'full-width row q-mb-sm': isMobile}")
+            q-btn(v-if="$route.params.uuid", @click="exportEAF", color="grey", :disabled="!canExportEAF"
+              :class="[!isMobile ? 'q-mr-sm' : '']", :label="exportLabelEAF")
         p(v-if="acl.put === false") {{ $t('errors.editing_forbidden') }}
 </template>
 
@@ -35,6 +38,7 @@
 
   import constants from 'mbjs-data-models/src/constants'
   import { parseURI } from 'mbjs-data-models/src/lib'
+  import { ObjectUtil } from 'mbjs-utils'
   import { DateTime } from 'luxon'
 
   export default {
@@ -56,6 +60,36 @@
         this.acl = Object.assign({}, this.acl, acl)
         this.timeline = await this.$store.dispatch('maps/get', parseURI(this.media.target.id).uuid)
         this.$root.$emit('setBackButton', '/piecemaker/timelines/' + parseURI(this.media.target.id).uuid + '/media')
+      },
+      async exportEAF () {
+        if (this.downloadUrlEAF) return this.downloadUrlEAF.click()
+
+        this.$q.loading.show()
+        const query = {
+          'target.id': this.timeline.id,
+          'target.type': constants.mapTypes.MAP_TYPE_TIMELINE,
+          'target.selector._valueMillis': { $gte: this.media.target.selector._valueMillis },
+          'body.type': { $in: ['TextualBody', 'VocabularyEntry'] }
+        }
+        if (this.media.target.selector._valueDuration) {
+          query['target.selector._valueMillis']['$lte'] = this.media.target.selector._valueMillis +
+            this.media.target.selector._valueDuration
+        }
+        const results = await this.$store.dispatch('annotations/find', query)
+        const metadata = await this.$store.dispatch('metadata/getLocal', this.media)
+        const doc = await this.$store.dispatch('elan/generateEAF', {
+          annotations: results.items,
+          map: this.timeline,
+          media: this.media,
+          metadata
+        })
+        const eafData = `data:text/x-eaf+xml;charset=utf-8,${doc}`
+        const download = document.createElement('a')
+        download.setAttribute('href', encodeURI(eafData))
+        download.setAttribute('download', `media_${ObjectUtil.slug(metadata.title)}-${this.timeline._uuid}.eaf`)
+        this.downloadUrlEAF = download
+        this.exportLabelEAF = this.$t('buttons.download_eaf')
+        this.$q.loading.hide()
       }
     },
     computed: {
@@ -76,6 +110,9 @@
           const duration = this.annotation.target.selector.getDuration()
           if (duration) return duration.toFormat(constants.config.TIMECODE_FORMAT_DURATION)
         }
+      },
+      canExportEAF () {
+        return this.annotation && ['video/mp4', 'audio/m4a'].indexOf(this.annotation.body.source.type) > -1
       }
     },
     watch: {
@@ -120,6 +157,8 @@
         ],
         acl: {},
         apiPayload: undefined,
+        downloadUrlEAF: undefined,
+        exportLabelEAF: this.$t('buttons.export_media_eaf'),
         selectorOverride: undefined,
         showDurationOverride: false,
         titlePayload: undefined,
