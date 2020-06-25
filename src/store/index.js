@@ -30,7 +30,8 @@ import {
   queue,
   swimLane,
   vocabularies,
-  settings
+  settings,
+  search
 } from './modules'
 
 import mediaFactory from './modules/media'
@@ -115,7 +116,8 @@ const modules = {
   queue,
   swimLane,
   vocabularies,
-  settings
+  settings,
+  search
 }
 for (let key in mobaApiModules) {
   if (mobaApiModules[key]) modules[key] = mobaApiModules[key]
