@@ -157,6 +157,7 @@ module.exports = function (ctx) {
         USE_CUSTOM_MEDIA_STORE: JSON.stringify(process.env.USE_CUSTOM_MEDIA_STORE || false),
         UI_HIDE_MOSYS: JSON.stringify(process.env.UI_HIDE_MOSYS || false),
         UI_HIDE_DOCUMENTS: JSON.stringify(process.env.UI_HIDE_DOCUMENTS || false),
+        UI_HIDE_GROUPS: JSON.stringify(process.env.UI_HIDE_GROUPS || false),
         MODULE_PROVIDER: JSON.stringify(process.env.MODULE_PROVIDER || null)
       }
     },

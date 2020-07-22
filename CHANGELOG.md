@@ -14,6 +14,10 @@ and this project adheres to
 
 - Router does not execute checkSession on `users.callback` route
 
+### Added
+
+- Build time environment variable `UI_HIDE_GROUPS` (default: false)
+
 
 ## [2.2.0] - 2020-06-22
 
