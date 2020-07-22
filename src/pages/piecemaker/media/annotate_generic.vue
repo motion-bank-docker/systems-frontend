@@ -321,7 +321,8 @@
         try {
           // this.annotations = await this.$store.dispatch('queue/enqueue',
           //   this.$store.dispatch('annotations/find', this.media.body.source.id))
-          this.annotations = await this.$store.dispatch('annotations/find', this.media.body.source.id)
+          this.annotations = (await this.$store.dispatch('annotations/find', this.media.body.source.id))
+            .sort(this.$sort.onRef)
         }
         catch (err) {
           this.$handleError(this, err, 'errors.list_annotations_failed')
