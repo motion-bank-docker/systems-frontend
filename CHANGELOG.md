@@ -10,7 +10,10 @@ and this project adheres to
 
 ## [Unreleased]
 
-No changes.
+### Changed
+
+- Router does not execute checkSession on `users.callback` route
+
 
 ## [2.2.0] - 2020-06-22
 
