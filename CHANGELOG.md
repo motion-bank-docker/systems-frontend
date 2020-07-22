@@ -24,6 +24,7 @@ on `USE_GENERIC_ANNOTATION`
 
 ### Fixed
 
+- Annotation sort order on `piecemaker.media.annotate_generic` screen
 - `piecemaker.media.annotate_generic` screen shows component display options
 
 
