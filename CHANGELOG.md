@@ -17,7 +17,7 @@ and this project adheres to
 ### Added
 
 - Build time environment variable `UI_HIDE_GROUPS` (default: false)
-
+- Build time environment variable `USE_GENERIC_ANNOTATION` (default: false)
 
 ## [2.2.0] - 2020-06-22
 

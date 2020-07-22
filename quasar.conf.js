@@ -139,6 +139,7 @@ module.exports = function (ctx) {
         APP_VERSION: JSON.stringify(getVersion()),
         BUILD_TIME: JSON.stringify(Date.now()),
         USE_RESOURCE_CACHE: JSON.stringify(process.env.USE_RESOURCE_CACHE || false),
+        USE_GENERIC_ANNOTATION: JSON.stringify(process.env.USE_GENERIC_ANNOTATION || false),
         UI_VERSION: JSON.stringify(process.env.UI_VERSION || require('./package.json').version),
         FLUENTFFMPEG_COV: JSON.stringify(false),
         //
