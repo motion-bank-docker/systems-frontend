@@ -24,6 +24,7 @@ on `USE_GENERIC_ANNOTATION`
 
 ### Fixed
 
+- Redundant grouping in `SwimLane` component when annotation types are undefined
 - Annotation sort order on `piecemaker.media.annotate_generic` screen
 - `piecemaker.media.annotate_generic` screen shows component display options
 
