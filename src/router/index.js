@@ -30,6 +30,7 @@ Router.beforeEach((to, from, next) => {
     else cb()
   }
   waitForStore(Router.app, () => {
+    if (to.name === 'users.callback') return next()
     const redirectPath = Router.app.$store.state.auth.redirectTo
     if (redirectPath) Router.app.$store.commit('auth/clearRedirect')
     Router.app.$auth.checkSession(Router.app.$store).catch(() => {
