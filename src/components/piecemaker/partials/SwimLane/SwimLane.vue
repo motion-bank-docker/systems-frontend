@@ -328,8 +328,7 @@
               return sum
             }, [])
             for (let group of groups) {
-              filtered[group] = this.annotations.filter(annotation => annotation.body.type === group ||
-                annotation.body.source.type === group)
+              filtered[group] = this.annotations.filter(annotation => (annotation.body.type || annotation.body.source.type) === group)
             }
           }
           else if (this.groupAnnotationsBy === 'creator') {

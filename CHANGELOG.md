@@ -10,7 +10,25 @@ and this project adheres to
 
 ## [Unreleased]
 
-No changes.
+### Added
+
+- Build time environment variable `UI_COLOR_HASH_SHADE` (default: '100')
+- Build time environment variable `UI_HIDE_GROUPS` (default: false)
+- Build time environment variable `USE_GENERIC_ANNOTATION` (default: false)
+
+### Changed
+
+- Router does not execute checkSession on `users.callback` route
+- Default route for `/piecemaker` redirects conditionally based
+on `USE_GENERIC_ANNOTATION`
+- Navigation honors `USE_GENERIC_ANNOTATION` build var
+
+### Fixed
+
+- Redundant grouping in `SwimLane` component when annotation types are undefined
+- Annotation sort order on `piecemaker.media.annotate_generic` screen
+- `piecemaker.media.annotate_generic` screen shows component display options
+
 
 ## [2.2.0] - 2020-06-22
 

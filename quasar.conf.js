@@ -139,6 +139,7 @@ module.exports = function (ctx) {
         APP_VERSION: JSON.stringify(getVersion()),
         BUILD_TIME: JSON.stringify(Date.now()),
         USE_RESOURCE_CACHE: JSON.stringify(process.env.USE_RESOURCE_CACHE || false),
+        USE_GENERIC_ANNOTATION: JSON.stringify(process.env.USE_GENERIC_ANNOTATION || false),
         UI_VERSION: JSON.stringify(process.env.UI_VERSION || require('./package.json').version),
         FLUENTFFMPEG_COV: JSON.stringify(false),
         //
@@ -155,8 +156,10 @@ module.exports = function (ctx) {
         USE_TAGS: JSON.stringify(process.env.USE_TAGS || true),
         USE_METADATA: JSON.stringify(process.env.USE_TAGS || true),
         USE_CUSTOM_MEDIA_STORE: JSON.stringify(process.env.USE_CUSTOM_MEDIA_STORE || false),
+        UI_COLOR_HASH_SHADE: JSON.stringify(process.env.UI_COLOR_HASH_SHADE || '100'),
         UI_HIDE_MOSYS: JSON.stringify(process.env.UI_HIDE_MOSYS || false),
         UI_HIDE_DOCUMENTS: JSON.stringify(process.env.UI_HIDE_DOCUMENTS || false),
+        UI_HIDE_GROUPS: JSON.stringify(process.env.UI_HIDE_GROUPS || false),
         MODULE_PROVIDER: JSON.stringify(process.env.MODULE_PROVIDER || null)
       }
     },

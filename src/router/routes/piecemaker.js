@@ -4,7 +4,10 @@ export default {
   children: [
     {
       path: '/piecemaker',
-      redirect: {name: 'piecemaker.media.list_generic'}
+      name: 'piecemaker.default',
+      redirect: {
+        name: process.env.USE_GENERIC_ANNOTATION ? 'piecemaker.media.list_generic' : 'piecemaker.timelines.list'
+      }
     },
 
     {
