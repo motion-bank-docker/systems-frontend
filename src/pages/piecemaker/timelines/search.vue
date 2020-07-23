@@ -64,6 +64,21 @@
         }
         catch (e) { this.media[i].metadata = {} }
       }
+
+      // const aggs = {
+      //   annotations_per_minute: {
+      //     date_histogram: {
+      //       field: 'target.selector._valueMillis',
+      //       calendar_interval: '1m'
+      //     }
+      //   }
+      // }
+      // const query = {
+      //   match: { 'target.id': this.map.id }
+      // }
+      // const aggregations = await this.$store.dispatch('search/query', { index: 'annotations', aggs, query })
+      // console.debug('Aggregations', aggregations)
+
       this.$q.loading.hide()
     },
     computed: {
@@ -75,12 +90,11 @@
       async search () {
         this.$q.loading.show()
         const query = {
-          'target.id': this.map.id,
-          'body.type': 'TextualBody',
-          'body.value': RegExp(`.*${this.query}.*`, 'ig')
+          match: { 'body.value': this.query }
         }
-        const result = await this.$store.dispatch('annotations/find', query)
-        this.results = result && Array.isArray(result.items) ? result.items.sort(this.$sort.onRef) : []
+        const result = await this.$store.dispatch('search/query', { index: 'annotations', query })
+        this.results = (result && Array.isArray(result.hits) ? result.hits.sort(this.$sort.onRef) : [])
+          .map(hit => hit._source)
         this.$q.loading.hide()
       },
       formatDate (millis) {
@@ -94,7 +108,7 @@
             videoEnd = videoStart.plus(video.metadata.duration * 1000)
           if (annoTime >= videoStart && annoTime < videoEnd) return video
         }
-        return {}
+        return { annotation: {}, metadata: {} }
       }
     }
   }
