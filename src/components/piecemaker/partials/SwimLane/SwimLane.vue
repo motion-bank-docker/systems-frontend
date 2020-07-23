@@ -323,12 +323,14 @@
         if (this.annotations) {
           if (this.groupAnnotationsBy === 'type') {
             groups = this.annotations.reduce((sum, annotation) => {
-              const type = annotation.body.type || annotation.body.source.type
+              const type = annotation.body.type.indexOf('SpecificResource') > -1 ? annotation.body.source.type : annotation.body.type
               if (sum.indexOf(type) === -1) sum.push(type)
               return sum
             }, [])
             for (let group of groups) {
-              filtered[group] = this.annotations.filter(annotation => (annotation.body.type || annotation.body.source.type) === group)
+              filtered[group] = this.annotations.filter(annotation => {
+                return (annotation.body.type.indexOf('SpecificResource') > -1 ? annotation.body.source.type : annotation.body.type) === group
+              })
             }
           }
           else if (this.groupAnnotationsBy === 'creator') {
