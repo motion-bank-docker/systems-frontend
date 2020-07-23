@@ -10,6 +10,7 @@ import files from './files'
 import queue from './queue'
 import swimLane from './swim-lane'
 import settings from './settings'
+import search from './search'
 import vocabularies from './vocabularies'
 
 export {
@@ -25,5 +26,6 @@ export {
   queue,
   swimLane,
   settings,
+  search,
   vocabularies
 }
