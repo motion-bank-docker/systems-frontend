@@ -56,7 +56,10 @@
     methods: {
       checkAnnotationType () {
         if (this.selectedAnnotation !== null && this.selectedAnnotation !== undefined) {
-          return this.selectedAnnotation.body.type
+          if (this.selectedAnnotation.body.type && this.selectedAnnotation.body.type.indexOf('SpecificResource') > -1) {
+            return this.selectedAnnotation.body.source.type
+          }
+          else return this.selectedAnnotation.body.type
         }
       },
       getAnnotationText (val) {
@@ -67,14 +70,8 @@
           case 'TextualBody':
             this.annotationText = val.body.value
             break
-          case 'Video':
-            this.annotationText = val.body.source.id
-            break
-          case 'VocabularyEntry':
-            this.annotationText = val.body.source.id
-            break
           default:
-            this.annotationText = 'unknown'
+            this.annotationText = val.body.source.id || 'unknown'
             break
           }
         }
