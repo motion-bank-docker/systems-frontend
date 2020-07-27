@@ -55,7 +55,7 @@
     watch: {
     },
     methods: {
-      getLabel (val) {
+      getLabel (val = '') {
         let valMatch = val.match(/[A-Z][a-z]+|[0-9]+/g)
         if (valMatch !== null) {
           if (this.useLabels) {
