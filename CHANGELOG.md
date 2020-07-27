@@ -10,7 +10,36 @@ and this project adheres to
 
 ## [Unreleased]
 
-No changes.
+### Added
+
+- Duplicate a Timeline on its `edit` page
+
+### Fixed
+
+- Swimlane breaks when loading improperly formatted Annotations
+
+
+## [2.2.1] - 2020-07-23
+
+### Added
+
+- Build time environment variable `UI_COLOR_HASH_SHADE` (default: '100')
+- Build time environment variable `UI_HIDE_GROUPS` (default: false)
+- Build time environment variable `USE_GENERIC_ANNOTATION` (default: false)
+
+### Changed
+
+- Router does not execute checkSession on `users.callback` route
+- Default route for `/piecemaker` redirects conditionally based
+on `USE_GENERIC_ANNOTATION`
+- Navigation honors `USE_GENERIC_ANNOTATION` build var
+
+### Fixed
+
+- Redundant grouping in `SwimLane` component when annotation types are undefined
+- Annotation sort order on `piecemaker.media.annotate_generic` screen
+- `piecemaker.media.annotate_generic` screen shows component display options
+
 
 ## [2.2.0] - 2020-06-22
 
@@ -362,7 +391,7 @@ module
 lots of annotations need to be loaded
 - Delete map no longer fails when encountering access
 denied errors (still suffers from
-[#119](https://gitlab.rlp.net/motionbank/systems-frontend/issues/119))
+[#119](https://gitlab.rlp.net/motionbank/applications/systems-frontend/issues/119))
 
 ### Removed
 
@@ -417,7 +446,7 @@ AnnotationList)
 (works from version 15+)
 - Perform date related queries to MongoDB with
 properly formatted timezones (see:
-[#106](https://gitlab.rlp.net/motionbank/systems-frontend/issues/106))
+[#106](https://gitlab.rlp.net/motionbank/applications/systems-frontend/issues/106))
 
 ### Changed
 
@@ -500,25 +529,26 @@ of a video cannot be retrieved
 - Start proper versioning at 1.0.0
 
 
-[Unreleased]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v2.2.0...release_2_2
-[2.2.0]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v2.1.2...v2.2.0
-[2.1.2]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v2.1.1...v2.1.2
-[2.1.1]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v2.1.0...v2.1.1
-[2.1.0]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v2.0.0...v2.1.0
-[2.0.0]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.10...v2.0.0
-[1.3.10]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.9...v1.3.10
-[1.3.9]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.8...v1.3.9
-[1.3.8]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.7...v1.3.8
-[1.3.7]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.6...v1.3.7
-[1.3.6]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.5...v1.3.6
-[1.3.5]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.4...v1.3.5
-[1.3.4]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.3...v1.3.4
-[1.3.3]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.2...v1.3.3
-[1.3.2]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.1...v1.3.2
-[1.3.1]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.3.0...v1.3.1
-[1.3.0]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.2.1...v1.3.0
-[1.2.1]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.2.0...v1.2.1
-[1.2.0]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.1.1...v1.2.0
-[1.1.1]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.1.0...v1.1.1
-[1.1.0]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/v1.0.0...v1.1.0
-[1.0.0]: https://gitlab.rlp.net/motionbank/systems-frontend/compare/initial...v1.0.0
+[Unreleased]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v2.2.1...release_2_2
+[2.2.1]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v2.2.0...v2.2.1
+[2.2.0]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v2.1.2...v2.2.0
+[2.1.2]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v2.1.1...v2.1.2
+[2.1.1]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v2.1.0...v2.1.1
+[2.1.0]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v2.0.0...v2.1.0
+[2.0.0]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v1.3.10...v2.0.0
+[1.3.10]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v1.3.9...v1.3.10
+[1.3.9]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v1.3.8...v1.3.9
+[1.3.8]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v1.3.7...v1.3.8
+[1.3.7]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v1.3.6...v1.3.7
+[1.3.6]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v1.3.5...v1.3.6
+[1.3.5]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v1.3.4...v1.3.5
+[1.3.4]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v1.3.3...v1.3.4
+[1.3.3]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v1.3.2...v1.3.3
+[1.3.2]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v1.3.1...v1.3.2
+[1.3.1]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v1.3.0...v1.3.1
+[1.3.0]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v1.2.1...v1.3.0
+[1.2.1]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v1.2.0...v1.2.1
+[1.2.0]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v1.1.1...v1.2.0
+[1.1.1]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v1.1.0...v1.1.1
+[1.1.0]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v1.0.0...v1.1.0
+[1.0.0]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/initial...v1.0.0

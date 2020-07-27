@@ -31,6 +31,7 @@ export default {
     download_package: 'Download Package',
     download: 'Download',
     done: 'Done',
+    duplicate_timeline: 'Duplicate Timeline',
     edit: 'Edit',
     export_grid: 'Export Grid',
     export_timeline: 'Export Timeline',
@@ -129,7 +130,8 @@ export default {
     editing_forbidden: 'You are not allowed to edit this item.',
     annotate_timeline_forbidden: 'You are not allowed to annotate this Timeline.',
     media_could_not_be_accessed: 'The supplied media URL could not be accessed.',
-    access_to_media_denied: 'Access to the media URL was denied.'
+    access_to_media_denied: 'Access to the media URL was denied.',
+    duplicate_timeline_failed: 'Duplicate Timeline failed: {error}'
   },
   labels: {
     rejected: 'Rejected.',
@@ -152,6 +154,7 @@ export default {
     author: 'Author',
     creator: 'Creator',
     duration_seconds: 'Duration (s)',
+    duplicate_timeline_title: 'Duplicate Timeline title',
     biovision_hierarchy: 'Biovision Hierarchy',
     anonymous_creator: 'Anonymous',
     unknown_creator: 'Unknown',
@@ -249,6 +252,7 @@ export default {
     submit_success: 'Submission successful',
     timeline_imported: 'Timeline imported successfully',
     timeline_deleted: 'Timeline deleted',
+    timeline_duplicated: 'Timeline duplicated successfully',
     grid_imported: 'Grid imported successfully',
     grid_deleted: 'Grid deleted',
     confirm_delete: 'Delete this item?',

@@ -1,6 +1,8 @@
 <template lang="pug">
   full-screen
 
+    duplicate-timeline-modal(ref="duplicateModal", @confirm="duplicateTimeline")
+
     // --------------------------------------------------------------------------------------------------- edit timeline
 
     content-block(:position="'first'")
@@ -9,6 +11,9 @@
         form-main(v-if="acl.put", v-model="payload", :schema="schema")
           //
           div(slot="form-buttons-add", :class="{'full-width row q-mb-sm': isMobile}")
+            q-btn.col(v-if="$route.params.uuid", slot="form-buttons-add",
+              :label="$t('buttons.duplicate_timeline')", @click="showDuplicateModal",
+              color="grey", :class="[!isMobile ? 'q-mr-sm' : '']")
             q-btn.col(v-if="$route.params.uuid", slot="form-buttons-add",
               :label="exportLabel", @click="exportTimeline",
               color="grey", :class="[!isMobile ? 'q-mr-sm' : '']")
@@ -39,6 +44,7 @@
   import { openURL } from 'quasar'
   import { mapGetters } from 'vuex'
   import PageSubNav from '../../../components/shared/navigation/PageSubNav'
+  import DuplicateTimelineModal from '../../../components/piecemaker/modals/DuplicateTimelineModal'
 
   export default {
     components: {
@@ -49,7 +55,8 @@
       Tags,
       ContentBlock,
       ContentParagraph,
-      Permissions
+      Permissions,
+      DuplicateTimelineModal
     },
     data () {
       const _this = this
@@ -108,6 +115,75 @@
       })
     },
     methods: {
+      showDuplicateModal () {
+        this.$refs.duplicateModal.show(this.timeline.title + ' Copy')
+      },
+      async duplicateTimeline (title) {
+        console.log('duplicate as', title, this.timeline)
+        if (!title || !this.timeline) return
+        this.$q.loading.show()
+        try {
+          const timeline = await this.$store.dispatch('maps/post', {
+            title,
+            type: this.timeline.type
+          })
+          if (timeline) {
+            let result = await this.$store.dispatch('annotations/find', { 'target.id': this.timeline.id })
+            const annotations = result.items
+            for (let annotation of annotations) {
+              annotation = annotation.toObject()
+              let created, payload, title
+              if (annotation.body) {
+                if (annotation.body && annotation.body.type === 'Video') {
+                  const { items } = (await this.$store.dispatch('annotations/find', { 'target.id': annotation.id }))
+                  title = items.shift()
+                  payload = {
+                    body: annotation.body,
+                    target: {
+                      id: timeline.id,
+                      type: annotation.target.type,
+                      selector: annotation.target.selector
+                    }
+                  }
+                }
+                else {
+                  payload = {
+                    body: annotation.body,
+                    target: {
+                      id: timeline.id,
+                      type: annotation.target.type,
+                      selector: annotation.target.selector
+                    }
+                  }
+                }
+              }
+              if (payload) {
+                created = await this.$store.dispatch('annotations/post', payload)
+              }
+              if (title) {
+                title = title.toObject()
+                await this.$store.dispatch('annotations/post', {
+                  body: title.body,
+                  target: {
+                    id: created.id,
+                    type: title.target.type
+                  }
+                })
+              }
+            }
+          }
+        }
+        catch (err) {
+          this.$handleError(this, err, 'errors.duplicate_timeline_failed')
+        }
+        this.$q.loading.hide()
+        this.$store.commit('notifications/addMessage', {
+          body: 'messages.timeline_duplicated',
+          mode: 'alert',
+          type: 'success'
+        })
+        return this.$router.push({ name: 'piecemaker.timelines.list' })
+      },
       async exportTimeline () {
         if (this.downloadURL) return openURL(this.downloadURL)
         this.$q.loading.show()
