@@ -10,7 +10,9 @@ and this project adheres to
 
 ## [Unreleased]
 
-No changes.
+### Fixed
+
+- Swimlane breaks when loading improperly formatted Annotations
 
 
 ## [2.2.1] - 2020-07-23
