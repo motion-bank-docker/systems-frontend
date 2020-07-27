@@ -10,6 +10,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+- Duplicate a Timeline on its `edit` page
+
 ### Fixed
 
 - Swimlane breaks when loading improperly formatted Annotations
