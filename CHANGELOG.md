@@ -10,7 +10,10 @@ and this project adheres to
 
 ## [Unreleased]
 
-No changes.
+### Fixed
+
+- `media/edit` page breaks when single ISO timestamp
+is returned for selectorValue
 
 
 ## [2.3.0] - 2020-08-17

@@ -8,10 +8,10 @@
       .q-mb-lg
         q-alert(color="info" :actions="actions" v-if="showDurationOverride") {{ $t('routes.piecemaker.media.edit.duration_found') }}
 
-      content-paragraph(v-if="acl.put", :position="'first'")
+      content-paragraph(v-if="selectorValue && acl.put", :position="'first'")
         calendar-time-main(:datetime="selectorValue", @update="onCalendarUpdate")
 
-      content-paragraph(v-if="acl.put")
+      content-paragraph(v-if="selectorValue && acl.put")
         // p.q-mt-md {{ $t('labels.media_duration') }}: {{ duration }}
         p(v-if="selectorOverride !== selectorValue") {{ $t('messages.caution_media_time_override') }}
 
@@ -102,7 +102,10 @@
       selectorValue () {
         if (this.annotation) {
           const parsed = this.annotation.target.selector.parse()
-          return Array.isArray(parsed['date-time:t']) ? parsed['date-time:t'][0].toISO() : parsed['date-time:t'].toISO()
+          const value = Array.isArray(parsed['date-time:t'])
+            ? parsed['date-time:t'].shift() : parsed['date-time:t']
+          if (value && typeof value.toISO === 'function') return value.toISO()
+          return value
         }
       },
       duration () {
