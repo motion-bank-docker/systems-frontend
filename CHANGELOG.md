@@ -15,6 +15,10 @@ and this project adheres to
 - `media/edit` page breaks when single ISO timestamp
 is returned for selectorValue
 
+### Updated
+
+- [mbjs-media](https://gitlab.rlp.net/motionbank/mbjs/media) to 0.5.0
+
 
 ## [2.3.0] - 2020-08-17
 
