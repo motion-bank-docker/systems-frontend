@@ -10,6 +10,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+- [BVH](https://research.cs.wisc.edu/graphics/Courses/cs-838-1999/Jeff/BVH.html) file support
+
 ### Fixed
 
 - `media/edit` page breaks when single ISO timestamp
