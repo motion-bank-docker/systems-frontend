@@ -13,7 +13,10 @@
       div.relative-position(:style="{height: videoHeight + 'px', maxHeight: viewport.height - 52 - 250 + 'px'}",
       :class="[!visibilitySwimlanes ? 'fit' : '']")
 
-        media-player.full-height.relative-position(v-if="media", :annotation="media", :fine-controls="true",
+        bvh-player.full-height.relative-position(v-if="media && isBvh", :bvh-path="media.body.source.id", :scale="0.05",
+          background-color="#181818")
+
+        media-player.full-height.relative-position(v-if="media && isVideo", :annotation="media", :fine-controls="true",
         :post-errors="true", @ready="playerReady($event)", @timeupdate="onPlayerTime($event)")
 
         q-chip.q-ma-md.absolute-top-left(v-if="isLive") {{ $t('labels.live') }}
@@ -159,6 +162,7 @@
   import SwimLane from '../../../components/piecemaker/partials/SwimLane/SwimLane'
   import TimecodeLabel from '../../../components/shared/partials/TimecodeLabel'
   import AnnotationIcon from '../../../components/piecemaker/partials/AnnotationIcon'
+  import BvhPlayer from '../../../components/shared/media/BvhPlayer'
 
   const { getScrollTarget, setScrollPosition } = scroll
 
@@ -166,6 +170,7 @@
     components: {
       AnnotationIcon,
       AnnotationField,
+      BvhPlayer,
       SwimLane,
       TimecodeLabel
     },
@@ -292,6 +297,14 @@
       },
       isLive () {
         return this.metadata.liveBroadcastContent === 'live'
+      },
+      isVideo () {
+        if (!this.media) return false
+        return this.media.body.source.type.indexOf('video') === 0
+      },
+      isBvh () {
+        if (!this.media) return false
+        return this.media.body.source.type === 'animation/bvh'
       }
     },
     watch: {
