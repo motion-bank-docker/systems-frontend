@@ -152,7 +152,7 @@
       if (this.timeline) {
         this.query = {
           'body.purpose': 'linking',
-          'body.type': { $in: ['Audio', 'Video'] },
+          'body.type': { $in: ['Audio', 'Video', 'Animation'] },
           'target.id': this.timeline.id
         }
       }
