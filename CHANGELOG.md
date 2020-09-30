@@ -10,6 +10,11 @@ and this project adheres to
 
 ## [Unreleased]
 
+No changes.
+
+
+## [2.3.1] - 2020-09-30
+
 ### Fixed
 
 - `media/edit` page breaks when single ISO timestamp
@@ -537,7 +542,8 @@ of a video cannot be retrieved
 - Start proper versioning at 1.0.0
 
 
-[Unreleased]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v2.3.0...release_2_3
+[Unreleased]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v2.3.1...release_2_3
+[2.3.1]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v2.3.0...v2.3.1
 [2.3.0]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v2.2.1...v2.3.0
 [2.2.1]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v2.2.0...v2.2.1
 [2.2.0]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v2.1.2...v2.2.0
