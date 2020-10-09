@@ -1,3 +1,4 @@
+import assets from './assets'
 import auth0 from './auth0'
 import elan from './elan'
 import mosys from './mosys'
@@ -14,6 +15,7 @@ import search from './search'
 import vocabularies from './vocabularies'
 
 export {
+  assets,
   auth0,
   elan,
   auth,

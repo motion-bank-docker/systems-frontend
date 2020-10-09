@@ -10,7 +10,14 @@ and this project adheres to
 
 ## [Unreleased]
 
-No changes.
+### Added
+
+- `media/create` allows uploading asset files
+
+### Updated
+
+- Updated [mbjs-media](https://gitlab.rlp.net/motionbank/mbjs/media)
+to 0.6.1
 
 
 ## [2.3.1] - 2020-09-30

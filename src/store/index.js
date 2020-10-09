@@ -12,12 +12,12 @@ import { makeResourceModule } from 'mbjs-quasar/src/lib'
 import {
   Annotation,
   Map,
-  Document,
   Cell
 } from 'mbjs-data-models/src/models'
 
 /** Import custom modules */
 import {
+  assets,
   auth0,
   elan,
   auth,
@@ -92,7 +92,6 @@ const mobaApiModules = {
   annotations: makeResourceModule(apiClient, Annotation, 'annotation'),
   maps: makeResourceModule(apiClient, Map, 'map'),
   cells: makeResourceModule(apiClient, Cell, 'cell'),
-  documents: makeResourceModule(apiClient, Document, 'document'),
   groups: makeResourceModule(apiClient, undefined, 'group'),
   invites: makeResourceModule(apiClient, undefined, 'invite'),
   profiles: makeResourceModule(apiClient, undefined, 'profile'),
@@ -108,6 +107,7 @@ const getRequestConfig = () => {
 
 const modules = {
   /** Custom stores */
+  assets,
   auth0,
   elan,
   auth,

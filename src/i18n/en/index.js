@@ -16,7 +16,6 @@ export default {
     back: 'Back',
     create_account: 'Create Account',
     close_account: 'Close Account',
-    create_document: 'Add Document',
     create_timeline: 'Create Timeline',
     create_grid: 'Create Grid',
     create_package: 'Create Package',
@@ -95,7 +94,6 @@ export default {
   errors: {
     no_invitations: 'You didn\'t invite anyone to this group yet.',
     no_members: 'This group has no members yet.',
-    document_delete_failed: 'Failed to delete Document',
     item_exists: 'This item already exists.',
     unknown: 'Unknown Error',
     invalid_email: 'Please enter a valid email',
@@ -114,6 +112,7 @@ export default {
     export_archive_failed: 'Failed to export timeline archive: {error}',
     packaging_failed: 'Packaging failed: {error}',
     update_acl_failed: 'Failed to update ACL: {error}',
+    upload_assets_errors: 'Upload assets completed with errors',
     unauthorized: 'Unauthorized',
     forbidden: 'Forbidden',
     not_found: 'Not found',
@@ -192,6 +191,7 @@ export default {
     pending_invitations: 'Pending Invitations',
     my_groups: 'My Groups',
     my_vocabularies: 'My vocabularies',
+    my_assets: 'My Assets',
     name: 'Name',
     new_tag: 'New tag',
     new_term: 'New term',
@@ -216,11 +216,13 @@ export default {
     size: 'Size',
     tag: 'Tag',
     tags: 'Tags',
+    target_path_optional: 'Target path (optional, e.g.: mycoolproject/videos)',
     textual_body: 'Annotations',
     title: 'Title',
     title_unknown: 'Unknown Title',
     timeline: 'Timeline',
     type: 'Type',
+    upload_asset: 'Upload an asset file',
     url: 'URL',
     use_custom_date: 'Use custom date and time',
     media_duration: 'Media duration',
@@ -236,13 +238,10 @@ export default {
   },
   descriptions: {
     access_control: 'Allow or disallow members of a group see your timeline and, optionally, the attached annotations.',
-    access_control_documents: 'Allow or disallow members of a group and/or the public to see your Document',
     css_stylesheet: 'Either link an external stylesheet or set an inline value'
   },
   messages: {
     acl_updated: 'Access settings updated',
-    document_created: 'Document created',
-    document_deleted: 'Document deleted',
     login_success: 'Login successful',
     logout_notice: 'You have been logged out',
     registration_success: 'Account was successfully created. You can log in now!',
@@ -258,7 +257,9 @@ export default {
     confirm_delete: 'Delete this item?',
     confirm_remove_member: 'Remove this member?',
     confirm_delete_group: 'Delete this group?',
+    confirm_remove_asset: 'Delete this asset? Any existing references to it will be broken.',
     updated_annotation: 'Updated annotation',
+    upload_assets_success: 'Assets uploaded successfully',
     url_copied: 'URL copied to clipboard',
     caution_media_time_override: 'Caution: Changing media reference time does not update associated annotations!',
     browser_unsupported_warning: '<strong>Unsupported browser:</strong> For optimal performance please use ' +
@@ -270,7 +271,9 @@ export default {
     group_invite_request: 'You have been invited by {name} to join "{group}".',
     invite_accepted: 'Invitation accepted',
     invite_rejected: 'Invitation rejected',
-    confirm_remove_invitation: 'Remove invitation?'
+    confirm_remove_invitation: 'Remove invitation?',
+    delete_asset_success: 'Asset deleted successfully',
+    no_assets_uploaded: 'No assets have been uploaded.'
   },
   help: {
     acl: {
@@ -314,15 +317,9 @@ export default {
       mosys_grids_edit: 'Edit',
       mosys_grids_create: 'Create Grid'
     },
-    documents: {
-      label: 'Documents',
-      documents_list: 'All Documents',
-      documents_copy_url: 'Copy URL',
-      documents_delete: 'Delete',
-      documents_download: 'Download',
-      documents_edit: 'Edit'
-    },
     users: {
+      assets: 'Assets',
+      assets_upload: 'Upload asset files',
       label: 'Account settings',
       users_manage: 'Account settings',
       groups: 'Groups'
@@ -333,17 +330,6 @@ export default {
     }
   },
   routes: {
-    documents: {
-      edit: {
-        title: 'Edit Document'
-      },
-      create: {
-        title: 'Add Document'
-      },
-      list: {
-        title: 'Documents'
-      }
-    },
     annotate: {
       media: {
         title: 'Annotate Media',
@@ -383,6 +369,13 @@ export default {
       }
     },
     users: {
+      assets: {
+        title: 'Manage Assets',
+        caption: 'Add or delete asset files.'
+      },
+      assets_upload: {
+        title: 'Upload asset files'
+      },
       create: {
         title: 'Create Account',
         caption: 'Fill out the form to create a new account.'

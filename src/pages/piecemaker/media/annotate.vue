@@ -14,7 +14,7 @@
       :class="[!visibilitySwimlanes ? 'fit' : '']")
 
         media-player.full-height.relative-position(v-if="media", :annotation="media", :fine-controls="true",
-        :post-errors="true", @ready="playerReady($event)", @timeupdate="onPlayerTime($event)")
+        :post-errors="true", @ready="playerReady($event)", @timeupdate="onPlayerTime($event)" :auth="playerAuth")
 
         q-chip.q-ma-md.absolute-top-left(v-if="isLive") {{ $t('labels.live') }}
 
@@ -289,6 +289,13 @@
           }
         }
         return 0
+      },
+      playerAuth () {
+        const auth = { query: {} }
+        if (this.$auth.token) {
+          auth.query[this.$auth.tokenType.toLowerCase()] = this.$auth.token
+        }
+        return auth
       },
       isLive () {
         return this.metadata.liveBroadcastContent === 'live'
