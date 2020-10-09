@@ -67,7 +67,7 @@
         mayAdd: undefined,
         // FIXME: i know this is bullshit!!! (but i hope it works for now)
         apiPayload: undefined,
-        payload: { url: undefined, title: undefined, customMediaDate: false },
+        payload: { url: undefined, title: undefined, customMediaDate: false, file: undefined },
         selectorValue: undefined,
         metadata: undefined,
         schema: {
@@ -89,6 +89,7 @@
           },
           submit: {
             async handler () {
+              _this.$q.loading.show()
               try {
                 await _this.fetchMetadata()
               }
@@ -126,6 +127,7 @@
               if (_this.metadata) {
                 await titleHelper.create(_this.$store, annotation.id, _this.metadata.title)
               }
+              _this.$q.loading.hide()
               _this.$router.push({
                 name: 'piecemaker.media.list',
                 params: { timelineUuid: _this.$route.params.timelineUuid }
@@ -136,6 +138,7 @@
       }
     },
     async mounted () {
+      this.$q.loading.show()
       this.timeline = await this.$store.dispatch('maps/get', this.$route.params.timelineUuid)
       if (this.timeline) {
         try {
@@ -147,6 +150,7 @@
           this.$handleError(err)
         }
       }
+      this.$q.loading.hide()
     }
   }
 </script>

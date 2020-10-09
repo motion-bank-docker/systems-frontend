@@ -64,6 +64,18 @@ export default {
       name: 'users.invite',
       component: () => import('pages/shared/users/invite'),
       meta: {private: true}
+    },
+    {
+      path: 'assets',
+      name: 'users.assets',
+      component: () => import('pages/shared/users/assets'),
+      meta: {private: true}
+    },
+    {
+      path: 'assets/upload',
+      name: 'users.assets_upload',
+      component: () => import('pages/shared/users/assets_upload'),
+      meta: {private: true}
     }
   ]
 }
