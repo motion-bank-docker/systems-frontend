@@ -254,6 +254,7 @@ module.exports = function (ctx) {
         'QSpinner',
         // 'QSpinnerTail',
         'QSpinnerPuff',
+        'QProgress',
         //
         // Scrolling
         //
