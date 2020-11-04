@@ -12,7 +12,7 @@ and this project adheres to
 
 ### Added
 
-- `Assets` menu to manage local user's asset files
+- `Assets` menu to manage user's private asset files (not shareable yet)
 - Pagination and filtering on `media/list_generic`
 - `DataTable` component allows pagination and external requests with filter and pagination
 
