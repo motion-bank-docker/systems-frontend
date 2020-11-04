@@ -12,7 +12,9 @@ and this project adheres to
 
 ### Added
 
-- `media/create` allows uploading asset files
+- `Assets` menu to manage local user's asset files
+- Pagination and filtering on `media/list_generic`
+- `DataTable` component allows pagination and external requests with filter and pagination
 
 ### Updated
 
