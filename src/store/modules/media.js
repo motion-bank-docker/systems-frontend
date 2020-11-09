@@ -44,6 +44,7 @@ const mediaFactory = function (env = {}) {
         requestConfig.params = { query }
         if (pagination) {
           requestConfig.params.page = pagination.page
+          requestConfig.params.page_size = pagination.rowsPerPage
         }
         const response = await axios.get(`${context.rootState.settings.apiHost}videos/`, requestConfig)
         const items = response.data.hits ? response.data.hits.map(item => {
@@ -53,7 +54,7 @@ const mediaFactory = function (env = {}) {
           rows: items,
           rowsNumber: response.data.total_hits,
           page: response.data.current_page,
-          rowsPerPage: Math.ceil(response.data.total_hits / response.data.total_pages)
+          rowsPerPage: response.data.page_size || pagination.rowsPerPage || Math.ceil(response.data.total_hits / response.data.total_pages)
         }
       },
       async get (context, id) {
