@@ -6,7 +6,7 @@
       headline(:content="$t('routes.piecemaker.media.list.title')")
 
       content-paragraph(:position="'first'")
-        data-table(ref="listTable", :config="config", :title="'routes.piecemaker.media.list.title'", :hide-bottom="false")
+        data-table(ref="listTable", :config="config", :title="'routes.piecemaker.media.list.title'", :hide-bottom="false", :rows-per-page="rowsPerPage" )
 </template>
 
 <script>
@@ -42,12 +42,13 @@
           filterMethod (rows) {
             return rows
           },
+          rowsPerPage: [8, 16, 24, 32],
           pagination: {
             sortBy: 'title',
             descending: false,
             page: 1,
             rowsNumber: 0,
-            rowsPerPage: 10
+            rowsPerPage: 24
           },
           columns: [
             {
