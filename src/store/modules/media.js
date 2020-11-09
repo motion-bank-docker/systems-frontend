@@ -38,15 +38,23 @@ const mediaFactory = function (env = {}) {
     namespaced: true,
     state: {},
     actions: {
-      async find (context, query = undefined) {
+      async find (context, [query = undefined, pagination = undefined]) {
         await checkAuth(context)
         const requestConfig = env.getRequestConfig()
         requestConfig.params = { query }
+        if (pagination) {
+          requestConfig.params.page = pagination.page
+        }
         const response = await axios.get(`${context.rootState.settings.apiHost}videos/`, requestConfig)
         const items = response.data.hits ? response.data.hits.map(item => {
           return createMediaAnnotation(item)
         }) : []
-        return items
+        return {
+          rows: items,
+          rowsNumber: response.data.total_hits,
+          page: response.data.current_page,
+          rowsPerPage: Math.ceil(response.data.total_hits / response.data.total_pages)
+        }
       },
       async get (context, id) {
         await checkAuth(context)
