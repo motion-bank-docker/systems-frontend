@@ -308,7 +308,7 @@
         return auth
       },
       isLive () {
-        return this.metadata.liveBroadcastContent === 'live'
+        return this.metadata && this.metadata.liveBroadcastContent === 'live'
       },
       isVideo () {
         if (!this.media) return false
