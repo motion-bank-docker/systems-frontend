@@ -13,7 +13,9 @@
       div.relative-position(:style="{height: videoHeight + 'px', maxHeight: viewport.height - 52 - 250 + 'px'}",
       :class="[!visibilitySwimlanes ? 'fit' : '']")
 
-        bvh-player.full-height.relative-position(v-if="media && isBvh", :bvh-path="media.body.source.id", :scale="0.05",
+        bvh-player.relative-position(v-if="media && isBvh",
+          :style="{height: '100vh'}",
+          :bvh-path="media.body.source.id", :scale="0.05",
           background-color="#181818")
 
         media-player.full-height.relative-position(v-if="media && isVideo", :annotation="media", :fine-controls="true",
