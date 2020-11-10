@@ -14,14 +14,31 @@ and this project adheres to
 
 - [BVH](https://research.cs.wisc.edu/graphics/Courses/cs-838-1999/Jeff/BVH.html) file support
 
+### Updated
+
+- [mbjs-media](https://gitlab.rlp.net/motionbank/mbjs/media) to 0.5.0
+
+
+## [2.4.0] - 2020-11-09
+
+### Added
+
+- `Assets` menu to manage user's private asset files (not shareable yet)
+- Pagination and filtering on `media/list_generic`
+- `DataTable` component allows pagination and external requests with filter and pagination
+
+### Updated
+
+- Updated [mbjs-media](https://gitlab.rlp.net/motionbank/mbjs/media)
+to 0.6.1
+
+
+## [2.3.1] - 2020-09-30
+
 ### Fixed
 
 - `media/edit` page breaks when single ISO timestamp
 is returned for selectorValue
-
-### Updated
-
-- [mbjs-media](https://gitlab.rlp.net/motionbank/mbjs/media) to 0.5.0
 
 
 ## [2.3.0] - 2020-08-17
@@ -545,7 +562,9 @@ of a video cannot be retrieved
 - Start proper versioning at 1.0.0
 
 
-[Unreleased]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v2.3.0...release_2_3
+[Unreleased]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v2.4.0...release_2_4
+[2.4.0]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v2.3.1...v2.4.0
+[2.3.1]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v2.3.0...v2.3.1
 [2.3.0]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v2.2.1...v2.3.0
 [2.2.1]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v2.2.0...v2.2.1
 [2.2.0]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v2.1.2...v2.2.0

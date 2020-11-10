@@ -6,7 +6,7 @@
       headline(:content="$t('routes.piecemaker.media.list.title')")
 
       content-paragraph(:position="'first'")
-        data-table(ref="listTable", :config="config", :title="'routes.piecemaker.media.list.title'")
+        data-table(ref="listTable", :config="config", :title="'routes.piecemaker.media.list.title'", :hide-bottom="false", :rows-per-page="rowsPerPage" )
 </template>
 
 <script>
@@ -27,12 +27,28 @@
       return {
         data: undefined,
         config: {
-          request: function () {
-            return _this.$store.dispatch('media/find')
+          request: async function ({ filter, pagination }) {
+            _this.$refs.listTable.loading = true
+            const results = await _this.$store.dispatch('media/find', [filter, pagination])
+            _this.config.pagination.page = results.page
+            _this.config.pagination.rowsNumber = results.rowsNumber
+            _this.config.pagination.rowsPerPage = results.rowsPerPage
+            // results.rows = results.rows.sort((a, b) => {
+            //   if (typeof a.title === 'string') return a.title.localeCompare(b.title)
+            // })
+            _this.$refs.listTable.loading = false
+            return results.rows
           },
+          filterMethod (rows) {
+            return rows
+          },
+          rowsPerPage: [8, 16, 24, 32],
           pagination: {
             sortBy: 'title',
-            descending: false
+            descending: false,
+            page: 1,
+            rowsNumber: 0,
+            rowsPerPage: 24
           },
           columns: [
             {
