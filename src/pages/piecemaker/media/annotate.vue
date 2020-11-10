@@ -14,6 +14,7 @@
       :class="[!visibilitySwimlanes ? 'fit' : '']")
 
         bvh-player.full-height.relative-position(v-if="media && isBvh",
+          @ready="playerReady($event)", @timeupdate="onPlayerTime($event)",
           :bvh-path="media.body.source.id", :scale="0.05", :loop="true",
           background-color="#181818")
 
