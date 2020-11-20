@@ -126,7 +126,7 @@ module.exports = function (ctx) {
         // API Keys
         //
         SENTRY_DSN: JSON.stringify(process.env.SENTRY_DSN),
-        YOUTUBE_API_KEY: JSON.stringify(process.env.YOUTUBE_API_KEYl),
+        YOUTUBE_API_KEY: JSON.stringify(process.env.YOUTUBE_API_KEY),
         VIMEO_ACCESS_TOKEN: JSON.stringify(process.env.VIMEO_ACCESS_TOKEN),
         //
         // App config
