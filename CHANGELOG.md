@@ -16,7 +16,7 @@ and this project adheres to
 
 ### Updated
 
-- [mbjs-media](https://gitlab.rlp.net/motionbank/mbjs/media) to 0.5.0
+- [mbjs-media](https://gitlab.rlp.net/motionbank/mbjs/media) to 0.6.1
 
 
 ## [2.4.0] - 2020-11-09
