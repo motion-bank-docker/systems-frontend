@@ -10,7 +10,6 @@ and this project adheres to
 
 ## [Unreleased]
 
-<<<<<<<<< Temporary merge branch 1
 ### Added
 
 - [BVH](https://research.cs.wisc.edu/graphics/Courses/cs-838-1999/Jeff/BVH.html) file support
