@@ -14,10 +14,6 @@ and this project adheres to
 
 - [BVH](https://research.cs.wisc.edu/graphics/Courses/cs-838-1999/Jeff/BVH.html) file support
 
-### Updated
-
-- [mbjs-media](https://gitlab.rlp.net/motionbank/mbjs/media) to 0.6.1
-
 
 ## [2.4.0] - 2020-11-09
 
