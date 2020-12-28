@@ -13,6 +13,13 @@ and this project adheres to
 No changes.
 
 
+## [2.4.1] - 2020-12-28
+
+### Fixed
+
+- CSV Export breaks when `#` characters are used in the Annotation values.
+
+
 ## [2.4.0] - 2020-11-09
 
 ### Added
@@ -556,7 +563,8 @@ of a video cannot be retrieved
 - Start proper versioning at 1.0.0
 
 
-[Unreleased]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v2.4.0...release_2_4
+[Unreleased]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v2.4.1...release_2_4
+[2.4.1]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v2.4.0...v2.4.1
 [2.4.0]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v2.3.1...v2.4.0
 [2.3.1]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v2.3.0...v2.3.1
 [2.3.0]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v2.2.1...v2.3.0
