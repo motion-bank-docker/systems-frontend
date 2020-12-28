@@ -1,6 +1,6 @@
 {
   "name": "systems-frontend",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "description": "Combined frontend project for Motion Bank web services",
   "productName": "Motion Bank Systems Frontend",
   "cordovaId": "org.motionbank.frontend",
