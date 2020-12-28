@@ -25,12 +25,15 @@ const exportCSV = function (items, filename = undefined) {
       annotation._updated || ''
     ]
   }))
-  let csvData = 'data:text/csv;charset=utf-8,'
+  // let csvData = 'data:text/csv;base64,'
+  let dataUrl = encodeURI('data:text/csv;charset=utf-8,')
+  let csvData = ''
   entries.forEach(entry => {
     csvData += entry.map(v => `"${(v || '').toString().replace('"', '\\"')}"`).join(';') + '\r\n'
   })
+  dataUrl += encodeURIComponent(csvData)
   const download = document.createElement('a')
-  download.setAttribute('href', encodeURI(csvData))
+  download.setAttribute('href', dataUrl)
   if (filename) download.setAttribute('download', filename)
 
   return download
