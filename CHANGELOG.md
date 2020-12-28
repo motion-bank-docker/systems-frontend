@@ -13,11 +13,12 @@ and this project adheres to
 No changes.
 
 
-## [2.4.1] - 2020-12-28
+## [2.4.1] - 2020-12-29
 
 ### Fixed
 
 - CSV Export breaks when `#` characters are used in the Annotation values.
+- Exceptions when fetching metadata in `media/annotate` breaks page loading.
 
 
 ## [2.4.0] - 2020-11-09
