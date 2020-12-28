@@ -381,14 +381,22 @@
             this.mayEdit = !!(acl || {}).get
           }
           catch (err) {
-            this.$handleError(err)
+            this.$handleError(this, err)
           }
         }
         this.$root.$emit('setBackButton', '/piecemaker/timelines/' + parseURI(this.media.target.id).uuid + '/media')
         if (this.media) {
           let duration
           if (this.media.target.selector) duration = this.media.target.selector.getDuration()
-          if (!duration) this.metadata = await this.$store.dispatch('metadata/get', this.media)
+          if (!duration) {
+            try {
+              this.metadata = await this.$store.dispatch('metadata/get', this.media)
+            }
+            catch (err) {
+              this.metadata = await this.$store.dispatch('metadata/getLocal', this.media)
+              this.$handleError(this, err, 'errors.failed_to_get_media_metadata')
+            }
+          }
           else this.metadata = await this.$store.dispatch('metadata/getLocal', this.media)
         }
       },

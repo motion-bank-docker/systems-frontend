@@ -130,7 +130,8 @@ export default {
     annotate_timeline_forbidden: 'You are not allowed to annotate this Timeline.',
     media_could_not_be_accessed: 'The supplied media URL could not be accessed.',
     access_to_media_denied: 'Access to the media URL was denied.',
-    duplicate_timeline_failed: 'Duplicate Timeline failed: {error}'
+    duplicate_timeline_failed: 'Duplicate Timeline failed: {error}',
+    failed_to_get_media_metadata: 'Failed to fetch media metadata: {error}'
   },
   labels: {
     rejected: 'Rejected.',
