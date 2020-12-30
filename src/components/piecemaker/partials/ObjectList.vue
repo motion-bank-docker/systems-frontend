@@ -14,7 +14,7 @@
           | Select object type ({{ activeTypesModel.length }})
           q-popover
             q-list
-              q-item.q-py-sm.q-pl-sm.q-pr-md.moba-tag-hover-dark(v-for="type in objectTypes")
+              q-item.q-py-sm.q-pl-sm.q-pr-md.moba-tag-hover-dark(v-for="type in objectTypes" :key="type.value")
                 q-checkbox.full-width(v-model="checkedTypes", :val="type", :label="type.label",
                 :key="type.value", checked-icon="check", unchecked-icon="xxxxxx",
                 @input="handlerActivity(type)")
@@ -27,7 +27,7 @@
       template(v-if="typesVisibility")
         template(v-if="checkedTypes.length > 0")
 
-          q-item.q-pa-none.cursor-pointer(v-for="type in checkedTypes",
+          q-item.q-pa-none.cursor-pointer(v-for="type in checkedTypes", :key="type.value",
           tag="label")
 
             q-item-main.q-pa-sm.moba-tag-hover-dark.text-grey-7(style="height: 35px;")

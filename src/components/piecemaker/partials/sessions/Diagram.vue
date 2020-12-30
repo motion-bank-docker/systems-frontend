@@ -22,27 +22,27 @@
 
       // BACKGROUND LINES
       //
-      line.background-line(v-for="n in diagramDimensions.distances.length", x1="0", x2="100%",
+      line.background-line(v-for="n in diagramDimensions.distances.length", :key="`bgline-${n}`", x1="0", x2="100%",
         :y1="diagramDimensions.height / diagramDimensions.distances.length * (n - 1) + diagramDimensions.offsetY",
         :y2="diagramDimensions.height / diagramDimensions.distances.length * (n - 1) + diagramDimensions.offsetY")
       rect(width="60", height="100%", fill="#1F1D1E")
 
       // TIME LABELS
       //
-      text.q-caption.time-labels(v-for="(n, i) in diagramDimensions.distances.length", x="0",
+      text.q-caption.time-labels(v-for="(n, i) in diagramDimensions.distances.length", :key="`timelabel-${i}`", x="0",
       :y="diagramDimensions.height - (diagramDimensions.height / diagramDimensions.distances.length * (n - 1)) - ((diagramDimensions.height / diagramDimensions.distances.length)) + 3 + diagramDimensions.offsetY",)
         | {{ diagramDimensions.distances[i] }}
 
       // BACKGROUND LINE + TIME LABEL
       // if session duration <= minimum time
-      line.background-line-label(v-for="n in diagramDimensions.distances.length", x1="0", x2="100%",
+      line.background-line-label(v-for="n in diagramDimensions.distances.length", :key="`bgline-tlabel-${n}`", x1="0", x2="100%",
         :y1="backgroundLineLabel.y1", :y2="backgroundLineLabel.y2")
       text.q-caption.background-line-label-caption(x="0", :y="backgroundLineLabelCaptionY") < 10min
 
       // SESSION BARS
       //
       svg(:x="sessionBarX")
-        diagram-bar(v-for="(session, i) in sessions", :session="session", :index="i", :active="activeSessionIndex === i"
+        diagram-bar(v-for="(session, i) in sessions", :session="session", :key="`sbar-${i}`", :index="i", :active="activeSessionIndex === i"
           @hover="sessionHover", @click="sessionBarClick(session, i)", :time-format="timeFormat", :dimensions="diagramDimensions")
 
       // BOTTOM LINE

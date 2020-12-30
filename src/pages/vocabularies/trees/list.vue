@@ -11,7 +11,7 @@
         <!--h5 {{ $t('labels.my_vocabularies') }}-->
         q-btn(@click="showModal('newVocabularyModal')", icon="add", :label="$t('buttons.add_vocabulary')", color="primary")
 
-        q-card.q-mt-lg.q-pa-sm(v-for="(tree, i) in trees")
+        q-card.q-mt-lg.q-pa-sm(v-for="(tree, i) in trees" :key="`tree-${i}`")
           q-tree(:nodes="tree", node-key="label", color="primary", dark)
             q-item.full-width(slot="header-generic", slot-scope="prop").q-pl-none
               q-item-side

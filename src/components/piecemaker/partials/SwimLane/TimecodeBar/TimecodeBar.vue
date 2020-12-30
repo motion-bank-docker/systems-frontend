@@ -10,6 +10,7 @@
     timecode-bar-section(
       v-for="(n, index) in numSections",
       :index="index",
+      :key="index",
       :numSections="numSections",
       :millis="sectionDuration",
       :width="sectionWidth",

@@ -33,9 +33,9 @@
           | Select vocabulary
           q-popover
             q-list
-              q-item.q-py-sm.q-px-xs.moba-tag-hover-dark(v-for="vocabulary in vocabularyLabels")
+              q-item.q-py-sm.q-px-xs.moba-tag-hover-dark(v-for="vocabulary in vocabularyLabels" :key="vocabulary.id")
                 q-checkbox.full-width(v-model="checkedVocabularies", :val="vocabulary", :label="vocabulary.label",
-                :key="vocabulary.id", checked-icon="check", unchecked-icon="xxxxxx",
+                checked-icon="check", unchecked-icon="xxxxxx",
                 @input="handlerActivity(vocabulary)")
 
         q-item-side.text-right
@@ -47,10 +47,10 @@
         template(v-if="checkedVocabularies.length > 0")
 
           q-item.q-pl-md.q-pr-sm.q-py-none.moba-tag-hover-dark.cursor-pointer(v-for="vocabulary in checkedVocabularies",
-          tag="label")
+          tag="label" :key="`checked-${vocabulary.id}`")
 
             q-item-side(style="min-width: auto;")
-              q-checkbox(v-model="activeVocabulariesModel", :val="vocabulary", :key="vocabulary.id",
+              q-checkbox(v-model="activeVocabulariesModel", :val="vocabulary",
               size="sm", round, flat, checked-icon="remove_red_eye", unchecked-icon="none")
 
             q-item-main.text-grey-7
@@ -73,7 +73,7 @@
         span Loading vocabularies...
 
       // results
-      q-list.q-py-sm(v-for="(aV, i) in activeVocabularies",
+      q-list.q-py-sm(v-for="(aV, i) in activeVocabularies", :key="`result-${i}`",
       :class="{'ui-border-bottom': i < activeVocabularies.length - 1}")
 
         // vocabulary label
@@ -81,7 +81,7 @@
           q-item-main.text-grey-7 {{ aV.label }}
 
         // vocabulary items
-        q-item.moba-tag-hover.cursor-pointer.q-pa-none(v-for="item in filteredItems(aV.items)")
+        q-item.moba-tag-hover.cursor-pointer.q-pa-none(v-for="item in filteredItems(aV.items)" :key="item.value")
           q-item-main
             div.q-px-md.q-py-xs(@click="selectEntry(item)") {{ item.value }}
             //

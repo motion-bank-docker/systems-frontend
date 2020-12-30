@@ -11,7 +11,7 @@
           q-btn.full-width(@click="search", color="primary") Search
 
       // results
-      content-paragraph(v-for="(result, i) in results", :class="{'q-mt-xl': i === 0}")
+      content-paragraph(v-for="(result, i) in results", :class="{'q-mt-xl': i === 0}" :key="`result-${i}`")
         div(:class="{'ui-border-bottom': i < results.length - 1}")
           // div
           markdown-display.markdown-display(:content="result.body.value", :options="mdOptions")
