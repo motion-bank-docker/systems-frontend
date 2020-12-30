@@ -17,17 +17,17 @@
             q-tab(:class="{'bg-green': filterCreators.length > 0}", slot="title", name="creators") creators
               q-tooltip.bg-dark.shadow-8.moba-border(v-if="filterCreators.length > 0", anchor="bottom middle", self="top middle", :offset="[10, 0]")
                 q-list.no-border.no-padding
-                  q-item.q-caption.q-pa-xs.no-margin(v-for="creator in filterCreators") {{ creator }}
+                  q-item.q-caption.q-pa-xs.no-margin(v-for="(creator, i) in filterCreators" :key="`creator-${i}`") {{ creator }}
 
             q-tab(:class="{'bg-green': filterTags.length > 0}", slot="title", name="tags") tags
               q-tooltip.bg-dark.shadow-8.moba-border(v-if="filterTags.length > 0", anchor="bottom middle", self="top middle", :offset="[10, 0]")
                 q-list.no-border.no-padding
-                  q-item.q-caption.q-pa-xs.no-margin(v-for="tag in filterTags") {{ tag }}
+                  q-item.q-caption.q-pa-xs.no-margin(v-for="(tag, i) in filterTags" :key="`tag-${i}`") {{ tag }}
 
             q-tab(:class="{'bg-green': filterTypes.length > 0}", slot="title", name="types") types
               q-tooltip.bg-dark.shadow-8.moba-border(v-if="filterTypes.length > 0", anchor="bottom middle", self="top middle", :offset="[10, 0]")
                 q-list.no-border.no-padding
-                  q-item.q-caption.q-pa-xs.no-margin(v-for="type in filterTypes") {{ type }}
+                  q-item.q-caption.q-pa-xs.no-margin(v-for="(type, i) in filterTypes" :key="`type-${i}`") {{ type }}
 
             q-tab(slot="title", name="date") date
             q-tab(slot="title", name="search") search
@@ -37,7 +37,7 @@
                 q-btn.col-6 select all
                 q-btn.col-6(@click="filterCreators = ['']") select none
               q-list.no-border
-                q-item.no-padding(v-for="creator in creators")
+                q-item.no-padding(v-for="(creator, i) in creators" :key="`creator-f-${i}`")
                   q-checkbox.q-caption(v-model="filterCreators", :val="creator", :label="creator", color="white")
 
             q-tab-pane(name="tags")
@@ -52,7 +52,7 @@
                 q-btn.col-6 select all
                 q-btn.col-6(@click="filterTypes = ['']") select none
               q-list.no-border
-                q-item.no-padding(v-for="type in annotationTypes")
+                q-item.no-padding(v-for="(type, i) in annotationTypes" :key="`type-f-${i}`")
                   q-checkbox.q-caption(v-model="filterTypes", :val="type", :label="type", color="white")
 
             q-tab-pane(name="date")
