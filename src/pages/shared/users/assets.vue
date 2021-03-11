@@ -113,7 +113,13 @@ export default {
       this.$q.loading.show({ delay: 500 })
       const entries = await this.$store.dispatch('assets/find', path)
       this.$q.loading.hide()
-      return this.transformEntries(entries, isRoot)
+      // return this.transformEntries(entries, isRoot)
+      if (entries) {
+        return this.transformEntries(entries, isRoot)
+      }
+      else {
+        this.$router.push({ path: 'assets/upload' })
+      }
     },
     async onLazyLoad ({ node, done }) {
       const entries = await this.listDir(node.fullpath)
