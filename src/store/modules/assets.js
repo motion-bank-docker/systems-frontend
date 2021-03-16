@@ -10,8 +10,13 @@ const assets = {
           Authorization: `${this.$router.app.$auth.tokenType} ${this.$router.app.$auth.token}`
         }
       }
-      const { data } = await axios.get(`${process.env.API_HOST}/assets/${path}`, config)
-      return data
+      return axios.get(`${process.env.API_HOST}/assets/${path}`, config).then(response => {
+        return response.data
+      }).catch(error => {
+        console.debug(error.response)
+        return null
+      })
+      // return data
     },
     async delete (context, path) {
       const config = {
