@@ -12,7 +12,12 @@ and this project adheres to
 
 ### Added
 
+- Add files from `Assets` to Mosys grids
 - [BVH](https://research.cs.wisc.edu/graphics/Courses/cs-838-1999/Jeff/BVH.html) file support
+
+### Fixed
+
+- Exception on `Assets` when user has no files
 
 
 ## [2.4.1] - 2020-12-29
