@@ -160,7 +160,7 @@ module.exports = function (ctx) {
         UI_HIDE_MOSYS: JSON.stringify(process.env.UI_HIDE_MOSYS || false),
         UI_HIDE_DOCUMENTS: JSON.stringify(process.env.UI_HIDE_DOCUMENTS || false),
         UI_HIDE_GROUPS: JSON.stringify(process.env.UI_HIDE_GROUPS || false),
-        UI_SHOW_ASSETS: JSON.stringify(process.env.UI_SHOW_ASSETS || false),
+        UI_SHOW_ASSETS: JSON.stringify(process.env.UI_SHOW_ASSETS || true),
         MODULE_PROVIDER: JSON.stringify(process.env.MODULE_PROVIDER || null)
       }
     },
