@@ -10,7 +10,10 @@ and this project adheres to
 
 ## [Unreleased]
 
-No changes.
+### Changed
+
+- `UI_SHOW_ASSETS` defaults to `true`.
+
 
 ## [2.5.0] - 2021-03-16
 
