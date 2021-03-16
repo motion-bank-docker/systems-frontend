@@ -10,9 +10,19 @@ and this project adheres to
 
 ## [Unreleased]
 
+No changes
+
+
+## [2.5.1] - 2021-03-16
+
 ### Changed
 
 - `UI_SHOW_ASSETS` defaults to `true`.
+
+### Fixed
+
+- Authentication for BVH type files loading from API
+- Lists not reloading after item delete
 
 
 ## [2.5.0] - 2021-03-16
@@ -582,7 +592,8 @@ of a video cannot be retrieved
 - Start proper versioning at 1.0.0
 
 
-[Unreleased]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v2.5.0...release_2_5
+[Unreleased]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v2.5.1...release_2_5
+[2.5.1]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v2.5.0...v2.5.1
 [2.5.0]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v2.4.1...v2.5.0
 [2.4.1]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v2.4.0...v2.4.1
 [2.4.0]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v2.3.1...v2.4.0
