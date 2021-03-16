@@ -13,7 +13,7 @@
       div.relative-position(:style="{height: videoHeight + 'px', maxHeight: viewport.height - 52 - 250 + 'px'}",
       :class="[!visibilitySwimlanes ? 'fit' : '']")
 
-        bvh-player.full-height.relative-position(v-if="media && isBvh",
+        bvh-player.full-height.relative-position(v-if="media && isBvh", :auth="playerAuth",
           @ready="playerReady($event)", @timeupdate="onPlayerTime($event)",
           :bvh-path="media.body.source.id", :scale="0.05", :loop="true",
           background-color="#181818")
@@ -302,10 +302,14 @@
       },
       playerAuth () {
         const auth = { query: {} }
-        if (this.$auth.token) {
+        if (this.isApiSource && this.$auth.token) {
           auth.query[this.$auth.tokenType.toLowerCase()] = this.$auth.token
         }
         return auth
+      },
+      isApiSource () {
+        if (!this.media) return
+        return this.media.body.source.id.indexOf(process.env.API_HOST) === 0
       },
       isLive () {
         return this.metadata && this.metadata.liveBroadcastContent === 'live'
