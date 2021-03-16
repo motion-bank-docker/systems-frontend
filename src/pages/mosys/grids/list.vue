@@ -137,7 +137,7 @@
             mode: 'alert',
             type: 'success'
           })
-          this.$refs.listTable.request()
+          return this.$refs.listTable.reload()
         }
         catch (err) {
           this.$handleError(err)

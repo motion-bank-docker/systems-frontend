@@ -170,7 +170,7 @@
             await this.$store.dispatch('annotations/delete', a._uuid)
           }
         }
-        this.$refs.listTable.request()
+        return this.$refs.listTable.reload()
       }
     },
     computed: {
