@@ -10,7 +10,9 @@ and this project adheres to
 
 ## [Unreleased]
 
-No changes.
+### Changed
+
+- Updated result format for `media/find` and `media/get`
 
 
 ## [2.5.2] - 2021-03-18
