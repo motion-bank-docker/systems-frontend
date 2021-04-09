@@ -68,7 +68,9 @@ const mediaFactory = function (env = {}) {
           }
         }, env.getRequestConfig()))
         return {
-          annotation: createMediaAnnotation(data),
+          annotation: createMediaAnnotation(Object.assign({
+            url: `${context.rootState.settings.apiHost}videos/${data.identifier}`
+          }, data)),
           metadata: Array.isArray(data.data) && data.data.length ? data.data[0] : {}
         }
       }
