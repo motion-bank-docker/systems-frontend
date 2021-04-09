@@ -19,7 +19,7 @@ const mediaFactory = function (env = {}) {
       body: {
         type: 'Video',
         source: {
-          id: item.data.length ? item.data[0].url : undefined,
+          id: item.data && item.data.length ? item.data[0].url : undefined,
           type: 'video/mp4'
         }
       },
@@ -28,7 +28,7 @@ const mediaFactory = function (env = {}) {
         selector: {
           type: 'FragmentSelector',
           value: {
-            t: [0, item.data.length ? item.data[0].duration : 0]
+            t: item.data ? [0, item.data.length ? item.data[0].duration : 0] : undefined
           }
         }
       }
@@ -45,21 +45,28 @@ const mediaFactory = function (env = {}) {
         if (pagination) {
           requestConfig.params.page = pagination.page
           requestConfig.params.page_size = pagination.rowsPerPage
+          requestConfig.params.new_style = 1
         }
         const response = await axios.get(`${context.rootState.settings.apiHost}videos/`, requestConfig)
-        const items = response.data.hits ? response.data.hits.map(item => {
+        const items = response.data.data ? response.data.data.map(item => {
+          item.url = item.url || `${context.rootState.settings.apiHost}videos/${item.identifier}`
           return createMediaAnnotation(item)
         }) : []
+        const rowsNumber = response.data.total ? response.data.total.value : undefined
         return {
           rows: items,
-          rowsNumber: response.data.total_hits,
-          page: response.data.current_page,
-          rowsPerPage: response.data.page_size || pagination.rowsPerPage || Math.ceil(response.data.total_hits / response.data.total_pages)
+          rowsNumber,
+          page: pagination.page,
+          rowsPerPage: pagination.rowsPerPage
         }
       },
       async get (context, id) {
         await checkAuth(context)
-        const { data } = await axios.get(`${context.rootState.settings.apiHost}videos/${parseURI(id).id}/`, env.getRequestConfig())
+        const { data } = await axios.get(`${context.rootState.settings.apiHost}videos/${parseURI(id).id}/`, Object.assign({
+          params: {
+            new_style: 1
+          }
+        }, env.getRequestConfig()))
         return {
           annotation: createMediaAnnotation(data),
           metadata: Array.isArray(data.data) && data.data.length ? data.data[0] : {}
