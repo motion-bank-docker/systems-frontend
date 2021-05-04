@@ -14,6 +14,10 @@ and this project adheres to
 
 - Updated result format for `media/find` and `media/get`
 
+### Fixed
+
+- MoSys `Assets` source leaks access tokens for assets
+
 
 ## [2.5.2] - 2021-03-18
 
