@@ -12,12 +12,12 @@ and this project adheres to
 
 ### Changed
 
-- Updated result format for `media/find` and `media/get`
+- Updated result format for `media/find` and `media/get`.
 
 ### Fixed
 
-- MoSys `Assets` source leaks access tokens for assets
-
+- MoSys `Assets` source leaks access tokens for assets.
+- `CellImage` and `CellMedia` do not authenticate `Assets` content.
 
 ## [2.5.2] - 2021-03-18
 
