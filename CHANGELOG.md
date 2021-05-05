@@ -10,6 +10,11 @@ and this project adheres to
 
 ## [Unreleased]
 
+No changes.
+
+
+## [2.5.3] - 2021-05-05
+
 ### Changed
 
 - Updated result format for `media/find` and `media/get`.
@@ -18,6 +23,7 @@ and this project adheres to
 
 - MoSys `Assets` source leaks access tokens for assets.
 - `CellImage` and `CellMedia` do not authenticate `Assets` content.
+
 
 ## [2.5.2] - 2021-03-18
 
@@ -606,7 +612,8 @@ of a video cannot be retrieved
 - Start proper versioning at 1.0.0
 
 
-[Unreleased]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v2.5.2...release_2_5
+[Unreleased]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v2.5.3...release_2_5
+[2.5.3]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v2.5.2...v2.5.3
 [2.5.2]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v2.5.1...v2.5.2
 [2.5.1]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v2.5.0...v2.5.1
 [2.5.0]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v2.4.1...v2.5.0
