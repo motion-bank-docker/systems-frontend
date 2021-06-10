@@ -6,7 +6,7 @@
 
       content-paragraph(:position="'last'")
         q-input.q-mb-md(:float-label="$t('labels.target_path_optional')" v-model="targetPath" dark)
-        uploader(dark :url="url" :headers="headers" :multiple="true" :fields="uploadFields"
+        uploader(dark :url="url" :headers="headers" :multiple="false" :fields="uploadFields"
           @finish="onFileFinish" @select="onFileSelect")
 </template>
 
