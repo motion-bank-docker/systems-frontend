@@ -8,9 +8,21 @@ The format is based on
 and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
 ## [Unreleased]
 
-No changes.
+No changes
+
+
+## [2.6.0] - 2021-06-10
+
+### Added
+
+- `DataTable.vue` stores current filter and pagination in localStorage
+
+### Fixed
+
+- Asset uploads limited to single file to prevent timeout for mulitple large files
 
 
 ## [2.5.3] - 2021-05-05
@@ -612,7 +624,8 @@ of a video cannot be retrieved
 - Start proper versioning at 1.0.0
 
 
-[Unreleased]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v2.5.3...release_2_5
+[Unreleased]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v2.6.0...release_2_5
+[2.6.0]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v2.5.3...v2.6.0
 [2.5.3]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v2.5.2...v2.5.3
 [2.5.2]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v2.5.1...v2.5.2
 [2.5.1]: https://gitlab.rlp.net/motionbank/applications/systems-frontend/compare/v2.5.0...v2.5.1
