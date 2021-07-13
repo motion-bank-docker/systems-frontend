@@ -11,7 +11,9 @@ and this project adheres to
 
 ## [Unreleased]
 
-No changes
+### Fixed
+
+- Deep links in Piecemaker with `date-time:t` query parameter
 
 
 ## [2.6.0] - 2021-06-10

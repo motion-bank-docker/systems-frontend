@@ -18,7 +18,7 @@
           :bvh-path="media.body.source.id", :scale="0.05", :loop="true",
           background-color="#181818")
 
-        media-player.full-height.relative-position(v-if="media && isVideo", :annotation="media", :fine-controls="true",
+        media-player.full-height.relative-position(v-if="media && isVideo", :annotation="media", :fine-controls="true", ref="mediaPlayer",
         :post-errors="true", @ready="playerReady($event)", @timeupdate="onPlayerTime($event)" :auth="playerAuth")
 
         q-chip.q-ma-md.absolute-top-left(v-if="isLive") {{ $t('labels.live') }}
@@ -518,7 +518,7 @@
       },
       gotoSelector (selector, useDuration, annotation) {
         const
-          parsed = selector.parse(),
+          parsed = typeof selector.parse === 'function' ? selector.parse() : selector,
           start = Array.isArray(parsed['date-time:t']) ? parsed['date-time:t'][0] : parsed['date-time:t']
         this.$router.push({ query: { datetime: start } })
         let millis = selector._valueMillis - this.media.target.selector._valueMillis
@@ -548,6 +548,7 @@
       },
       playerReady (player) {
         this.player = player
+        this.$refs.mediaPlayer.$once('canplay', () => this.onPlayerCanPlay())
       },
       formatSelectorForList (val) {
         const annotationDate = DateTime.fromMillis(val._valueMillis)
@@ -555,6 +556,14 @@
         return Interval.fromDateTimes(videoDate, annotationDate)
           .toDuration()
           .toFormat(constants.config.TIMECODE_FORMAT)
+      },
+      onPlayerCanPlay () {
+        if (this.$route.query.datetime) {
+          return this.gotoSelector({
+            _valueMillis: DateTime.fromISO(this.$route.query.datetime).toMillis(),
+            'date-time:t': this.$route.query.datetime
+          })
+        }
       },
       onPlayerTime (seconds) {
         this.playerTime = seconds
